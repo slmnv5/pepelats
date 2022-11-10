@@ -1,0 +1,40 @@
+{
+  "kdr": {
+    "file_name": "V07-EQ-KD.wav",
+    "volume": 1.0,
+    "optional_long_name": "kick drum"
+  },
+  "sdr": {
+    "file_name": "V07-EQ-SD.wav",
+    "optional_long_name": "snare drum"
+  },
+  "hhc": {
+    "file_name": "V07-Hats-CLD.wav",
+    "optional_long_name": "hi hat closed",
+    "volume": 2.0
+  },
+  "hho":{
+    "file_name": "V07-Hats-OPN.wav",
+    "volume": 1.0,
+    "optional_long_name": "hi hat open"
+  },
+  "tom": {
+    "file_name": "V07-TTom-12.wav",
+    "optional_long_name": "tom"
+  },
+  "bel": {
+    "file_name": "V07-Rbell-23.wav",
+    "volume": 1.0,
+    "optional_long_name": "bel"
+  },
+  "cyd": {
+    "file_name": "V07-Rbell-23.wav",
+    "volume": 0.8,
+    "optional_long_name": "cymbals"
+  },
+  "sst": {
+    "file_name": "V05-SStick.wav",
+    "volume": 1.0,
+    "optional_long_name": "snare stick"
+  }
+}

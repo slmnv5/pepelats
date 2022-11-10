@@ -1,0 +1,10 @@
+{
+  "comment1": "generated drum volume swing and type, changeable on the run",
+  "DRUM_SWING": 0.625,
+  "DRUM_VOLUME": 0.5,
+  "DRUM_TYPE": "pop",
+  "comment5": "ALSA mixer volume to record and play",
+  "MIXER_IN": 1,
+  "MIXER_OUT": 99,
+  "SONG_NAME": "will_man_cold_mood.s"
+}

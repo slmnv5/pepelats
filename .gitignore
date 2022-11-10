@@ -1,0 +1,24 @@
+__pycache__
+# optional note converter
+# mimap5
+rules.txt
+kbdmap.txt
+# app data
+save_song
+#pyinstall files
+dist
+build
+*.spec
+#PyCharm
+.idea
+#other
+*.log
+*.pyc
+
+
+
+
+
+
+
+

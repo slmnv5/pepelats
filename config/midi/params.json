@@ -1,0 +1,36 @@
+{
+  "default_config": {
+    "description": "Parent for maps",
+    "12:1": ["_change_map", "prev", "params"],
+    "13:1": ["_change_map", "next", "params"],
+    "12:2": ["_change_map", "0", "song"],
+    "13:2": ["_change_map", "0", "song"],
+    "12:6": ["_change_map", "1", "playing"],
+    "13:6": ["_change_map", "0", "playing"]
+  },
+  "0": {
+    "description": "Volume: A/B-out C/D-in D2-update DH-restart",
+    "update_method": "_show_mixer_volume",
+    "60:1": ["_change_mixer_out", -7],
+    "62:1": ["_change_mixer_out", 7],
+    "64:1": ["_change_mixer_in", -7],
+    "65:1": ["_change_mixer_in", 7],
+    "65:2": ["_check_updates"],
+    "65:6": ["_restart"]
+  },
+  "1": {
+    "description": "Drum: A/B-volume C/D-swing",
+    "update_method": "_show_drum_param",
+    "60:1": ["_change_drum_volume", -1],
+    "62:1": ["_change_drum_volume", 1],
+    "64:1": ["_change_drum_swing", -1],
+    "65:1": ["_change_drum_swing", 1]
+  },
+ "2": {
+    "description": "Drum_Type: A/B-scroll D2-load",
+    "update_method": "_show_drum_type",
+    "60:100": ["_change_drum_type", -1],
+    "62:100": ["_change_drum_type", 1],
+    "65:2": [["_load_drum_type"], ["_change_map", "0", "playing"]]
+  }
+}
