@@ -14,7 +14,7 @@
     "_screen_menu": ["_change_map", "0", "menu"]
   },
   "0": {
-    "description": "Play all parts: A/B/C/D-switch",
+    "description": "All parts: A/B/C/D-switch",
     "update_method": "_show_all_parts",
     "60:100": ["_play_part_id", 0],
     "62:100": ["_play_part_id", 1],
@@ -30,7 +30,7 @@
     "65:6": ["_clear_part"]
   },
   "1": {
-    "description": "Play one part: A/B-scroll C-reverse D-silence D2-move DH-delete",
+    "description": "One part: A/B-scroll C-reverse D-silence D2-move DH-delete",
     "update_method": "_show_one_part",
     "60:100": ["_change_loop", "prev"],
     "62:100": ["_change_loop", "next"],
