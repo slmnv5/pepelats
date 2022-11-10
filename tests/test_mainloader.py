@@ -1,13 +1,13 @@
 import unittest
 from unittest import TestCase
 
-from utils import ConfigLoader, ConfigName
+from utils import CONFLDR, ConfigName
 
 
 class TestMainLoader(TestCase):
 
     def test_1(self):
-        val = ConfigLoader.get(ConfigName.drum_volume, -1)
+        val = CONFLDR.data.get(ConfigName.drum_volume, -1)
         self.assertTrue(val > 0)
 
 

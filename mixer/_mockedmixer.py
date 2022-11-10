@@ -1,14 +1,14 @@
 # noinspection PyUnusedLocal
 
-from utils import ConfigLoader, ConfigName
+from utils import CONFLDR, ConfigName
 
 
 class MockedMixer:
     """Used to run on windows, there is no ALSA sound on windows"""
 
     def __init__(self):
-        self.__vol_in: int = ConfigLoader.get(ConfigName.mixer_in, 30)
-        self.__vol_out: int = ConfigLoader.get(ConfigName.mixer_out, 100)
+        self.__vol_in: int = CONFLDR.data.get(ConfigName.mixer_in, default=30)
+        self.__vol_out: int = CONFLDR.data.get(ConfigName.mixer_out, default=100)
 
     def fade(self, seconds: int) -> None:
         pass
@@ -18,10 +18,10 @@ class MockedMixer:
             return
         if out:
             self.__vol_out = vol
-            ConfigLoader.set(ConfigName.mixer_out, vol)
+            CONFLDR.set(ConfigName.mixer_out, vol)
         else:
             self.__vol_in = vol
-            ConfigLoader.set(ConfigName.mixer_in, vol)
+            CONFLDR.set(ConfigName.mixer_in, vol)
 
     def getvolume(self, out: bool):
         if out:
@@ -37,4 +37,9 @@ class MockedMixer:
 
 
 if __name__ == "__main__":
-    pass
+    def test():
+        mmix = MockedMixer()
+        print(mmix.getvolume(True), mmix.getvolume(False))
+
+
+    test()

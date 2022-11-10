@@ -5,7 +5,8 @@ from threading import Timer
 import numpy as np
 
 from drum._drumloader import DrumLoader
-from utils import ConfigName, ConfigLoader, FileFinder, SD_MAX
+from utils import CONFLDR
+from utils import ConfigName, FileFinder, SD_MAX
 from utils import SD_RATE, play_sound_buff
 
 
@@ -24,7 +25,7 @@ class RealDrum(DrumLoader, FileFinder):
         FileFinder.__init__(self, "config/drums", False, "")
         self.__intensity: Intensity = Intensity.LVL2
         self.__is_break_pending: bool = False
-        drum_type: str = ConfigLoader.get(ConfigName.drum_type, "")
+        drum_type: str = CONFLDR.data.get(ConfigName.drum_type, "")
         now_id = self.find_item_id(drum_type)
         if now_id >= 0:
             self._go_id(now_id)
@@ -33,40 +34,40 @@ class RealDrum(DrumLoader, FileFinder):
     @staticmethod
     def change_volume(change_by: int) -> None:
         factor = 1.2 if change_by > 0 else (1 / 1.2)
-        v = ConfigLoader.get(ConfigName.drum_volume, 1.0) * factor
+        v = CONFLDR.data.get(ConfigName.drum_volume, 1.0) * factor
         if v * DrumLoader.max_volume >= SD_MAX:
             return
         if v * DrumLoader.max_volume < 0.01 * SD_MAX:
             return
         v = round(v, 2)
-        ConfigLoader.set(ConfigName.drum_volume, v)
+        CONFLDR.set(ConfigName.drum_volume, v)
 
         DrumLoader.prepare_all(RDRUM.get_length())
 
     @staticmethod
     def change_swing(change_by: int) -> None:
-        v = ConfigLoader.get(ConfigName.drum_swing, 0.5)
+        v = CONFLDR.data.get(ConfigName.drum_swing, 0.5)
         v += (0.25 / 4) if change_by >= 0 else (-0.25 / 4)
         v = min(v, 0.75)
         v = max(v, 0.5)
-        ConfigLoader.set(ConfigName.drum_swing, v)
+        CONFLDR.set(ConfigName.drum_swing, v)
 
         DrumLoader.prepare_all(RDRUM.get_length())
 
     @staticmethod
     def get_volume() -> float:
-        return ConfigLoader.get(ConfigName.drum_volume, 1.0) * DrumLoader.max_volume / SD_MAX
+        return CONFLDR.data.get(ConfigName.drum_volume, 1.0) * DrumLoader.max_volume / SD_MAX
 
     @staticmethod
     def get_swing() -> float:
-        return ConfigLoader.get(ConfigName.drum_swing, 0.5)
+        return CONFLDR.data.get(ConfigName.drum_swing, 0.5)
 
     def load_drum_type(self) -> None:
         drum_type = self.get_item()
         DrumLoader.load(self.get_path())
         DrumLoader.prepare_all(RDRUM.get_length())
-        ConfigLoader.set(ConfigName.drum_type, drum_type)
-        ConfigLoader.save()
+        CONFLDR.set(ConfigName.drum_type, drum_type)
+        CONFLDR.save()
 
     @staticmethod
     def prepare_drum(length: int) -> None:

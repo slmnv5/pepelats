@@ -7,7 +7,7 @@ import numpy as np
 import soundfile as sf
 
 from log.logger import LOGR
-from utils import JsonDictLoader, make_zero_buffer, record_sound_buff, ConfigLoader, SD_TYPE, ConfigName, FileFinder
+from utils import JsonDictLoader, make_zero_buffer, record_sound_buff, SD_TYPE, ConfigName, FileFinder, CONFLDR
 from utils import SD_MAX
 
 
@@ -63,8 +63,8 @@ class DrumLoader:
         """Loads WAV sounds"""
         path = os.path.join(dir_name.parent, "drum_sounds.json")
         loader = JsonDictLoader(path)
-        for name in loader.get_keys():
-            drum_sound = loader.get(name, dict())
+        for name in loader.data:
+            drum_sound = loader.data.get(name, dict())
             assert len(drum_sound) > 0
             assert type(drum_sound) == dict
             file_name = drum_sound["file_name"]
@@ -85,9 +85,9 @@ class DrumLoader:
         storage.clear()
         path = os.path.join(dir_name, file_name + ".json")
         loader = JsonDictLoader(path)
-        default = loader.get(ConfigName.default_pattern, dict())
-        for key in [x for x in loader.get_keys() if x not in [ConfigName.comment, ConfigName.default_pattern]]:
-            value = loader.get(key, None)
+        default = loader.data.get(ConfigName.default_pattern, dict())
+        for key in [x for x in loader.data if x not in [ConfigName.comment, ConfigName.default_pattern]]:
+            value = loader.data.get(key, None)
             assert type(value) == dict, f"Must be dictionary {key}"
             assert len(value) > 0, f"Dictionary must be non empty {key}"
             value = dict(default, **value)
@@ -128,7 +128,7 @@ class DrumLoader:
         accents = pattern["acc"]
         swing: float = pattern["swing"]
         ndarr = make_zero_buffer(length)
-        drum_volume = ConfigLoader.get(ConfigName.drum_volume, 1)
+        drum_volume = CONFLDR.data.get(ConfigName.drum_volume, 1)
         for sound_name in [x for x in DrumLoader.__sounds if x in pattern]:
             notes = pattern[sound_name]
             steps = len(notes)

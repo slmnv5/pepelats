@@ -9,7 +9,7 @@ from log.logger import LOGR
 from loop._manyloopctrl import ManyLoopCtrl
 from loop._songpart import SongPart
 from mixer import Mixer
-from utils import ConfigName, MsgProcessor, RedrawScreen, ConfigLoader
+from utils import ConfigName, MsgProcessor, RedrawScreen, CONFLDR
 from utils import run_os_cmd
 
 
@@ -46,8 +46,8 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
             infodic["redraw"] = self.__redraw
 
         if "header" in infodic:
-            song_name = ConfigLoader.get(ConfigName.song_name, "")
-            drum_type = ConfigLoader.get(ConfigName.drum_type, "")
+            song_name = CONFLDR.data.get(ConfigName.song_name, "")
+            drum_type = CONFLDR.data.get(ConfigName.drum_type, "")
             infodic["header"] = f"{drum_type}/{song_name}"
 
         MsgProcessor._send_redraw(self, infodic)
@@ -66,7 +66,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         self._file_finder.iterate(go_fwd=params[0] > 0)
 
     def _show_song(self) -> str:
-        now_id = self._file_finder.find_item_id(ConfigLoader.get(ConfigName.song_name, ""))
+        now_id = self._file_finder.find_item_id(CONFLDR.data.get(ConfigName.song_name, ""))
         return self._file_finder.get_list(now_id)
 
     @staticmethod
@@ -75,7 +75,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
     @staticmethod
     def _show_drum_type() -> str:
-        now_id = RDRUM.find_item_id(ConfigLoader.get(ConfigName.drum_type, ""))
+        now_id = RDRUM.find_item_id(CONFLDR.data.get(ConfigName.drum_type, ""))
         return RDRUM.get_list(now_id)
 
     @staticmethod

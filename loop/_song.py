@@ -1,18 +1,28 @@
 import os
 import pickle
 from abc import abstractmethod
+from typing import Dict
 
 from drum import RDRUM
 from log.logger import LOGR
 from loop._oneloopctrl import OneLoopCtrl
 from loop._songpart import SongPart
-from utils import FileFinder, ConfigLoader, CollectionOwner, ConfigName
+from utils import FileFinder, CONFLDR, CollectionOwner, ConfigName
 from utils import generate_name
 
 
 class SongPartOwner(CollectionOwner[SongPart]):
     """Class for list of items and two indexes.
     It is parent for Song as it has 'now' and 'nxt' - two  parts """
+
+    default_config: Dict = {
+        "DRUM_SWING": 0.625,
+        "DRUM_VOLUME": 0.5,
+        "DRUM_TYPE": "pop",
+        "MIXER_IN": 30,
+        "MIXER_OUT": 99,
+        "SONG_NAME": "first.s"
+    }
 
     def __init__(self, first: SongPart):
         CollectionOwner.__init__(self, first)
@@ -53,14 +63,16 @@ class Song(SongPartOwner):
     def _load_song(self) -> None:
         self._stop_song()
         full_name = self._file_finder.get_path()
+        dic: Dict
         with open(full_name, 'rb') as f:
-            length, dl, load_list = pickle.load(f)
+            length, dic, load_list = pickle.load(f)
 
         if len(load_list) != 4:
             raise RuntimeError(f"Song must have 4 parts: {self.get_item()}")
 
-        ConfigLoader.set_dict(dl)
-        ConfigLoader.set(ConfigName.song_name, self._file_finder.get_item())
+        CONFLDR.data = dic
+        CONFLDR.set(ConfigName.song_name, self._file_finder.get_item())
+        CONFLDR.set_defaults(Song.default_config)
         RDRUM.prepare_drum(length)
         ctrl = self._get_control()
         load_list = [x if x is not None else SongPart(ctrl) for x in load_list]
@@ -70,7 +82,7 @@ class Song(SongPartOwner):
             part.set_ctrl(ctrl)
             self.append(part)
 
-        ConfigLoader.save()
+        CONFLDR.save()
         while self.item_count > 4:
             self.delete(0, save_backup=False)
 
@@ -90,7 +102,7 @@ class Song(SongPartOwner):
 
         full_name = self._file_finder.get_path()
         with open(full_name, 'wb') as f:
-            pickle.dump((length, ConfigLoader.get_dict(), save_list), f)
+            pickle.dump((length, CONFLDR.data, save_list), f)
 
         LOGR.info(f"Saved song file {full_name}")
 
