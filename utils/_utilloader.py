@@ -1,36 +1,42 @@
 from json import dump, load
 from pathlib import Path
-from typing import Dict, Union
+from typing import Dict, Union, Any
 
 ROOT_DIR = Path(__file__).parent.parent
 
 
 class JsonDictLoader:
     def __init__(self, filename: Union[str, Path]):
-        self.data: Dict
+        self.dic: Dict = dict()
         self.__filename = Path(ROOT_DIR, filename)
         self.__filename.parent.mkdir(parents=True, exist_ok=True)
         # noinspection PyBroadException
         try:
             with open(self.__filename) as f:
-                self.data = load(f)
+                self.dic = load(f)
 
-            if not isinstance(self.data, dict):
+            if not isinstance(self.dic, dict):
                 raise RuntimeError("JSON file must have dictionary {self.__filename}")
 
         except Exception:
-            self.data = dict()
+            self.dic = dict()
             self.save()
 
     def save(self) -> None:
         with open(self.__filename, "w") as f:
-            dump(self.data, f, indent=2)
+            dump(self.dic, f, indent=2)
 
-    def get_filename(self):
+    def get_filename(self) -> Path:
         return self.__filename
 
+    def get(self, k, default) -> Any:
+        return self.dic[k] if k in self.dic else default
+
+    def set(self, k, v) -> None:
+        self.dic[k] = v
+
     def set_defaults(self, default_dic: Dict) -> None:
-        self.data = dict(default_dic, **self.data)
+        self.dic = dict(default_dic, **self.dic)
 
 
 CONFLDR = JsonDictLoader("save_song/looper_defaults.json")
@@ -38,10 +44,10 @@ CONFLDR = JsonDictLoader("save_song/looper_defaults.json")
 if __name__ == "__main__":
     def test():
         CONFLDR.set_defaults({1: 2, 30: 50})
-        print(CONFLDR.data)
+        print(CONFLDR.dic)
 
-        CONFLDR.data = {"aa": "bb"}
-        print(CONFLDR.data)
+        CONFLDR.dic = {"aa": "bb"}
+        print(CONFLDR.dic)
 
 
     test()
