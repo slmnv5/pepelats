@@ -43,7 +43,7 @@ class JsonDictLoader:
 
 class ConfigLoader:
     """class will only static methods to keep app's main configs"""
-    __jdl: JsonDictLoader = JsonDictLoader("config/looper_defaults.json")
+    __jdl: JsonDictLoader = JsonDictLoader("save_song/looper_defaults.json")
 
     @staticmethod
     def get_dict() -> JsonDictLoader:

@@ -50,7 +50,7 @@ class CmdTranslator(MenuLoader):
     def __send_prepare_redraw(self):
         infodic = {"description": self.__menu_loader.get(ConfigName.description),
                    "update_method": self.__menu_loader.get(ConfigName.update_method),
-                   "redraw": 0}
+                   "header": 0, "redraw": 0}
         self.__s_conn.send([ConfigName.send_redraw, infodic])
 
     def _translate_and_send(self, str_note: str) -> None:
