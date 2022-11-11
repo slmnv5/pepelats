@@ -123,31 +123,32 @@ class CollectionOwner(Generic[T]):
 
 class FileFinder(CollectionOwner[str]):
     def __init__(self, dir_name: Union[str, Path], is_file: bool, end_with: str):
-        self.__end_with = end_with
-        self.__dir_name = Path(ROOT_DIR, dir_name)
-        self.__dir_name.mkdir(parents=True, exist_ok=True)
+        self.__end_with: str = end_with
+        self.__dir: Path = Path(ROOT_DIR, dir_name)
+        self.__dir.mkdir(parents=True, exist_ok=True)
 
-        def chk_file(d, f):
-            return os.path.isfile(os.path.join(d, f))
+        found_items: List[str] = [x for x in os.listdir(str(self.__dir))
+                                  if self.__chk_match(self.__dir, x, is_file)]
 
-        found_items = [x for x in os.listdir(self.__dir_name)
-                       if is_file == chk_file(self.__dir_name, x)
-                       and x.endswith(self.__end_with)]
-
-        found_items.sort(key=lambda x: os.path.getmtime(Path(self.__dir_name, x)), reverse=True)
+        found_items.sort(key=lambda x: os.path.getmtime(Path(self.__dir, x)), reverse=True)
 
         if not found_items:
-            found_items.append("first")
+            found_items.append("first" + self.__end_with)
 
         CollectionOwner.__init__(self, found_items[0])
         for item in found_items[1:]:
             self.append(item)
 
+    def __chk_match(self, d: Path, f: str, is_file: bool) -> bool:
+        match1 = is_file == os.path.isfile(os.path.join(d, f))
+        match2 = f.endswith(self.__end_with)
+        return match1 and match2
+
     def get_dir_name(self) -> Path:
-        return self.__dir_name
+        return self.__dir
 
     def get_path(self) -> Path:
-        return Path(self.__dir_name, self.get_item())
+        return Path(self.__dir, self.get_item())
 
     def get_end_with(self) -> str:
         return self.__end_with

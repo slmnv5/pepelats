@@ -1,5 +1,6 @@
 import os
 import time
+# noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 from multiprocessing.connection import Pipe
 from threading import Thread

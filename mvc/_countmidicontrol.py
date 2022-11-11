@@ -1,3 +1,4 @@
+# noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 from threading import Timer
 

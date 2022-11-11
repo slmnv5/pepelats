@@ -1,4 +1,5 @@
 import time
+# noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 from multiprocessing.dummy.connection import Pipe
 from typing import Dict, Tuple, Any
@@ -11,7 +12,7 @@ from utils import CmdTranslator
 
 class MockInMidiPort:
     def __init__(self):
-        self.__notes: Dict[float, int] = dict()
+        self.__notes: Dict[float, mido.Message] = dict()
 
     def charge(self, notes: Dict[float, Tuple[int, int]]):
         """set dictionary of {time: (note,vel), ...} to send e.g. {0.1: (60,100), 0.2: (-60,0), 1.2:(62, 1)}

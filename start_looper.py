@@ -2,6 +2,7 @@ import os
 import sys
 import time
 from multiprocessing import Pipe, Process
+# noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 
 import mido
