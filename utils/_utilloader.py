@@ -15,7 +15,7 @@ class JsonDict:
             with open(self.__filename) as f:
                 self.__dic = load(f)
 
-            if not isinstance(self.dic, dict):
+            if not isinstance(self.__dic, dict):
                 raise RuntimeError("JSON file must have dictionary {self.__filename}")
 
         except Exception:
