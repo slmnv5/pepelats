@@ -83,9 +83,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
     def _show_one_part(self) -> str:
         part = self.get_item2()
-        loop = part.get_item()
-        now_id = part.find_item_id(loop)
-        return part.get_list(now_id)
+        return part.get_list()
 
     def _show_all_parts(self) -> str:
         return self.get_list(self.id2)
@@ -133,7 +131,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         if part.is_empty:
             return
 
-        empty_id = self.first_id(lambda x: self.get_id(x).is_empty)
+        empty_id = self.first_id(lambda x: self.get_id(x).is_empty, -1)
         if empty_id < 0:
             return
 

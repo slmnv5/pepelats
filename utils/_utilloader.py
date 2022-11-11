@@ -39,7 +39,7 @@ class JsonDict:
         self.dic = dict(default_dic, **self.dic)
 
 
-CONFLDR = JsonDict("save_song/looper_defaults.json")
+CONFLDR = JsonDict("config/looper_defaults.json")
 
 if __name__ == "__main__":
     def test():

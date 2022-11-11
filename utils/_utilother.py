@@ -3,7 +3,7 @@ import os
 import subprocess as sp
 import sys
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Any
 from typing import List, TypeVar, Generic, Union
 
 from utils._utilconfig import ConfigName
@@ -62,9 +62,9 @@ class CollectionOwner(Generic[T]):
         for x in lst:
             method(x)
 
-    def first_id(self, method):
-        return next((x for x in range(self.item_count) if method(x)), -1)
-                   
+    def first_id(self, method, default: Any):
+        return next((x for x in range(self.item_count) if method(x)), default)
+
     def delete(self, k: int, save_backup: bool) -> None:
         if self.item_count <= 1 or k < 0 or k >= self.item_count:
             return

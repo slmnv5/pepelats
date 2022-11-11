@@ -26,9 +26,8 @@ class RealDrum(DrumLoader, FileFinder):
         self.__intensity: Intensity = Intensity.LVL2
         self.__is_break_pending: bool = False
         drum_type: str = CONFLDR.get(ConfigName.drum_type, "")
-        now_id = self.find_item_id(drum_type)
-        if now_id >= 0:
-            self.go_id(now_id)
+        tmp = self.first_id(lambda x: self.get_id(x) == drum_type, 0)
+        self.go_id(tmp)
         DrumLoader.load(self.get_path())
 
     @staticmethod

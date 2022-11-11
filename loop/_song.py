@@ -6,7 +6,7 @@ from typing import Dict
 from drum import RDRUM
 from loop._oneloopctrl import OneLoopCtrl
 from loop._songpart import SongPart
-from utils import FileFinder, CONFLDR, CollectionOwner
+from utils import FileFinder, CONFLDR, CollectionOwner, ConfigName
 from utils import LOGR
 from utils import generate_name
 
@@ -64,6 +64,9 @@ class Song(SongPartOwner):
         assert len(load_list) == 4, f"Song must have 4 parts: {self.get_item()}"
 
         CONFLDR.set_defaults(Song.default_config)
+        tmp = CONFLDR.get(ConfigName.drum_type, "pop")
+        tmp = RDRUM.first_id(lambda x: self.get_id(x) == tmp, None)
+        RDRUM.go_id(tmp)
         RDRUM.prepare_drum(length)
         ctrl = self._get_control()
         load_list = [x if x is not None else SongPart(ctrl) for x in load_list]
