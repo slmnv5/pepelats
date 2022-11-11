@@ -106,7 +106,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     @staticmethod
     def _restart() -> None:
         if os.name == "posix":
-            run_os_cmd(["killall", "-9", "python3"])
+            run_os_cmd(["killall", "-9", "python"])
         else:
             run_os_cmd(["taskkill", "/F", "/IM", "python.exe"])
 

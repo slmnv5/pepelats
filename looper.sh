@@ -40,7 +40,7 @@ for var in "$@"; do
   fi
 done
 
-PYTHON_CMD="$SUDO python3 $CODE_OPTIMIZE ./start_looper.py  $*"
+PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py  $*"
 echo "$PYTHON_CMD"
 
 # disable under voltage error on screen and disable typing echo
@@ -48,7 +48,7 @@ sudo dmesg -D
 stty -echo
 
 while true; do
-  killall -s 9 -w -v python3
+  killall -s 9 -w -v python
   sleep 10
   $PYTHON_CMD
 done
