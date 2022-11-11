@@ -11,7 +11,7 @@ from utils import MsgProcessor, SD_RATE
 from utils import RedrawScreen
 
 UPDATES_PER_LOOP = 16
-
+LONG_SLEEP = 5
 if os.name == "posix":
     NEWL = ''
 else:
@@ -56,10 +56,9 @@ class ScreenView(MsgProcessor):
         self.__header = "".center(COLS)
         self.__descr_lines: int = 0
         self.__is_stop: bool = True
-        self.__loop_len = self.__idx = self.__delta = 10000
-        self.__sleep_time: float = 3.0
-        if os.name == "posix":
-            Thread(target=self.__update_progress, name="update_progress", daemon=True).start()
+        self.__loop_len = self.__idx = self.__delta = 1000000
+        self.__sleep_time: float = LONG_SLEEP
+        Thread(target=self.__update_progress, name="update_progress", daemon=True).start()
 
     def _send_redraw(self, infodic: Dict) -> None:
         if "header" in infodic:
@@ -88,7 +87,8 @@ class ScreenView(MsgProcessor):
             self.__idx = redraw.idx
             self.__loop_len = redraw.loop_len
             self.__delta = redraw.loop_len / UPDATES_PER_LOOP
-            self.__sleep_time = self.__delta / SD_RATE
+            if os.name == "posix":
+                self.__sleep_time = self.__delta / SD_RATE
 
         lines = redraw.content.split('\n')
         left_lines: int = max(0, ROWS - 1 - self.__descr_lines)
