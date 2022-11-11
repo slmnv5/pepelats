@@ -28,7 +28,7 @@ class RealDrum(DrumLoader, FileFinder):
         drum_type: str = ConfLoader.get(ConfigName.drum_type, "")
         tmp = self.first_id(lambda x: self.get_id(x) == drum_type, 0)
         self.go_id(tmp)
-        DrumLoader.load(self.get_path())
+        DrumLoader.load(self.get_full_name())
 
     @staticmethod
     def change_volume(change_by: int) -> None:
@@ -63,7 +63,7 @@ class RealDrum(DrumLoader, FileFinder):
 
     def load_drum_type(self) -> None:
         drum_type = self.get_item()
-        DrumLoader.load(self.get_path())
+        DrumLoader.load(self.get_full_name())
         DrumLoader.prepare_all(RDRUM.get_length())
         ConfLoader.set(ConfigName.drum_type, drum_type)
 

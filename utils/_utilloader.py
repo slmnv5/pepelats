@@ -1,15 +1,15 @@
 from json import dump, load
 from pathlib import Path
-from typing import Dict, Union, Any
+from typing import Dict, Any
 
 ROOT_DIR = Path(__file__).parent.parent
 
 
 class JsonDict:
-    def __init__(self, filename: Union[str, Path]):
+    def __init__(self, filename: str):
         self.__dic: Dict[str, Any] = dict()
-        self.__filename = Path(ROOT_DIR, filename)
-        self.__filename.parent.mkdir(parents=True, exist_ok=True)
+        self.__filename = str(Path(ROOT_DIR, filename))
+
         # noinspection PyBroadException
         try:
             with open(self.__filename) as f:
@@ -29,8 +29,11 @@ class JsonDict:
         with open(self.__filename, "w") as f:
             dump(self.__dic, f, indent=2)
 
-    def get_filename(self) -> Path:
+    def get_filename(self) -> str:
         return self.__filename
+
+    def get_dir(self) -> str:
+        return str(Path(self.__filename).parent)
 
     def get(self, k, default) -> Any:
         return self.__dic.get(k, default)

@@ -47,7 +47,7 @@ class Song(CollectionOwner[SongPart]):
 
     def _load_song(self) -> None:
         self._stop_song()
-        full_name = self._file_finder.get_path()
+        full_name = self._file_finder.get_full_name()
         with open(full_name, 'rb') as f:
             length, ConfLoader.dic, load_list = pickle.load(f)
 
@@ -83,7 +83,7 @@ class Song(CollectionOwner[SongPart]):
 
         assert len(save_list) == 4, f"Song must have 4 parts: {self.get_item()}"
 
-        full_name = self._file_finder.get_path()
+        full_name = self._file_finder.get_full_name()
         with open(full_name, 'wb') as f:
             pickle.dump((length, ConfLoader.dic, save_list), f)
 
@@ -97,7 +97,7 @@ class Song(CollectionOwner[SongPart]):
 
     def _delete_song(self) -> None:
         self._stop_song()
-        path = self._file_finder.get_path()
+        path = self._file_finder.get_full_name()
         if os.path.isfile(path):
             os.remove(path)
         self._file_finder.delete(self._file_finder.id, save_backup=False)

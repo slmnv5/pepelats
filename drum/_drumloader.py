@@ -48,7 +48,7 @@ class DrumLoader:
         DrumLoader.bk = random.choice(DrumLoader.__snd_bk)
 
     @staticmethod
-    def load(dir_name: Path) -> None:
+    def load(dir_name: str) -> None:
         LOGR.info(f"Loading drum {dir_name}")
         if len(DrumLoader.__sounds) == 0:
             DrumLoader.__load_sounds(dir_name)
@@ -59,16 +59,15 @@ class DrumLoader:
         LOGR.info(f"Loaded drum patterns {len(DrumLoader.__ptn_l1)}")
 
     @staticmethod
-    def __load_sounds(dir_name: Path) -> None:
+    def __load_sounds(dir_name: str) -> None:
         """Loads WAV sounds"""
-        path = os.path.join(dir_name.parent, "drum_sounds.json")
+        path = os.path.join(Path(dir_name).parent, "drum_sounds.json")
         loader = JsonDict(path)
         for name in loader.dic():
             drum_sound = loader.get(name, dict())
             assert len(drum_sound) > 0
             assert type(drum_sound) == dict
-            file_name = drum_sound["file_name"]
-            file_name = Path(loader.get_filename().parent, file_name)
+            file_name = Path(loader.get_dir(), drum_sound["file_name"])
             v1: float = drum_sound.get("volume", 1.0)
 
             (sound, _) = sf.read(str(file_name), dtype="int16", always_2d=True)
@@ -81,7 +80,7 @@ class DrumLoader:
             DrumLoader.__sounds[name] = (sound, v1)
 
     @staticmethod
-    def __load_all_patterns(dir_name: Path, file_name: str, storage: List[Dict]) -> None:
+    def __load_all_patterns(dir_name: str, file_name: str, storage: List[Dict]) -> None:
         storage.clear()
         path = os.path.join(dir_name, file_name + ".json")
         loader = JsonDict(path)
@@ -161,7 +160,7 @@ class DrumLoader:
 if __name__ == "__main__":
     def test():
         file_finder = FileFinder("config/drums", False, "")
-        tmp = file_finder.get_path()
+        tmp = file_finder.get_full_name()
         DrumLoader.load(tmp)
 
 

@@ -141,10 +141,9 @@ class CollectionOwner(Generic[T]):
 
 
 class FileFinder(CollectionOwner[str]):
-    def __init__(self, dir_name: Union[str, Path], is_file: bool, end_with: str):
+    def __init__(self, dir_name: str, is_file: bool, end_with: str):
         self.__end_with: str = end_with
-        self.__dir: Path = Path(ROOT_DIR, dir_name)
-        self.__dir.mkdir(parents=True, exist_ok=True)
+        self.__dir: str = str(Path(ROOT_DIR, dir_name))
 
         found_items: List[str] = [x for x in os.listdir(str(self.__dir))
                                   if self.__chk_match(self.__dir, x, is_file)]
@@ -158,16 +157,16 @@ class FileFinder(CollectionOwner[str]):
         for item in found_items[1:]:
             self.append(item)
 
-    def __chk_match(self, d: Path, f: str, is_file: bool) -> bool:
+    def __chk_match(self, d: str, f: str, is_file: bool) -> bool:
         match1 = is_file == os.path.isfile(os.path.join(d, f))
         match2 = f.endswith(self.__end_with)
         return match1 and match2
 
-    def get_dir_name(self) -> Path:
+    def get_dir_name(self) -> str:
         return self.__dir
 
-    def get_path(self) -> Path:
-        return Path(self.__dir, self.get_item())
+    def get_full_name(self) -> str:
+        return str(Path(self.__dir, self.get_item()))
 
     def get_end_with(self) -> str:
         return self.__end_with
@@ -201,8 +200,8 @@ class MenuLoader(FileFinder):
     def __load_all(self) -> Dict[str, Dict[str, Dict]]:
         dic = dict()
         for _ in range(self.item_count):
-            file = self.get_path()
-            item = self.get_item()[:-len(self.get_end_with())]
+            file: str = str(self.get_full_name())
+            item: str = self.get_item()[:-len(self.get_end_with())]
             self.iterate(True)
             LOGR.info(f"Loading control config from {file}")
             loader = JsonDict(file)
