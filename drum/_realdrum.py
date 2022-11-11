@@ -25,7 +25,7 @@ class RealDrum(DrumLoader, FileFinder):
         FileFinder.__init__(self, "config/drums", False, "")
         self.__intensity: Intensity = Intensity.LVL2
         self.__is_break_pending: bool = False
-        drum_type: str = CONFLDR.get(ConfigName.drum_type, "")
+        drum_type: str = CONFLDR.dic.get(ConfigName.drum_type, "")
         tmp = self.first_id(lambda x: self.get_id(x) == drum_type, 0)
         self.go_id(tmp)
         DrumLoader.load(self.get_path())
@@ -33,7 +33,7 @@ class RealDrum(DrumLoader, FileFinder):
     @staticmethod
     def change_volume(change_by: int) -> None:
         factor = 1.2 if change_by > 0 else (1 / 1.2)
-        v = CONFLDR.get(ConfigName.drum_volume, 1.0) * factor
+        v = CONFLDR.dic.get(ConfigName.drum_volume, 1.0) * factor
         if v * DrumLoader.max_volume >= SD_MAX:
             return
         if v * DrumLoader.max_volume < 0.01 * SD_MAX:
@@ -45,7 +45,7 @@ class RealDrum(DrumLoader, FileFinder):
 
     @staticmethod
     def change_swing(change_by: int) -> None:
-        v = CONFLDR.get(ConfigName.drum_swing, 0.5)
+        v = CONFLDR.dic.get(ConfigName.drum_swing, 0.5)
         v += (0.25 / 4) if change_by >= 0 else (-0.25 / 4)
         v = min(v, 0.75)
         v = max(v, 0.5)
@@ -55,11 +55,11 @@ class RealDrum(DrumLoader, FileFinder):
 
     @staticmethod
     def get_volume() -> float:
-        return CONFLDR.get(ConfigName.drum_volume, 1.0) * DrumLoader.max_volume / SD_MAX
+        return CONFLDR.dic.get(ConfigName.drum_volume, 1.0) * DrumLoader.max_volume / SD_MAX
 
     @staticmethod
     def get_swing() -> float:
-        return CONFLDR.get(ConfigName.drum_swing, 0.5)
+        return CONFLDR.dic.get(ConfigName.drum_swing, 0.5)
 
     def load_drum_type(self) -> None:
         drum_type = self.get_item()

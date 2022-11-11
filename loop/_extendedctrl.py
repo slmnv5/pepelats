@@ -47,8 +47,8 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
             infodic["redraw"] = self.__redraw
 
         if "header" in infodic:
-            song_name = CONFLDR.get(ConfigName.song_name, "")
-            drum_type = CONFLDR.get(ConfigName.drum_type, "")
+            song_name = CONFLDR.dic.get(ConfigName.song_name, "")
+            drum_type = CONFLDR.dic.get(ConfigName.drum_type, "")
             infodic["header"] = f"{drum_type}/{song_name}"
 
         MsgProcessor._send_redraw(self, infodic)

@@ -64,7 +64,7 @@ class DrumLoader:
         path = os.path.join(dir_name.parent, "drum_sounds.json")
         loader = JsonDict(path)
         for name in loader.dic:
-            drum_sound = loader.get(name, dict())
+            drum_sound = loader.dic.get(name, dict())
             assert len(drum_sound) > 0
             assert type(drum_sound) == dict
             file_name = drum_sound["file_name"]
@@ -85,9 +85,9 @@ class DrumLoader:
         storage.clear()
         path = os.path.join(dir_name, file_name + ".json")
         loader = JsonDict(path)
-        default = loader.get(ConfigName.default_pattern, dict())
+        default = loader.dic.get(ConfigName.default_pattern, dict())
         for key in [x for x in loader.dic if x not in [ConfigName.comment, ConfigName.default_pattern]]:
-            value = loader.get(key, None)
+            value = loader.dic.get(key, None)
             assert type(value) == dict, f"Must be dictionary {key}"
             assert len(value) > 0, f"Dictionary must be non empty {key}"
             value = dict(default, **value)
@@ -125,7 +125,7 @@ class DrumLoader:
         accents = pattern["acc"]
         swing: float = pattern["swing"]
         ndarr = make_zero_buffer(length)
-        drum_volume = CONFLDR.get(ConfigName.drum_volume, 1)
+        drum_volume = CONFLDR.dic.get(ConfigName.drum_volume, 1)
         for sound_name in [x for x in DrumLoader.__sounds if x in pattern]:
             notes = pattern[sound_name]
             steps = len(notes)

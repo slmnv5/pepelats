@@ -7,7 +7,7 @@ from utils import CONFLDR, ConfigName
 class TestMainLoader(TestCase):
 
     def test_1(self):
-        val = CONFLDR.get(ConfigName.drum_volume, -1)
+        val = CONFLDR.dic.get(ConfigName.drum_volume, -1)
         self.assertTrue(val > 0)
 
 

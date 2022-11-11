@@ -56,10 +56,10 @@ class AlsaMixer(MockedMixer):
 
         all_mixers_list = alsaaudio.mixers()
         self.__out = find_mixer(["Master", "PCM", "Speaker"], all_mixers_list)
-        self.__out.setvolume(CONFLDR.get(ConfigName.mixer_out, 100))
+        self.__out.setvolume(CONFLDR.dic.get(ConfigName.mixer_out, 100))
 
         self.__in = find_mixer(["Mic"], all_mixers_list)
-        self.__in.setvolume(CONFLDR.get(ConfigName.mixer_in, 50))
+        self.__in.setvolume(CONFLDR.dic.get(ConfigName.mixer_in, 50))
 
         LOGR.info(f"Found mixers: {alsaaudio.mixers()}, info: {str(self)}")
 

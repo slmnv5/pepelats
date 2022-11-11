@@ -7,8 +7,8 @@ class MockedMixer:
     """Used to run on windows, there is no ALSA sound on windows"""
 
     def __init__(self):
-        self.__vol_in: int = CONFLDR.get(ConfigName.mixer_in, default=30)
-        self.__vol_out: int = CONFLDR.get(ConfigName.mixer_out, default=100)
+        self.__vol_in: int = CONFLDR.dic.get(ConfigName.mixer_in, default=30)
+        self.__vol_out: int = CONFLDR.dic.get(ConfigName.mixer_out, default=100)
 
     def fade(self, seconds: int) -> None:
         pass
