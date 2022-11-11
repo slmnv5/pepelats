@@ -39,8 +39,8 @@ class MockInMidiPort:
 
 class MidiControl(CmdTranslator):
 
-    def __init__(self, in_port, send_conn: Connection, dir_name: str, map_name: str, map_id: str):
-        CmdTranslator.__init__(self, send_conn, dir_name, map_name, map_id)
+    def __init__(self, in_port, send_conn: Connection, directory: str, map_name: str, map_id: str):
+        CmdTranslator.__init__(self, send_conn, directory, map_name, map_id)
         self.__in_port = in_port
 
     def monitor(self) -> None:

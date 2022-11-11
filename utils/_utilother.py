@@ -141,9 +141,9 @@ class CollectionOwner(Generic[T]):
 
 
 class FileFinder(CollectionOwner[str]):
-    def __init__(self, dir_name: str, is_file: bool, end_with: str):
+    def __init__(self, directory: str, is_file: bool, end_with: str):
         self.__end_with: str = end_with
-        self.__dir: str = str(Path(ROOT_DIR, dir_name))
+        self.__dir: str = str(Path(ROOT_DIR, directory))
 
         found_items: List[str] = [x for x in os.listdir(str(self.__dir))
                                   if self.__chk_match(self.__dir, x, is_file)]

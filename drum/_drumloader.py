@@ -48,20 +48,20 @@ class DrumLoader:
         DrumLoader.bk = random.choice(DrumLoader.__snd_bk)
 
     @staticmethod
-    def load(dir_name: str) -> None:
-        LOGR.info(f"Loading drum {dir_name}")
+    def load(directory: str) -> None:
+        LOGR.info(f"Loading drum {directory}")
         if len(DrumLoader.__sounds) == 0:
-            DrumLoader.__load_sounds(dir_name)
+            DrumLoader.__load_sounds(directory)
             LOGR.info(f"Loaded drum sounds {len(DrumLoader.__sounds)}")
-        DrumLoader.__load_all_patterns(dir_name, "drum_level1", DrumLoader.__ptn_l1)
-        DrumLoader.__load_all_patterns(dir_name, "drum_level2", DrumLoader.__ptn_l2)
-        DrumLoader.__load_all_patterns(dir_name, "drum_break", DrumLoader.__ptn_bk)
+        DrumLoader.__load_all_patterns(directory, "drum_level1", DrumLoader.__ptn_l1)
+        DrumLoader.__load_all_patterns(directory, "drum_level2", DrumLoader.__ptn_l2)
+        DrumLoader.__load_all_patterns(directory, "drum_break", DrumLoader.__ptn_bk)
         LOGR.info(f"Loaded drum patterns {len(DrumLoader.__ptn_l1)}")
 
     @staticmethod
-    def __load_sounds(dir_name: str) -> None:
+    def __load_sounds(directory: str) -> None:
         """Loads WAV sounds"""
-        path = os.path.join(Path(dir_name).parent, "drum_sounds.json")
+        path = os.path.join(Path(directory).parent, "drum_sounds.json")
         loader = JsonDict(path)
         for name in loader.dic():
             drum_sound = loader.get(name, dict())
@@ -80,9 +80,9 @@ class DrumLoader:
             DrumLoader.__sounds[name] = (sound, v1)
 
     @staticmethod
-    def __load_all_patterns(dir_name: str, file_name: str, storage: List[Dict]) -> None:
+    def __load_all_patterns(directory: str, file_name: str, storage: List[Dict]) -> None:
         storage.clear()
-        path = os.path.join(dir_name, file_name + ".json")
+        path = os.path.join(directory, file_name + ".json")
         loader = JsonDict(path)
         default = loader.get(ConfigName.default_pattern, dict())
         for key in [x for x in loader.dic() if x not in [ConfigName.comment, ConfigName.default_pattern]]:
