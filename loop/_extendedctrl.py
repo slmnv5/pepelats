@@ -67,8 +67,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         self._file_finder.iterate(go_fwd=params[0] > 0)
 
     def _show_song(self) -> str:
-        now_id = self._file_finder.find_item_id(CONFLDR.get(ConfigName.song_name, ""))
-        return self._file_finder.get_list(now_id)
+        return self._file_finder.get_list()
 
     @staticmethod
     def _change_drum_type(direction) -> None:
@@ -76,8 +75,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
     @staticmethod
     def _show_drum_type() -> str:
-        now_id = RDRUM.find_item_id(CONFLDR.get(ConfigName.drum_type, ""))
-        return RDRUM.get_list(now_id)
+        return RDRUM.get_list()
 
     @staticmethod
     def _load_drum_type() -> None:
