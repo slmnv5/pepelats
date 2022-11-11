@@ -28,7 +28,7 @@ class RealDrum(DrumLoader, FileFinder):
         drum_type: str = CONFLDR.get(ConfigName.drum_type, "")
         now_id = self.find_item_id(drum_type)
         if now_id >= 0:
-            self._go_id(now_id)
+            self.go_id(now_id)
         DrumLoader.load(self.get_path())
 
     @staticmethod

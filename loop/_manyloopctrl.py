@@ -72,12 +72,12 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
 
     def _play_part_id(self, part_id: int) -> None:
         if not self._go_play.is_set():
-            self._go_id(part_id)
+            self.go_id(part_id)
             self._go_play.set()
             return
 
         if part_id != self.id:
-            self._go_id(part_id)
+            self.go_id(part_id)
             self._stop_never()
             if part_id == self.id2:
                 return

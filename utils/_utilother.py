@@ -62,6 +62,9 @@ class CollectionOwner(Generic[T]):
         for x in lst:
             method(x)
 
+    def first_id(self, method):
+        return next((x for x in range(self.item_count) if method(x)), -1)
+                   
     def delete(self, k: int, save_backup: bool) -> None:
         if self.item_count <= 1 or k < 0 or k >= self.item_count:
             return
@@ -83,10 +86,10 @@ class CollectionOwner(Generic[T]):
         except IndexError:
             pass
 
-    def _go_id(self, k: int) -> None:
+    def go_id(self, k: int) -> None:
         self.__id = k
 
-    def _get_id(self, k: int) -> T:
+    def get_id(self, k: int) -> T:
         return self.__items[k]
 
     def go_last(self) -> None:

@@ -120,7 +120,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         if self.id == self.id2:
             return
         save_id = self.id
-        self._go_id(self.id2)
+        self.go_id(self.id2)
         self._stop_never()
         self.delete(save_id, save_backup=False)
         self.align_ids()
@@ -133,7 +133,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         if part.is_empty:
             return
 
-        empty_id = self.find_empty_part_id()
+        empty_id = self.first_id(lambda x: self.get_id(x).is_empty)
         if empty_id < 0:
             return
 

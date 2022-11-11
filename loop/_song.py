@@ -33,16 +33,10 @@ class SongPartOwner(CollectionOwner[SongPart]):
         return self.__id2
 
     def get_item2(self) -> SongPart:
-        return self._get_id(self.__id2)
+        return self.get_id(self.__id2)
 
     def align_ids(self) -> None:
         self.__id2 = self.id
-
-    def find_empty_part_id(self) -> int:
-        for k in range(self.item_count):
-            if self._get_id(k).is_empty:
-                return k
-        return -1
 
 
 class Song(SongPartOwner):
@@ -91,7 +85,7 @@ class Song(SongPartOwner):
         length: int = RDRUM.get_length()
         save_list = []
         for k in range(self.item_count):
-            x = self._get_id(k)
+            x = self.get_id(k)
             save_list.append(x if not x.is_empty else None)
 
         assert len(save_list) == 4, f"Song must have 4 parts: {self.get_item()}"
