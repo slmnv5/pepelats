@@ -92,12 +92,9 @@ class DrumLoader:
             assert len(value) > 0, f"Dictionary must be non empty {key}"
             value = dict(default, **value)
             value["name"] = key
-            value["___"] = ""
-            steps: int = value["steps"]
-            accents: str = value["acc"]
-            value["acc"] = extend_list(accents, steps)
+            value["acc"] = extend_list(value["acc"], value["steps"])
             for sound_name in [x for x in DrumLoader.__sounds if x in value]:
-                value[sound_name] = extend_list(value[sound_name], steps)
+                value[sound_name] = extend_list(value[sound_name], value["steps"])
             storage.append(value)
 
     @staticmethod
