@@ -4,10 +4,10 @@ from abc import abstractmethod
 from typing import Dict
 
 from drum import RDRUM
-from utils import LOGR
 from loop._oneloopctrl import OneLoopCtrl
 from loop._songpart import SongPart
-from utils import FileFinder, CONFLDR, CollectionOwner, ConfigName
+from utils import FileFinder, CONFLDR, CollectionOwner
+from utils import LOGR
 from utils import generate_name
 
 
@@ -66,10 +66,9 @@ class Song(SongPartOwner):
         with open(full_name, 'rb') as f:
             length, CONFLDR.dic, load_list = pickle.load(f)
 
-        if len(load_list) != 4:
-            raise RuntimeError(f"Song must have 4 parts: {self.get_item()}")
+        assert type(CONFLDR.dic) == dict
+        assert len(load_list) == 4, f"Song must have 4 parts: {self.get_item()}"
 
-        CONFLDR.set(ConfigName.song_name, self._file_finder.get_item())
         CONFLDR.set_defaults(Song.default_config)
         RDRUM.prepare_drum(length)
         ctrl = self._get_control()
@@ -95,8 +94,7 @@ class Song(SongPartOwner):
             x = self._get_id(k)
             save_list.append(x if not x.is_empty else None)
 
-        if len(save_list) != 4:
-            raise RuntimeError(f"Song must have 4 parts: {self.get_item()}")
+        assert len(save_list) == 4, f"Song must have 4 parts: {self.get_item()}"
 
         full_name = self._file_finder.get_path()
         with open(full_name, 'wb') as f:

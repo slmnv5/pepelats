@@ -23,11 +23,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             self._load_song()
         except Exception:
             LOGR.error(f"{self.__class__.__name__} Loading song, error: {traceback.format_exc()}")
-            for _ in range(3):
-                self.append(SongPart(self))
-            self.go_first()
-            self.align_ids()
-            RDRUM.clear_drum()
+            self._init_song()
 
         Thread(target=self.__playback, name="playback_thread", daemon=True).start()
 
@@ -40,7 +36,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
     def _init_song(self) -> None:
         self._stop_song()
         Song.__init__(self, SongPart(self))
-        for _ in range(3):
+        while self.item_count < 4:
             self.append(SongPart(self))
         self.go_first()
         self.align_ids()
