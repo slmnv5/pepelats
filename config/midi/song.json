@@ -17,13 +17,17 @@
     "65:2": [["_init_song"], ["_change_map", "0", "playing"]]
   },
    "2": {
-    "description": "Song: A/B-scroll C2-save CH-save_new D2-load DH-delete",
+    "description": "Song: C2-save CH-save_new",
+    "update_method": "",
+    "64:2": [["_save_song"], ["_change_map", "0", "playing"]],
+    "64:6": [["_save_new_song"], ["_change_map", "0", "playing"]]
+   },
+     "3": {
+    "description": "Next: A/B-scroll D2-load DH-delete",
     "update_method": "_show_song",
     "60:100": ["_change_song", -1],
     "62:100": ["_change_song", 1],
-    "64:2": [["_save_song"], ["_change_map", "0", "playing"]],
-    "64:6": [["_save_new_song"], ["_change_map", "0", "playing"]],
     "65:2": [["_load_song"], ["_sleep_sec", 2], ["_change_map", "0", "playing"]],
-    "65:6": [["_delete_song"], ["_change_map", "2", "song"]]
+    "65:6": ["_delete_song"]
    }
 }
