@@ -67,7 +67,6 @@ class RealDrum(DrumLoader, FileFinder):
         DrumLoader.load(self.get_path())
         DrumLoader.prepare_all(RDRUM.get_length())
         CONFLDR.set(ConfigName.drum_type, drum_type)
-        CONFLDR.save()
 
     @staticmethod
     def prepare_drum(length: int) -> None:

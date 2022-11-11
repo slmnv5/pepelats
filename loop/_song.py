@@ -73,7 +73,6 @@ class Song(SongPartOwner):
             part.set_ctrl(ctrl)
             self.append(part)
 
-        CONFLDR.save()
         while self.item_count > 4:
             self.delete(0, save_backup=False)
 
