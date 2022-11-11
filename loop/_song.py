@@ -63,14 +63,12 @@ class Song(SongPartOwner):
     def _load_song(self) -> None:
         self._stop_song()
         full_name = self._file_finder.get_path()
-        dic: Dict
         with open(full_name, 'rb') as f:
-            length, dic, load_list = pickle.load(f)
+            length, CONFLDR.dic, load_list = pickle.load(f)
 
         if len(load_list) != 4:
             raise RuntimeError(f"Song must have 4 parts: {self.get_item()}")
 
-        CONFLDR.dic = dic
         CONFLDR.set(ConfigName.song_name, self._file_finder.get_item())
         CONFLDR.set_defaults(Song.default_config)
         RDRUM.prepare_drum(length)

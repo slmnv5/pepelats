@@ -1,3 +1,4 @@
+import traceback
 from threading import Thread, Event
 
 from drum import RDRUM
@@ -20,8 +21,8 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         # noinspection PyBroadException
         try:
             self._load_song()
-        except Exception as e:
-            LOGR.error(f"Failed to load song, error: {e}")
+        except Exception:
+            LOGR.error(f"{self.__class__.__name__} Loading song, error: {traceback.format_exc()}")
             for _ in range(3):
                 self.append(SongPart(self))
             self.go_first()
