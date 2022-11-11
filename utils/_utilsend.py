@@ -52,6 +52,7 @@ class CmdTranslator(MenuLoader):
         infodic: Dict = {"description": self.__menu_loader.get(ConfigName.description),
                          "update_method": self.__menu_loader.get(ConfigName.update_method),
                          "header": 0, "redraw": 0}
+        LOGR.info(f"Send prepare redraw: {infodic}")
         self.__s_conn.send([ConfigName.send_redraw, infodic])
 
     def _translate_and_send(self, str_note: str) -> None:
