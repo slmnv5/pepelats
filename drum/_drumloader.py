@@ -7,7 +7,7 @@ import numpy as np
 import soundfile as sf
 
 from utils import LOGR
-from utils import JsonDictLoader, make_zero_buffer, record_sound_buff, SD_TYPE, ConfigName, FileFinder, CONFLDR
+from utils import JsonDict, make_zero_buffer, record_sound_buff, SD_TYPE, ConfigName, FileFinder, CONFLDR
 from utils import SD_MAX
 
 
@@ -62,7 +62,7 @@ class DrumLoader:
     def __load_sounds(dir_name: Path) -> None:
         """Loads WAV sounds"""
         path = os.path.join(dir_name.parent, "drum_sounds.json")
-        loader = JsonDictLoader(path)
+        loader = JsonDict(path)
         for name in loader.dic:
             drum_sound = loader.get(name, dict())
             assert len(drum_sound) > 0
@@ -84,7 +84,7 @@ class DrumLoader:
     def __load_all_patterns(dir_name: Path, file_name: str, storage: List[Dict]) -> None:
         storage.clear()
         path = os.path.join(dir_name, file_name + ".json")
-        loader = JsonDictLoader(path)
+        loader = JsonDict(path)
         default = loader.get(ConfigName.default_pattern, dict())
         for key in [x for x in loader.dic if x not in [ConfigName.comment, ConfigName.default_pattern]]:
             value = loader.get(key, None)

@@ -7,7 +7,7 @@ from typing import Dict
 from typing import List, TypeVar, Generic, Union
 
 from utils._utilconfig import ConfigName
-from utils._utilloader import JsonDictLoader
+from utils._utilloader import JsonDict
 
 ROOT_DIR = Path(__file__).parent.parent
 
@@ -202,7 +202,7 @@ class MenuLoader(FileFinder):
             item = self.get_item()[:-len(self.get_end_with())]
             self.iterate(True)
             LOGR.info(f"Loading control config from {file}")
-            loader = JsonDictLoader(file)
+            loader = JsonDict(file)
             default_dic = loader.get(ConfigName.default_config, dict())
             dic1 = dict()
 

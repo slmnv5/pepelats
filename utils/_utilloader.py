@@ -5,9 +5,9 @@ from typing import Dict, Union, Any
 ROOT_DIR = Path(__file__).parent.parent
 
 
-class JsonDictLoader:
+class JsonDict:
     def __init__(self, filename: Union[str, Path]):
-        self.dic: Dict = dict()
+        self.dic: Dict[str, Any] = dict()
         self.__filename = Path(ROOT_DIR, filename)
         self.__filename.parent.mkdir(parents=True, exist_ok=True)
         # noinspection PyBroadException
@@ -39,7 +39,7 @@ class JsonDictLoader:
         self.dic = dict(default_dic, **self.dic)
 
 
-CONFLDR = JsonDictLoader("save_song/looper_defaults.json")
+CONFLDR = JsonDict("save_song/looper_defaults.json")
 
 if __name__ == "__main__":
     def test():
