@@ -48,7 +48,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             self._go_play.wait()
             self.align_ids()
 
-            part = self.get_item2()
+            part = self.get_part()
             self.get_stop_event().clear()
             self._stop_never()
             self.idx = 0
@@ -61,11 +61,11 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         if not wait:
             self.stop_at_bound(0)
         else:
-            self.stop_at_bound(self.get_item2().length)
+            self.stop_at_bound(self.get_part().length)
 
     def _record_part(self):
-        if self.id == self.id2 and self._is_rec:
-            part = self.get_item2()
+        if self.id == self.part_id and self._is_rec:
+            part = self.get_part()
             loop = part.get_item()
             if not loop.is_empty:
                 loop.resize_buff(MAX_LEN)
@@ -79,15 +79,15 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         if part_id != self.id:
             self.go_id(part_id)
             self._stop_never()
-            if part_id == self.id2:
+            if part_id == self.part_id:
                 return
 
-        part = self.get_item2()
+        part = self.get_part()
         loop = part.get_item()
         if part.id > 0 and self._is_rec and loop.is_empty:
             loop.finalize(self.idx, part.length)
 
-        if self.id == self.id2:
+        if self.id == self.part_id:
             if self._is_rec:
                 self._is_rec = False
             else:
@@ -100,14 +100,14 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
     def __stop_quantized(self) -> None:
         """the method for quantized playback and recording,
         has logic when to stop playback"""
-        part = self.get_item2()
+        part = self.get_part()
         if part.is_empty:
             if not RDRUM.get_length():
                 self.stop_at_bound(0)
             else:
                 self.stop_at_bound(RDRUM.get_length())
         else:
-            if self.id != self.id2:
+            if self.id != self.part_id:
                 if self.is_stop_len_set():
                     self.stop_at_bound(RDRUM.get_length())
                 else:

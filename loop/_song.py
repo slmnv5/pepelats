@@ -11,10 +11,8 @@ from utils import LOGR
 from utils import generate_name
 
 
-class SongPartOwner(CollectionOwner[SongPart]):
-    """Class for list of items and two indexes.
-    It is parent for Song as it has 'now' and 'nxt' - two  parts """
-
+class Song(CollectionOwner[SongPart]):
+    """Song keeps SongParts as CollectionOwner, can save and load from file"""
     default_config: Dict = {
         "DRUM_SWING": 0.625,
         "DRUM_VOLUME": 0.5,
@@ -26,25 +24,18 @@ class SongPartOwner(CollectionOwner[SongPart]):
 
     def __init__(self, first: SongPart):
         CollectionOwner.__init__(self, first)
-        self.__id2: int = 0
+        self.__part_id: int = 0
+        self._file_finder: FileFinder = FileFinder("save_song", True, ".s")
 
     @property
-    def id2(self) -> int:
-        return self.__id2
+    def part_id(self) -> int:
+        return self.__part_id
 
-    def get_item2(self) -> SongPart:
-        return self.get_id(self.__id2)
+    def get_part(self) -> SongPart:
+        return self.get_id(self.__part_id)
 
     def align_ids(self) -> None:
-        self.__id2 = self.id
-
-
-class Song(SongPartOwner):
-    """Song keeps SongParts as CollectionOwner, can save and load from file"""
-
-    def __init__(self, first: SongPart):
-        SongPartOwner.__init__(self, first)
-        self._file_finder: FileFinder = FileFinder("save_song", True, ".s")
+        self.__part_id = self.id
 
     @abstractmethod
     def _stop_song(self, wait: int = 0) -> None:

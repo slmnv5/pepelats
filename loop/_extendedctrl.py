@@ -42,7 +42,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
             self.__redraw.idx = self.idx
             self.__redraw.is_stop = self.get_stop_event().is_set()
-            self.__redraw.loop_len = self.get_item2().length
+            self.__redraw.loop_len = self.get_part().length
             self.__redraw.is_rec = self.is_rec
             infodic["redraw"] = self.__redraw
 
@@ -82,11 +82,11 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         RDRUM.load_drum_type()
 
     def _show_one_part(self) -> str:
-        part = self.get_item2()
+        part = self.get_part()
         return part.get_list()
 
     def _show_all_parts(self) -> str:
-        return self.get_list(self.id2)
+        return self.get_list(self.part_id)
 
     def _show_mixer_volume(self) -> str:
         return f"Mixer volume\noutput:{self.__mixer.getvolume(out=True):.2F}\n" \
@@ -115,17 +115,17 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     #  ============ All song parts view and related commands
 
     def _clear_part(self) -> None:
-        if self.id == self.id2:
+        if self.id == self.part_id:
             return
         save_id = self.id
-        self.go_id(self.id2)
+        self.go_id(self.part_id)
         self._stop_never()
         self.delete(save_id, save_backup=False)
         self.align_ids()
         self.append(SongPart(self))
 
     def _duplicate_part(self) -> None:
-        if self.id != self.id2:
+        if self.id != self.part_id:
             return
         part = self.get_item()
         if part.is_empty:
@@ -143,19 +143,19 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     def _undo_part(self) -> None:
         need_save = not self._is_rec
         self._is_rec = False
-        part = self.get_item2()
+        part = self.get_part()
         part.delete(part.item_count - 1, save_backup=need_save)
 
     def _redo_part(self) -> None:
         self._is_rec = False
-        part = self.get_item2()
+        part = self.get_part()
         part.redo()
 
     def _redo_all(self) -> None:
-        if self.id != self.id2:
+        if self.id != self.part_id:
             return
         self._is_rec = False
-        part = self.get_item2()
+        part = self.get_part()
         for _ in range(part.undo_count):
             part.redo()
 
@@ -164,7 +164,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     def _change_loop(self, *params) -> None:
         if self._is_rec:
             self._is_rec = False
-        part = self.get_item2()
+        part = self.get_part()
         if params[0] == "prev":
             part.iterate(False)
         elif params[0] == "next":
