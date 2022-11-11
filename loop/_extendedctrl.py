@@ -10,7 +10,7 @@ from utils import LOGR
 from loop._manyloopctrl import ManyLoopCtrl
 from loop._songpart import SongPart
 from mixer import Mixer
-from utils import ConfigName, MsgProcessor, RedrawScreen, CONFLDR
+from utils import ConfigName, MsgProcessor, RedrawScreen, ConfLoader
 from utils import run_os_cmd
 
 
@@ -47,8 +47,8 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
             infodic["redraw"] = self.__redraw
 
         if "header" in infodic:
-            song_name = CONFLDR.dic.get(ConfigName.song_name, "")
-            drum_type = CONFLDR.dic.get(ConfigName.drum_type, "")
+            song_name = ConfLoader.get(ConfigName.song_name, "")
+            drum_type = ConfLoader.get(ConfigName.drum_type, "")
             infodic["header"] = f"{drum_type}/{song_name}"
 
         MsgProcessor._send_redraw(self, infodic)

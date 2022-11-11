@@ -6,7 +6,7 @@ import alsaaudio
 
 from utils import LOGR
 from mixer._mockedmixer import MockedMixer
-from utils import CONFLDR, ConfigName
+from utils import ConfLoader, ConfigName
 
 
 # noinspection PyBroadException
@@ -56,10 +56,10 @@ class AlsaMixer(MockedMixer):
 
         all_mixers_list = alsaaudio.mixers()
         self.__out = find_mixer(["Master", "PCM", "Speaker"], all_mixers_list)
-        self.__out.setvolume(CONFLDR.dic.get(ConfigName.mixer_out, 100))
+        self.__out.setvolume(ConfLoader.get(ConfigName.mixer_out, 100))
 
         self.__in = find_mixer(["Mic"], all_mixers_list)
-        self.__in.setvolume(CONFLDR.dic.get(ConfigName.mixer_in, 50))
+        self.__in.setvolume(ConfLoader.get(ConfigName.mixer_in, 50))
 
         LOGR.info(f"Found mixers: {alsaaudio.mixers()}, info: {str(self)}")
 
@@ -76,10 +76,10 @@ class AlsaMixer(MockedMixer):
             return
         if out:
             self.__out.setvolume(vol)
-            CONFLDR.set(ConfigName.mixer_out, vol)
+            ConfLoader.set(ConfigName.mixer_out, vol)
         else:
             self.__in.setvolume(vol, alsaaudio.MIXER_CHANNEL_ALL, alsaaudio.PCM_CAPTURE)
-            CONFLDR.set(ConfigName.mixer_in, vol)
+            ConfLoader.set(ConfigName.mixer_in, vol)
 
     def getvolume(self, out: bool):
         if out:

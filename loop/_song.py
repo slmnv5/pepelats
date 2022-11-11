@@ -6,7 +6,7 @@ from typing import Dict
 from drum import RDRUM
 from loop._oneloopctrl import OneLoopCtrl
 from loop._songpart import SongPart
-from utils import FileFinder, CONFLDR, CollectionOwner, ConfigName
+from utils import FileFinder, ConfLoader, CollectionOwner, ConfigName
 from utils import LOGR
 from utils import generate_name
 
@@ -49,13 +49,13 @@ class Song(CollectionOwner[SongPart]):
         self._stop_song()
         full_name = self._file_finder.get_path()
         with open(full_name, 'rb') as f:
-            length, CONFLDR.dic, load_list = pickle.load(f)
+            length, ConfLoader.dic, load_list = pickle.load(f)
 
-        assert type(CONFLDR.dic) == dict
+        assert type(ConfLoader.dic) == dict
         assert len(load_list) == 4, f"Song must have 4 parts: {self.get_item()}"
 
-        CONFLDR.set_defaults(Song.default_config)
-        tmp = CONFLDR.dic.get(ConfigName.drum_type, "pop")
+        ConfLoader.set_defaults(Song.default_config)
+        tmp = ConfLoader.get(ConfigName.drum_type, "pop")
         tmp = RDRUM.first_id(lambda x: self.get_id(x) == tmp, None)
         RDRUM.go_id(tmp)
         RDRUM.prepare_drum(length)
@@ -85,7 +85,7 @@ class Song(CollectionOwner[SongPart]):
 
         full_name = self._file_finder.get_path()
         with open(full_name, 'wb') as f:
-            pickle.dump((length, CONFLDR.dic, save_list), f)
+            pickle.dump((length, ConfLoader.dic, save_list), f)
 
         LOGR.info(f"Saved song file {full_name}")
 

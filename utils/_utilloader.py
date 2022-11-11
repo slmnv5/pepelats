@@ -22,7 +22,6 @@ class JsonDict:
             self.__dic = dict()
             self.save()
 
-    @property
     def dic(self) -> Dict:
         return self.__dic
 
@@ -33,6 +32,9 @@ class JsonDict:
     def get_filename(self) -> Path:
         return self.__filename
 
+    def get(self, k, default) -> Any:
+        return self.__dic.get(k, default)
+
     def set(self, k, v) -> None:
         self.__dic[k] = v
 
@@ -40,15 +42,33 @@ class JsonDict:
         self.__dic = dict(default_dic, **self.__dic)
 
 
-CONFLDR = JsonDict("config/looper_defaults.json")
+class ConfLoader:
+    __jd = JsonDict("config/looper_defaults.json")
+
+    @staticmethod
+    def dic() -> Dict:
+        return ConfLoader.__jd.dic()
+
+    @staticmethod
+    def get(k, default) -> Any:
+        return ConfLoader.__jd.get(k, default)
+
+    @staticmethod
+    def set(k, v) -> None:
+        ConfLoader.__jd.set(k, v)
+
+    @staticmethod
+    def set_defaults(default_dic: Dict) -> None:
+        ConfLoader.__jd.set_defaults(default_dic)
+
 
 if __name__ == "__main__":
     def test():
-        CONFLDR.set_defaults({"1": 2, "30": 50})
-        print(CONFLDR.dic)
+        ConfLoader.set_defaults({"1": 2, "30": 50})
+        print(ConfLoader.dic())
 
-        CONFLDR.set_defaults({"aa": "bb"})
-        print(CONFLDR.dic)
+        ConfLoader.set_defaults({"aa": "bb"})
+        print(ConfLoader.dic())
 
 
     test()
