@@ -4,8 +4,8 @@ from multiprocessing.connection import Connection
 from typing import Any, List, Optional
 from typing import Dict
 
-from log.logger import LOGR
-from utils import ConfigName
+from utils._utilother import LOGR
+from utils._utilconfig import ConfigName
 from utils._utilother import MenuLoader
 
 

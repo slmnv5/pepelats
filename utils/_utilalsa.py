@@ -6,7 +6,7 @@ from typing import Tuple, Union
 import numpy as np
 import sounddevice as sd
 
-from log.logger import LOGR
+from utils._utilother import LOGR
 from utils._utilconfig import SD_TYPE, MAX_LEN
 
 

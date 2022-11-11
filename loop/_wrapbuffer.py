@@ -1,6 +1,6 @@
 import numpy as np
 
-from log.logger import LOGR
+from utils import LOGR
 from utils import record_sound_buff, play_sound_buff, SD_MAX
 from utils import sound_test, make_zero_buffer, MAX_LEN
 

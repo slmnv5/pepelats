@@ -4,7 +4,7 @@ from threading import Timer
 
 import mido
 
-from log.logger import LOGR
+from utils import LOGR
 from utils import CmdTranslator
 
 

@@ -3,7 +3,7 @@ from abc import abstractmethod
 import numpy as np
 import sounddevice as sd
 
-from log.logger import LOGR
+from utils import LOGR
 from loop._oneloopctrl import OneLoopCtrl
 
 

@@ -4,7 +4,7 @@ from typing import List
 # noinspection PyUnresolvedReferences
 import alsaaudio
 
-from log.logger import LOGR
+from utils import LOGR
 from mixer._mockedmixer import MockedMixer
 from utils import CONFLDR, ConfigName
 

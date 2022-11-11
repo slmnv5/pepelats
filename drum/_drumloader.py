@@ -6,7 +6,7 @@ from typing import List, Any, Dict, Union, Tuple
 import numpy as np
 import soundfile as sf
 
-from log.logger import LOGR
+from utils import LOGR
 from utils import JsonDictLoader, make_zero_buffer, record_sound_buff, SD_TYPE, ConfigName, FileFinder, CONFLDR
 from utils import SD_MAX
 

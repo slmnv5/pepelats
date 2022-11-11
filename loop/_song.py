@@ -4,7 +4,7 @@ from abc import abstractmethod
 from typing import Dict
 
 from drum import RDRUM
-from log.logger import LOGR
+from utils import LOGR
 from loop._oneloopctrl import OneLoopCtrl
 from loop._songpart import SongPart
 from utils import FileFinder, CONFLDR, CollectionOwner, ConfigName

@@ -8,7 +8,7 @@ from multiprocessing.connection import Connection
 import mido
 
 from kbdmidi import KbdMidiPort
-from log.logger import LOGR
+from utils import LOGR
 from loop import ExtendedCtrl
 from mvc import CountMidiControl
 from mvc import MidiControl, ScreenView

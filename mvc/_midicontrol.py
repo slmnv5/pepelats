@@ -6,7 +6,7 @@ from typing import Dict, Tuple, Any
 
 import mido
 
-from log.logger import LOGR
+from utils import LOGR
 from utils import CmdTranslator
 
 

@@ -6,7 +6,7 @@ from multiprocessing.connection import Pipe
 from threading import Thread
 from typing import Dict
 
-from log.logger import LOGR
+from utils import LOGR
 from utils import MsgProcessor, SD_RATE
 from utils import RedrawScreen
 

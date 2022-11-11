@@ -1,13 +1,29 @@
+import logging
 import os
 import subprocess as sp
+import sys
 from pathlib import Path
 from typing import Dict
 from typing import List, TypeVar, Generic, Union
 
-from log.logger import LOGR
-from utils import ConfigName, JsonDictLoader
+from utils._utilconfig import ConfigName
+from utils._utilloader import JsonDictLoader
 
 ROOT_DIR = Path(__file__).parent.parent
+
+level = "WARN"
+if "--debug" in sys.argv:
+    level = "DEBUG"
+if "--info" in sys.argv:
+    level = "INFO"
+
+logging.basicConfig(level=os.getenv("DEBUG_LEVEL", level), filename=Path(ROOT_DIR, 'log.log'), filemode='w')
+LOGR = logging.getLogger()
+fm = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+LOGR.handlers[0].setFormatter(fm)
+LOGR.propagate = False
+
+LOGR.info(f"=======>Starting looper's log {LOGR.handlers}")
 
 
 def run_os_cmd(cmd_list: list[str]) -> int:

@@ -7,7 +7,7 @@ from typing import Dict
 import keyboard
 import mido
 
-from log.logger import LOGR
+from utils import LOGR
 
 KBD_NOTES = "KBD_NOTES"
 

@@ -1,7 +1,7 @@
 from threading import Thread, Event
 
 from drum import RDRUM
-from log.logger import LOGR
+from utils import LOGR
 from loop._loopsimple import LoopWithDrum
 from loop._oneloopctrl import OneLoopCtrl
 from loop._song import Song

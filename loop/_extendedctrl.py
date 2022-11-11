@@ -6,7 +6,7 @@ from multiprocessing.connection import Connection
 from typing import Dict
 
 from drum import RDRUM
-from log.logger import LOGR
+from utils import LOGR
 from loop._manyloopctrl import ManyLoopCtrl
 from loop._songpart import SongPart
 from mixer import Mixer
