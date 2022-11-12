@@ -66,6 +66,7 @@ def record_sound_buff(buff: np.ndarray, np_data: np.ndarray, idx: int) -> None:
 
 
 def play_sound_buff(buff: np.ndarray, np_data: np.ndarray, idx: int) -> None:
+    assert type(buff) == type(np_data), f"{type(buff)}, {type(np_data)}"
     assert buff.ndim == np_data.ndim
     data_len = len(np_data)
     slice1, slice2 = calc_slices(len(buff), data_len, idx)

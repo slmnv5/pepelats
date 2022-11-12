@@ -82,7 +82,7 @@ class ScreenView(MsgProcessor):
             self.__descr_lines = 0
 
     def __update_loops(self, redraw: RedrawScreen) -> None:
-        LOGR.info(f"Updating scvreen: {redraw}")
+        LOGR.info(f"Updating screen: {redraw}")
         self.__is_stop = redraw.is_stop
         if not self.__is_stop:
             self.__idx = redraw.idx

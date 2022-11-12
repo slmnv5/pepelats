@@ -2,7 +2,6 @@ import time
 import unittest
 from unittest import TestCase
 
-from drum import RDRUM
 # noinspection PyProtectedMember
 from drum._realdrum import RealDrum
 

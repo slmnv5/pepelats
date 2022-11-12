@@ -1,12 +1,11 @@
-import traceback
 from threading import Thread, Event
 
 from drum import RDRUM
-from utils import LOGR
 from loop._loopsimple import LoopWithDrum
 from loop._oneloopctrl import OneLoopCtrl
 from loop._song import Song
 from loop._songpart import SongPart
+from utils import LOGR
 from utils import MAX_LEN
 
 
@@ -18,14 +17,20 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         self._go_play: Event = Event()
         OneLoopCtrl.__init__(self)
         Song.__init__(self, SongPart(self))
-        # noinspection PyBroadException
-        try:
-            self._load_song()
-        except Exception:
-            LOGR.error(f"{self.__class__.__name__} Loading song, error: {traceback.format_exc()}")
-            self._init_song()
-
         Thread(target=self.__playback, name="playback_thread", daemon=True).start()
+
+        for _ in range(self._file_finder.item_count):
+            # noinspection PyBroadException
+            try:
+                self._load_song()
+                return
+            except Exception as err:
+                LOGR.error(f"Loading songs {self._file_finder.get_item()}, error: {err}")
+
+                self._file_finder.iterate(True)
+
+        LOGR.error(f"Failed to load all songs: {self._file_finder.item_count}, will make empty song")
+        self._init_song()
 
     def _redraw(self) -> None:
         pass

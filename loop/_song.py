@@ -42,18 +42,25 @@ class Song(CollectionOwner[SongPart]):
         with open(full_name, 'rb') as f:
             length, dic, load_list = pickle.load(f)
 
-        assert type(dic) == dict
-        assert length > 0
-        assert len(load_list) == 4, f"Song must have 4 parts: {full_name}"
+        if type(dic) != dict:
+            raise RuntimeError(f"Loading song: type(dic) != dict: {full_name}")
+
+        if length <= 0:
+            raise RuntimeError(f"Loading song: length <= 0: {full_name}")
+
+        if len(load_list) != 4:
+            raise RuntimeError(f"Loading song: wrong number of parts: {full_name}")
 
         tmp1 = dic[ConfigName.drum_type]
         tmp2 = DrumLoader.drum_type
         assert tmp1 == tmp2, f"Drum types do not match in saved file: {full_name}, {tmp1}, {tmp2}"
-        RDRUM.prepare_drum(length, dic)
+
+        RDRUM.prepare_drum(length, **dic)
 
         tmp1 = dic[ConfigName.song_name]
         tmp2 = self._file_finder.get_item()
         assert tmp1 == tmp2, f"Song names do not match in saved file: {full_name}, {tmp1}, {tmp2}"
+
         ctrl = self._get_control()
         load_list = [x if x is not None else SongPart(ctrl) for x in load_list]
 

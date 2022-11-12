@@ -107,7 +107,7 @@ class RealDrum(DrumLoader, FileFinder):
         self.__intensity = i
 
     def __str__(self):
-        return f"RDRUM Length:{RDRUM.get_length()} Intensity:{self.__intensity}"
+        return f"RealDrum Length:{RDRUM.get_length()} Intensity:{self.__intensity}"
 
 
 RDRUM = RealDrum()

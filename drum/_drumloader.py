@@ -101,14 +101,13 @@ class DrumLoader:
 
     @staticmethod
     def prepare_all(length: int, **kwargs) -> None:
+        DrumLoader.__length = 0  # keep it zero until sound load is done
+
         if "volume" in kwargs:
             DrumLoader.volume = kwargs["volume"]
         if "swing" in kwargs:
             DrumLoader.swing = kwargs["swing"]
-        if length <= 0:
-            DrumLoader.__length = 0
-            return
-        DrumLoader.__length = length
+
         for i in [DrumLoader.__snd_l1, DrumLoader.__snd_l2, DrumLoader.__snd_bk]:
             i.clear()
 
