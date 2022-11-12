@@ -18,19 +18,17 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         OneLoopCtrl.__init__(self)
         Song.__init__(self, SongPart(self))
         Thread(target=self.__playback, name="playback_thread", daemon=True).start()
-        count = self._file_finder.item_count
-        for _ in range(count):
-            # noinspection PyBroadException
-            try:
-                self._file_finder.go_first()
-                self._load_song()
-                return
-            except Exception as err:
-                LOGR.error(f"Loading songs {self._file_finder.get_item()}, error: {err}")
-                LOGR.error(f"Deleting songs {self._file_finder.get_full_name()}")
-                self._file_finder.delete(0)
 
-        LOGR.error(f"Failed to load all songs: {self._file_finder.item_count}, will make empty song")
+        # noinspection PyBroadException
+        try:
+            self._file_finder.go_first()
+            self._load_song()
+            return
+        except Exception as err:
+            LOGR.error(f"Loading songs {self._file_finder.get_item()}, error: {err}")
+            LOGR.error(f"Deleting songs {self._file_finder.get_full_name()}")
+            self._file_finder.delete(self._file_finder.id)
+
         self._init_song()
 
     def _redraw(self) -> None:
