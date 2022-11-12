@@ -49,9 +49,7 @@ class CollectionOwner(Generic[T]):
     def get_fixed(self) -> T:
         if self.__fixed not in self.__items:
             self.__fixed = self.__items[0]
-            return self.__fixed
-        else:
-            return self.__fixed
+        return self.__fixed
 
     def set_fixed(self, fixed: T) -> None:
         if fixed not in self.__items:

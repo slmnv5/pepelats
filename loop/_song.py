@@ -32,6 +32,12 @@ class Song(CollectionOwner[SongPart]):
     def _stop_song(self, wait: int = 0) -> None:
         pass
 
+    def _init_song(self, wait: int = 0) -> None:
+        ff = self._file_finder
+        ff.set_fixed(ff.get_empty_name())
+        assert ff.get_item() == ff.get_empty_name()
+        assert ff.get_fixed() == ff.get_empty_name()
+
     @abstractmethod
     def _get_control(self) -> OneLoopCtrl:
         pass
@@ -70,6 +76,7 @@ class Song(CollectionOwner[SongPart]):
         LOGR.info(f"Loaded song file: {full_name}")
 
     def _save_song(self) -> None:
+        self._file_finder.go_fixed()
         full_name = self._file_finder.get_full_name()
         length: int = RDRUM.get_length()
         save_list = list()
@@ -86,18 +93,13 @@ class Song(CollectionOwner[SongPart]):
 
     def _save_new_song(self):
         tmp = self.__new_song_name()
-        self._file_finder.append(tmp)
-        self._file_finder.go_last()
+        self._file_finder.set_fixed(tmp)
         self._save_song()
 
     def _delete_song(self) -> None:
         self._stop_song()
-        path = self._file_finder.get_full_name()
-        if os.path.isfile(path):
-            os.remove(path)
         self._file_finder.delete(self._file_finder.id)
-        self._file_finder.iterate(True)
-        self._stop_song()
+        self._init_song()
 
     def __new_song_name(self) -> str:
         return generate_name() + self._file_finder.get_end_with()
