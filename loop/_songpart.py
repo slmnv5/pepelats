@@ -47,11 +47,11 @@ class SongPart(CollectionOwner[LoopWithDrum], Player):
     def __str__(self):
         if not RDRUM.get_length() or self.is_empty:
             return "---------"
-        first = self.get_first()
-        if not self._str:
-            self._str = f"L:{first.length // RDRUM.get_length():02} " \
-                        f"V:{first.volume:02} {self.item_count:02}/{self.undo_count:02}"
-        return self._str
+        if not self._collection_str:
+            first = self.get_first()
+            self._collection_str = f"L:{first.length // RDRUM.get_length():02} " \
+                                   f"V:{first.volume:02} {self.item_count:02}/{self.undo_count:02}"
+        return self._collection_str
 
 
 if __name__ == "__main__":

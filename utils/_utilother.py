@@ -44,7 +44,7 @@ class CollectionOwner(Generic[T]):
         self.__undo: List[T] = []
         self.__id: int = 0
         self.__fixed: T = first
-        self._str = None
+        self._collection_str: str = ""
 
     def get_fixed(self) -> T:
         if self.__fixed not in self.__items:
@@ -87,7 +87,7 @@ class CollectionOwner(Generic[T]):
         if self.item_count <= 1 or k < 0 or k >= self.item_count:
             return None
         item = self.__items.pop(k)
-        self._str = None
+        self._collection_str = ""
         if self.__id >= k:
             self.__id -= 1
             self.__id = max(0, self.__id)
@@ -105,7 +105,7 @@ class CollectionOwner(Generic[T]):
         try:
             item = self.__undo.pop()
             self.__items.append(item)
-            self._str = None
+            self._collection_str = ""
         except IndexError:
             pass
 
@@ -119,11 +119,10 @@ class CollectionOwner(Generic[T]):
         self.__id = self.item_count - 1
 
     def append(self, item: T) -> None:
-        if not isinstance(item, type(self.__items[0])):
-            raise RuntimeError(f"Error adding wrong type {type(item)} to collection ownwer: {self.__class__.__name__}")
+        assert isinstance(item, type(self.__items[0]))
         self.__items.append(item)
         self.__undo.clear()
-        self._str = None
+        self._collection_str = ""
 
     def get_item(self) -> T:
         return self.__items[self.__id]

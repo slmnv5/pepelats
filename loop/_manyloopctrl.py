@@ -40,10 +40,12 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         else:
             ff.append(empty_name)
             ff.go_last()
+        ff.set_fixed(empty_name)
 
         self.go_first()
         self.align_ids()
         assert ff.get_item() == empty_name
+        assert ff.get_fixed() == empty_name
         RDRUM.clear_drum()
 
     def __playback(self) -> None:

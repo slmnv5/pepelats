@@ -47,7 +47,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
             infodic["redraw"] = self.__redraw
 
         if "header" in infodic:
-            infodic["header"] = f"{RDRUM.get_item()}/{self._file_finder.get_item()}"
+            infodic["header"] = f"{RDRUM.get_fixed()}/{self._file_finder.get_fixed()}"
 
         MsgProcessor._send_redraw(self, infodic)
 
