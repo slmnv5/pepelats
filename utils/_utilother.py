@@ -142,6 +142,8 @@ class CollectionOwner(Generic[T]):
 
 
 class FileFinder(CollectionOwner[str]):
+    empty_item_name: str = "empty_item"
+
     def __init__(self, directory: str, is_file: bool, end_with: str):
         self.__end_with: str = end_with
         self.__dir: str = str(Path(ROOT_DIR, directory))
@@ -152,7 +154,7 @@ class FileFinder(CollectionOwner[str]):
         found_items.sort(key=lambda x: os.path.getmtime(Path(self.__dir, x)), reverse=True)
 
         if not found_items:
-            found_items.append("first" + self.__end_with)
+            found_items.append(FileFinder.empty_item_name + self.__end_with)
 
         CollectionOwner.__init__(self, found_items[0])
         for item in found_items[1:]:
@@ -177,6 +179,9 @@ class FileFinder(CollectionOwner[str]):
         deleted = CollectionOwner.delete(self, k)
         if deleted and os.path.isfile(path):
             os.remove(path)
+
+    def has_empty_name(self):
+        return self.get_item() == FileFinder.empty_item_name + self.__end_with
 
 
 class RedrawScreen:
@@ -283,4 +288,11 @@ if __name__ == "__main__":
         assert find1 != -22
 
 
-    test2()
+    def test3():
+        ff = FileFinder(".", True, ".lkjlkjhkj")
+        print(ff.get_item())
+        print(ff.item_count)
+        assert ff.has_empty_name()
+
+
+    test3()
