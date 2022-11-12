@@ -24,9 +24,6 @@ class RealDrum(DrumLoader, FileFinder):
         FileFinder.__init__(self, "config/drums", False, "")
         self.__intensity: Intensity = Intensity.LVL2
         self.__is_break_pending: bool = False
-        drum_type: str = "pop"
-        tmp = self.first_id(lambda x: self.get_id(x) == drum_type, 0)
-        self.go_id(tmp)
         DrumLoader.load(self.get_full_name())
 
     @staticmethod

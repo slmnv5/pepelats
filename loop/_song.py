@@ -43,12 +43,13 @@ class Song(CollectionOwner[SongPart]):
             length, dic, load_list = pickle.load(f)
 
         assert type(dic) == dict
+        assert length > 0
         assert len(load_list) == 4, f"Song must have 4 parts: {full_name}"
 
         tmp1 = dic[ConfigName.drum_type]
         tmp2 = DrumLoader.drum_type
-        RDRUM.prepare_drum(length)
         assert tmp1 == tmp2, f"Drum types do not match in saved file: {full_name}, {tmp1}, {tmp2}"
+        RDRUM.prepare_drum(length, dic)
 
         tmp1 = dic[ConfigName.song_name]
         tmp2 = self._file_finder.get_item()
