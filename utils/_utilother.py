@@ -63,6 +63,10 @@ class CollectionOwner(Generic[T]):
         fixed = self.get_fixed()
         self.__id = self.__items.index(fixed)
 
+    def fixed_id(self) -> int:
+        fixed = self.get_fixed()
+        return self.__items.index(fixed)
+
     @property
     def item_count(self) -> int:
         return len(self.__items)
@@ -193,6 +197,9 @@ class FileFinder(CollectionOwner[str]):
 
     def get_empty_name(self):
         return FileFinder.empty_item_name + self.__end_with
+
+    def is_empty_name(self):
+        return self.get_fixed() == self.get_empty_name()
 
     def delete(self, k: int) -> None:
         path = self.get_full_name()

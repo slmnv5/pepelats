@@ -48,10 +48,9 @@ class Song(CollectionOwner[SongPart]):
         if len(load_list) != 4:
             raise RuntimeError(f"Loading song: wrong number of parts: {full_name}")
 
-        drum_id = RDRUM.first_id(lambda x: RDRUM.get_id(x) == drum_type)
-        if drum_id >= 0:
-            RDRUM.go_id(drum_id)
-            RDRUM.load_drum_type()
+        RDRUM.set_fixed(drum_type)
+        RDRUM.go_fixed()
+        RDRUM.load_drum_type()
         RDRUM.prepare_drum(length)
 
         ctrl = self._get_control()

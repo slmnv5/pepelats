@@ -55,7 +55,8 @@ class RealDrum(DrumLoader, FileFinder):
     def load_drum_type(self) -> None:
         self.set_fixed(self.get_item())
         DrumLoader.load(self.get_full_name())
-        DrumLoader.prepare_drum(RDRUM.get_length())
+        if RDRUM.get_length():
+            DrumLoader.prepare_drum(RDRUM.get_length())
 
     @staticmethod
     def prepare_drum_async(length: int) -> None:
