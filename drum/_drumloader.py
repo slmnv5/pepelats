@@ -99,7 +99,7 @@ class DrumLoader:
             storage.append(value)
 
     @staticmethod
-    def prepare_all(length: int) -> None:
+    def prepare_drum(length: int) -> None:
         DrumLoader.__length = 0  # keep it zero until sound load is done
 
         for i in [DrumLoader.__snd_l1, DrumLoader.__snd_l2, DrumLoader.__snd_bk]:

@@ -37,7 +37,7 @@ class TestLoopWithDrum(TestCase):
         """Test control drum and loop length"""
         # Test new recorded loop is multiple of drum if drum non empty
         control = OneLoopCtrl()
-        RDRUM.prepare_drum(100_000)
+        RDRUM.prepare_drum_async(100_000)
         while not RDRUM.get_length():
             time.sleep(0.1)
 

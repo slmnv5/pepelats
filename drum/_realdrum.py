@@ -33,7 +33,7 @@ class RealDrum(DrumLoader, FileFinder):
         v = min(100, v)
         v = max(1, round(v))
         DrumLoader.volume = v
-        DrumLoader.prepare_all(RDRUM.get_length())
+        DrumLoader.prepare_drum(RDRUM.get_length())
 
     @staticmethod
     def change_swing(change_by: int) -> None:
@@ -42,7 +42,7 @@ class RealDrum(DrumLoader, FileFinder):
         v = min(v, 0.75)
         v = max(v, 0.5)
         DrumLoader.swing = v
-        DrumLoader.prepare_all(RDRUM.get_length())
+        DrumLoader.prepare_drum(RDRUM.get_length())
 
     @staticmethod
     def get_volume() -> float:
@@ -54,12 +54,12 @@ class RealDrum(DrumLoader, FileFinder):
 
     def load_drum_type(self) -> None:
         DrumLoader.load(self.get_full_name())
-        DrumLoader.prepare_all(RDRUM.get_length())
+        DrumLoader.prepare_drum(RDRUM.get_length())
 
     @staticmethod
-    def prepare_drum(length: int) -> None:
+    def prepare_drum_async(length: int) -> None:
         """ Non blocking drum init in another thread, length is one bar long and holds drum pattern """
-        Timer(0.2, DrumLoader.prepare_all, [length]).start()
+        Timer(0.2, DrumLoader.prepare_drum, [length]).start()
 
     def play_samples(self, out_data: np.ndarray, idx: int) -> None:
         if self.__intensity == Intensity.SILENT or not RDRUM.get_length():

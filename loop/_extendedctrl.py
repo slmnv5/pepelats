@@ -6,7 +6,6 @@ from multiprocessing.connection import Connection
 from typing import Dict
 
 from drum import RDRUM
-from drum import DrumLoader
 from utils import LOGR
 from loop._manyloopctrl import ManyLoopCtrl
 from loop._songpart import SongPart
@@ -48,7 +47,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
             infodic["redraw"] = self.__redraw
 
         if "header" in infodic:
-            infodic["header"] = f"{DrumLoader.drum_type}/{self._file_finder.get_item()}"
+            infodic["header"] = f"{RDRUM.get_item()}/{self._file_finder.get_item()}"
 
         MsgProcessor._send_redraw(self, infodic)
 

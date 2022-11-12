@@ -35,11 +35,3 @@ class ConfigName:
     #  drum related
     default_pattern: str = "default_pattern"
     comment: str = "comment"
-
-    #  main loader saved values
-    drum_type: str = "DRUM_TYPE"
-    song_name: str = "SONG_NAME"
-    drum_swing: str = "DRUM_SWING"
-    drum_volume: str = "DRUM_VOLUME"
-    mixer_in: str = "MIXER_IN"
-    mixer_out: str = "MIXER_OUT"

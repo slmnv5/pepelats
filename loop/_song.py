@@ -2,10 +2,10 @@ import os
 import pickle
 from abc import abstractmethod
 
-from drum import RDRUM, DrumLoader
+from drum import RDRUM
 from loop._oneloopctrl import OneLoopCtrl
 from loop._songpart import SongPart
-from utils import FileFinder, CollectionOwner, ConfigName
+from utils import FileFinder, CollectionOwner
 from utils import LOGR
 from utils import generate_name
 
@@ -51,11 +51,8 @@ class Song(CollectionOwner[SongPart]):
         drum_id = RDRUM.first_id(lambda x: RDRUM.get_id(x) == drum_type, -1)
         if drum_id >= 0:
             RDRUM.go_id(drum_id)
-        RDRUM.load_drum_type()
-
-        tmp1 = dic[ConfigName.song_name]
-        tmp2 = self._file_finder.get_item()
-        assert tmp1 == tmp2, f"Song names do not match in saved file: {full_name}, {tmp1}, {tmp2}"
+            RDRUM.load_drum_type()
+        RDRUM.prepare_drum(length)
 
         ctrl = self._get_control()
         load_list = [x if x is not None else SongPart(ctrl) for x in load_list]
@@ -70,7 +67,7 @@ class Song(CollectionOwner[SongPart]):
 
         self.go_first()
         self.align_ids()
-        LOGR.info(f"Loaded song file: {full_name}, saved: {dic}")
+        LOGR.info(f"Loaded song file: {full_name}")
 
     def _save_song(self) -> None:
         full_name = self._file_finder.get_full_name()
@@ -83,9 +80,9 @@ class Song(CollectionOwner[SongPart]):
         assert len(save_list) == 4, f"Song must have 4 parts: {full_name}"
 
         with open(full_name, 'wb') as f:
-            pickle.dump((length, dic, save_list), f)
+            pickle.dump((length, RDRUM.get_item(), save_list), f)
 
-        LOGR.info(f"Saved song file {full_name}, saved: {dic}")
+        LOGR.info(f"Saved song file {full_name}")
 
     def _save_new_song(self):
         tmp = self.__new_song_name()
