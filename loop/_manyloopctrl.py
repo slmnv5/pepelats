@@ -5,7 +5,6 @@ from loop._loopsimple import LoopWithDrum
 from loop._oneloopctrl import OneLoopCtrl
 from loop._song import Song
 from loop._songpart import SongPart
-from utils import LOGR
 from utils import MAX_LEN
 
 
@@ -19,13 +18,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         Song.__init__(self, SongPart(self))
         Thread(target=self.__playback, name="playback_thread", daemon=True).start()
         self._file_finder.go_first()
-
-        # noinspection PyBroadException
-        try:
-            self._load_song()
-        except Exception as err:
-            LOGR.error(f"Loading songs {self._file_finder.get_item()}, error: {err}")
-            self._init_song()
+        self._init_song()
 
     def _redraw(self) -> None:
         pass
@@ -41,14 +34,16 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
 
         ff = self._file_finder
         empty_name = ff.get_empty_name()
-        name_id = ff.first_id(lambda x: ff.get_id(x) == empty_name, -1)
-        if name_id > -1:
-            ff.go_id(name_id)
+        empty_id = ff.first_id(lambda x: ff.get_id(x) == empty_name)
+        if empty_id >= 0:
+            ff.go_id(empty_id)
         else:
             ff.append(empty_name)
-            self.go_last()
+            ff.go_last()
 
+        self.go_first()
         self.align_ids()
+        assert ff.get_item() == empty_name
         RDRUM.clear_drum()
 
     def __playback(self) -> None:

@@ -129,7 +129,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         if part.is_empty:
             return
 
-        empty_id = self.first_id(lambda x: self.get_id(x).is_empty, -1)
+        empty_id = self.first_id(lambda x: self.get_id(x).is_empty)
         if empty_id < 0:
             return
 

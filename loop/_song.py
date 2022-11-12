@@ -65,6 +65,7 @@ class Song(CollectionOwner[SongPart]):
         while self.item_count > 4:
             self.delete(0)
 
+        self._file_finder.set_fixed(self._file_finder.get_item())
         self.go_first()
         self.align_ids()
         LOGR.info(f"Loaded song file: {full_name}")

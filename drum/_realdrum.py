@@ -53,6 +53,7 @@ class RealDrum(DrumLoader, FileFinder):
         return DrumLoader.swing
 
     def load_drum_type(self) -> None:
+        self.set_fixed(self.get_item())
         DrumLoader.load(self.get_full_name())
         DrumLoader.prepare_drum(RDRUM.get_length())
 

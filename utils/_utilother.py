@@ -3,7 +3,7 @@ import os
 import subprocess as sp
 import sys
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict
 from typing import List, TypeVar, Generic, Union
 
 from utils._utilconfig import ConfigName
@@ -43,7 +43,25 @@ class CollectionOwner(Generic[T]):
         self.__items.append(first)
         self.__undo: List[T] = []
         self.__id: int = 0
+        self.__fixed: T = first
         self._str = None
+
+    def get_fixed(self) -> T:
+        if self.__fixed not in self.__items:
+            self.__fixed = self.__items[0]
+            return self.__fixed
+        else:
+            return self.__fixed
+
+    def set_fixed(self, fixed: T) -> None:
+        if fixed not in self.__items:
+            self.__items.append(fixed)
+        self.__id = self.__items.index(fixed)
+        self.__fixed = fixed
+
+    def go_fixed(self) -> None:
+        fixed = self.get_fixed()
+        self.__id = self.__items.index(fixed)
 
     @property
     def item_count(self) -> int:
@@ -62,8 +80,8 @@ class CollectionOwner(Generic[T]):
         for x in lst:
             method(x)
 
-    def first_id(self, method, default: Any):
-        return next((x for x in range(self.item_count) if method(x)), default)
+    def first_id(self, method) -> int:
+        return next((x for x in range(self.item_count) if method(x)), -1)
 
     def delete(self, k: int) -> T:
         if self.item_count <= 1 or k < 0 or k >= self.item_count:
@@ -275,7 +293,7 @@ if __name__ == "__main__":
         co.append("ff")
         co.append("gg")
 
-        find1 = co.first_id(lambda x: co.get_id(x) == 'ff', -1)
+        find1 = co.first_id(lambda x: co.get_id(x) == 'ff')
         assert find1 == 5, f"found: {find1} expected: 5"
 
 
@@ -284,8 +302,8 @@ if __name__ == "__main__":
         for k in range(ff.item_count):
             print(ff.get_id(k))
 
-        find1 = ff.first_id(lambda x: 'l' in ff.get_id(x), -1)
-        assert find1 != -1
+        find1 = ff.first_id(lambda x: 'l' in ff.get_id(x))
+        assert find1 >= 0
 
 
     def test3():
