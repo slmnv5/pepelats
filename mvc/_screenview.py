@@ -61,7 +61,7 @@ class ScreenView(MsgProcessor):
         Thread(target=self.__update_progress, name="update_progress", daemon=True).start()
 
     def _send_redraw(self, infodic: Dict) -> None:
-        LOGR.info(f"Get redraw: {infodic}")
+        LOGR.info("Get redraw: " + str(infodic))
         if "header" in infodic:
             self.__header = infodic["header"].center(COLS)
 

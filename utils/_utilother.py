@@ -193,6 +193,10 @@ class RedrawScreen:
         return f"{self.update_method}|{self.loop_len}|" \
                f"{self.idx}|{self.is_stop}|{self.is_rec}"
 
+    def __repr__(self):
+        return f"{self.update_method}|{self.loop_len}|" \
+               f"{self.idx}|{self.is_stop}|{self.is_rec}"
+
 
 class MenuLoader(FileFinder):
     """ class loading mapping dict. from JSON files
