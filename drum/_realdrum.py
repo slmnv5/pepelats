@@ -32,7 +32,8 @@ class RealDrum(DrumLoader, FileFinder):
         v = round(DrumLoader.volume * factor)
         v = min(100, v)
         v = max(1, round(v))
-        DrumLoader.prepare_all(RDRUM.get_length(), volume=v)
+        DrumLoader.volume = v
+        DrumLoader.prepare_all(RDRUM.get_length())
 
     @staticmethod
     def change_swing(change_by: int) -> None:
@@ -40,7 +41,8 @@ class RealDrum(DrumLoader, FileFinder):
         v += (0.25 / 4) if change_by >= 0 else (-0.25 / 4)
         v = min(v, 0.75)
         v = max(v, 0.5)
-        DrumLoader.prepare_all(RDRUM.get_length(), swing=v)
+        DrumLoader.swing = v
+        DrumLoader.prepare_all(RDRUM.get_length())
 
     @staticmethod
     def get_volume() -> float:
@@ -51,9 +53,8 @@ class RealDrum(DrumLoader, FileFinder):
         return DrumLoader.swing
 
     def load_drum_type(self) -> None:
-        drum_type = self.get_item()
         DrumLoader.load(self.get_full_name())
-        DrumLoader.prepare_all(RDRUM.get_length(), drum_type=drum_type)
+        DrumLoader.prepare_all(RDRUM.get_length())
 
     @staticmethod
     def prepare_drum(length: int) -> None:

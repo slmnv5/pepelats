@@ -22,7 +22,6 @@ class DrumLoader:
 
     volume: int = 100
     swing: float = 0.5
-    drum_type: str = "pop"
     max_volume: float = 0
     __length: int = 0
     __sounds: Dict[str, Tuple[np.ndarray, float]] = dict()
@@ -100,13 +99,8 @@ class DrumLoader:
             storage.append(value)
 
     @staticmethod
-    def prepare_all(length: int, **kwargs) -> None:
+    def prepare_all(length: int) -> None:
         DrumLoader.__length = 0  # keep it zero until sound load is done
-
-        if "volume" in kwargs:
-            DrumLoader.volume = kwargs["volume"]
-        if "swing" in kwargs:
-            DrumLoader.swing = kwargs["swing"]
 
         for i in [DrumLoader.__snd_l1, DrumLoader.__snd_l2, DrumLoader.__snd_bk]:
             i.clear()

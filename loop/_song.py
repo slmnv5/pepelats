@@ -40,10 +40,7 @@ class Song(CollectionOwner[SongPart]):
         self._stop_song()
         full_name = self._file_finder.get_full_name()
         with open(full_name, 'rb') as f:
-            length, dic, load_list = pickle.load(f)
-
-        if type(dic) != dict:
-            raise RuntimeError(f"Loading song: type(dic) != dict: {full_name}")
+            length, drum_type, load_list = pickle.load(f)
 
         if length <= 0:
             raise RuntimeError(f"Loading song: length <= 0: {full_name}")
@@ -51,11 +48,10 @@ class Song(CollectionOwner[SongPart]):
         if len(load_list) != 4:
             raise RuntimeError(f"Loading song: wrong number of parts: {full_name}")
 
-        tmp1 = dic[ConfigName.drum_type]
-        tmp2 = DrumLoader.drum_type
-        assert tmp1 == tmp2, f"Drum types do not match in saved file: {full_name}, {tmp1}, {tmp2}"
-
-        RDRUM.prepare_drum(length, **dic)
+        drum_id = RDRUM.first_id(lambda x: RDRUM.get_id(x) == drum_type, -1)
+        if drum_id >= 0:
+            RDRUM.go_id(drum_id)
+        RDRUM.load_drum_type()
 
         tmp1 = dic[ConfigName.song_name]
         tmp2 = self._file_finder.get_item()
@@ -83,12 +79,6 @@ class Song(CollectionOwner[SongPart]):
         for k in range(self.item_count):
             x = self.get_id(k)
             save_list.append(x if not x.is_empty else None)
-
-        dic = dict()
-        dic[ConfigName.song_name] = self._file_finder.get_item()
-        dic[ConfigName.drum_type] = DrumLoader.drum_type
-        dic[ConfigName.drum_volume] = DrumLoader.volume
-        dic[ConfigName.drum_swing] = DrumLoader.swing
 
         assert len(save_list) == 4, f"Song must have 4 parts: {full_name}"
 

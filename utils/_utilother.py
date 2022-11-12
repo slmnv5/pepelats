@@ -116,12 +116,6 @@ class CollectionOwner(Generic[T]):
     def go_first(self) -> None:
         self.__id = 0
 
-    def find_item_id(self, item: T) -> int:
-        if item in self.__items:
-            return self.__items.index(item)
-        else:
-            return -1
-
     def get_list(self, now_id: int = -1) -> str:
         tmp = ""
         lst_size = min(7, self.item_count)
