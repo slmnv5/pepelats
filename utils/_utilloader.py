@@ -8,8 +8,7 @@ ROOT_DIR = Path(__file__).parent.parent
 class JsonDict:
     def __init__(self, filename: str):
         self.__dic: Dict[str, Any] = dict()
-        self.__filename = str(Path(ROOT_DIR, filename))
-
+        self.__filename: str = str(Path(ROOT_DIR, filename))
         # noinspection PyBroadException
         try:
             with open(self.__filename) as f:
@@ -19,15 +18,15 @@ class JsonDict:
                 raise RuntimeError("JSON file must have dictionary {self.__filename}")
 
         except Exception:
-            self.__dic = dict()
             self.save()
 
     def dic(self) -> Dict:
         return self.__dic
 
     def save(self) -> None:
-        with open(self.__filename, "w") as f:
-            dump(self.__dic, f, indent=2)
+        if self.__filename:
+            with open(self.__filename, "w") as f:
+                dump(self.__dic, f, indent=2)
 
     def get_filename(self) -> str:
         return self.__filename
@@ -45,33 +44,5 @@ class JsonDict:
         self.__dic = dict(default_dic, **self.__dic)
 
 
-class ConfLoader:
-    __jd = JsonDict("config/looper_defaults.json")
-
-    @staticmethod
-    def dic() -> Dict:
-        return ConfLoader.__jd.dic()
-
-    @staticmethod
-    def get(k, default) -> Any:
-        return ConfLoader.__jd.get(k, default)
-
-    @staticmethod
-    def set(k, v) -> None:
-        ConfLoader.__jd.set(k, v)
-
-    @staticmethod
-    def set_defaults(default_dic: Dict) -> None:
-        ConfLoader.__jd.set_defaults(default_dic)
-
-
 if __name__ == "__main__":
-    def test():
-        ConfLoader.set_defaults({"1": 2, "30": 50})
-        print(ConfLoader.dic())
-
-        ConfLoader.set_defaults({"aa": "bb"})
-        print(ConfLoader.dic())
-
-
-    test()
+    pass

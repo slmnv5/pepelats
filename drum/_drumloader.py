@@ -7,7 +7,7 @@ import numpy as np
 import soundfile as sf
 
 from utils import LOGR
-from utils import JsonDict, make_zero_buffer, record_sound_buff, SD_TYPE, ConfigName, FileFinder, ConfLoader
+from utils import JsonDict, make_zero_buffer, record_sound_buff, SD_TYPE, ConfigName, FileFinder
 from utils import SD_MAX
 
 
@@ -20,6 +20,9 @@ def extend_list(some_list: Union[List, str], new_len: int) -> List:
 class DrumLoader:
     """ class will only static methods to load drum patterns """
 
+    volume: int = 100
+    swing: float = 0.5
+    drum_type: str = "pop"
     max_volume: float = 0
     __length: int = 0
     __sounds: Dict[str, Tuple[np.ndarray, float]] = dict()
@@ -97,9 +100,13 @@ class DrumLoader:
             storage.append(value)
 
     @staticmethod
-    def prepare_all(length: int) -> None:
+    def prepare_all(length: int, **kwargs) -> None:
         DrumLoader.__length = 0
-        if length == 0:
+        if "volume" in kwargs:
+            DrumLoader.volume = kwargs["volume"]
+        if "swing" in kwargs:
+            DrumLoader.swing = kwargs["swing"]
+        if not length <= 0:
             return
 
         for i in [DrumLoader.__snd_l1, DrumLoader.__snd_l2, DrumLoader.__snd_bk]:
@@ -124,7 +131,6 @@ class DrumLoader:
         accents = pattern["acc"]
         swing: float = pattern["swing"]
         ndarr = make_zero_buffer(length)
-        drum_volume = ConfLoader.get(ConfigName.drum_volume, 1)
         for sound_name in [x for x in DrumLoader.__sounds if x in pattern]:
             notes = pattern[sound_name]
             steps = len(notes)
@@ -140,7 +146,7 @@ class DrumLoader:
             for step_number in range(steps):
                 if notes[step_number] != '.':
                     step_accent = int(accents[step_number])
-                    step_volume = sound_volume * step_accent * drum_volume / 9.0
+                    step_volume = sound_volume * step_accent / 9 * DrumLoader.volume / 100
                     pos = DrumLoader.__pos_with_swing(step_number, step_len, swing)
                     tmp = (sound * step_volume).astype(SD_TYPE)
                     record_sound_buff(ndarr, tmp, pos)

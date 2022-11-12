@@ -96,6 +96,8 @@ class CollectionOwner(Generic[T]):
         self.__id = self.item_count - 1
 
     def append(self, item: T) -> None:
+        if not isinstance(item, type(self.__items[0])):
+            raise RuntimeError(f"Error adding wrong type {type(item)} to collection ownwer: {self.__class__.__name__}")
         self.__items.append(item)
         self.__undo.clear()
         self._str = None
@@ -250,4 +252,25 @@ class MenuLoader(FileFinder):
 
 
 if __name__ == "__main__":
-    pass
+    def test1():
+        co = CollectionOwner("aa")
+        co.append("bb")
+        co.append("cc")
+        co.append("dd")
+        co.append("ee")
+        co.append("ff")
+        co.append("gg")
+
+        find1 = co.first_id(lambda x: co.get_id(x) == 'ff', -22)
+        assert find1 == 5, f"found: {find1} expected: 5"
+
+
+    def test2():
+        ff = FileFinder(".", True, "")
+        for k in range(ff.item_count):
+            print(ff.get_id(k))
+
+        find1 = ff.first_id(lambda x: 'looper' in ff.get_id(x), -22)
+        assert find1 != -22
+
+    test2()

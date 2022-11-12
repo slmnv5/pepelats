@@ -1,14 +1,12 @@
 # noinspection PyUnusedLocal
 
-from utils import ConfLoader, ConfigName
-
 
 class MockedMixer:
     """Used to run on windows, there is no ALSA sound on windows"""
 
     def __init__(self):
-        self.__vol_in: int = ConfLoader.get(ConfigName.mixer_in, 100)
-        self.__vol_out: int = ConfLoader.get(ConfigName.mixer_out, 100)
+        self.__vol_in: int = 100
+        self.__vol_out: int = 100
 
     def fade(self, seconds: int) -> None:
         pass
@@ -18,10 +16,8 @@ class MockedMixer:
             return
         if out:
             self.__vol_out = vol
-            ConfLoader.set(ConfigName.mixer_out, vol)
         else:
             self.__vol_in = vol
-            ConfLoader.set(ConfigName.mixer_in, vol)
 
     def getvolume(self, out: bool):
         if out:
