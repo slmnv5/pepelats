@@ -1,7 +1,7 @@
 #!/bin/sh
 # This script starts pepelats audio looper
 # Options are:
-# --debug - use debug level logging
+# --debug or --info - level of logging
 # --kbd - use keyboard for MIDI input (see KBD_NOTES)
 # --count - count notes
 
