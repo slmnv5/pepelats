@@ -119,7 +119,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         save_id = self.id
         self.go_id(self.part_id)
         self._stop_never()
-        self.delete(save_id, save_backup=False)
+        self.delete(save_id)
         self.align_ids()
         self.append(SongPart(self))
 
@@ -134,7 +134,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         if empty_id < 0:
             return
 
-        self.delete(empty_id, save_backup=False)
+        self.delete(empty_id)
         new_part: SongPart = copy.deepcopy(part)
         new_part.set_ctrl(self)
         self.append(new_part)
@@ -143,7 +143,9 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         need_save = not self._is_rec
         self._is_rec = False
         part = self.get_part()
-        part.delete(part.item_count - 1, save_backup=need_save)
+        deleted = part.delete(part.item_count - 1)
+        if need_save:
+            part.append_undo(deleted)
 
     def _redo_part(self) -> None:
         self._is_rec = False
@@ -169,7 +171,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         elif params[0] == "next":
             part.iterate(True)
         elif params[0] == "delete":
-            part.delete(part.id, save_backup=False)
+            part.delete(part.id)
         elif params[0] == "silent":
             loop = part.get_item()
             loop.flip_silent()
@@ -177,8 +179,8 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
             loop = part.get_item()
             loop.flip_reverse()
         elif params[0] == "move" and part.id:
-            part.delete(part.id, save_backup=True)
-            part.redo()
+            deleted = part.delete(part.id)
+            part.append(deleted)
 
 
 if __name__ == "__main__":

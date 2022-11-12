@@ -65,18 +65,23 @@ class CollectionOwner(Generic[T]):
     def first_id(self, method, default: Any):
         return next((x for x in range(self.item_count) if method(x)), default)
 
-    def delete(self, k: int, save_backup: bool) -> None:
+    def delete(self, k: int) -> T:
         if self.item_count <= 1 or k < 0 or k >= self.item_count:
-            return
+            return None
         item = self.__items.pop(k)
-        if save_backup:
-            self.__undo.append(item)
         self._str = None
         if self.__id >= k:
             self.__id -= 1
+            self.__id = max(0, self.__id)
+
+        return item
 
     def undo(self) -> None:
-        self.delete(self.item_count - 1, save_backup=True)
+        deleted = self.delete(self.item_count - 1)
+        self.append_undo(deleted)
+
+    def append_undo(self, deleted: T) -> None:
+        self.__undo.append(deleted)
 
     def redo(self) -> None:
         try:
@@ -172,6 +177,12 @@ class FileFinder(CollectionOwner[str]):
 
     def get_end_with(self) -> str:
         return self.__end_with
+
+    def delete(self, k: int) -> None:
+        path = self.get_full_name()
+        deleted = CollectionOwner.delete(self, k)
+        if deleted and os.path.isfile(path):
+            os.remove(path)
 
 
 class RedrawScreen:
@@ -272,5 +283,6 @@ if __name__ == "__main__":
 
         find1 = ff.first_id(lambda x: 'looper' in ff.get_id(x), -22)
         assert find1 != -22
+
 
     test2()

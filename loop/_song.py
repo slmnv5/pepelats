@@ -70,7 +70,7 @@ class Song(CollectionOwner[SongPart]):
             self.append(part)
 
         while self.item_count > 4:
-            self.delete(0, save_backup=False)
+            self.delete(0)
 
         self.go_first()
         self.align_ids()
@@ -108,7 +108,7 @@ class Song(CollectionOwner[SongPart]):
         path = self._file_finder.get_full_name()
         if os.path.isfile(path):
             os.remove(path)
-        self._file_finder.delete(self._file_finder.id, save_backup=False)
+        self._file_finder.delete(self._file_finder.id)
         self._file_finder.iterate(True)
         self._stop_song()
 
