@@ -174,14 +174,14 @@ class FileFinder(CollectionOwner[str]):
     def get_end_with(self) -> str:
         return self.__end_with
 
+    def get_empty_name(self):
+        return FileFinder.empty_item_name + self.__end_with
+
     def delete(self, k: int) -> None:
         path = self.get_full_name()
         deleted = CollectionOwner.delete(self, k)
         if deleted and os.path.isfile(path):
             os.remove(path)
-
-    def has_empty_name(self):
-        return self.get_item() == FileFinder.empty_item_name + self.__end_with
 
 
 class RedrawScreen:
@@ -275,7 +275,7 @@ if __name__ == "__main__":
         co.append("ff")
         co.append("gg")
 
-        find1 = co.first_id(lambda x: co.get_id(x) == 'ff', -22)
+        find1 = co.first_id(lambda x: co.get_id(x) == 'ff', -1)
         assert find1 == 5, f"found: {find1} expected: 5"
 
 
@@ -284,15 +284,15 @@ if __name__ == "__main__":
         for k in range(ff.item_count):
             print(ff.get_id(k))
 
-        find1 = ff.first_id(lambda x: 'looper' in ff.get_id(x), -22)
-        assert find1 != -22
+        find1 = ff.first_id(lambda x: 'l' in ff.get_id(x), -1)
+        assert find1 != -1
 
 
     def test3():
         ff = FileFinder(".", True, ".lkjlkjhkj")
         print(ff.get_item())
         print(ff.item_count)
-        assert ff.has_empty_name()
+        assert ff.get_empty_name() == ff.get_item()
 
 
     test3()
