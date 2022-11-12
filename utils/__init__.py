@@ -7,5 +7,5 @@ from utils._utilloader import JsonDict
 from utils._utilname import generate_name
 from utils._utilother import CollectionOwner, FileFinder
 from utils._utilother import RedrawScreen
-from utils._utilother import run_os_cmd, LOGR
+from utils._utilother import run_os_cmd
 from utils._utilsend import CmdTranslator, MsgProcessor

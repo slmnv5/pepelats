@@ -6,7 +6,7 @@ from multiprocessing.connection import Connection
 from typing import Dict
 
 from drum import RDRUM
-from utils import LOGR
+import logging
 from loop._manyloopctrl import ManyLoopCtrl
 from loop._songpart import SongPart
 from mixer import Mixer
@@ -38,7 +38,8 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
                     method = getattr(self, self.__redraw.update_method)
                     self.__redraw.content = method()
                 except Exception:
-                    LOGR.error(f"ExtendedCtrl method: {self.__redraw.update_method}, error: {traceback.format_exc()}")
+                    logging.error(
+                        f"ExtendedCtrl method: {self.__redraw.update_method}, error: {traceback.format_exc()}")
 
             self.__redraw.idx = self.idx
             self.__redraw.is_stop = self.get_stop_event().is_set()
@@ -84,7 +85,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         return part.get_list()
 
     def _show_all_parts(self) -> str:
-        return self.get_list(self.fixed_id)
+        return self.get_list()
 
     def _show_mixer_volume(self) -> str:
         return f"Mixer volume\noutput:{self.__mixer.getvolume(out=True):.2F}\n" \
@@ -129,7 +130,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         if part.is_empty:
             return
 
-        empty_id = self.first_id(lambda x: self.get_id(x).is_empty)
+        empty_id = self.find_first_id(lambda x: self.get_id(x).is_empty)
         if empty_id < 0:
             return
 

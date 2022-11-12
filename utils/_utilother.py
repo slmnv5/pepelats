@@ -1,7 +1,6 @@
 import logging
 import os
 import subprocess as sp
-import sys
 from pathlib import Path
 from typing import Dict
 from typing import List, TypeVar, Generic, Union
@@ -11,19 +10,20 @@ from utils._utilloader import JsonDict
 
 ROOT_DIR = Path(__file__).parent.parent
 
-level = "WARN"
-if "--debug" in sys.argv:
-    level = "DEBUG"
-if "--info" in sys.argv:
-    level = "INFO"
 
-logging.basicConfig(level=os.getenv("DEBUG_LEVEL", level), filename=Path(ROOT_DIR, 'log.log'), filemode='w')
-LOGR = logging.getLogger()
-fm = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-LOGR.handlers[0].setFormatter(fm)
-LOGR.propagate = False
+# level = "WARN"
+# if "--debug" in sys.argv:
+#    level = "DEBUG"
+# if "--info" in sys.argv:
+#    level = "INFO"
 
-LOGR.info(f"=======>Starting looper's log {LOGR.handlers}")
+# logging.basicConfig(level=os.getenv("DEBUG_LEVEL", level), filename=Path(ROOT_DIR, 'log.log'), filemode='w')
+# LOGR = logging.getLogger()
+# fm = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+# logging.handlers[0].setFormatter(fm)
+# logging.propagate = False
+
+# logging.info(f"=======>Starting looper's log {logging.handlers}")
 
 
 def run_os_cmd(cmd_list: list[str]) -> int:
@@ -83,7 +83,7 @@ class CollectionOwner(Generic[T]):
         for x in lst:
             method(x)
 
-    def first_id(self, method) -> int:
+    def find_first_id(self, method) -> int:
         return next((x for x in range(self.item_count) if method(x)), -1)
 
     def delete(self, k: int) -> T:
@@ -136,7 +136,7 @@ class CollectionOwner(Generic[T]):
     def go_first(self) -> None:
         self.__id = 0
 
-    def get_list(self, now_id: int = -1) -> str:
+    def get_list(self) -> str:
         tmp = ""
         lst_size = min(7, self.item_count)
         start_id = (self.__id // lst_size) * lst_size
@@ -144,7 +144,7 @@ class CollectionOwner(Generic[T]):
         self.__id = start_id
         for _ in range(lst_size):
             prefix: str = ""
-            if self.__id == now_id:
+            if self.__id == self.fixed_id:
                 prefix = "*"
             elif self.__id == save_id:
                 prefix = "~"
@@ -242,7 +242,7 @@ class MenuLoader(FileFinder):
             file: str = str(self.get_full_name())
             item: str = self.get_item()[:-len(self.get_end_with())]
             self.iterate(True)
-            LOGR.info(f"Loading control config from {file}")
+            logging.info(f"Loading control config from {file}")
             loader = JsonDict(file)
             default_dic = loader.get(ConfigName.default_config, dict())
             dic1 = dict()
@@ -264,7 +264,7 @@ class MenuLoader(FileFinder):
             return ""
 
     def change_map(self, new_id: str, new_name: str) -> None:
-        LOGR.debug(f"{self.__class__.__name__} change_map: {new_name}, {new_id}")
+        logging.debug(f"{self.__class__.__name__} change_map: {new_name}, {new_id}")
         # noinspection PyBroadException
         try:
             self.__map_name = new_name
@@ -282,7 +282,7 @@ class MenuLoader(FileFinder):
                 self.__map_id = new_id
             _ = self.__items[self.__map_name][self.__map_id]
         except Exception:
-            LOGR.error(f"{self.__class__.__name__} change_map, incorrect name, id: {new_name}, {new_id}")
+            logging.error(f"{self.__class__.__name__} change_map, incorrect name, id: {new_name}, {new_id}")
 
     def __str__(self):
         return self.__class__.__name__ + ": " + str(self.__items)
@@ -298,7 +298,7 @@ if __name__ == "__main__":
         co.append("ff")
         co.append("gg")
 
-        find1 = co.first_id(lambda x: co.get_id(x) == 'ff')
+        find1 = co.find_first_id(lambda x: co.get_id(x) == 'ff')
         assert find1 == 5, f"found: {find1} expected: 5"
 
 
@@ -307,7 +307,7 @@ if __name__ == "__main__":
         for k in range(ff.item_count):
             print(ff.get_id(k))
 
-        find1 = ff.first_id(lambda x: 'l' in ff.get_id(x))
+        find1 = ff.find_first_id(lambda x: 'l' in ff.get_id(x))
         assert find1 >= 0
 
 

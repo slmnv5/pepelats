@@ -6,7 +6,7 @@ from typing import Dict, Tuple, Any
 
 import mido
 
-from utils import LOGR
+import logging
 from utils import CmdTranslator
 
 
@@ -44,10 +44,10 @@ class MidiControl(CmdTranslator):
         self.__in_port = in_port
 
     def monitor(self) -> None:
-        LOGR.info("Started MidiController")
+        logging.info("Started MidiController")
         while True:
             msg = self.__in_port.receive(block=True)
-            LOGR.debug(f"{self.__class__.__name__} got MIDI message: {msg}")
+            logging.debug(f"{self.__class__.__name__} got MIDI message: {msg}")
 
             note = msg.bytes()[1]
             vel = msg.bytes()[2]

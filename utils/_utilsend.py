@@ -1,10 +1,10 @@
+import logging
 import traceback
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 from typing import Any, List, Optional
 from typing import Dict
 
-from utils._utilother import LOGR
 from utils._utilconfig import ConfigName
 from utils._utilother import MenuLoader
 
@@ -19,7 +19,7 @@ class MsgProcessor:
         self.__send_conn: Connection = send_conn
 
     def __process_message(self, msg: List[Any]) -> None:
-        LOGR.debug(f"{self.__class__.__name__} got message {msg_string(msg)}")
+        logging.debug(f"{self.__class__.__name__} got message {msg_string(msg)}")
         assert type(msg) == list and len(msg) > 0
         method_name, *params = msg
         # noinspection PyBroadException
@@ -27,7 +27,7 @@ class MsgProcessor:
             method = getattr(self, method_name)
             method(*params)
         except Exception:
-            LOGR.error(f"{self.__class__.__name__} in: {method_name} error: {traceback.format_exc()}")
+            logging.error(f"{self.__class__.__name__} in: {method_name} error: {traceback.format_exc()}")
 
     def process_messages(self):
         while True:
@@ -52,7 +52,7 @@ class CmdTranslator(MenuLoader):
         infodic: Dict = {"description": self.__menu_loader.get(ConfigName.description),
                          "update_method": self.__menu_loader.get(ConfigName.update_method),
                          "header": 0, "redraw": 0}
-        LOGR.info(f"Send prepare redraw: {infodic}")
+        logging.info(f"Send prepare redraw: {infodic}")
         self.__s_conn.send([ConfigName.send_redraw, infodic])
 
     def _translate_and_send(self, str_note: str) -> None:
@@ -63,9 +63,9 @@ class CmdTranslator(MenuLoader):
         # noinspection PyBroadException
         try:
             self.__process_list(cmd)
-            LOGR.info(f"{self.__class__.__name__} sent command: {cmd}")
+            logging.info(f"{self.__class__.__name__} sent command: {cmd}")
         except Exception:
-            LOGR.error(f"{self.__class__.__name__} sending command: {cmd} error: {traceback.format_exc()}")
+            logging.error(f"{self.__class__.__name__} sending command: {cmd} error: {traceback.format_exc()}")
 
     def __process_list(self, cmd: list) -> None:
         if not cmd:

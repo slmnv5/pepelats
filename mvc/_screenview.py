@@ -6,7 +6,7 @@ from multiprocessing.connection import Pipe
 from threading import Thread
 from typing import Dict
 
-from utils import LOGR
+import logging
 from utils import MsgProcessor, SD_RATE
 from utils import RedrawScreen
 
@@ -22,7 +22,7 @@ try:
 except OSError:
     COLS, ROWS = 30, 10
 
-LOGR.error(f"Screen size: cols={COLS} rows={ROWS}")
+logging.error(f"Screen size: cols={COLS} rows={ROWS}")
 
 # foreground, background ends with '40m'
 ScrColors: Dict[str, str] = {
@@ -61,7 +61,7 @@ class ScreenView(MsgProcessor):
         Thread(target=self.__update_progress, name="update_progress", daemon=True).start()
 
     def _send_redraw(self, infodic: Dict) -> None:
-        LOGR.info("Get redraw: " + str(infodic))
+        logging.info("Get redraw: " + str(infodic))
         if "header" in infodic:
             self.__header = infodic["header"].center(COLS)
 
@@ -82,7 +82,7 @@ class ScreenView(MsgProcessor):
             self.__descr_lines = 0
 
     def __update_loops(self, redraw: RedrawScreen) -> None:
-        LOGR.info(f"Updating screen: {redraw}")
+        logging.info(f"Updating screen: {redraw}")
         self.__is_stop = redraw.is_stop
         if not self.__is_stop:
             self.__idx = redraw.idx

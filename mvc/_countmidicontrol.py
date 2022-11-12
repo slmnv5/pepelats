@@ -4,7 +4,7 @@ from threading import Timer
 
 import mido
 
-from utils import LOGR
+import logging
 from utils import CmdTranslator
 
 
@@ -82,14 +82,14 @@ class CountMidiControl(CmdTranslator):
         self.__midi_cc_to_note = MidiCcToNote()
 
     def monitor(self) -> None:
-        LOGR.info(f"Started MidiConverter")
+        logging.info(f"Started MidiConverter")
         while True:
             msg = self.__in_port.receive(block=True)
             msg = self.__midi_cc_to_note.convert(msg)
             if not msg:
                 continue
 
-            LOGR.debug(f"{self.__class__.__name__} got MIDI message: {msg}")
+            logging.debug(f"{self.__class__.__name__} got MIDI message: {msg}")
             note: int = msg.bytes()[1]
             vel: int = 100
             str_note = f"{note}:{vel}"
@@ -97,7 +97,7 @@ class CountMidiControl(CmdTranslator):
             is_on = is_midi_note_on(msg)
             if is_on and self.__past_note != note:
                 # do not sent same note many times, we count it below
-                LOGR.debug(f"Sending original note: {note}")
+                logging.debug(f"Sending original note: {note}")
                 self._translate_and_send(str_note)
 
             self.__past_note = note
@@ -134,7 +134,7 @@ class CountMidiControl(CmdTranslator):
 
         self.__on_count = self.__off_count = 0
         str_note = f"{note}:{count}"
-        LOGR.debug(f"Sending counted note: {str_note}")
+        logging.debug(f"Sending counted note: {str_note}")
         self._translate_and_send(str_note)
 
     def __str__(self):

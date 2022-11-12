@@ -3,7 +3,7 @@ from abc import abstractmethod
 import numpy as np
 import sounddevice as sd
 
-from utils import LOGR
+import logging
 from loop._oneloopctrl import OneLoopCtrl
 
 
@@ -17,7 +17,7 @@ class Player:
         self._ctrl = ctrl
 
     def play_buffer(self):
-        LOGR.debug(f"===Start {self.__class__.__name__}")
+        logging.debug(f"===Start {self.__class__.__name__}")
 
         # noinspection PyUnusedLocal
         def callback(in_data, out_data, frame_count, time_info, status):
@@ -39,7 +39,7 @@ class Player:
         if self.is_empty:
             self.trim_buffer(self._ctrl.idx)
 
-        LOGR.debug(f"===Stop {self.__class__.__name__}")
+        logging.debug(f"===Stop {self.__class__.__name__}")
 
     @abstractmethod
     def play_samples(self, out_data: np.ndarray, idx: int) -> None:

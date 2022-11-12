@@ -1,6 +1,6 @@
 import numpy as np
 
-from utils import LOGR
+import logging
 from utils import record_sound_buff, play_sound_buff, SD_MAX
 from utils import sound_test, make_zero_buffer, MAX_LEN
 
@@ -69,7 +69,7 @@ class WrapBuffer:
         """Trim is called once to fix buffer length. Buffer must be multiple of trim_len.
          If this length is negative use only idx value"""
 
-        LOGR.debug(f"before trim: len {len(self.__buff)} trim_len {trim_len} start {self.__start} idx {idx}")
+        logging.debug(f"before trim: len {len(self.__buff)} trim_len {trim_len} start {self.__start} idx {idx}")
         assert self.is_empty, "buffer must be empty"
         assert self.__start >= 0, "start must be non negative"
 
@@ -100,7 +100,7 @@ class WrapBuffer:
         play_sound_buff(self.__buff, new_buff, self.__start)
         self.__buff = new_buff
 
-        LOGR.debug(f"after trim: len {len(self.__buff)} trim_len {trim_len} start {self.__start} idx {idx}")
+        logging.debug(f"after trim: len {len(self.__buff)} trim_len {trim_len} start {self.__start} idx {idx}")
         assert self.length % trim_len == 0 and self.length > 0, "incorrect buffer trim"
         self._str = None
 

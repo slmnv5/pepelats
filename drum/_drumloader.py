@@ -6,7 +6,7 @@ from typing import List, Any, Dict, Union, Tuple
 import numpy as np
 import soundfile as sf
 
-from utils import LOGR
+import logging
 from utils import JsonDict, make_zero_buffer, record_sound_buff, SD_TYPE, ConfigName, FileFinder
 from utils import SD_MAX
 
@@ -51,14 +51,14 @@ class DrumLoader:
 
     @staticmethod
     def load(directory: str) -> None:
-        LOGR.info(f"Loading drum {directory}")
+        logging.info(f"Loading drum {directory}")
         if len(DrumLoader.__sounds) == 0:
             DrumLoader.__load_sounds(directory)
-            LOGR.info(f"Loaded drum sounds {len(DrumLoader.__sounds)}")
+            logging.info(f"Loaded drum sounds {len(DrumLoader.__sounds)}")
         DrumLoader.__load_all_patterns(directory, "drum_level1", DrumLoader.__ptn_l1)
         DrumLoader.__load_all_patterns(directory, "drum_level2", DrumLoader.__ptn_l2)
         DrumLoader.__load_all_patterns(directory, "drum_break", DrumLoader.__ptn_bk)
-        LOGR.info(f"Loaded drum patterns {len(DrumLoader.__ptn_l1)}")
+        logging.info(f"Loaded drum patterns {len(DrumLoader.__ptn_l1)}")
 
     @staticmethod
     def __load_sounds(directory: str) -> None:
@@ -78,7 +78,7 @@ class DrumLoader:
             v2: float = np.max(sound)
             DrumLoader.max_volume = max(DrumLoader.max_volume, v1 * v2)
             assert DrumLoader.max_volume < SD_MAX
-            #  LOGR.info(f"Loaded sound {file_name}")
+            #  logging.info(f"Loaded sound {file_name}")
             DrumLoader.__sounds[name] = (sound, v1)
 
     @staticmethod
@@ -114,7 +114,7 @@ class DrumLoader:
         for i in DrumLoader.__ptn_bk:
             DrumLoader.__snd_bk.append(DrumLoader.__prepare_one(i, length))
 
-        LOGR.info(f"Generated drum patterns {len(DrumLoader.__snd_l1)}")
+        logging.info(f"Generated drum patterns {len(DrumLoader.__snd_l1)}")
 
         DrumLoader.random_samples()
         DrumLoader.__length = length
@@ -128,7 +128,7 @@ class DrumLoader:
             notes = pattern[sound_name]
             steps = len(notes)
             if notes.count("!") + notes.count(".") != steps:
-                LOGR.error(f"sound {sound_name} notes {notes} must contain only '.' and '!'")
+                logging.error(f"sound {sound_name} notes {notes} must contain only '.' and '!'")
 
             step_len = length // steps
             sound, sound_volume = DrumLoader.__sounds[sound_name]

@@ -4,7 +4,7 @@ from typing import List
 # noinspection PyUnresolvedReferences
 import alsaaudio
 
-from utils import LOGR
+import logging
 from mixer._mockedmixer import MockedMixer
 
 
@@ -60,7 +60,7 @@ class AlsaMixer(MockedMixer):
         self.__in = find_mixer(["Mic"], all_mixers_list)
         self.__in.setvolume(100)
 
-        LOGR.info(f"Found mixers: {alsaaudio.mixers()}, info: {str(self)}")
+        logging.info(f"Found mixers: {alsaaudio.mixers()}, info: {str(self)}")
 
     def fade(self, seconds: int) -> None:
         new_volume = save_volume = self.getvolume(out=True)

@@ -7,7 +7,7 @@ from typing import Dict
 import keyboard
 import mido
 
-from utils import LOGR
+import logging
 
 KBD_NOTES = "KBD_NOTES"
 
@@ -22,7 +22,7 @@ class KbdMidiPort:
         try:
             self.__kbd_notes: Dict[str, int] = json.loads("{" + kbd_map_str + "}")
         except Exception as err:
-            LOGR.error(f"Failed to parse env. variable KBD_NOTES, error: {err}")
+            logging.error(f"Failed to parse env. variable KBD_NOTES, error: {err}")
             sys.exit(1)
 
         self.__queue = Queue()

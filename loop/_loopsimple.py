@@ -3,7 +3,7 @@ from threading import Timer
 import numpy as np
 
 from drum import RDRUM
-from utils import LOGR
+import logging
 from loop._oneloopctrl import OneLoopCtrl
 from loop._player import Player
 from loop._wrapbuffer import WrapBuffer
@@ -19,7 +19,7 @@ class LoopSimple(WrapBuffer, Player):
 
     def trim_buffer(self, idx: int) -> None:
         """trim buffer to the length at stop event = idx. Overridden by child class"""
-        LOGR.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
+        logging.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
         self.finalize(idx, 0)
 
 
@@ -37,7 +37,7 @@ class LoopWithDrum(LoopSimple):
     def trim_buffer(self, idx: int) -> None:
         """create drums of correct length if drum is empty,
         otherwise trims self.length to multiple of drum length"""
-        LOGR.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
+        logging.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
         if not RDRUM.get_length():
             RDRUM.prepare_drum_async(idx)
             self.finalize(idx, 0)

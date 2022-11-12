@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 import time
@@ -8,12 +9,20 @@ from multiprocessing.connection import Connection
 import mido
 
 from kbdmidi import KbdMidiPort
-from utils import LOGR
 from loop import ExtendedCtrl
 from mvc import CountMidiControl
 from mvc import MidiControl, ScreenView
 
 MIDI_PORT_NAME = "MIDI_PORT_NAME"
+
+level = "WARN"
+if "--debug" in sys.argv:
+    level = "DEBUG"
+if "--info" in sys.argv:
+    level = "INFO"
+
+logging.basicConfig(level=level, format='%(asctime)s %(levelname)s %(message)s',
+                    filename='log.log', filemode='w')
 
 
 def process_looper(recv_looper: Connection, send_view: Connection) -> None:
@@ -31,7 +40,7 @@ def open_midi_port(name: str, is_input: bool):
     port_list = mido.get_input_names() if is_input else mido.get_output_names()
     for port_name in port_list:
         if name in port_name:
-            LOGR.info(f"opening: {port_name} input: {is_input}")
+            logging.info(f"opening: {port_name} input: {is_input}")
             if is_input:
                 # noinspection PyUnresolvedReferences
                 return mido.open_input(port_name)
@@ -51,7 +60,7 @@ def go() -> None:
         in_port = open_midi_port(port_name, is_input=True)
         if not in_port:
             msg = f"Failed to open MIDI port for commands input: {port_name}"
-            LOGR.error(msg)
+            logging.error(msg)
             raise RuntimeError(msg)
 
     Process(target=process_looper, args=(recv_looper, send_view), name="looper", daemon=True).start()

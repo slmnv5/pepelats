@@ -3,7 +3,7 @@ from threading import Timer
 import numpy as np
 
 from drum import RDRUM
-from utils import LOGR
+import logging
 from loop._loopsimple import LoopWithDrum
 from loop._oneloopctrl import OneLoopCtrl
 from loop._player import Player
@@ -25,7 +25,7 @@ class SongPart(CollectionOwner[LoopWithDrum], Player):
     def trim_buffer(self, idx: int) -> None:
         """create drums of correct length if drum is empty,
         otherwise trims self.length to multiple of first loop in the part"""
-        LOGR.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
+        logging.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
         self.get_item().trim_buffer(idx)
 
     @property

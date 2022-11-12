@@ -5,7 +5,7 @@ from drum import RDRUM
 from loop._oneloopctrl import OneLoopCtrl
 from loop._songpart import SongPart
 from utils import FileFinder, CollectionOwner
-from utils import LOGR
+import logging
 from utils import generate_name
 
 
@@ -63,7 +63,7 @@ class Song(CollectionOwner[SongPart]):
         self._file_finder.set_fixed(self._file_finder.get_item())
         self.go_first()
         self.align_ids()
-        LOGR.info(f"Loaded song file: {full_name}")
+        logging.info(f"Loaded song file: {full_name}")
 
     def _save_song(self) -> None:
         self._file_finder.go_fixed()
@@ -79,7 +79,7 @@ class Song(CollectionOwner[SongPart]):
         with open(full_name, 'wb') as f:
             pickle.dump((length, RDRUM.get_item(), save_list), f)
 
-        LOGR.info(f"Saved song file {full_name}")
+        logging.info(f"Saved song file {full_name}")
 
     def _save_new_song(self):
         tmp = self.__new_song_name()

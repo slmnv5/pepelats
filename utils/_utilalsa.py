@@ -5,8 +5,8 @@ from typing import Tuple, Union
 
 import numpy as np
 import sounddevice as sd
-
-from utils._utilother import LOGR
+import logging
+# from utils._utilother import LOGR
 from utils._utilconfig import SD_TYPE, MAX_LEN
 
 
@@ -18,7 +18,7 @@ def find_usb() -> None:
         new_str = usb_audio_str.strip(' ,').replace("'", "").replace('"', '').replace(',', '","')
         usb_audio = json.loads(f'["{new_str}"]')
     except Exception as err:
-        LOGR.error(f"Failed to parse env. variable USB_AUDIO_NAMES, error: {err}")
+        logging.error(f"Failed to parse env. variable USB_AUDIO_NAMES, error: {err}")
         sys.exit(1)
 
     all_devices = sd.query_devices()
@@ -26,7 +26,7 @@ def find_usb() -> None:
         for sd_name in usb_audio:
             full_name = dev["name"]
             if sd_name in full_name:
-                LOGR.info(f"Found requested device {sd_name} in {full_name}")
+                logging.info(f"Found requested device {sd_name} in {full_name}")
                 sd.default.device = k, k
                 return
 
