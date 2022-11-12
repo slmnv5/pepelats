@@ -41,14 +41,10 @@ class Song(CollectionOwner[SongPart]):
         with open(full_name, 'rb') as f:
             length, drum_type, load_list = pickle.load(f)
 
-        if length <= 0:
-            raise RuntimeError(f"Loading song: length <= 0: {full_name}")
-
-        if len(load_list) != 4:
-            raise RuntimeError(f"Loading song: wrong number of parts: {full_name}")
+        assert length > 0, f"Loading song: length <= 0: {full_name}"
+        assert len(load_list) == 4, f"Loading song: wrong number of parts: {full_name}"
 
         RDRUM.set_fixed(drum_type)
-        RDRUM.go_fixed()
         RDRUM.load_drum_type()
         RDRUM.prepare_drum(length)
 
@@ -56,6 +52,7 @@ class Song(CollectionOwner[SongPart]):
         load_list = [x if x is not None else SongPart(ctrl) for x in load_list]
 
         for part in load_list:
+            print(1111, str(part))
             assert type(part) == SongPart
             part.set_ctrl(ctrl)
             self.append(part)
