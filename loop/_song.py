@@ -1,4 +1,3 @@
-import os
 import pickle
 from abc import abstractmethod
 
@@ -15,28 +14,22 @@ class Song(CollectionOwner[SongPart]):
 
     def __init__(self, first: SongPart):
         CollectionOwner.__init__(self, first)
-        self.__part_id: int = 0
         self._file_finder: FileFinder = FileFinder("save_song", True, ".s")
 
-    @property
-    def part_id(self) -> int:
-        return self.__part_id
-
     def get_part(self) -> SongPart:
-        return self.get_id(self.__part_id)
+        return self.get_fixed()
 
     def align_ids(self) -> None:
-        self.__part_id = self.id
+        self.set_fixed(self.get_item())
 
     @abstractmethod
     def _stop_song(self, wait: int = 0) -> None:
         pass
 
-    def _init_song(self, wait: int = 0) -> None:
+    def _init_song(self) -> None:
         ff = self._file_finder
         ff.set_fixed(ff.get_empty_name())
         assert ff.get_item() == ff.get_empty_name()
-        assert ff.get_fixed() == ff.get_empty_name()
 
     @abstractmethod
     def _get_control(self) -> OneLoopCtrl:

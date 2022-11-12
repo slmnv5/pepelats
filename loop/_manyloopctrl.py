@@ -58,22 +58,22 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             self.stop_at_bound(self.get_part().length)
 
     def _record_part(self):
-        if self.id == self.part_id and self._is_rec:
+        if self.id == self.fixed_id and self._is_rec:
             part = self.get_part()
             loop = part.get_item()
             if not loop.is_empty:
                 loop.resize_buff(MAX_LEN)
 
-    def _play_part_id(self, part_id: int) -> None:
+    def _play_part_id(self, fixed_id: int) -> None:
         if not self._go_play.is_set():
-            self.go_id(part_id)
+            self.go_id(fixed_id)
             self._go_play.set()
             return
 
-        if part_id != self.id:
-            self.go_id(part_id)
+        if fixed_id != self.id:
+            self.go_id(fixed_id)
             self._stop_never()
-            if part_id == self.part_id:
+            if fixed_id == self.fixed_id:
                 return
 
         part = self.get_part()
@@ -81,7 +81,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         if part.id > 0 and self._is_rec and loop.is_empty:
             loop.finalize(self.idx, part.length)
 
-        if self.id == self.part_id:
+        if self.id == self.fixed_id:
             if self._is_rec:
                 self._is_rec = False
             else:
@@ -101,7 +101,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             else:
                 self.stop_at_bound(RDRUM.get_length())
         else:
-            if self.id != self.part_id:
+            if self.id != self.fixed_id:
                 if self.is_stop_len_set():
                     self.stop_at_bound(RDRUM.get_length())
                 else:

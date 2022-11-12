@@ -61,6 +61,7 @@ class CollectionOwner(Generic[T]):
         fixed = self.get_fixed()
         self.__id = self.__items.index(fixed)
 
+    @property
     def fixed_id(self) -> int:
         fixed = self.get_fixed()
         return self.__items.index(fixed)

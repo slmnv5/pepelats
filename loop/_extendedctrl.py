@@ -84,7 +84,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         return part.get_list()
 
     def _show_all_parts(self) -> str:
-        return self.get_list(self.part_id)
+        return self.get_list(self.fixed_id)
 
     def _show_mixer_volume(self) -> str:
         return f"Mixer volume\noutput:{self.__mixer.getvolume(out=True):.2F}\n" \
@@ -113,17 +113,17 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     #  ============ All song parts view and related commands
 
     def _clear_part(self) -> None:
-        if self.id == self.part_id:
+        if self.id == self.fixed_id:
             return
         save_id = self.id
-        self.go_id(self.part_id)
+        self.go_id(self.fixed_id)
         self._stop_never()
         self.delete(save_id)
         self.align_ids()
         self.append(SongPart(self))
 
     def _duplicate_part(self) -> None:
-        if self.id != self.part_id:
+        if self.id != self.fixed_id:
             return
         part = self.get_item()
         if part.is_empty:
@@ -152,7 +152,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         part.redo()
 
     def _redo_all(self) -> None:
-        if self.id != self.part_id:
+        if self.id != self.fixed_id:
             return
         self._is_rec = False
         part = self.get_part()
