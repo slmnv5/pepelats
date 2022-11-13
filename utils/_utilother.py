@@ -134,7 +134,11 @@ class CollectionOwner(Generic[T]):
         start_id = (self.__id // lst_size) * lst_size
         save_id = self.__id
         self.__id = start_id
-        for _ in range(lst_size):
+        k = 0
+        while k < lst_size:
+            if not self.get_item():
+                continue
+            k += 1
             prefix: str = ""
             if self.__id == self.fixed_id:
                 prefix = "*"

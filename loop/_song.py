@@ -51,7 +51,6 @@ class Song(CollectionOwner[SongPart]):
         load_list = [x if x is not None else SongPart(ctrl) for x in load_list]
 
         for part in load_list:
-            print(1111, str(part))
             assert type(part) == SongPart
             part.set_ctrl(ctrl)
             self.append(part)
@@ -87,10 +86,12 @@ class Song(CollectionOwner[SongPart]):
         self._save_song()
 
     def _delete_song(self) -> None:
+        if self._file_finder.id == self._file_finder.fixed_id:
+            return
         self._stop_song()
         del_id = self._file_finder.id
-        self._init_song()
         self._file_finder.delete(del_id)
+        self._file_finder.iterate(True)
 
     def __new_song_name(self) -> str:
         return generate_name() + self._file_finder.get_end_with()
