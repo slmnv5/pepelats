@@ -20,9 +20,6 @@ export USB_AUDIO_NAMES='VALETON GP,USB Audio'
 THIS_DIR=$(dirname "$0")
 cd "$THIS_DIR" || exit 1
 
-git reset --hard
-git pull
-
 found=$(pgrep --full start_looper.py)
 if [ -n "$found" ]; then
   echo "Exiting, already running"
