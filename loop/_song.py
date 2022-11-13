@@ -35,6 +35,8 @@ class Song(CollectionOwner[SongPart]):
         pass
 
     def _load_song(self) -> None:
+        if not self._file_finder.get_item():
+            return
         self._stop_song()
         full_name = self._file_finder.get_full_name()
         with open(full_name, 'rb') as f:

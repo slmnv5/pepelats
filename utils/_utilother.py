@@ -130,23 +130,21 @@ class CollectionOwner(Generic[T]):
 
     def get_list(self) -> str:
         tmp = ""
-        lst_size = min(7, self.item_count)
+        lst_size = min(7, len(self.__items))
         start_id = (self.__id // lst_size) * lst_size
-        save_id = self.__id
-        self.__id = start_id
-        k = 0
-        while k < lst_size:
-            if not self.get_item():
-                continue
-            k += 1
-            prefix: str = ""
-            if self.__id == self.fixed_id:
-                prefix = "*"
-            elif self.__id == save_id:
-                prefix = "~"
-            tmp += prefix + str(self.get_item()) + '\n'
-            self.iterate(True)
-        self.__id = save_id
+        lst = self.__items[start_id:start_id + lst_size]
+        roll_over_count = lst_size - len(lst)
+        if roll_over_count > 0:
+            lst = lst + self.__items[:roll_over_count]
+        fixed = self.get_fixed()
+        item = self.get_item()
+        for element in [x for x in lst if str(x)]:
+            if element is fixed:
+                tmp += "*" + str(element) + '\n'
+            elif element is item:
+                tmp += "~" + str(element) + '\n'
+            else:
+                tmp += str(element) + '\n'
         return tmp[:-1]
 
     def iterate(self, go_fwd: bool) -> None:
@@ -285,9 +283,16 @@ if __name__ == "__main__":
         co.append("ee")
         co.append("ff")
         co.append("gg")
+        co.append("hh")
+        co.append("ii")
+        co.append("jj")
+        co.append("kk")
+        co.append("ll")
 
         find1 = co.find_first_id(lambda x: co.get_id(x) == 'ff')
         assert find1 == 5, f"found: {find1} expected: 5"
+        co.go_id(8)
+        print(co.get_list())
 
 
     def test2():
@@ -306,4 +311,4 @@ if __name__ == "__main__":
         assert "" == ff.get_item()
 
 
-    test3()
+    test1()
