@@ -66,7 +66,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         self._file_finder.iterate(go_fwd=params[0] > 0)
 
     def _show_song(self) -> str:
-        return self._file_finder.get_list()
+        return self._file_finder.get_str()
 
     @staticmethod
     def _change_drum_type(direction) -> None:
@@ -74,7 +74,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
     @staticmethod
     def _show_drum_type() -> str:
-        return RDRUM.get_list()
+        return RDRUM.get_str()
 
     @staticmethod
     def _load_drum_type() -> None:
@@ -82,10 +82,10 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
     def _show_one_part(self) -> str:
         part = self.get_part()
-        return part.get_list()
+        return part.get_str()
 
     def _show_all_parts(self) -> str:
-        return self.get_list()
+        return self.get_str()
 
     def _show_mixer_volume(self) -> str:
         return f"Mixer volume\noutput:{self.__mixer.getvolume(out=True):.2F}\n" \

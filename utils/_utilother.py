@@ -128,8 +128,7 @@ class CollectionOwner(Generic[T]):
     def go_first(self) -> None:
         self.__id = 0
 
-    def get_list(self) -> str:
-        tmp = ""
+    def get_str(self) -> str:
         lst_size = min(7, len(self.__items))
         start_id = (self.__id // lst_size) * lst_size
         lst = self.__items[start_id:start_id + lst_size]
@@ -138,13 +137,19 @@ class CollectionOwner(Generic[T]):
             lst = lst + self.__items[:roll_over_count]
         fixed = self.get_fixed()
         item = self.get_item()
-        for element in [x for x in lst if str(x)]:
-            if element is fixed:
-                tmp += "*" + str(element) + '\n'
-            elif element is item:
-                tmp += "~" + str(element) + '\n'
+        tmp: str = ""
+        for elm in lst:
+            elm_str = str(elm)
+            if not elm_str:
+                continue
+            if elm is fixed:
+                prefix = "*"
+            elif elm is item:
+                prefix = "~"
             else:
-                tmp += str(element) + '\n'
+                prefix = ""
+            tmp += prefix + elm_str + '\n'
+
         return tmp[:-1]
 
     def iterate(self, go_fwd: bool) -> None:
@@ -276,23 +281,17 @@ class MenuLoader(FileFinder):
 
 if __name__ == "__main__":
     def test1():
-        co = CollectionOwner("aa")
-        co.append("bb")
-        co.append("cc")
-        co.append("dd")
-        co.append("ee")
-        co.append("ff")
-        co.append("gg")
-        co.append("hh")
-        co.append("ii")
-        co.append("jj")
-        co.append("kk")
-        co.append("ll")
-
-        find1 = co.find_first_id(lambda x: co.get_id(x) == 'ff')
+        lst = [chr(k) for k in range(65, 80)]
+        co = CollectionOwner(lst[0])
+        for k in lst[1:]:
+            co.append(k)
+        find1 = co.find_first_id(lambda x: co.get_id(x) == 'F')
         assert find1 == 5, f"found: {find1} expected: 5"
-        co.go_id(8)
-        print(co.get_list())
+        co.go_id(8)  # letter I
+        list_str = co.get_str()
+        print(list_str)
+        assert "H" == list_str[0]
+        assert "~I" in list_str
 
 
     def test2():
@@ -312,3 +311,5 @@ if __name__ == "__main__":
 
 
     test1()
+    test2()
+    test3()
