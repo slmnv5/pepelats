@@ -9,7 +9,6 @@ from drum import RDRUM
 import logging
 from loop._manyloopctrl import ManyLoopCtrl
 from loop._songpart import SongPart
-from mixer import Mixer
 from utils import MsgProcessor, RedrawScreen
 from utils import run_os_cmd
 
@@ -21,7 +20,6 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         ManyLoopCtrl.__init__(self)
         MsgProcessor.__init__(self, recv_conn, send_conn)
         self.__redraw = RedrawScreen("", "", 0, 0, True, False)
-        self.__mixer: Mixer = Mixer()
 
     def _redraw(self) -> None:
         self._send_redraw({"redraw": 0})
@@ -52,14 +50,6 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
         MsgProcessor._send_redraw(self, infodic)
 
-    #  ========= change methods for mixer
-
-    def _change_mixer_in(self, change_by: int) -> None:
-        self.__mixer.change_volume(change_by, out=False)
-
-    def _change_mixer_out(self, change_by: int) -> None:
-        self.__mixer.change_volume(change_by, out=True)
-
     # ================ show methods
 
     def _change_song(self, *params) -> None:
@@ -87,16 +77,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     def _show_all_parts(self) -> str:
         return self.get_str()
 
-    def _show_mixer_volume(self) -> str:
-        return f"Mixer volume\noutput:{self.__mixer.getvolume(out=True):.2F}\n" \
-               f"input:{self.__mixer.getvolume(out=False):.2F}"
-
     # ================ other methods
-
-    def _fade_and_stop(self, seconds: int) -> None:
-        self._go_play.clear()
-        self.__mixer.fade(seconds)
-        self.stop_at_bound(0)
 
     @staticmethod
     def _restart() -> None:
