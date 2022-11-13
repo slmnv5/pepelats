@@ -5,24 +5,19 @@
     "13:1": ["_change_map", "next", "song"],
     "12:2": ["_change_map", "0", "params"],
     "13:2": ["_change_map", "0", "params"],
-    "12:6": ["_change_map", "1", "playing"],
+    "12:6": ["_change_map", "0", "playing"],
     "13:6": ["_change_map", "0", "playing"]
   },
   "0": {
-    "description": "Stop: A-now B-end C2-fade D2-init",
+    "description": "Stop: A-now B-at_loop_end C2-save_song CH-save_new_song D2-init",
     "update_method": "",
     "60:1": [["_stop_song", 0], ["_change_map", "0", "playing"]],
     "62:1": [["_stop_song", 1], ["_change_map", "0", "playing"]],
-    "64:2": [["_fade_and_stop", 15], ["_change_map", "0", "playing"]],
+    "64:2": [["_save_song"], ["_change_map", "0", "playing"]],
+    "64:6": [["_save_new_song"], ["_change_map", "0", "playing"]],
     "65:2": [["_init_song"], ["_change_map", "0", "playing"]]
   },
-   "2": {
-    "description": "Song: C2-save CH-save_new",
-    "update_method": "",
-    "64:2": [["_save_song"], ["_change_map", "0", "playing"]],
-    "64:6": [["_save_new_song"], ["_change_map", "0", "playing"]]
-   },
-     "3": {
+  "1": {
     "description": "Next: A/B-scroll D2-load DH-delete",
     "update_method": "_show_song",
     "60:100": ["_change_song", -1],
