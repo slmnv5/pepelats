@@ -12,7 +12,8 @@ build
 #PyCharm
 .idea
 #other
-*.log
+log.txt
+log.log
 *.pyc
 
 

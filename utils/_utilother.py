@@ -10,20 +10,11 @@ from utils._utilloader import JsonDict
 
 ROOT_DIR = Path(__file__).parent.parent
 
-
-# level = "WARN"
-# if "--debug" in sys.argv:
-#    level = "DEBUG"
-# if "--info" in sys.argv:
-#    level = "INFO"
-
-# logging.basicConfig(level=os.getenv("DEBUG_LEVEL", level), filename=Path(ROOT_DIR, 'log.log'), filemode='w')
+# logging.basicConfig(level=level, filename='log.log', filemode='w')
 # LOGR = logging.getLogger()
 # fm = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 # logging.handlers[0].setFormatter(fm)
 # logging.propagate = False
-
-# logging.info(f"=======>Starting looper's log {logging.handlers}")
 
 
 def run_os_cmd(cmd_list: list[str]) -> int:

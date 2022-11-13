@@ -1,6 +1,16 @@
 import logging
-import os
 import sys
+
+level = "WARN"
+if "--debug" in sys.argv:
+    level = "DEBUG"
+if "--info" in sys.argv:
+    level = "INFO"
+
+logging.basicConfig(level=level, format='%(asctime)s %(levelname)s %(message)s', filename='log.txt', filemode='w')
+logging.error('This is a log message.')
+
+import os
 import time
 from multiprocessing import Pipe, Process
 # noinspection PyProtectedMember
@@ -14,15 +24,6 @@ from mvc import CountMidiControl
 from mvc import MidiControl, ScreenView
 
 MIDI_PORT_NAME = "MIDI_PORT_NAME"
-
-level = "WARN"
-if "--debug" in sys.argv:
-    level = "DEBUG"
-if "--info" in sys.argv:
-    level = "INFO"
-
-logging.basicConfig(level=level, format='%(asctime)s %(levelname)s %(message)s',
-                    filename='log.log', filemode='w')
 
 
 def process_looper(recv_looper: Connection, send_view: Connection) -> None:
