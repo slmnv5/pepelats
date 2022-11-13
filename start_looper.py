@@ -8,7 +8,7 @@ if "--info" in sys.argv:
     level = "INFO"
 
 logging.basicConfig(level=level, format='%(asctime)s %(levelname)s %(message)s', filename='log.txt', filemode='w')
-logging.error('This is a log message.')
+logging.error('>>> Starting looper <<<')
 
 import os
 import time

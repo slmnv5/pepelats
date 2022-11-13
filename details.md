@@ -13,7 +13,7 @@ configured in a text files (e.g. [etc/midi/playing.json](config/midi/playing.jso
 There are 4 buttons on this pedal named A,B,C,D and 2 extra buttons attached to MIDI expression inputs named E1 and E2.
 
 MIDI over Bluetooth needs manual pairing. You may use wired USB MIDI controller as well or even typing keyboard. Check
-file [looper.sh](looper.sh) and [looper_defaults.json](config/looper_defaults.json) for details.
+file [looper.sh](looper.sh) for details.
 
 ## Looper modes - "direct" and "indirect"
 
