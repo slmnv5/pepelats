@@ -154,7 +154,6 @@ class CollectionOwner(Generic[T]):
 
 
 class FileFinder(CollectionOwner[str]):
-    empty_item_name: str = "empty_item"
 
     def __init__(self, directory: str, is_file: bool, end_with: str):
         self.__end_with: str = end_with
@@ -163,10 +162,8 @@ class FileFinder(CollectionOwner[str]):
         found_items: List[str] = [x for x in os.listdir(str(self.__dir))
                                   if self.__chk_match(self.__dir, x, is_file)]
 
-        found_items.sort(key=lambda x: os.path.getmtime(Path(self.__dir, x)), reverse=True)
-
         if not found_items:
-            found_items.append(FileFinder.empty_item_name + self.__end_with)
+            found_items.append("")
 
         CollectionOwner.__init__(self, found_items[0])
         for item in found_items[1:]:
@@ -186,13 +183,8 @@ class FileFinder(CollectionOwner[str]):
     def get_end_with(self) -> str:
         return self.__end_with
 
-    def get_empty_name(self):
-        return FileFinder.empty_item_name + self.__end_with
-
-    def is_empty_name(self):
-        return self.get_fixed() == self.get_empty_name()
-
     def delete(self, k: int) -> None:
+        self.go_id(k)
         path = self.get_full_name()
         deleted = CollectionOwner.delete(self, k)
         if deleted and os.path.isfile(path):
@@ -307,7 +299,7 @@ if __name__ == "__main__":
         ff = FileFinder(".", True, ".lkjlkjhkj")
         print(ff.get_item())
         print(ff.item_count)
-        assert ff.get_empty_name() == ff.get_item()
+        assert "" == ff.get_item()
 
 
     test3()

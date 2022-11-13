@@ -33,8 +33,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             self.append(SongPart(self))
 
         ff = self._file_finder
-        ff.set_fixed(ff.get_empty_name())
-        assert ff.get_item() == ff.get_empty_name()
+        ff.set_fixed("")
 
         self.set_fixed(self.get_first())
         self.align_ids()

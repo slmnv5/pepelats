@@ -65,13 +65,14 @@ class Song(CollectionOwner[SongPart]):
         logging.info(f"Loaded song file: {full_name}")
 
     def _save_song(self) -> None:
+        if not self._file_finder.get_fixed():
+            return
+
         self._file_finder.go_fixed()
         full_name = self._file_finder.get_full_name()
         length: int = RDRUM.get_length()
         save_list = list()
-        for k in range(self.item_count):
-            x = self.get_id(k)
-            save_list.append(x if not x.is_empty else None)
+        self.apply_to_each(lambda x: save_list.append(None if x.is_empty else x), use_undo=False)
 
         assert len(save_list) == 4, f"Song must have 4 parts: {full_name}"
 
@@ -87,8 +88,9 @@ class Song(CollectionOwner[SongPart]):
 
     def _delete_song(self) -> None:
         self._stop_song()
-        self._file_finder.delete(self._file_finder.id)
+        del_id = self._file_finder.id
         self._init_song()
+        self._file_finder.delete(del_id)
 
     def __new_song_name(self) -> str:
         return generate_name() + self._file_finder.get_end_with()
