@@ -61,7 +61,7 @@ class ScreenView(MsgProcessor):
         Thread(target=self.__update_progress, name="update_progress", daemon=True).start()
 
     def _send_redraw(self, infodic: Dict) -> None:
-        logging.info("Get redraw: " + str(infodic))
+        logging.debug("Get redraw: " + str(infodic))
         if "header" in infodic:
             self.__header = infodic["header"].center(COLS)
 
@@ -82,7 +82,7 @@ class ScreenView(MsgProcessor):
             self.__descr_lines = 0
 
     def __update_loops(self, redraw: RedrawScreen) -> None:
-        logging.info(f"Updating screen: {redraw}")
+        logging.debug(f"Updating screen: {redraw}")
         self.__is_stop = redraw.is_stop
         if not self.__is_stop:
             self.__idx = redraw.idx
