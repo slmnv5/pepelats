@@ -26,10 +26,9 @@ class Song(CollectionOwner[SongPart]):
     def _stop_song(self, wait: int = 0) -> None:
         pass
 
+    @abstractmethod
     def _init_song(self) -> None:
-        ff = self._file_finder
-        ff.set_fixed(ff.get_empty_name())
-        assert ff.get_item() == ff.get_empty_name()
+        pass
 
     @abstractmethod
     def _get_control(self) -> OneLoopCtrl:

@@ -32,6 +32,10 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         while self.item_count < 4:
             self.append(SongPart(self))
 
+        ff = self._file_finder
+        ff.set_fixed(ff.get_empty_name())
+        assert ff.get_item() == ff.get_empty_name()
+
         self.set_fixed(self.get_first())
         self.align_ids()
         RDRUM.clear_drum()
