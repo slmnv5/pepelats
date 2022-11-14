@@ -133,7 +133,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
 
     @staticmethod
     def _show_drum_param() -> str:
-        return f"Drum parameters:\nvolume(0.0-1.0):{RDRUM.get_volume():.2F}\n" \
+        return f"Drum parameters:\nvolume(0-100):{RDRUM.get_volume():.0F}\n" \
                f"swing(0.5-0.75):{RDRUM.get_swing():.2F}"
 
 
