@@ -1,7 +1,6 @@
 {
   "default_pattern": {
     "steps": 16,
-    "swing": 0.75,
     "acc": "5"
   },
   "0": {

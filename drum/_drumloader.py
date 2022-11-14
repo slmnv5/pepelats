@@ -17,7 +17,7 @@ def extend_list(some_list: Union[List, str], new_len: int) -> List:
     return (some_list * k)[:new_len]
 
 
-def pos_with_swing(step_number: int, step_len: int, swing: float) -> int:
+def position_with_swing(step_number: int, step_len: int, swing: float) -> int:
     """shift every even 16th note to make it swing like"""
     if step_number % 2 == 0:
         return round(step_number * step_len)
@@ -127,7 +127,6 @@ class DrumLoader(FileFinder):
 
     def __prepare_one(self, pattern, length: int) -> np.ndarray:
         accents = pattern["acc"]
-        swing: float = pattern["swing"]
         ndarr = make_zero_buffer(length)
         for sound_name in [x for x in self.__sounds if x in pattern]:
             notes = pattern[sound_name]
@@ -145,7 +144,7 @@ class DrumLoader(FileFinder):
                 if notes[step_number] != '.':
                     step_accent = int(accents[step_number])
                     step_volume = sound_volume * step_accent / 9 * self.volume / 100
-                    pos = pos_with_swing(step_number, step_len, swing)
+                    pos = position_with_swing(step_number, step_len, self.swing)
                     tmp = (sound * step_volume).astype(SD_TYPE)
                     record_sound_buff(ndarr, tmp, pos)
 
