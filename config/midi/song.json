@@ -20,7 +20,7 @@
     "update_method": "_show_song",
     "60:100": ["_change_song", -1],
     "62:100": ["_change_song", 1],
-    "65:2": [["_load_song"], ["_sleep_sec", 2], ["_change_map", "0", "playing"]],
+    "65:2": [["_load_song"], ["_change_map", "0", "playing"]],
     "65:6": ["_delete_song"]
    }
 }

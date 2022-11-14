@@ -1,4 +1,3 @@
-import time
 from abc import abstractmethod
 from threading import Event, Timer
 
@@ -18,10 +17,6 @@ class OneLoopCtrl:
         self.idx: int = 0
         self.__stop_len: int = MAX_32_INT
         self.__stop_event: Event = Event()
-
-    @staticmethod
-    def _sleep_sec(sec: float) -> None:
-        time.sleep(sec)
 
     @abstractmethod
     def _redraw(self) -> None:

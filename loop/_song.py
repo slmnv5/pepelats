@@ -1,5 +1,6 @@
 import pickle
 from abc import abstractmethod
+from time import sleep
 
 from drum import RDRUM
 from loop._oneloopctrl import OneLoopCtrl
@@ -63,6 +64,9 @@ class Song(CollectionOwner[SongPart]):
         self._file_finder.set_fixed(self._file_finder.get_item())
         self.go_first()
         self.align_ids()
+        while not RDRUM.get_length():
+            sleep(0.1)
+
         logging.info(f"Loaded song file: {full_name}")
 
     def _save_song(self) -> None:
