@@ -3,10 +3,8 @@
     "description": "Parent for maps",
     "12:1": ["_change_map", "prev", "song"],
     "13:1": ["_change_map", "next", "song"],
-    "12:2": ["_change_map", "0", "params"],
-    "13:2": ["_change_map", "0", "params"],
     "12:6": ["_change_map", "0", "playing"],
-    "13:6": ["_change_map", "0", "playing"]
+    "13:6": ["_change_map", "0", "params"]
   },
   "0": {
     "description": "Stop: A-now B-at_loop_end C2-save_song CH-save_new_song D2-init",

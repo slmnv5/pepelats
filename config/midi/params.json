@@ -3,10 +3,8 @@
     "description": "Parent for maps",
     "12:1": ["_change_map", "prev", "params"],
     "13:1": ["_change_map", "next", "params"],
-    "12:2": ["_change_map", "0", "song"],
-    "13:2": ["_change_map", "0", "song"],
-    "12:6": ["_change_map", "1", "playing"],
-    "13:6": ["_change_map", "0", "playing"]
+    "12:6": ["_change_map", "0", "playing"],
+    "13:6": ["_change_map", "0", "song"]
   },
   "0": {
     "description": "Drum: A/B-volume C/D-swing",
