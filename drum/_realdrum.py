@@ -5,7 +5,7 @@ from threading import Timer
 import numpy as np
 
 from drum._drumloader import DrumLoader
-from utils import FileFinder, SD_MAX
+from utils import SD_MAX
 from utils import SD_RATE, play_sound_buff
 
 
@@ -16,63 +16,57 @@ class Intensity(IntEnum):
     BREAK = 4
 
 
-class RealDrum(DrumLoader, FileFinder):
+class RealDrum(DrumLoader):
     """Drums generated from patterns with random changes"""
 
     def __init__(self):
         DrumLoader.__init__(self)
-        FileFinder.__init__(self, "config/drums", False, "")
         self.__intensity: Intensity = Intensity.LVL2
         self.__is_break_pending: bool = False
-        DrumLoader.load(self.get_full_name())
+        self.load()
 
-    @staticmethod
-    def change_volume(change_by: int) -> None:
+    def change_volume(self, change_by: int) -> None:
         factor = 1.2 if change_by > 0 else (1 / 1.2)
-        v = round(DrumLoader.volume * factor)
+        v = round(self.volume * factor)
         v = min(100, v)
         v = max(1, round(v))
-        DrumLoader.volume = v
-        DrumLoader.prepare_drum(RDRUM.get_length())
+        self.volume = v
+        self.prepare_drum(self.get_length())
 
-    @staticmethod
-    def change_swing(change_by: int) -> None:
-        v = DrumLoader.swing
+    def change_swing(self, change_by: int) -> None:
+        v = self.swing
         v += (0.25 / 4) if change_by >= 0 else (-0.25 / 4)
         v = min(v, 0.75)
         v = max(v, 0.5)
-        DrumLoader.swing = v
-        DrumLoader.prepare_drum(RDRUM.get_length())
+        self.swing = v
+        self.prepare_drum(RDRUM.get_length())
 
-    @staticmethod
-    def get_volume() -> float:
-        return DrumLoader.volume * DrumLoader.max_volume / SD_MAX
+    def get_volume(self) -> float:
+        return self.volume * self.max_volume / SD_MAX
 
-    @staticmethod
-    def get_swing() -> float:
-        return DrumLoader.swing
+    def get_swing(self) -> float:
+        return self.swing
 
     def load_drum_type(self) -> None:
         self.set_fixed(self.get_item())
-        DrumLoader.load(self.get_full_name())
-        if RDRUM.get_length():
-            DrumLoader.prepare_drum(RDRUM.get_length())
+        self.load()
+        if self.get_length():
+            self.prepare_drum(self.get_length())
 
-    @staticmethod
-    def prepare_drum_async(length: int) -> None:
+    def prepare_drum_async(self, length: int) -> None:
         """ Non blocking drum init in another thread, length is one bar long and holds drum pattern """
-        Timer(0.2, DrumLoader.prepare_drum, [length]).start()
+        Timer(0.2, self.prepare_drum, [length]).start()
 
     def play_samples(self, out_data: np.ndarray, idx: int) -> None:
         if self.__intensity == Intensity.SILENT or not RDRUM.get_length():
             return
 
         if self.__intensity & Intensity.LVL1:
-            play_sound_buff(DrumLoader.l1, out_data, idx)
+            play_sound_buff(self.l1, out_data, idx)
         if self.__intensity & Intensity.LVL2:
-            play_sound_buff(DrumLoader.l2, out_data, idx)
+            play_sound_buff(self.l2, out_data, idx)
         if self.__intensity & Intensity.BREAK:
-            play_sound_buff(DrumLoader.bk, out_data, idx)
+            play_sound_buff(self.bk, out_data, idx)
 
     def play_break_later(self, part_len: int, idx: int) -> None:
         if self.__is_break_pending:
@@ -94,7 +88,7 @@ class RealDrum(DrumLoader, FileFinder):
             self.__intensity &= ~Intensity.BREAK
             self.__is_break_pending = False
 
-        DrumLoader.random_samples()
+        self.random_samples()
         self.__intensity |= Intensity.BREAK
         if bars <= 0:
             bars = 0.5 if random.random() < 0.5 else 1
