@@ -1,7 +1,7 @@
 ## Drums configuration
 
 Drums are configured in a text files (in [config/drums/pop](config/drums/pop)) using JSON format. Several popular drum
-patterns are pre-configured. Looper uses randomness to make it less repetitive, patterns change every three bars. Drum
+patterns are pre-configured. Looper uses randomness to make it less repetitive. Drum
 breaks play when loop is switched or when a button is pushed. Drums accompaniment is created after the first loop is
 recorded and BPM is defined by length of this loop. Drum volume and swing may be changed on the run. Swing settings is
 same as Linn's LM-1, from 0.5 to 0.75.
@@ -27,7 +27,7 @@ configuration takes more button pushes and is slow.
 
 Direct configuration is used to for song parts and indirect for loops in a part, exact details are below.
 
-## Looper views - Playing, Song, Params, Stop
+## Looper views - Playing, Song, Params
 
 ### Playing 0
 
@@ -35,35 +35,25 @@ Direct configuration is used to for song parts and indirect for loops in a part,
 
 ### Playing 1
 
-- commands to scroll over loops making one part. It can overdub, delete, mute, reverse selected loop.
+- commands to scroll over loops making one part. It can delete, mute, move, reverse selected loop.
+  A loop may be moved to the end so when undo is applied this loop disapper first even thogh it was not recorded the
+  last.
 
 ### Params 0
-
-- mixer volume for recording and playback
-
-### Params 1
 
 - drum volume and drum swing
 
 ### Params 2
 
-- drum type to select and load
+- drum type to select and load, update code from repository, restart looper
 
 ### Song 0
 
-- current song - save, save as new, load, delete
+- current song - stop looper at different points, save song, save as new
 
 ### Song 1
 
 - next song - scroll, load, delete
-
-### Stop 0
-
-- commands to stop looper at different points
-
-### Stop 1
-
-- commands to init looper
 
 MIDI commands assigned to buttons are different for these views and are listed in [commands.md](commands.md)
 located alongside JSON files in [config/midi/](config/midi)
@@ -77,10 +67,10 @@ command.
 As an example button A sends note 60. Multiple tapping will send additional note 60 with changed velocity. Velocity =
 number of taps + 5 if the last tap was long (hold after tap). For this example:
 
-- single tap sends notes 60 with original velocity (e.g 100) and not 60 with velocity = 1
+- single tap sends notes 60 with original velocity (e.g 100) and note 60 with velocity = 1
 - double tap sends ... velocity = 2
-- single tap with hold ... velocity = 1 + 5 = 86
-- double tap with hold ... velocity = 2 + 5 = 87
+- single tap with hold ... velocity = 1 + 5 = 6
+- double tap with hold ... velocity = 2 + 5 = 7
 
 Using this method one button may send 6-7 times more MIDI notes.
 
@@ -88,10 +78,9 @@ Multi tapping mode needs 0.6 sec. delay to decide if there will be next tap. Bec
 time critical commands e.g. start recording/playing. But for other commands like changing looper settings it is
 indispensable.
 
-### Notes about installation of LCD:
+### Installation of LCD:
 
-Connect LCD and run scripts coming with it. Without X11 on Raspberry Pi OS Lite there may be some errors reported but
-after reboot you should see boot messages and command prompt. Check files [config.txt](config/etc/txt/config.txt)
+As additinal reference check files I use [config.txt](config/etc/txt/config.txt)
 and [cmdline.txt](config/etc/txt/cmdline.txt) - working for my version of LCD screen.
 
 
