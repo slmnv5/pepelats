@@ -31,29 +31,30 @@ Direct configuration is used to for song parts and indirect for loops in a part,
 
 ### Playing 0
 
-- commands to play / record four song parts and allows switching between them.
+- commands to play / record / clear four song parts and switching between them.
 
 ### Playing 1
 
-- commands to scroll over loops making one part. It can delete, mute, move, reverse selected loop.
-  A loop may be moved to the end so when undo is applied this loop disapper first even thogh it was not recorded the
+- commands to scroll over loops making one part. Selected loop can be deleted, muted, moved, reversed.
+  A loop may be moved to the end so when part's undo is applied this loop disapper first even thogh it was not recorded
+  the
   last.
 
 ### Params 0
 
-- drum volume and drum swing
+- chande drum volume and drum swing. All drums are regenerated
 
 ### Params 2
 
-- drum type to select and load, update code from repository, restart looper
+- Change drum type, update code from repository, restart looper
 
 ### Song 0
 
-- current song - stop looper at different points, save song, save as new
+- current song - stop looper at different points, save song, save as new, make empty song.
 
 ### Song 1
 
-- next song - scroll, load, delete
+- song selection - scroll, load, delete
 
 MIDI commands assigned to buttons are different for these views and are listed in [commands.md](commands.md)
 located alongside JSON files in [config/midi/](config/midi)
