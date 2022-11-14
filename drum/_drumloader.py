@@ -17,8 +17,17 @@ def extend_list(some_list: Union[List, str], new_len: int) -> List:
     return (some_list * k)[:new_len]
 
 
+def pos_with_swing(step_number: int, step_len: int, swing: float) -> int:
+    """shift every even 16th note to make it swing like"""
+    if step_number % 2 == 0:
+        return round(step_number * step_len)
+    else:
+        swing_delta: float = step_len * (swing - 0.5)
+        return round(step_number * step_len + swing_delta)
+
+
 class DrumLoader(FileFinder):
-    """ class will only static methods to load drum patterns """
+    """ class to load drum patterns """
 
     def __init__(self):
         FileFinder.__init__(self, "config/drums", False, "")
@@ -136,20 +145,11 @@ class DrumLoader(FileFinder):
                 if notes[step_number] != '.':
                     step_accent = int(accents[step_number])
                     step_volume = sound_volume * step_accent / 9 * self.volume / 100
-                    pos = self.__pos_with_swing(step_number, step_len, swing)
+                    pos = pos_with_swing(step_number, step_len, swing)
                     tmp = (sound * step_volume).astype(SD_TYPE)
                     record_sound_buff(ndarr, tmp, pos)
 
         return ndarr
-
-    @staticmethod
-    def __pos_with_swing(step_number: int, step_len: int, swing: float) -> int:
-        """shift every even 16th note to make it swing like"""
-        if step_number % 2 == 0:
-            return round(step_number * step_len)
-        else:
-            swing_delta: float = step_len * (swing - 0.5)
-            return round(step_number * step_len + swing_delta)
 
 
 if __name__ == "__main__":
