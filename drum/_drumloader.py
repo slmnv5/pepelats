@@ -46,8 +46,14 @@ class DrumLoader:
         self.__snd_l2: List[np.ndarray] = []
         self.__snd_bk: List[np.ndarray] = []
 
+    def get_item(self) -> str:
+        return self._file_finder.get_item()
+
     def get_fixed(self) -> str:
         return self._file_finder.get_fixed()
+
+    def set_fixed(self, fixed: str) -> None:
+        return self._file_finder.set_fixed(fixed)
 
     def get_str(self) -> str:
         return self._file_finder.get_str()
