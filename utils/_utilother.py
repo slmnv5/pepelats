@@ -217,22 +217,22 @@ class RedrawScreen:
                f"{self.idx}|{self.is_stop}|{self.is_rec}"
 
 
-class MenuLoader(FileFinder):
+class MenuLoader:
     """ class loading mapping dict. from JSON files
     It parses directory for JSON files """
 
     def __init__(self, load_dir: str, map_name: str, map_id: str):
-        FileFinder.__init__(self, load_dir, True, ".json")
+        self._file_finder = FileFinder(load_dir, True, ".json")
         self.__items: Dict[str, Dict] = self.__load_all()
         self.__map_name: str = map_name
         self.__map_id: str = map_id
 
     def __load_all(self) -> Dict[str, Dict[str, Dict]]:
         dic = dict()
-        for _ in range(self.item_count):
-            file: str = str(self.get_full_name())
-            item: str = self.get_item()[:-len(self.get_end_with())]
-            self.iterate(True)
+        for _ in range(self._file_finder.item_count):
+            file: str = str(self._file_finder.get_full_name())
+            item: str = self._file_finder.get_item()[:-len(self._file_finder.get_end_with())]
+            self._file_finder.iterate(True)
             logging.info(f"Loading control config from {file}")
             loader = JsonDict(file)
             default_dic = loader.get(ConfigName.default_config, dict())

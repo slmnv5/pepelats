@@ -48,7 +48,7 @@ class RealDrum(DrumLoader):
         return self.swing
 
     def load_drum_type(self) -> None:
-        self.set_fixed(self.get_item())
+        self._file_finder.set_fixed(self._file_finder.get_item())
         self.load()
         if self.get_length():
             self.prepare_drum(self.get_length())

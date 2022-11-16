@@ -26,12 +26,11 @@ def position_with_swing(step_number: int, step_len: int, swing: float) -> int:
         return round(step_number * step_len + swing_delta)
 
 
-class DrumLoader(FileFinder):
+class DrumLoader:
     """ class to load drum patterns """
 
     def __init__(self):
-        FileFinder.__init__(self, "config/drums", False, "")
-
+        self._file_finder = FileFinder("config/drums", False, "")
         self.volume: int = 100
         self.swing: float = 0.5
         self.max_volume: float = 0
@@ -47,6 +46,15 @@ class DrumLoader(FileFinder):
         self.__snd_l2: List[np.ndarray] = []
         self.__snd_bk: List[np.ndarray] = []
 
+    def get_fixed(self) -> str:
+        return self._file_finder.get_fixed()
+
+    def get_str(self) -> str:
+        return self._file_finder.get_str()
+
+    def iterate(self, go_fwd: bool) -> None:
+        return self._file_finder.iterate(go_fwd)
+
     def clear_drum(self) -> None:
         self.__length = 0
 
@@ -59,7 +67,7 @@ class DrumLoader(FileFinder):
         self.bk = random.choice(self.__snd_bk)
 
     def load(self) -> None:
-        directory: str = self.get_full_name()
+        directory: str = self._file_finder.get_full_name()
         logging.info(f"Loading drum {directory}")
         if len(self.__sounds) == 0:
             self.__load_sounds(directory)
