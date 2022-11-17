@@ -17,7 +17,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         OneLoopCtrl.__init__(self)
         Song.__init__(self, SongPart(self))
         Thread(target=self.__playback, name="playback_thread", daemon=True).start()
-        self._file_finder.go_first()
+        self._file_finder.go_id(0)
         self._init_song()
 
     def _redraw(self) -> None:
@@ -35,7 +35,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         ff = self._file_finder
         ff.set_fixed("")
 
-        self.set_fixed(self.get_first())
+        self.set_fixed(self.get_id(0))
         self.align_ids()
         RDRUM.clear_drum()
 
@@ -89,7 +89,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
                 self._is_rec = False
             else:
                 part.append(LoopWithDrum(self, part.length))
-                part.go_last()
+                part.go_id(part.item_count - 1)
                 self._is_rec = True
 
         self.__stop_quantized()

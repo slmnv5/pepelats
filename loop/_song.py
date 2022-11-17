@@ -62,7 +62,7 @@ class Song(CollectionOwner[SongPart]):
             self.delete(0)
 
         self._file_finder.set_fixed(self._file_finder.get_item())
-        self.go_first()
+        self.go_id(0)
         self.align_ids()
         while not RDRUM.get_length():
             sleep(0.1)

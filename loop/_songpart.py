@@ -30,11 +30,11 @@ class SongPart(CollectionOwner[LoopWithDrum], Player):
 
     @property
     def is_empty(self) -> bool:
-        return self.get_first().is_empty
+        return self.get_id(0).is_empty
 
     @property
     def length(self) -> int:
-        return self.get_first().length
+        return self.get_id(0).length
 
     def play_samples(self, out_data: np.ndarray, idx: int) -> None:
         RDRUM.play_samples(out_data, idx)
@@ -48,7 +48,7 @@ class SongPart(CollectionOwner[LoopWithDrum], Player):
         if not RDRUM.get_length() or self.is_empty:
             return "---------"
         if not self._collection_str:
-            first = self.get_first()
+            first = self.get_id(0)
             self._collection_str = f"L:{first.length // RDRUM.get_length():02} " \
                                    f"V:{first.volume:02} {self.item_count:02}/{self.undo_count:02}"
         return self._collection_str

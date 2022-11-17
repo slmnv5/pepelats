@@ -108,9 +108,6 @@ class CollectionOwner(Generic[T]):
     def get_id(self, k: int) -> T:
         return self.__items[k]
 
-    def go_last(self) -> None:
-        self.__id = self.item_count - 1
-
     def append(self, item: T) -> None:
         assert isinstance(item, type(self.__items[0]))
         self.__items.append(item)
@@ -119,12 +116,6 @@ class CollectionOwner(Generic[T]):
 
     def get_item(self) -> T:
         return self.__items[self.__id]
-
-    def get_first(self) -> T:
-        return self.__items[0]
-
-    def go_first(self) -> None:
-        self.__id = 0
 
     def get_str(self) -> str:
         lst_size = min(7, len(self.__items))
