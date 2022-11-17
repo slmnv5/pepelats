@@ -92,16 +92,16 @@ class DrumLoader:
             assert len(drum_sound) > 0
             assert type(drum_sound) == dict
             file_name = Path(loader.get_dir(), drum_sound["file_name"])
-            v1: float = drum_sound.get("volume", 1.0)
+            sound_volume: float = drum_sound.get("volume", 1.0)
 
             (sound, _) = sf.read(str(file_name), dtype="int16", always_2d=True)
             assert sound.ndim == 2
             assert sound.shape[1] == 2
-            v2: float = np.max(sound)
-            self.max_volume = max(self.max_volume, v1 * v2)
+            array_max: float = np.max(sound)
+            self.max_volume = max(self.max_volume, sound_volume * array_max)
             assert self.max_volume < SD_MAX
             #  logging.info(f"Loaded sound {file_name}")
-            self.__sounds[name] = (sound, v1)
+            self.__sounds[name] = (sound, sound_volume)
 
     def __load_all_patterns(self, directory: str, file_name: str, storage: List[Dict]) -> None:
         storage.clear()
