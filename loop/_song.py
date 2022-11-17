@@ -92,12 +92,11 @@ class Song(CollectionOwner[SongPart]):
         self._save_song()
 
     def _delete_song(self) -> None:
-        if self._file_finder.id == self._file_finder.fixed_id:
-            return
-        self._stop_song()
-        del_id = self._file_finder.id
-        self._file_finder.delete(del_id)
+        del_playing = self._file_finder.id == self._file_finder.fixed_id
+        self._file_finder.delete(self._file_finder.id)
         self._file_finder.iterate(True)
+        if del_playing:
+            self._load_song()
 
     def __new_song_name(self) -> str:
         return generate_name() + self._file_finder.get_end_with()
