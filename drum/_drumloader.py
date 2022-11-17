@@ -31,8 +31,8 @@ class DrumLoader:
 
     def __init__(self):
         self._file_finder = FileFinder("config/drums", False, "")
-        self.volume: int = 100
-        self.swing: float = 0.5
+        self.volume: int = 70
+        self.swing: float = 0.75
         self.max_volume: float = 0
         self.__length: int = 0
         self.__sounds: Dict[str, Tuple[np.ndarray, float]] = dict()

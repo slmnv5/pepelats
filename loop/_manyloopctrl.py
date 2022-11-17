@@ -116,12 +116,12 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
     # ====== drum related
 
     @staticmethod
-    def _change_drum_volume(change_by: int) -> None:
-        RDRUM.change_volume(change_by)
+    def _change_drum_volume(change_factor: float) -> None:
+        RDRUM.change_volume(change_factor)
 
     @staticmethod
-    def _change_drum_swing(change_by: int) -> None:
-        RDRUM.change_swing(change_by)
+    def _change_drum_swing(change_steps: int) -> None:
+        RDRUM.change_swing(change_steps)
 
     @staticmethod
     def _change_drum() -> None:

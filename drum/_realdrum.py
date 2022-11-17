@@ -1,6 +1,7 @@
 import random
 from enum import IntEnum
 from threading import Timer
+from typing import List
 
 import numpy as np
 
@@ -19,26 +20,29 @@ class Intensity(IntEnum):
 class RealDrum(DrumLoader):
     """Drums generated from patterns with random changes"""
 
+    __swing_values: List[float] = [0.5, 0.56, 0.62, 0.69, 0.75]
+
     def __init__(self):
         DrumLoader.__init__(self)
         self.__intensity: Intensity = Intensity.LVL2
         self.__is_break_pending: bool = False
         self.load()
 
-    def change_volume(self, change_by: int) -> None:
-        factor = 1.2 if change_by > 0 else (1 / 1.2)
-        v = round(self.volume * factor)
+    def change_volume(self, change_factor: float) -> None:
+        v = round(self.volume * change_factor)
         v = min(100, v)
         v = max(1, round(v))
         self.volume = v
         self.prepare_drum(self.get_length())
 
-    def change_swing(self, change_by: int) -> None:
-        v = self.swing
-        v += (0.25 / 4) if change_by >= 0 else (-0.25 / 4)
-        v = min(v, 0.75)
-        v = max(v, 0.5)
-        self.swing = v
+    def change_swing(self, change_steps: int) -> None:
+        indx: int = 0
+        if self.swing in self.__swing_values:
+            indx = self.__swing_values.index(self.swing)
+
+        indx += change_steps
+        indx = indx % len(self.__swing_values)
+        self.swing = self.__swing_values[indx]
         self.prepare_drum(RDRUM.get_length())
 
     def get_volume(self) -> float:
