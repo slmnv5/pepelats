@@ -7,6 +7,8 @@ from typing import Dict
 
 from drum import RDRUM
 import logging
+
+from loop._loopsimple import LoopWithDrum
 from loop._manyloopctrl import ManyLoopCtrl
 from loop._songpart import SongPart
 from utils import MsgProcessor, RedrawScreen
@@ -97,12 +99,10 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     def _clear_part(self) -> None:
         if self.id == self.fixed_id:
             return
-        save_id = self.id
-        self.go_id(self.fixed_id)
-        self._stop_never()
-        self.delete(save_id)
-        self.align_ids()
-        self.append(SongPart(self))
+        part = self.get_item()
+        part.append(LoopWithDrum(self))
+        while part.item_count > 1:
+            part.delete(part.item_count - 1)
 
     def _duplicate_part(self) -> None:
         if self.id != self.fixed_id:
@@ -121,12 +121,10 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         self.append(new_part)
 
     def _undo_part(self) -> None:
-        need_save = not self._is_rec
+        save_undo = not self._is_rec
         self._is_rec = False
         part = self.get_part()
-        deleted = part.delete(part.item_count - 1)
-        if need_save:
-            part.append_undo(deleted)
+        part.delete(part.item_count - 1, save_undo)
 
     def _redo_part(self) -> None:
         self._is_rec = False
