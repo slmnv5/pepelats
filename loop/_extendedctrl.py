@@ -103,7 +103,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         part.append(LoopWithDrum(self))
         while part.item_count > 1:
             part.delete(0)
-        self.align_ids()
+        self.go_fixed()
 
     def _duplicate_part(self) -> None:
         if self.id != self.fixed_id:
