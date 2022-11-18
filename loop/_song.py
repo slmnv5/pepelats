@@ -94,7 +94,6 @@ class Song(CollectionOwner[SongPart]):
     def _delete_song(self) -> None:
         del_playing = self._file_finder.id == self._file_finder.fixed_id
         self._file_finder.delete(self._file_finder.id)
-        self._file_finder.iterate(True)
         if del_playing:
             self._load_song()
 
