@@ -44,7 +44,7 @@ class RealDrum(DrumLoader):
         indx += change_steps
         indx = indx % len(self.__swing_values)
         self.swing = self.__swing_values[indx]
-        self.prepare_drum(RDRUM.get_length())
+        self.prepare_drum(self.get_length())
 
     def get_volume(self) -> float:
         return self.volume * self.max_volume / SD_MAX
@@ -53,7 +53,7 @@ class RealDrum(DrumLoader):
         return self.swing
 
     def play_samples(self, out_data: np.ndarray, idx: int) -> None:
-        if self.__intensity == Intensity.SILENT or not RDRUM.get_length():
+        if self.__intensity == Intensity.SILENT or not self.get_length():
             return
 
         if self.__intensity & Intensity.LVL1:
@@ -68,7 +68,7 @@ class RealDrum(DrumLoader):
             return
 
         bars = 0.5
-        samples = RDRUM.get_length() * bars
+        samples = self.get_length() * bars
         idx %= part_len
         start_at = (part_len - idx) - samples
         if start_at > 0:
@@ -87,7 +87,7 @@ class RealDrum(DrumLoader):
         self.__intensity |= Intensity.BREAK
         if bars <= 0:
             bars = 0.5 if random.random() < 0.5 else 1
-        samples = RDRUM.get_length() * bars
+        samples = self.get_length() * bars
         Timer(samples / SD_RATE, revert).start()
 
     def change_intensity(self, change_by: int) -> None:
@@ -99,13 +99,13 @@ class RealDrum(DrumLoader):
         self.__intensity = i
 
     def __str__(self):
-        return f"RealDrum Length:{RDRUM.get_length()} Intensity:{self.__intensity}"
+        return f"RealDrum Length:{self.get_length()} Intensity:{self.__intensity}"
 
 
 if "--mididrum" in sys.argv:
-    RDRUM = MidiDrum()
+    RDRUM11111112 = MidiDrum()
 else:
-    RDRUM = RealDrum()
+    RDRUM11111113 = RealDrum()
 
 if __name__ == "__main__":
     pass
