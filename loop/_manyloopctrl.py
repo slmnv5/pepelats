@@ -1,6 +1,6 @@
 from threading import Thread, Event
 
-from drum import RDRUM
+
 from loop._loopsimple import LoopWithDrum
 from loop._oneloopctrl import OneLoopCtrl
 from loop._song import Song

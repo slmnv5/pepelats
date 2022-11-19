@@ -3,7 +3,7 @@ import unittest
 from multiprocessing.connection import Pipe
 from unittest import TestCase
 
-from drum import RDRUM
+
 from loop import ExtendedCtrl
 
 recv_conn, send_conn = Pipe(False)

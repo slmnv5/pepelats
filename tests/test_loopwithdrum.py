@@ -4,7 +4,7 @@ from threading import Timer
 from typing import Tuple
 from unittest import TestCase
 
-from drum import RDRUM
+
 # noinspection PyProtectedMember
 from loop._loopsimple import LoopWithDrum
 # noinspection PyProtectedMember

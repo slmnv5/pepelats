@@ -2,7 +2,7 @@ import pickle
 from abc import abstractmethod
 from time import sleep
 
-from drum import RDRUM
+
 from loop._oneloopctrl import OneLoopCtrl
 from loop._songpart import SongPart
 from utils import FileFinder, CollectionOwner

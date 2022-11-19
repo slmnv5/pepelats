@@ -5,7 +5,7 @@ import traceback
 from multiprocessing.connection import Connection
 from typing import Dict
 
-from drum import RDRUM
+
 import logging
 
 from loop._loopsimple import LoopWithDrum

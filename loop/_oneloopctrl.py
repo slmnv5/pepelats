@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from threading import Event, Timer
 
-from drum import RDRUM
+
 from utils import MAX_32_INT, SD_RATE
 from utils import MAX_LATE_SECONDS
 

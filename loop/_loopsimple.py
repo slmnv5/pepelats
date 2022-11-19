@@ -2,7 +2,7 @@ from threading import Timer
 
 import numpy as np
 
-from drum import RDRUM
+
 import logging
 from loop._oneloopctrl import OneLoopCtrl
 from loop._player import Player
