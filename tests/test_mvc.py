@@ -4,7 +4,7 @@ from unittest import TestCase
 
 from mvc import MidiControl
 # noinspection PyProtectedMember
-from mvc._midicontrol import MockInMidiPort
+from mvc._midicontrol import MockMidiPort
 
 recv_loop, send_loop = Pipe()
 recv_view, send_view = Pipe()
@@ -14,7 +14,7 @@ class TestMVC(TestCase):
 
     def test_1(self):
 
-        in_port = MockInMidiPort()
+        in_port = MockMidiPort()
         in_port.charge({0.1: (60, 100), 0.2: (-60, 0), 1.2: (62, 1)})
 
         m_ctrl = MidiControl(in_port, send_loop, "config/midi", "playing", "0")

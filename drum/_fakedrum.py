@@ -1,3 +1,5 @@
+from abc import abstractmethod
+
 import numpy as np
 
 
@@ -7,6 +9,7 @@ class FakeDrum:
     def get_item(self) -> str:
         return ""
 
+    @abstractmethod
     def get_fixed(self) -> str:
         return ""
 
@@ -31,6 +34,7 @@ class FakeDrum:
     def load_drum_type(self) -> None:
         pass
 
+    @abstractmethod
     def prepare_drum(self, length: int) -> None:
         pass
 
@@ -48,6 +52,7 @@ class FakeDrum:
     def get_swing(self) -> float:
         return 0
 
+    @abstractmethod
     def play_samples(self, out_data: np.ndarray, idx: int) -> None:
         pass
 

@@ -1,18 +1,20 @@
+import logging
 import time
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 from multiprocessing.dummy.connection import Pipe
-from typing import Dict, Tuple, Any
+from typing import Dict, Tuple
 
 import mido
 
-import logging
 from utils import CmdTranslator
 
 
-class MockInMidiPort:
-    def __init__(self):
+class MockMidiPort:
+    def __init__(self, report_freq: int = 100):
         self.__notes: Dict[float, mido.Message] = dict()
+        self.__count: int = 0
+        self.__report_freq: int = report_freq  # report sent messages: 100 - ervery 100th message
 
     def charge(self, notes: Dict[float, Tuple[int, int]]):
         """set dictionary of {time: (note,vel), ...} to send e.g. {0.1: (60,100), 0.2: (-60,0), 1.2:(62, 1)}
@@ -24,8 +26,10 @@ class MockInMidiPort:
             else:
                 self.__notes[k] = mido.Message.from_bytes([0x80, -v[0], 0])
 
-    def send(self, msg: Any) -> None:
-        pass
+    def send(self, msg: mido.Message) -> None:
+        self.__count += 1
+        if self.__count % self.__report_freq == 0:
+            print(f"Sent MIDI {msg}")
 
     # noinspection PyUnusedLocal
     def receive(self, block=True) -> mido.Message:
@@ -61,7 +65,7 @@ if __name__ == "__main__":
 
     def test():
         recv_fake, send_fake = Pipe()
-        in_port = MockInMidiPort()
+        in_port = MockMidiPort()
         in_port.charge({0.1: (60, 100), 0.2: (-60, 0), 1.2: (62, 1)})
 
         m_ctrl = MidiControl(in_port, send_fake, "config/midi", "playing", "0")
