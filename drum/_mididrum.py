@@ -47,7 +47,7 @@ class MidiDrum(FakeDrum):
         self.__sleep_time = length / SD_RATE / 96
 
     def play_samples(self, out_data: np.ndarray, idx: int) -> None:
-        self.__idx = idx
+        self.__prev_idx, self.__idx = self.__idx, idx
 
     def __send_clock(self):
         while True:
