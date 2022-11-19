@@ -61,7 +61,8 @@ class MidiDrum(FakeDrum):
         self.__sleep_time = max(self.__sleep_time, MidiDrum.__min_sleep_time)
 
     def play_samples(self, out_data: np.ndarray, idx: int) -> None:
-        self.__prev_idx, self.__idx = self.__idx, idx
+        self.__prev_idx = self.__idx
+        self.__idx = idx
 
     def __send_clock(self):
         while True:
