@@ -5,6 +5,7 @@ rules.txt
 kbdmap.txt
 # app data
 save_song
+tests
 #pyinstall files
 dist
 build
