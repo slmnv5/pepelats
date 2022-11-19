@@ -1,6 +1,6 @@
 from threading import Thread, Event
 
-
+from drum import FakeDrum
 from loop._loopsimple import LoopWithDrum
 from loop._oneloopctrl import OneLoopCtrl
 from loop._song import Song
@@ -12,9 +12,9 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
     """added playback thread, MsgProcessor and Song.
      Song is collection of song parts with related methods"""
 
-    def __init__(self):
+    def __init__(self, drum: FakeDrum):
         self._go_play: Event = Event()
-        OneLoopCtrl.__init__(self)
+        OneLoopCtrl.__init__(self, drum)
         Song.__init__(self, SongPart(self))
         Thread(target=self.__playback, name="playback_thread", daemon=True).start()
         self._file_finder.go_id(0)
@@ -37,7 +37,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
 
         self.set_fixed(self.get_id(0))
         self.align_ids()
-        RDRUM.clear_drum()
+        self.get_drum().clear_drum()
 
     def __playback(self) -> None:
         """runs in a thread, play and record current song part"""
@@ -99,42 +99,37 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         has logic when to stop playback"""
         part = self.get_part()
         if part.is_empty:
-            if not RDRUM.get_length():
+            if not self.get_drum().get_length():
                 self.stop_at_bound(0)
             else:
-                self.stop_at_bound(RDRUM.get_length())
+                self.stop_at_bound(self.get_drum().get_length())
         else:
             if self.id != self.fixed_id:
                 if self.is_stop_len_set():
-                    self.stop_at_bound(RDRUM.get_length())
+                    self.stop_at_bound(self.get_drum().get_length())
                 else:
                     self.stop_at_bound(part.length)
-                    RDRUM.play_break_later(part.length, self.idx)
+                    self.get_drum().play_break_later(part.length, self.idx)
             else:
                 self._stop_never()
 
     # ====== drum related
 
-    @staticmethod
-    def _change_drum_volume(change_factor: float) -> None:
-        RDRUM.change_volume(change_factor)
+    def _change_drum_volume(self, change_factor: float) -> None:
+        self.get_drum().change_volume(change_factor)
 
-    @staticmethod
-    def _change_drum_swing(change_steps: int) -> None:
-        RDRUM.change_swing(change_steps)
+    def _change_drum_swing(self, change_steps: int) -> None:
+        self.get_drum().change_swing(change_steps)
 
-    @staticmethod
-    def _change_drum() -> None:
-        RDRUM.play_break_now()
+    def _change_drum(self) -> None:
+        self.get_drum().play_break_now()
 
-    @staticmethod
-    def _change_drum_intensity(change_by: int) -> None:
-        RDRUM.change_intensity(change_by)
+    def _change_drum_intensity(self, change_by: int) -> None:
+        self.get_drum().change_intensity(change_by)
 
-    @staticmethod
-    def _show_drum_param() -> str:
-        return f"Drum parameters:\nvolume(0-100):{RDRUM.get_volume():.0F}\n" \
-               f"swing(0.5-0.75):{RDRUM.get_swing():.2F}"
+    def _show_drum_param(self) -> str:
+        return f"Drum parameters:\nvolume(0-100):{self.get_drum().get_volume():.0F}\n" \
+               f"swing(0.5-0.75):{self.get_drum().get_swing():.2F}"
 
 
 if __name__ == "__main__":

@@ -1,9 +1,9 @@
+import logging
 from abc import abstractmethod
 
 import numpy as np
 import sounddevice as sd
 
-import logging
 from loop._oneloopctrl import OneLoopCtrl
 
 
@@ -12,6 +12,9 @@ class Player:
 
     def __init__(self, ctrl: OneLoopCtrl):
         self._ctrl: OneLoopCtrl = ctrl
+
+    def get_drum(self):
+        return self._ctrl.get_drum()
 
     def set_ctrl(self, ctrl: OneLoopCtrl) -> None:
         self._ctrl = ctrl

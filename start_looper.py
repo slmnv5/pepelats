@@ -1,6 +1,9 @@
 import logging
 import sys
 
+from drum import MidiDrum, FakeDrum
+from drum import RealDrum
+
 level = "WARN"
 if "--debug" in sys.argv:
     level = "DEBUG"
@@ -26,8 +29,8 @@ from mvc import MidiControl, ScreenView
 MIDI_PORT_NAME = "MIDI_PORT_NAME"
 
 
-def process_looper(recv_looper: Connection, send_view: Connection) -> None:
-    looper = ExtendedCtrl(recv_looper, send_view)
+def process_looper(drum: FakeDrum, recv_looper: Connection, send_view: Connection) -> None:
+    looper = ExtendedCtrl(drum, recv_looper, send_view)
     looper.process_messages()
 
 
@@ -51,6 +54,11 @@ def open_midi_port(name: str, is_input: bool):
 
 
 def go() -> None:
+    if "--mididrum" in sys.argv:
+        drum = MidiDrum()
+    else:
+        drum = RealDrum()
+
     recv_view, send_view = Pipe(False)  # screen update messages
     recv_looper, send_looper = Pipe(False)  # looper control messages
 
@@ -64,7 +72,7 @@ def go() -> None:
             logging.error(msg)
             raise RuntimeError(msg)
 
-    Process(target=process_looper, args=(recv_looper, send_view), name="looper", daemon=True).start()
+    Process(target=process_looper, args=(drum, recv_looper, send_view), name="looper", daemon=True).start()
 
     Process(target=process_screenview, args=(recv_view,), name="screen", daemon=True).start()
 

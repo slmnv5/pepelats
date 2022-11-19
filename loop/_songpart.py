@@ -1,9 +1,9 @@
+import logging
 from threading import Timer
 
 import numpy as np
 
-
-import logging
+from drum import RealDrum
 from loop._loopsimple import LoopWithDrum
 from loop._oneloopctrl import OneLoopCtrl
 from loop._player import Player
@@ -37,7 +37,7 @@ class SongPart(CollectionOwner[LoopWithDrum], Player):
         return self.get_id(0).length
 
     def play_samples(self, out_data: np.ndarray, idx: int) -> None:
-        RDRUM.play_samples(out_data, idx)
+        self.get_drum().play_samples(out_data, idx)
         self.apply_to_each(lambda x: WrapBuffer.play_samples(x, out_data, idx))
 
     def record_samples(self, in_data: np.ndarray, idx: int) -> None:
@@ -45,18 +45,18 @@ class SongPart(CollectionOwner[LoopWithDrum], Player):
         WrapBuffer.record_samples(loop, in_data, idx)
 
     def __str__(self):
-        if not RDRUM.get_length() or self.is_empty:
+        if not self.get_drum().get_length() or self.is_empty:
             return "---------"
         if not self._collection_str:
             first = self.get_id(0)
-            self._collection_str = f"L:{first.length // RDRUM.get_length():02} " \
+            self._collection_str = f"L:{first.length // self.get_drum().get_length():02} " \
                                    f"V:{first.volume:02} {self.item_count:02}/{self.undo_count:02}"
         return self._collection_str
 
 
 if __name__ == "__main__":
     def test2():
-        c1 = OneLoopCtrl()
+        c1 = OneLoopCtrl(RealDrum())
         c1._is_rec = True
         Timer(3, c1.stop_at_bound, args=[0]).start()
         l1 = SongPart(c1)

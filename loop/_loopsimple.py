@@ -1,9 +1,9 @@
+import logging
 from threading import Timer
 
 import numpy as np
 
-
-import logging
+from drum import RealDrum
 from loop._oneloopctrl import OneLoopCtrl
 from loop._player import Player
 from loop._wrapbuffer import WrapBuffer
@@ -31,18 +31,18 @@ class LoopWithDrum(LoopSimple):
         super().__init__(ctrl, length)
 
     def play_samples(self, out_data: np.ndarray, idx: int) -> None:
-        RDRUM.play_samples(out_data, idx)
+        self.get_drum().play_samples(out_data, idx)
         super().play_samples(out_data, idx)
 
     def trim_buffer(self, idx: int) -> None:
         """create drums of correct length if drum is empty,
         otherwise trims self.length to multiple of drum length"""
         logging.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
-        if not RDRUM.get_length():
-            RDRUM.prepare_drum(idx)
+        if not self.get_drum().get_length():
+            self.get_drum().prepare_drum(idx)
             self.finalize(idx, 0)
         else:
-            self.finalize(idx, RDRUM.get_length())
+            self.finalize(idx, self.get_drum().get_length())
 
     def __getstate__(self):
         state = self.__dict__.copy()
@@ -56,17 +56,17 @@ class LoopWithDrum(LoopSimple):
         self._ctrl = None
 
     def __str__(self):
-        if not RDRUM.get_length() or self.is_empty:
+        if not self.get_drum().get_length() or self.is_empty:
             return "---------"
         if not self._str:
-            self._str = f"L:{self.length // RDRUM.get_length():02} V:{self.volume:02} " \
+            self._str = f"L:{self.length // self.get_drum().get_length():02} V:{self.volume:02} " \
                         f"{self._show_properties()}"
         return self._str
 
 
 if __name__ == "__main__":
     def test1():
-        c1 = OneLoopCtrl()
+        c1 = OneLoopCtrl(RealDrum())
         c1._is_rec = True
         Timer(2, c1.stop_at_bound, args=[0]).start()
         l1 = LoopSimple(c1)
@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
 
     def test2():
-        c1 = OneLoopCtrl()
+        c1 = OneLoopCtrl(RealDrum())
         c1._is_rec = True
         Timer(3.9, c1.stop_at_bound, args=[0]).start()
         l1 = LoopWithDrum(c1)

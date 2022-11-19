@@ -1,13 +1,12 @@
 import copy
+import logging
 import os
 import traceback
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 from typing import Dict
 
-
-import logging
-
+from drum import FakeDrum
 from loop._loopsimple import LoopWithDrum
 from loop._manyloopctrl import ManyLoopCtrl
 from loop._songpart import SongPart
@@ -18,8 +17,8 @@ from utils import run_os_cmd
 class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     """Adds screen connection, Mixer, looper commands"""
 
-    def __init__(self, recv_conn: Connection, send_conn: Connection):
-        ManyLoopCtrl.__init__(self)
+    def __init__(self, drum: FakeDrum, recv_conn: Connection, send_conn: Connection):
+        ManyLoopCtrl.__init__(self, drum)
         MsgProcessor.__init__(self, recv_conn, send_conn)
         self.__redraw = RedrawScreen("", "", 0, 0, True, False)
 
@@ -48,7 +47,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
             infodic["redraw"] = self.__redraw
 
         if "header" in infodic:
-            infodic["header"] = f"{RDRUM.get_fixed()}/{self._file_finder.get_fixed()}"
+            infodic["header"] = f"{self.get_drum().get_fixed()}/{self._file_finder.get_fixed()}"
 
         MsgProcessor._send_redraw(self, infodic)
 
@@ -60,17 +59,14 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     def _show_song(self) -> str:
         return self._file_finder.get_str()
 
-    @staticmethod
-    def _change_drum_type(direction) -> None:
-        RDRUM.iterate(direction > 0)
+    def _change_drum_type(self, direction) -> None:
+        self.get_drum().iterate(direction > 0)
 
-    @staticmethod
-    def _show_drum_type() -> str:
-        return RDRUM.get_str()
+    def _show_drum_type(self) -> str:
+        return self.get_drum().get_str()
 
-    @staticmethod
-    def _load_drum_type() -> None:
-        RDRUM.load_drum_type()
+    def _load_drum_type(self) -> None:
+        self.get_drum().load_drum_type()
 
     def _show_one_part(self) -> str:
         part = self.get_part()
