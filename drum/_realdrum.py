@@ -1,3 +1,4 @@
+import os
 import random
 import sys
 from enum import IntEnum
@@ -102,7 +103,8 @@ class RealDrum(DrumLoader):
         return f"RealDrum Length:{RDRUM.get_length()} Intensity:{self.__intensity}"
 
 
-if "--mididrum" in sys.argv:
+# mido is not working on windows
+if "--mididrum" in sys.argv and os.name == "posix":
     RDRUM = MidiDrum()
 else:
     RDRUM = RealDrum()

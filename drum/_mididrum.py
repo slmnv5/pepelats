@@ -1,4 +1,5 @@
 import time
+from threading import Thread
 
 import mido
 import numpy as np
@@ -17,11 +18,12 @@ def int_to_midi(k: int) -> mido.Message:
     return msg
 
 
-# noinspection PyUnresolvedReferences
 class MidiDrum(FakeDrum):
     def __init__(self):
         super().__init__()
-        self.__out_port = mido.open_output("LooperCloc_out")
+        # noinspection PyUnresolvedReferences
+        self.__out_port = mido.open_output("LooperCloc_out", virtual=True)
+
         self.__sleep_time: float = 3  # sleep time in seconds
         self.__stop: bool = True
         self.__count: int = 0  # midi tick counter - 96 per bar
@@ -50,7 +52,7 @@ class MidiDrum(FakeDrum):
     def __send_clock(self):
         while True:
             time.sleep(self.__sleep_time)
-            if self.self.__prev_idx == self.__idx:
+            if self.__prev_idx == self.__idx:
                 self.__stop = True
                 self.__send_stop()
                 continue
@@ -66,6 +68,8 @@ class MidiDrum(FakeDrum):
 if __name__ == "__main__":
     def test():
         int_to_midi(100000)
+        drum = MidiDrum()
+        drum.prepare_drum(100000)
 
 
     test()
