@@ -6,7 +6,7 @@ import mido
 import numpy as np
 
 from drum._fakedrum import FakeDrum
-from mvc import MockMidiPort
+from utils._utilalsa import MockMidiPort
 from utils import SD_RATE
 
 
