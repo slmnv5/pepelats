@@ -26,7 +26,6 @@ class RealDrum(DrumLoader):
         DrumLoader.__init__(self)
         self.__intensity: Intensity = Intensity.LVL2
         self.__is_break_pending: bool = False
-        self.load()
 
     def change_volume(self, change_factor: float) -> None:
         v = round(self.volume * change_factor)
@@ -50,12 +49,6 @@ class RealDrum(DrumLoader):
 
     def get_swing(self) -> float:
         return self.swing
-
-    def load_drum_type(self) -> None:
-        self._file_finder.set_fixed(self._file_finder.get_item())
-        self.load()
-        if self.get_length():
-            self.prepare_drum(self.get_length())
 
     def prepare_drum_async(self, length: int) -> None:
         """ Non blocking drum init in another thread, length is one bar long and holds drum pattern """

@@ -45,6 +45,7 @@ class DrumLoader:
         self.__snd_l1: List[np.ndarray] = []
         self.__snd_l2: List[np.ndarray] = []
         self.__snd_bk: List[np.ndarray] = []
+        self.__load()
 
     def get_item(self) -> str:
         return self._file_finder.get_item()
@@ -72,7 +73,13 @@ class DrumLoader:
         self.l1 = random.choice(self.__snd_l1)
         self.bk = random.choice(self.__snd_bk)
 
-    def load(self) -> None:
+    def load_drum_type(self) -> None:
+        self._file_finder.set_fixed(self._file_finder.get_item())
+        self.__load()
+        if self.get_length():
+            self.prepare_drum(self.get_length())
+
+    def __load(self) -> None:
         directory: str = self._file_finder.get_full_name()
         logging.info(f"Loading drum {directory}")
         if len(self.__sounds) == 0:
