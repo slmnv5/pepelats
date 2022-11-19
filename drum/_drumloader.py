@@ -2,6 +2,7 @@ import logging
 import os
 import random
 from pathlib import Path
+from threading import Timer
 from typing import List, Any, Dict, Union, Tuple
 
 import numpy as np
@@ -81,6 +82,11 @@ class DrumLoader(FakeDrum):
             self.prepare_drum(self.get_length())
 
     def prepare_drum(self, length: int) -> None:
+        """ Non blocking drum init in another thread  """
+        Timer(0.2, self.prepare_drum, [length]).start()
+
+    # ====== private methods ====================
+    def __prepare_drum(self, length: int) -> None:
         self.__length = 0  # keep it zero until sound load is done
 
         for i in [self.__snd_l1, self.__snd_l2, self.__snd_bk]:
@@ -100,7 +106,6 @@ class DrumLoader(FakeDrum):
         self.random_samples()
         self.__length = length
 
-    # ====== private methods
     def __load(self) -> None:
         directory: str = self._file_finder.get_full_name()
         logging.info(f"Loading drum {directory}")

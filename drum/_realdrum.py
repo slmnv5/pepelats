@@ -50,10 +50,6 @@ class RealDrum(DrumLoader):
     def get_swing(self) -> float:
         return self.swing
 
-    def prepare_drum_async(self, length: int) -> None:
-        """ Non blocking drum init in another thread, length is one bar long and holds drum pattern """
-        Timer(0.2, self.prepare_drum, [length]).start()
-
     def play_samples(self, out_data: np.ndarray, idx: int) -> None:
         if self.__intensity == Intensity.SILENT or not RDRUM.get_length():
             return

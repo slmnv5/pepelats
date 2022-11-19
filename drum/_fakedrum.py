@@ -48,9 +48,6 @@ class FakeDrum:
     def get_swing(self) -> float:
         return 0
 
-    def prepare_drum_async(self, length: int) -> None:
-        pass
-
     def play_samples(self, out_data: np.ndarray, idx: int) -> None:
         pass
 
