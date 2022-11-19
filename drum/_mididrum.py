@@ -93,10 +93,16 @@ class MidiDrum(FakeDrum):
 
 if __name__ == "__main__":
     def test():
-        drum = MidiDrum()
+        from loop._loopsimple import LoopWithDrum
+        from loop._oneloopctrl import OneLoopCtrl
+        from drum._realdrum import RealDrum
 
-        drum.prepare_drum(100000)
+        drum = MidiDrum()
+        drum.prepare_drum(100_000)
         assert bpm_to_bar_seconds(80) == 3
+        ctrl = OneLoopCtrl(drum)
+        loop = LoopWithDrum(ctrl, 200_000)
+        loop.play_buffer()
         print(bpm_to_bar_seconds(40) / MidiDrum.ticks_per_bar)
         print(bpm_to_bar_seconds(280) / MidiDrum.ticks_per_bar)
 
