@@ -20,9 +20,14 @@ def int_to_midi(k: int) -> mido.Message:
     return msg
 
 
+def bpm_to_bar_seconds(bpm: float) -> float:
+    return 60 / bpm * 4
+
+
 class MidiDrum(FakeDrum):
-    __ticks_per_bar: int = 96
-    __min_sleep_time: float = 0.86 / __ticks_per_bar
+    ticks_per_bar: int = 96
+    __min_sleep_time: float = bpm_to_bar_seconds(280) / ticks_per_bar  # 280 BPM
+    __max_sleep_time: float = bpm_to_bar_seconds(40) / ticks_per_bar  # 40 BPM
 
     def __init__(self):
         super().__init__()
@@ -32,12 +37,13 @@ class MidiDrum(FakeDrum):
             # noinspection PyUnresolvedReferences
             self.__out_port = mido.open_output("LooperCloc_out", virtual=True)
 
-        self.__sleep_time: float = 3  # sleep time in seconds
-        self.__start_at: float = 0  # slarted at time
+        self.__sleep_time: float = 1  # sleep time in seconds
+        self.__start: float = 0  # slart time
+        self.__upd: float = 100  # update time
+        self.__prev_upd: float = 0  # prev update time
         self.__is_stop: bool = True
+        self.__chunk_len: int = 0  # numpy array length
         self.__count: int = 0  # midi tick counter - 96 per bar
-        self.__idx: int = 0  # loop index
-        self.__prev_idx: int = 0  # loop prev index
 
         Thread(target=self.__send_clock, name="send_clock_thread", daemon=True).start()
 
@@ -48,33 +54,37 @@ class MidiDrum(FakeDrum):
         self.__out_port.send(mido.Message.from_bytes([0xF8]))
 
     def __send_start(self):
-        self.__is_stop = False
+        if not self.__is_stop:
+            return
         self.__start_at = time.monotonic()
+        self.__is_stop = False
         self.__out_port.send(mido.Message.from_bytes([0xFA]))
 
     def __send_stop(self):
+        if self.__is_stop:
+            return
         self.__is_stop = True
         self.__out_port.send(mido.Message.from_bytes([0xFC]))
 
     def prepare_drum(self, length: int) -> None:
-        self.__sleep_time = length / SD_RATE / MidiDrum.__ticks_per_bar
+        self.__sleep_time = length / SD_RATE / MidiDrum.ticks_per_bar
         self.__sleep_time = max(self.__sleep_time, MidiDrum.__min_sleep_time)
+        self.__chunk_len = 0
 
     def play_samples(self, out_data: np.ndarray, idx: int) -> None:
-        self.__prev_idx = self.__idx
-        self.__idx = idx
+        if not self.__chunk_len:
+            self.__chunk_len = len(out_data)
+        self.__prev_upd = self.__upd
+        self.__upd = time.monotonic()
 
     def __send_clock(self):
         while True:
             time.sleep(self.__sleep_time)
-            if self.__prev_idx == self.__idx:
-                if not self.__is_stop:
-                    self.__send_stop()
+            stopped: bool = self.__upd - self.__prev_upd > MidiDrum.__max_sleep_time
+            if stopped:
+                self.__send_stop()
             else:
-                if self.__is_stop:
-                    self.__send_start()
-
-            if not self.__is_stop:
+                self.__send_start()
                 self.__send_tick()
 
 
@@ -83,6 +93,9 @@ if __name__ == "__main__":
         int_to_midi(100000)
         drum = MidiDrum()
         drum.prepare_drum(100000)
+        assert bpm_to_bar_seconds(80) == 3
+        print(bpm_to_bar_seconds(40) / MidiDrum.ticks_per_bar)
+        print(bpm_to_bar_seconds(280) / MidiDrum.ticks_per_bar)
 
 
     test()
