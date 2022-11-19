@@ -1,3 +1,4 @@
+import logging
 import os
 import random
 from pathlib import Path
@@ -6,7 +7,7 @@ from typing import List, Any, Dict, Union, Tuple
 import numpy as np
 import soundfile as sf
 
-import logging
+from drum._fakedrum import FakeDrum
 from utils import JsonDict, make_zero_buffer, record_sound_buff, SD_TYPE, ConfigName, FileFinder
 from utils import SD_MAX
 
@@ -26,7 +27,7 @@ def position_with_swing(step_number: int, step_len: int, swing: float) -> int:
         return round(step_number * step_len + swing_delta)
 
 
-class DrumLoader:
+class DrumLoader(FakeDrum):
     """ class to load drum patterns """
 
     def __init__(self):
@@ -68,7 +69,7 @@ class DrumLoader:
     def get_length(self) -> int:
         return self.__length
 
-    def random_samples(self):
+    def random_samples(self) -> None:
         self.l2 = random.choice(self.__snd_l2)
         self.l1 = random.choice(self.__snd_l1)
         self.bk = random.choice(self.__snd_bk)
@@ -79,6 +80,27 @@ class DrumLoader:
         if self.get_length():
             self.prepare_drum(self.get_length())
 
+    def prepare_drum(self, length: int) -> None:
+        self.__length = 0  # keep it zero until sound load is done
+
+        for i in [self.__snd_l1, self.__snd_l2, self.__snd_bk]:
+            i.clear()
+
+        for i in self.__ptn_l1:
+            self.__snd_l1.append(self.__prepare_one(i, length))
+
+        for i in self.__ptn_l2:
+            self.__snd_l2.append(self.__prepare_one(i, length))
+
+        for i in self.__ptn_bk:
+            self.__snd_bk.append(self.__prepare_one(i, length))
+
+        logging.info(f"Generated drum patterns {len(self.__snd_l1)}")
+
+        self.random_samples()
+        self.__length = length
+
+    # ====== private methods
     def __load(self) -> None:
         directory: str = self._file_finder.get_full_name()
         logging.info(f"Loading drum {directory}")
@@ -125,26 +147,6 @@ class DrumLoader:
             for sound_name in [x for x in self.__sounds if x in value]:
                 value[sound_name] = extend_list(value[sound_name], value["steps"])
             storage.append(value)
-
-    def prepare_drum(self, length: int) -> None:
-        self.__length = 0  # keep it zero until sound load is done
-
-        for i in [self.__snd_l1, self.__snd_l2, self.__snd_bk]:
-            i.clear()
-
-        for i in self.__ptn_l1:
-            self.__snd_l1.append(self.__prepare_one(i, length))
-
-        for i in self.__ptn_l2:
-            self.__snd_l2.append(self.__prepare_one(i, length))
-
-        for i in self.__ptn_bk:
-            self.__snd_bk.append(self.__prepare_one(i, length))
-
-        logging.info(f"Generated drum patterns {len(self.__snd_l1)}")
-
-        self.random_samples()
-        self.__length = length
 
     def __prepare_one(self, pattern, length: int) -> np.ndarray:
         accents = pattern["acc"]
