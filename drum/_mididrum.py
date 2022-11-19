@@ -78,6 +78,9 @@ class MidiDrum(FakeDrum):
         self.__upd = time.monotonic()
 
     def __send_clock(self):
+        self.__out_port.send(mido.Message.from_bytes([0xFC]))
+        self.__out_port.send(mido.Message.from_bytes([0xFC]))
+        self.__out_port.send(mido.Message.from_bytes([0xFC]))
         while True:
             time.sleep(self.__sleep_time)
             stopped: bool = self.__upd - self.__prev_upd > MidiDrum.__max_sleep_time
