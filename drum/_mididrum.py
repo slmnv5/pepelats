@@ -93,8 +93,8 @@ class MidiDrum(FakeDrum):
 
 if __name__ == "__main__":
     def test():
-        int_to_midi(100000)
         drum = MidiDrum()
+
         drum.prepare_drum(100000)
         assert bpm_to_bar_seconds(80) == 3
         print(bpm_to_bar_seconds(40) / MidiDrum.ticks_per_bar)
