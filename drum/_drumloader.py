@@ -83,7 +83,7 @@ class DrumLoader(FakeDrum):
 
     def prepare_drum(self, length: int) -> None:
         """ Non blocking drum init in another thread  """
-        Timer(0.2, self.prepare_drum, [length]).start()
+        Timer(0.2, self.__prepare_drum, [length]).start()
 
     # ====== private methods ====================
     def __prepare_drum(self, length: int) -> None:

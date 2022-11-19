@@ -8,7 +8,7 @@ from loop import ExtendedCtrl
 
 recv_conn, send_conn = Pipe(False)
 ctrl = ExtendedCtrl(recv_conn, send_conn)
-RDRUM.prepare_drum_async(2000)
+RDRUM.prepare_drum(2000)
 time.sleep(1)
 
 

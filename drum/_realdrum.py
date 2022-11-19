@@ -1,4 +1,5 @@
 import random
+import sys
 from enum import IntEnum
 from threading import Timer
 from typing import List
@@ -6,6 +7,7 @@ from typing import List
 import numpy as np
 
 from drum._drumloader import DrumLoader
+from drum._mididrum import MidiDrum
 from utils import SD_MAX
 from utils import SD_RATE, play_sound_buff
 
@@ -100,7 +102,10 @@ class RealDrum(DrumLoader):
         return f"RealDrum Length:{RDRUM.get_length()} Intensity:{self.__intensity}"
 
 
-RDRUM = RealDrum()
+if "--mididrum" in sys.argv:
+    RDRUM = MidiDrum()
+else:
+    RDRUM = RealDrum()
 
 if __name__ == "__main__":
     pass

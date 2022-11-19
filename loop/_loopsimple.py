@@ -39,7 +39,7 @@ class LoopWithDrum(LoopSimple):
         otherwise trims self.length to multiple of drum length"""
         logging.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
         if not RDRUM.get_length():
-            RDRUM.prepare_drum_async(idx)
+            RDRUM.prepare_drum(idx)
             self.finalize(idx, 0)
         else:
             self.finalize(idx, RDRUM.get_length())
