@@ -4,7 +4,7 @@ from multiprocessing.connection import Connection
 from multiprocessing.dummy.connection import Pipe
 
 from utils import CmdTranslator
-from utils._utilalsa import MockMidiPort
+from utils import MockMidiPort
 
 
 class MidiControl(CmdTranslator):
