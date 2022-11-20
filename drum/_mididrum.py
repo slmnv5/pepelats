@@ -45,9 +45,10 @@ class MidiDrum(FakeDrum):
 
         self.__sleep_time: float = 1  # sleep time in seconds
         self.__start: float = 0  # slart time
-        self.__upd: float = 100  # update time
-        self.__prev_upd: float = 0  # prev update time
-        self.__is_stop: bool = True
+        self.__upd: float = time.monotonic()  # update time
+        self.__prev_upd: float = time.monotonic()  # prev update time
+        self.__stop_sent: bool = True
+        self.__start_sent: bool = True
         self.__chunk_len: int = 0  # numpy array length
         self.__count: int = 0  # midi tick counter - 96 per bar
 
@@ -60,22 +61,23 @@ class MidiDrum(FakeDrum):
         self.__out_port.send(mido.Message.from_bytes([0xF8]))
 
     def __send_start(self):
-        if not self.__is_stop:
+        if self.__start_sent:
             return
         self.__start_at = time.monotonic()
-        self.__is_stop = False
+        self.__start_sent = True
         self.__out_port.send(mido.Message.from_bytes([0xFA]))
 
     def __send_stop(self):
-        if self.__is_stop:
+        if self.__stop_sent:
             return
-        self.__is_stop = True
+        self.__stop_sent = True
         self.__out_port.send(mido.Message.from_bytes([0xFC]))
 
     def prepare_drum(self, length: int) -> None:
         self.__sleep_time = length / SD_RATE / MidiDrum.ticks_per_bar
         self.__sleep_time = max(self.__sleep_time, MidiDrum.__min_sleep_time)
         self.__chunk_len = 0
+        self.__start_sent = False
 
     def play_samples(self, out_data: np.ndarray, idx: int) -> None:
         if not self.__chunk_len:
@@ -84,12 +86,9 @@ class MidiDrum(FakeDrum):
         self.__upd = time.monotonic()
 
     def __send_clock(self):
-        self.__out_port.send(mido.Message.from_bytes([0xFC]))
-        self.__out_port.send(mido.Message.from_bytes([0xFC]))
-        self.__out_port.send(mido.Message.from_bytes([0xFC]))
         while True:
             time.sleep(self.__sleep_time)
-            stopped: bool = self.__upd - self.__prev_upd > MidiDrum.__max_sleep_time
+            stopped: bool = (self.__upd - self.__prev_upd) > MidiDrum.__max_sleep_time
             if stopped:
                 self.__send_stop()
             else:
