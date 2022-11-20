@@ -22,6 +22,9 @@ class OneLoopCtrl:
     def get_drum(self) -> FakeDrum:
         return self.__drum
 
+    def set_drum(self, drum: FakeDrum) -> None:
+        self.__drum = drum
+
     @abstractmethod
     def _redraw(self) -> None:
         pass
