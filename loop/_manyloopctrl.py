@@ -13,12 +13,15 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
      Song is collection of song parts with related methods"""
 
     def __init__(self, drum: FakeDrum):
-        self._go_play: Event = Event()
+        self._play_event: Event = Event()
         OneLoopCtrl.__init__(self, drum)
         Song.__init__(self, SongPart(self))
         Thread(target=self.__playback, name="playback_thread", daemon=True).start()
         self._file_finder.go_id(0)
         self._init_song()
+
+    def get_play_event(self) -> Event:
+        return self._play_event
 
     def _redraw(self) -> None:
         pass
@@ -42,7 +45,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
     def __playback(self) -> None:
         """runs in a thread, play and record current song part"""
         while True:
-            self._go_play.wait()
+            self._play_event.wait()
             self.align_ids()
 
             part = self.get_part()
@@ -54,7 +57,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
 
     def _stop_song(self, wait: int = 0) -> None:
         self._is_rec = False
-        self._go_play.clear()
+        self._play_event.clear()
         if not wait:
             self.stop_at_bound(0)
         else:
@@ -68,9 +71,9 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
                 loop.resize_buff(MAX_LEN)
 
     def _play_part_id(self, fixed_id: int) -> None:
-        if not self._go_play.is_set():
+        if not self._play_event.is_set():
             self.go_id(fixed_id)
-            self._go_play.set()
+            self._play_event.set()
             return
 
         if fixed_id != self.id:
@@ -133,4 +136,31 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
 
 
 if __name__ == "__main__":
-    pass
+    def test(use_midi: bool):
+        from loop._loopsimple import LoopSimple
+        from loop._oneloopctrl import OneLoopCtrl
+        from threading import Timer
+        from drum import RealDrum, MidiDrum
+        import time
+
+        drum = MidiDrum() if use_midi else RealDrum()
+
+        # drum.prepare_drum(100_000)
+        # while not drum.get_length():
+        #    time.sleep(0.1)
+
+        print("======== start record =============")
+        ctrl = ManyLoopCtrl(drum)
+        ctrl.get_play_event().set()
+        Timer(3.1, ctrl.stop_at_bound, [0]).start()
+        time.sleep(3.1)
+
+        print("======== start palay =============")
+        ctrl.get_play_event().set()
+        Timer(3.1, ctrl.stop_at_bound, [0]).start()
+        time.sleep(3.1)
+
+
+    test(True)
+
+    test(False)

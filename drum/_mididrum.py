@@ -8,7 +8,7 @@ import mido
 import numpy as np
 
 from drum._fakedrum import FakeDrum
-from utils import MockMidiPort, make_sin_sound
+from utils import MockMidiPort
 from utils import SD_RATE
 from utils import open_midi_port
 
@@ -95,6 +95,7 @@ if __name__ == "__main__":
         from loop._oneloopctrl import OneLoopCtrl
         from threading import Timer
         from drum import RealDrum
+        from utils import make_sin_sound
 
         drum = MidiDrum() if use_midi else RealDrum()
 
