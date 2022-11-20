@@ -109,7 +109,7 @@ if __name__ == "__main__":
         ctrl.idx = len(sound)
         print("======== start =============")
         loop.trim_buffer()
-        Timer(3, ctrl.stop_at_bound, [0]).start()
+        Timer(7.1, ctrl.stop_at_bound, [0]).start()
         loop.play_buffer()
 
 

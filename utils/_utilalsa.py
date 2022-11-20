@@ -135,7 +135,7 @@ def sound_test(buffer: np.ndarray, duration_sec: float, record: bool) -> None:
         sd.sleep(int(duration_sec * 1000))
 
 
-def make_sin_sound(sound_freq: int, duration_sec: float, amplitude: int = 3000) -> np.ndarray:
+def make_sin_sound(sound_freq: int, duration_sec: float, amplitude: int = 9000) -> np.ndarray:
     points_in_array = int(sd.default.samplerate * duration_sec)
     t = np.linspace(0, duration_sec, points_in_array)
     x = amplitude * np.sin(2 * np.pi * sound_freq * t)
