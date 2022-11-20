@@ -17,13 +17,6 @@ CL_START: mido.Message = mido.Message('start')
 SYSEX_PREFIX: List[int] = [33, 33]
 
 
-def int_to_list(int_value: int) -> List[int]:
-    byte_str: str = f'{int_value:028b}'
-    byte_lst = list()
-    byte_lst.extend(bytes(int(byte_str[i: i + 7], 2) for i in range(0, len(byte_str), 7)))
-    return byte_lst
-
-
 def bpm_to_bar_seconds(bpm: float) -> float:
     return 60 * 4 / bpm
 
@@ -59,6 +52,15 @@ class MidiDrum(FakeDrum):
 
         Thread(target=self.__send_clock, name="send_clock_thread", daemon=True).start()
 
+    # MIDI sysex message that contains quarter notoes milli for tap tempo
+    # This integer is stored in 7bit valuse MSB, LSB]
+    def __sysex(self) -> List[int]:
+        beat_milli = self.__length * 1000 / 4 / SD_RATE
+        beat_milli = round(beat_milli)
+        byte_str: str = f'{beat_milli:014b}'
+        byte_lst = [int(byte_str[0: 7], 2), int(byte_str[7: 14], 2)]
+        return byte_lst
+
     def get_fixed(self) -> str:
         return f"MIDI {self.__bpm:.2F}"
 
@@ -80,7 +82,7 @@ class MidiDrum(FakeDrum):
         self.__sleep_time = bar_seconds / TICKS_PER_BAR
         self.__play_event.set()
         self.__start_at = time.perf_counter()
-        lst = SYSEX_PREFIX + int_to_list(self.__length)
+        lst = SYSEX_PREFIX + self.__sysex()
         msg = mido.Message('sysex', data=lst)
         self.__out_port.send(msg)
         msg = mido.Message('start')
