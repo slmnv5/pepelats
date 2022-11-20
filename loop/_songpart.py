@@ -34,13 +34,13 @@ class SongPart(CollectionOwner[LoopSimple], Player):
     def length(self) -> int:
         return self.get_id(0).length
 
-    def play_samples(self, out_data: np.ndarray, idx: int) -> None:
-        self.get_drum().play_samples(out_data, idx)
-        self.apply_to_each(lambda x: WrapBuffer.play_samples(x, out_data, idx))
+    def _play_samples(self, out_data: np.ndarray, idx: int) -> None:
+        self.get_drum().play_drums(out_data, idx)
+        self.apply_to_each(lambda x: WrapBuffer._play_samples(x, out_data, idx))
 
-    def record_samples(self, in_data: np.ndarray, idx: int) -> None:
+    def _record_samples(self, in_data: np.ndarray, idx: int) -> None:
         loop = self.get_item()
-        WrapBuffer.record_samples(loop, in_data, idx)
+        WrapBuffer._record_samples(loop, in_data, idx)
 
     def __str__(self):
         if not self.get_drum().get_length() or self.is_empty:

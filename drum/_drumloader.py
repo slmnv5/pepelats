@@ -49,7 +49,7 @@ class DrumLoader(FakeDrum):
         self.__snd_bk: List[np.ndarray] = []
         self.__load()
 
-    def play_samples(self, out_data: np.ndarray, idx: int) -> None:
+    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         pass
 
     def get_item(self) -> str:

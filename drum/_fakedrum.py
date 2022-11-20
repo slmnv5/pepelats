@@ -54,7 +54,7 @@ class FakeDrum:
         return 0
 
     @abstractmethod
-    def play_samples(self, out_data: np.ndarray, idx: int) -> None:
+    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         pass
 
     def play_break_later(self, part_len: int, idx: int) -> None:

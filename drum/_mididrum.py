@@ -71,7 +71,7 @@ class MidiDrum(FakeDrum):
         self.__sleep_time = length / SD_RATE / TICKS_PER_BAR
         self.__sleep_time = max(self.__sleep_time, MIN_SLEEP)
 
-    def play_samples(self, out_data: np.ndarray, idx: int) -> None:
+    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         self.__upd = time.monotonic()
         if not self.__start_at:
             self.__start_at = self.__upd
@@ -104,7 +104,7 @@ if __name__ == "__main__":
 
         ctrl = OneLoopCtrl(drum)
         loop = LoopSimple(ctrl)
-        loop.record_samples(sound, 200_000)  # record in the middle of loop
+        loop._record_samples(sound, 200_000)  # record in the middle of loop
 
         print("======== start =============")
         loop.trim_buffer()

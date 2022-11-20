@@ -16,9 +16,9 @@ class LoopSimple(Player):
     def __init__(self, ctrl: OneLoopCtrl, length: int = MAX_LEN):
         super().__init__(ctrl, length)
 
-    def play_samples(self, out_data: np.ndarray, idx: int) -> None:
-        self.get_drum().play_samples(out_data, idx)
-        super().play_samples(out_data, idx)
+    def _play_samples(self, out_data: np.ndarray, idx: int) -> None:
+        self.get_drum().play_drums(out_data, idx)
+        super()._play_samples(out_data, idx)
 
     def trim_buffer(self) -> None:
         """create drums of correct length if drum is empty,

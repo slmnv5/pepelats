@@ -49,14 +49,14 @@ class WrapBuffer:
             self.__buff = self.__buff[0, length]
         self._str = None
 
-    def record_samples(self, in_data: np.ndarray, idx: int) -> None:
+    def _record_samples(self, in_data: np.ndarray, idx: int) -> None:
         """Record and fix start for empty, recalculate volume for non empty"""
         if self.is_empty:
             if self.__start < 0:
                 self.__start = idx
         record_sound_buff(self.__buff, in_data, idx)
 
-    def play_samples(self, out_data: np.ndarray, idx: int) -> None:
+    def _play_samples(self, out_data: np.ndarray, idx: int) -> None:
         if self.__is_silent:
             return
         tmp = self.__buff[::-1] if self.__is_reverse else self.__buff

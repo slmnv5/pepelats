@@ -50,7 +50,7 @@ class RealDrum(DrumLoader):
     def get_swing(self) -> float:
         return self.swing
 
-    def play_samples(self, out_data: np.ndarray, idx: int) -> None:
+    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         if self.__intensity == Intensity.SILENT or not self.get_length():
             return
 
