@@ -1,7 +1,7 @@
 import logging
 import os
 import time
-from threading import Thread
+from threading import Thread, Event
 
 import mido
 import numpy as np
@@ -31,9 +31,8 @@ def bpm_to_bar_seconds(bpm: float) -> float:
 
 def midi_clock(midi_output, bpm):
     pulse_rate = 60.0 / (bpm.value * 24)
-    clock_tick = mido.Message('clock')
     while True:
-        midi_output.send(clock_tick)
+        midi_output.send(CL_TICK)
         t1 = time.perf_counter()
         time.sleep(pulse_rate * 0.8)
         t2 = time.perf_counter()
@@ -42,8 +41,7 @@ def midi_clock(midi_output, bpm):
 
 
 TICKS_PER_BAR: int = 96
-MIN_SLEEP: float = bpm_to_bar_seconds(280) / TICKS_PER_BAR  # 280 BPM
-MAX_SLEEP: float = bpm_to_bar_seconds(40) / TICKS_PER_BAR  # 40 BPM
+MAX_DELAY = 1
 
 
 class MidiDrum(FakeDrum):
@@ -59,8 +57,8 @@ class MidiDrum(FakeDrum):
                 logging.error(msg)
                 raise RuntimeError(msg)
 
+        self.__play_event: Event = Event()
         self.__sleep_time: float = 1  # sleep time in seconds
-        self.__start_at: float = 0  # slart time
         self.__upd: float = 0  # update time
         self.__length: int = 0
 
@@ -74,28 +72,33 @@ class MidiDrum(FakeDrum):
 
     def prepare_drum(self, length: int) -> None:
         self.__length: int = length
-        self.__start_at = time.monotonic()
+        self.__play_event.set()
         self.__out_port.send(CL_START)
         self.__sleep_time = (length / SD_RATE) / TICKS_PER_BAR
+        logging.info(f"Sleep time for MIDI clock: {self.__sleep_time}")
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         if not self.get_length():
             return
-        self.__upd = time.monotonic()
-        if not self.__start_at:
-            self.__start_at = self.__upd
+        if not self.__play_event.is_set():
+            self.__upd = time.monotonic()
             self.__out_port.send(CL_START)
+            self.__play_event.set()
+        elif not idx:
+            self.__upd = time.monotonic()
 
     def __send_clock(self):
         while True:
-            time.sleep(self.__sleep_time)
+            self.__play_event.wait()
+            self.__upd = self.__upd + self.__sleep_time
             now = time.monotonic()
-            if now - self.__upd > MAX_SLEEP:
-                if self.__start_at:
-                    self.__start_at = 0
-                    self.__out_port.send(CL_STOP)
-            else:
-                self.__out_port.send(CL_TICK)
+            wait = self.__upd - now
+            if wait > 0:
+                time.sleep(wait)
+            self.__out_port.send(CL_TICK)
+            if wait > MAX_DELAY:
+                self.__play_event.clear()
+                self.__out_port.send(CL_STOP)
 
 
 if __name__ == "__main__":

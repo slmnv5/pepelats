@@ -163,8 +163,6 @@ if __name__ == "__main__":
         time.sleep(duration)
 
 
-
-
     test(True)
 
     # test(False)

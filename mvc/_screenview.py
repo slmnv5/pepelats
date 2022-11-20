@@ -1,3 +1,4 @@
+import logging
 import os
 import time
 # noinspection PyProtectedMember
@@ -6,7 +7,6 @@ from multiprocessing.connection import Pipe
 from threading import Thread
 from typing import Dict
 
-import logging
 from utils import MsgProcessor, SD_RATE
 from utils import RedrawScreen
 
@@ -101,7 +101,7 @@ class ScreenView(MsgProcessor):
             line = get_with_color(line, redraw.is_rec)
             tmp += line + NEWL
         left_lines = max(0, ROWS - 1 - self.__descr_lines - lines_count)
-        # tmp += ' ' * COLS * left_lines + NEWL
+        tmp += ' ' * COLS * left_lines + NEWL
         print(f"\033[{2 + self.__descr_lines};1H{tmp}", end='', flush=True)
 
     def __update_progress(self):
