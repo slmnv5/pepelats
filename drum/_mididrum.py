@@ -72,6 +72,8 @@ class MidiDrum(FakeDrum):
         self.__sleep_time = max(self.__sleep_time, MIN_SLEEP)
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
+        if not self.get_length():
+            return
         self.__upd = time.monotonic()
         if not self.__start_at:
             self.__start_at = self.__upd
