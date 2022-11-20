@@ -40,7 +40,7 @@ class Player:
             self._ctrl.get_stop_event().wait()
 
         if self.is_empty:
-            self.trim_buffer(self._ctrl.idx)
+            self.trim_buffer()
 
         logging.debug(f"===Stop {self.__class__.__name__}")
 
@@ -53,7 +53,7 @@ class Player:
         pass
 
     @abstractmethod
-    def trim_buffer(self, idx: int) -> None:
+    def trim_buffer(self) -> None:
         pass
 
     @property

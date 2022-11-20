@@ -1,4 +1,3 @@
-import logging
 from threading import Timer
 
 import numpy as np
@@ -22,11 +21,10 @@ class SongPart(CollectionOwner[LoopWithDrum], Player):
         Player.set_ctrl(self, ctrl)
         self.apply_to_each(lambda x: x.set_ctrl(ctrl), use_undo=True)
 
-    def trim_buffer(self, idx: int) -> None:
+    def trim_buffer(self) -> None:
         """create drums of correct length if drum is empty,
         otherwise trims self.length to multiple of first loop in the part"""
-        logging.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
-        self.get_item().trim_buffer(idx)
+        self.get_item().trim_buffer()
 
     @property
     def is_empty(self) -> bool:

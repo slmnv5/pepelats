@@ -17,8 +17,9 @@ class LoopSimple(WrapBuffer, Player):
         WrapBuffer.__init__(self, length)
         Player.__init__(self, ctrl)
 
-    def trim_buffer(self, idx: int) -> None:
+    def trim_buffer(self) -> None:
         """trim buffer to the length at stop event = idx. Overridden by child class"""
+        idx: int = self._ctrl.idx
         logging.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
         self.finalize(idx, 0)
 
@@ -34,9 +35,10 @@ class LoopWithDrum(LoopSimple):
         self.get_drum().play_samples(out_data, idx)
         super().play_samples(out_data, idx)
 
-    def trim_buffer(self, idx: int) -> None:
+    def trim_buffer(self) -> None:
         """create drums of correct length if drum is empty,
         otherwise trims self.length to multiple of drum length"""
+        idx: int = self._ctrl.idx
         logging.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
         if not self.get_drum().get_length():
             self.get_drum().prepare_drum(idx)

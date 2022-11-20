@@ -104,7 +104,7 @@ if __name__ == "__main__":
         loop.record_samples(sound, 200_000)  # record in the middle of loop
 
         print("======== start =============")
-        loop.trim_buffer(500_000)
+        loop.trim_buffer()
         Timer(3, ctrl.stop_at_bound, [0]).start()
         loop.play_buffer()
 
