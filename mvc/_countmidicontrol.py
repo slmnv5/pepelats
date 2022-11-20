@@ -31,7 +31,7 @@ class MidiCcToNote:
             self.__sent_on = False
             return msg
 
-        if not msg.is_cc():
+        if msg.bytes()[0] & 0xF0 != 0xB0:
             self.__prev_msg = msg
             self.__sent_on = False
             return None
