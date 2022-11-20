@@ -10,12 +10,12 @@ from typing import Dict
 from utils import MsgProcessor, SD_RATE
 from utils import RedrawScreen
 
-UPDATES_PER_LOOP = 16
-LONG_SLEEP = 5
 if os.name == "posix":
-    NEWL = ''
+    NEWL: str = ''
+    UPDATES_PER_LOOP: float = 16
 else:
-    NEWL = '\n'
+    NEWL: str = '\n'
+    UPDATES_PER_LOOP: float = 1
 
 try:
     COLS, ROWS = os.get_terminal_size()
@@ -57,7 +57,7 @@ class ScreenView(MsgProcessor):
         self.__descr_lines: int = 0
         self.__is_stop: bool = True
         self.__loop_len = self.__idx = self.__delta = 1000000
-        self.__sleep_time: float = LONG_SLEEP
+        self.__sleep_time: float = 1
         Thread(target=self.__update_progress, name="update_progress", daemon=True).start()
 
     def _send_redraw(self, infodic: Dict) -> None:
