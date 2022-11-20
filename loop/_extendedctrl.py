@@ -7,7 +7,7 @@ from multiprocessing.connection import Connection
 from typing import Dict
 
 from drum import FakeDrum
-from loop._loopsimple import LoopWithDrum
+from loop._loopsimple import LoopSimple
 from loop._manyloopctrl import ManyLoopCtrl
 from loop._songpart import SongPart
 from utils import MsgProcessor, RedrawScreen
@@ -96,7 +96,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         if self.id == self.fixed_id:
             return
         part = self.get_item()
-        part.append(LoopWithDrum(self))
+        part.append(LoopSimple(self))
         while part.item_count > 1:
             part.delete(0)
         self.go_fixed()

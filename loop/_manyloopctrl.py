@@ -1,7 +1,7 @@
 from threading import Thread, Event
 
 from drum import FakeDrum
-from loop._loopsimple import LoopWithDrum
+from loop._loopsimple import LoopSimple
 from loop._oneloopctrl import OneLoopCtrl
 from loop._song import Song
 from loop._songpart import SongPart
@@ -88,7 +88,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             if self._is_rec:
                 self._is_rec = False
             else:
-                part.append(LoopWithDrum(self, part.length))
+                part.append(LoopSimple(self, part.length))
                 part.go_id(part.item_count - 1)
                 self._is_rec = True
 

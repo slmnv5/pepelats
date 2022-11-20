@@ -1,16 +1,17 @@
 import logging
-from abc import abstractmethod
 
-import numpy as np
 import sounddevice as sd
 
 from loop._oneloopctrl import OneLoopCtrl
+from loop._wrapbuffer import WrapBuffer
+from utils import MAX_LEN
 
 
-class Player:
+class Player(WrapBuffer):
     """Abstract class that can play record using sounddevice"""
 
-    def __init__(self, ctrl: OneLoopCtrl):
+    def __init__(self, ctrl: OneLoopCtrl, length: int = MAX_LEN):
+        WrapBuffer.__init__(self, length)
         self._ctrl: OneLoopCtrl = ctrl
 
     def get_drum(self):
@@ -44,22 +45,11 @@ class Player:
 
         logging.debug(f"===Stop {self.__class__.__name__}")
 
-    @abstractmethod
-    def play_samples(self, out_data: np.ndarray, idx: int) -> None:
-        pass
-
-    @abstractmethod
-    def record_samples(self, in_data: np.ndarray, idx: int) -> None:
-        pass
-
-    @abstractmethod
     def trim_buffer(self) -> None:
-        pass
-
-    @property
-    @abstractmethod
-    def is_empty(self) -> bool:
-        pass
+        """trim buffer to the length at stop event = idx. Overridden by child class"""
+        idx: int = self._ctrl.idx
+        logging.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
+        self.finalize(idx, 0)
 
     def __getstate__(self):
         state = self.__dict__.copy()

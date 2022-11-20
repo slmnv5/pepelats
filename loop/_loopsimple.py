@@ -6,25 +6,10 @@ import numpy as np
 from drum import RealDrum
 from loop._oneloopctrl import OneLoopCtrl
 from loop._player import Player
-from loop._wrapbuffer import WrapBuffer
 from utils import MAX_LEN
 
 
-class LoopSimple(WrapBuffer, Player):
-    """Loop that may play and record itself. Has Control object to stop and keep loop index"""
-
-    def __init__(self, ctrl: OneLoopCtrl, length: int = MAX_LEN):
-        WrapBuffer.__init__(self, length)
-        Player.__init__(self, ctrl)
-
-    def trim_buffer(self) -> None:
-        """trim buffer to the length at stop event = idx. Overridden by child class"""
-        idx: int = self._ctrl.idx
-        logging.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
-        self.finalize(idx, 0)
-
-
-class LoopWithDrum(LoopSimple):
+class LoopSimple(Player):
     """Loop truncate itself to be multiple of drum if drum is ready.
     Or init drum of correct length if drum is empty"""
 
@@ -82,7 +67,7 @@ if __name__ == "__main__":
         c1 = OneLoopCtrl(RealDrum())
         c1._is_rec = True
         Timer(3.9, c1.stop_at_bound, args=[0]).start()
-        l1 = LoopWithDrum(c1)
+        l1 = LoopSimple(c1)
         l1.play_buffer()
         c1.get_stop_event().clear()
         Timer(5, c1.stop_at_bound, args=[0]).start()

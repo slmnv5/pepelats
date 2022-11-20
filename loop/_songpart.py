@@ -3,19 +3,19 @@ from threading import Timer
 import numpy as np
 
 from drum import RealDrum
-from loop._loopsimple import LoopWithDrum
+from loop._loopsimple import LoopSimple
 from loop._oneloopctrl import OneLoopCtrl
 from loop._player import Player
 from loop._wrapbuffer import WrapBuffer
 from utils import CollectionOwner
 
 
-class SongPart(CollectionOwner[LoopWithDrum], Player):
+class SongPart(CollectionOwner[LoopSimple], Player):
     """Loop that includes many more simple loops to play together"""
 
     def __init__(self, ctrl: OneLoopCtrl):
         Player.__init__(self, ctrl)
-        CollectionOwner.__init__(self, LoopWithDrum(ctrl))
+        CollectionOwner.__init__(self, LoopSimple(ctrl))
 
     def set_ctrl(self, ctrl) -> None:
         Player.set_ctrl(self, ctrl)
