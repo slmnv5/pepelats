@@ -51,6 +51,7 @@ MAX_DELAY = 1
 class MidiDrum(FakeDrum):
     def __init__(self):
         super().__init__()
+        self.__ratio: float = 0
         self.__bpm: float = 0
         if os.name != "posix":
             self.__out_port = MockMidiPort()
@@ -71,7 +72,7 @@ class MidiDrum(FakeDrum):
         Thread(target=self.__send_clock, name="send_clock_thread", daemon=True).start()
 
     def get_fixed(self) -> str:
-        return f"MIDI {self.__bpm:.2F}"
+        return f"MIDI {self.__bpm:.2F} {self.__ratio:.2F}"
 
     def get_length(self) -> int:
         return self.__length
@@ -98,6 +99,7 @@ class MidiDrum(FakeDrum):
             self.__upd = time.perf_counter()
             self.__out_port.send(CL_START)
             self.__play_event.set()
+            self.__ratio = self.__length / len(out_data)
         elif not idx:
             self.__upd = time.perf_counter()
 
