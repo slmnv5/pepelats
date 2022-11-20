@@ -95,17 +95,17 @@ class MidiDrum(FakeDrum):
         if not self.get_length():
             return
         if not self.__play_event.is_set():
-            self.__upd = time.monotonic()
+            self.__upd = time.perf_counter()
             self.__out_port.send(CL_START)
             self.__play_event.set()
         elif not idx:
-            self.__upd = time.monotonic()
+            self.__upd = time.perf_counter()
 
     def __send_clock(self):
         while True:
             self.__play_event.wait()
             self.__upd = self.__upd + self.__sleep_time
-            now = time.monotonic()
+            now = time.perf_counter()
             wait = self.__upd - now
             if wait > 0:
                 time.sleep(wait)
