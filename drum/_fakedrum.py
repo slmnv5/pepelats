@@ -25,6 +25,7 @@ class FakeDrum:
     def clear_drum(self) -> None:
         pass
 
+    @abstractmethod
     def get_length(self) -> int:
         return 0
 
