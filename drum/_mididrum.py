@@ -31,7 +31,6 @@ MAX_SLEEP: float = bpm_to_bar_seconds(40) / TICKS_PER_BAR  # 40 BPM
 
 
 class MidiDrum(FakeDrum):
-
     def __init__(self):
         super().__init__()
         if os.name != "posix":
