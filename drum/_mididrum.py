@@ -2,7 +2,7 @@ import logging
 import os
 import time
 from threading import Thread, Event
-from typing import List
+from typing import List, Tuple
 
 import mido
 import numpy as np
@@ -12,17 +12,13 @@ from utils import MockMidiPort
 from utils import SD_RATE
 from utils import open_midi_port
 
-CL_STOP: mido.Message = mido.Message('stop')
-CL_START: mido.Message = mido.Message('start')
 SYSEX_PREFIX: List[int] = [33, 33]
 
 
-def bpm_to_bar_seconds(bpm: float) -> float:
-    return 60 * 4 / bpm
-
-
-def bar_seconds_to_bpm(bar_seconds: float) -> float:
-    return 60 * 4 / bar_seconds
+def get_bpm_tempo(bar_seconds: float) -> Tuple[float, int]:
+    bpm = 60 * 4 / bar_seconds
+    tap_tempo = round(bar_seconds / 4 * 1000)  # millis
+    return bpm, tap_tempo
 
 
 TICKS_PER_BAR: int = 96
@@ -32,8 +28,14 @@ MAX_DELAY = 1
 class MidiDrum(FakeDrum):
     def __init__(self):
         super().__init__()
-        self.__start_at: float = 0
+        self.__length: int = 0
+        self.__tap_milli: int = 0
         self.__bpm: float = 0
+        self.__sleep_time: float = 1  # sleep time in seconds
+
+        self.__start_at: float = 0
+        self.__upd: float = 0  # update time
+
         if os.name != "posix":
             self.__out_port = MockMidiPort()
         else:
@@ -46,9 +48,6 @@ class MidiDrum(FakeDrum):
 
         self.__play_event: Event = Event()
         assert not self.__play_event.is_set(), "Event must be clear in ctor"
-        self.__sleep_time: float = 1  # sleep time in seconds
-        self.__upd: float = 0  # update time
-        self.__length: int = 0
 
         Thread(target=self.__send_clock, name="send_clock_thread", daemon=True).start()
 
@@ -62,7 +61,7 @@ class MidiDrum(FakeDrum):
         return byte_lst
 
     def get_fixed(self) -> str:
-        return f"MIDI {self.__bpm:.2F}"
+        return f"{self}"
 
     def get_length(self) -> int:
         return self.__length
@@ -71,22 +70,20 @@ class MidiDrum(FakeDrum):
         self.__length = 0
         self.__sleep_time = 0
         self.__play_event.clear()
-        self.__out_port.send(CL_STOP)
+        self.__out_port.send(mido.Message('stop'))
 
     def prepare_drum(self, length: int) -> None:
         assert length > 0
         self.__length = length
-        self.__out_port.send(CL_START.copy())
-        bar_seconds = length / SD_RATE
-        self.__bpm = bar_seconds_to_bpm(bar_seconds)
+        self.__out_port.send(mido.Message('start'))
+        bar_seconds: float = length / SD_RATE
+        self.__bpm, self.__tap_milli = get_bpm_tempo(bar_seconds)
         self.__sleep_time = bar_seconds / TICKS_PER_BAR
         self.__play_event.set()
         self.__start_at = time.perf_counter()
         lst = SYSEX_PREFIX + self.__sysex()
-        msg = mido.Message('sysex', data=lst)
-        self.__out_port.send(msg)
-        msg = mido.Message('start')
-        self.__out_port.send(msg)
+        self.__out_port.send(mido.Message('sysex', data=lst))
+        self.__out_port.send(mido.Message('start'))
         logging.info(f"Sleep time for MIDI clock: {self.__sleep_time}")
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
@@ -97,11 +94,13 @@ class MidiDrum(FakeDrum):
 
     def __send_clock(self):
         while True:
-            time.sleep(1111111111)
             self.__play_event.wait()
             time.sleep(self.__sleep_time)
-            msg = mido.Message('clock')
-            self.__out_port.send(msg)
+            self.__out_port.send(mido.Message('clock'))
+
+    def __str__(self):
+        return f"Len:{self.__length} TapMilli:{self.__tap_milli}  " \
+               f"BPM:{self.__bpm:.2F} SleepMilli:{1000 * self.__sleep_time:.2F}"
 
 
 if __name__ == "__main__":
