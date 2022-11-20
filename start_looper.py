@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from drum import MidiDrum, FakeDrum
+from drum import MidiDrum
 from drum import RealDrum
 from utils import open_midi_port
 
@@ -26,7 +26,8 @@ from mvc import CountMidiControl
 from mvc import MidiControl, ScreenView
 
 
-def process_looper(drum: FakeDrum, recv_looper: Connection, send_view: Connection) -> None:
+def process_looper(recv_looper: Connection, send_view: Connection, midi_drum: bool) -> None:
+    drum = MidiDrum() if midi_drum else RealDrum()
     looper = ExtendedCtrl(drum, recv_looper, send_view)
     looper.process_messages()
 
@@ -37,11 +38,6 @@ def process_screenview(recv_view: Connection) -> None:
 
 
 def go() -> None:
-    if "--mididrum" in sys.argv:
-        drum = MidiDrum()
-    else:
-        drum = RealDrum()
-
     recv_view, send_view = Pipe(False)  # screen update messages
     recv_looper, send_looper = Pipe(False)  # looper control messages
 
@@ -55,7 +51,8 @@ def go() -> None:
             logging.error(msg)
             raise RuntimeError(msg)
 
-    Process(target=process_looper, args=(drum, recv_looper, send_view), name="looper", daemon=True).start()
+    midi_drum = "--mididrum" in sys.argv
+    Process(target=process_looper, args=(recv_looper, send_view, midi_drum), name="looper", daemon=True).start()
 
     Process(target=process_screenview, args=(recv_view,), name="screen", daemon=True).start()
 

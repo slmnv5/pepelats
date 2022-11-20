@@ -29,7 +29,11 @@ class MockMidiPort:
 
     def send(self, msg: mido.Message) -> None:
         self.__count += 1
-        print(f"Sent MIDI {msg}")
+        msg = f"Sent MIDI {msg}"
+        if self.__count % 96 == 0:
+            print(msg)
+        elif "stop" in msg or "start" in msg:
+            print(msg)
 
     # noinspection PyUnusedLocal
     def receive(self, block=True) -> mido.Message:
