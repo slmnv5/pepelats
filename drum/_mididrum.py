@@ -2,6 +2,7 @@ import logging
 import os
 import time
 from threading import Thread, Event
+from typing import List
 
 import mido
 import numpy as np
@@ -11,18 +12,16 @@ from utils import MockMidiPort
 from utils import SD_RATE
 from utils import open_midi_port
 
-CL_STOP = mido.Message('stop')
-CL_START = mido.Message('start')
-CL_TICK = mido.Message('clock')
+CL_STOP: mido.Message = mido.Message('stop')
+CL_START: mido.Message = mido.Message('start')
+SYSEX_PREFIX: List[int] = [33, 33]
 
 
-def int_to_midi(k: int) -> mido.Message:
-    byte_str: str = f'{k:028b}'
-    byte_lst = [0xF0]
+def int_to_list(int_value: int) -> List[int]:
+    byte_str: str = f'{int_value:028b}'
+    byte_lst = list()
     byte_lst.extend(bytes(int(byte_str[i: i + 7], 2) for i in range(0, len(byte_str), 7)))
-    byte_lst.append(0xF7)
-    msg = mido.Message.from_bytes(byte_lst)
-    return msg
+    return byte_lst
 
 
 def bpm_to_bar_seconds(bpm: float) -> float:
@@ -80,6 +79,11 @@ class MidiDrum(FakeDrum):
         self.__sleep_time = bar_seconds / TICKS_PER_BAR
         self.__play_event.set()
         self.__start_at = time.perf_counter()
+        lst = SYSEX_PREFIX.extend(int_to_list(self.__length))
+        msg = mido.Message('sysex', data=lst)
+        self.__out_port.send(msg)
+        msg = mido.Message('start')
+        self.__out_port.send(msg)
         logging.info(f"Sleep time for MIDI clock: {self.__sleep_time}")
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
@@ -91,15 +95,9 @@ class MidiDrum(FakeDrum):
     def __send_clock(self):
         while True:
             self.__play_event.wait()
-            self.__upd += self.__sleep_time
-            now = time.perf_counter()
-            wait = self.__upd - now
-            if wait > 0:
-                time.sleep(wait)
-            self.__out_port.send(CL_TICK.copy())
-            if wait > MAX_DELAY:
-                self.__play_event.clear()
-                self.__out_port.send(CL_STOP.copy())
+            time.sleep(self.__sleep_time)
+            msg = mido.Message('clock')
+            self.__out_port.send(msg)
 
 
 if __name__ == "__main__":
