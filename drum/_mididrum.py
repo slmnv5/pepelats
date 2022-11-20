@@ -2,6 +2,7 @@ import logging
 import os
 import time
 from threading import Thread
+from typing import List
 
 import mido
 import numpy as np
@@ -10,6 +11,10 @@ from drum._fakedrum import FakeDrum
 from utils import MockMidiPort, make_sin_sound
 from utils import SD_RATE
 from utils import open_midi_port
+
+TICK: int = 0xF8
+STOP: int = 0xFC
+START: int = 0xFA
 
 
 def int_to_midi(k: int) -> mido.Message:
@@ -50,14 +55,14 @@ class MidiDrum(FakeDrum):
 
         Thread(target=self.__send_clock, name="send_clock_thread", daemon=True).start()
 
+    def __send_midi(self, msg: List[int]) -> None:
+        self.__out_port.send(mido.Message.from_bytes(msg))
+
     def get_fixed(self) -> str:
         return "MIDI"
 
     def get_length(self) -> int:
         return self.__length
-
-    def __send_tick(self):
-        self.__out_port.send(mido.Message.from_bytes([0xF8]))
 
     def prepare_drum(self, length: int) -> None:
         self.__length: int = length
@@ -68,22 +73,20 @@ class MidiDrum(FakeDrum):
 
     def play_samples(self, out_data: np.ndarray, idx: int) -> None:
         self.__upd = time.monotonic()
+        if not self.__start_at:
+            self.__start_at = self.__upd
+            self.__send_midi([START])
 
     def __send_clock(self):
         while True:
             time.sleep(self.__sleep_time)
             now = time.monotonic()
-            diff = now - self.__upd
-            if diff > MAX_SLEEP:
+            if now - self.__upd > MAX_SLEEP:
                 if self.__start_at:
                     self.__start_at = 0
-                    self.__out_port.send(mido.Message.from_bytes([0xFC]))
+                    self.__send_midi([STOP])
             else:
-                if not self.__start_at:
-                    self.__start_at = now
-                    self.__out_port.send(mido.Message.from_bytes([0xFA]))
-
-                self.__send_tick()
+                self.__send_midi([TICK])
 
 
 if __name__ == "__main__":
@@ -91,7 +94,7 @@ if __name__ == "__main__":
         from loop._loopsimple import LoopWithDrum
         from loop._oneloopctrl import OneLoopCtrl
         from threading import Timer
-        # from drum import RealDrum
+        from drum import RealDrum
 
         sound = make_sin_sound(440, 7.1)
         drum = MidiDrum()
