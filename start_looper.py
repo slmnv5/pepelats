@@ -3,6 +3,7 @@ import sys
 
 from drum import MidiDrum, FakeDrum
 from drum import RealDrum
+from utils import open_midi_port
 
 level = "WARN"
 if "--debug" in sys.argv:
@@ -19,14 +20,10 @@ from multiprocessing import Pipe, Process
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 
-import mido
-
 from kbdmidi import KbdMidiPort
 from loop import ExtendedCtrl
 from mvc import CountMidiControl
 from mvc import MidiControl, ScreenView
-
-MIDI_PORT_NAME = "MIDI_PORT_NAME"
 
 
 def process_looper(drum: FakeDrum, recv_looper: Connection, send_view: Connection) -> None:
@@ -37,20 +34,6 @@ def process_looper(drum: FakeDrum, recv_looper: Connection, send_view: Connectio
 def process_screenview(recv_view: Connection) -> None:
     scr_view = ScreenView(recv_view)
     scr_view.process_messages()
-
-
-def open_midi_port(name: str, is_input: bool):
-    # noinspection PyUnresolvedReferences
-    port_list = mido.get_input_names() if is_input else mido.get_output_names()
-    for port_name in port_list:
-        if name in port_name:
-            logging.info(f"opening: {port_name} input: {is_input}")
-            if is_input:
-                # noinspection PyUnresolvedReferences
-                return mido.open_input(port_name)
-            else:
-                # noinspection PyUnresolvedReferences
-                return mido.open_output(port_name)
 
 
 def go() -> None:
@@ -65,7 +48,7 @@ def go() -> None:
     if "--kbd" in sys.argv:
         in_port = KbdMidiPort()
     else:
-        port_name = os.getenv(MIDI_PORT_NAME, "PedalCommands_out")
+        port_name = os.getenv('PEDAL_PORT_NAME', "PedalCommands_out")
         in_port = open_midi_port(port_name, is_input=True)
         if not in_port:
             msg = f"Failed to open MIDI port for commands input: {port_name}"

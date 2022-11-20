@@ -1,3 +1,4 @@
+import logging
 import os
 import time
 from threading import Thread
@@ -8,6 +9,7 @@ import numpy as np
 from drum._fakedrum import FakeDrum
 from utils import MockMidiPort
 from utils import SD_RATE
+from utils import open_midi_port
 
 
 def int_to_midi(k: int) -> mido.Message:
@@ -34,8 +36,12 @@ class MidiDrum(FakeDrum):
         if os.name != "posix":
             self.__out_port = MockMidiPort()
         else:
-            # noinspection PyUnresolvedReferences
-            self.__out_port = mido.open_output("LooperCloc_out", virtual=True)
+            port_name = os.getenv('CLOCK_PORT_NAME', "DrumClock_in")
+            self.__out_port = open_midi_port(port_name, is_input=True)
+            if not self.__out_port:
+                msg = f"Failed to open MIDI port for clock output: {port_name}"
+                logging.error(msg)
+                raise RuntimeError(msg)
 
         self.__sleep_time: float = 1  # sleep time in seconds
         self.__start: float = 0  # slart time
@@ -95,7 +101,6 @@ if __name__ == "__main__":
     def test():
         from loop._loopsimple import LoopWithDrum
         from loop._oneloopctrl import OneLoopCtrl
-        from drum._realdrum import RealDrum
 
         drum = MidiDrum()
         drum.prepare_drum(100_000)

@@ -9,3 +9,4 @@ from utils._utilother import CollectionOwner, FileFinder
 from utils._utilother import RedrawScreen
 from utils._utilother import run_os_cmd
 from utils._utilsend import CmdTranslator, MsgProcessor
+from utils._utilalsa import open_midi_port

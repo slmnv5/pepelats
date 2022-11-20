@@ -11,7 +11,7 @@ set MAX_LEN_SECONDS=60
 set SD_RATE=44100
 
 ::Use this MIDI port as input
-set MIDI_PORT_NAME='BlueBoard'
+set PEDAL_PORT_NAME='BlueBoard'
 
 ::Check ALSA devices and use first one found
 set USB_AUDIO_NAMES='VALETON GP,USB Audio'

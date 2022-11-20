@@ -152,6 +152,20 @@ def make_changing_sound() -> np.ndarray:
     return np.concatenate((a, b, a), axis=0)
 
 
+def open_midi_port(name: str, is_input: bool):
+    # noinspection PyUnresolvedReferences
+    port_list = mido.get_input_names() if is_input else mido.get_output_names()
+    for port_name in port_list:
+        if name in port_name:
+            logging.info(f"opening: {port_name} input: {is_input}")
+            if is_input:
+                # noinspection PyUnresolvedReferences
+                return mido.open_input(port_name)
+            else:
+                # noinspection PyUnresolvedReferences
+                return mido.open_output(port_name)
+
+
 if __name__ == "__main__":
     def run():
         print("=========================")
