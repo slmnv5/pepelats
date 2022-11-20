@@ -72,6 +72,7 @@ class MidiDrum(FakeDrum):
         self.__out_port.send(CL_STOP)
 
     def prepare_drum(self, length: int) -> None:
+        assert length > 0
         self.__length = length
         self.__out_port.send(CL_START.copy())
         bar_seconds = length / SD_RATE
@@ -79,7 +80,7 @@ class MidiDrum(FakeDrum):
         self.__sleep_time = bar_seconds / TICKS_PER_BAR
         self.__play_event.set()
         self.__start_at = time.perf_counter()
-        lst = SYSEX_PREFIX.extend(int_to_list(self.__length))
+        lst = SYSEX_PREFIX + int_to_list(self.__length)
         msg = mido.Message('sysex', data=lst)
         self.__out_port.send(msg)
         msg = mido.Message('start')
