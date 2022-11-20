@@ -15,13 +15,20 @@ from utils import open_midi_port
 SYSEX_PREFIX: List[int] = [33, 33]
 
 
-def get_bpm_tempo(bar_seconds: float) -> Tuple[float, int]:
+def bpm_qtr_milli(bar_seconds: float) -> Tuple[float, int]:
     bpm = 60 * 4 / bar_seconds
-    tap_tempo = round(bar_seconds / 4 * 1000)  # millis
-    return bpm, tap_tempo
+    return bpm, round(bar_seconds / 4 * 1000)  # millis
 
 
-TICKS_PER_BAR: int = 96
+# MIDI sysex message that contains quarter notoes milli for tap tempo
+# This integer is stored in 7bit valuse MSB, LSB]
+def sysex(qtr_milli: int) -> List[int]:
+    byte_str: str = f'{qtr_milli:014b}'
+    byte_lst = [int(byte_str[0: 7], 2), int(byte_str[7: 14], 2)]
+    return byte_lst
+
+
+TICKS_PER_QTR: int = 24
 MAX_DELAY = 1
 
 
@@ -29,11 +36,13 @@ class MidiDrum(FakeDrum):
     def __init__(self):
         super().__init__()
         self.__length: int = 0
-        self.__tap_milli: int = 0
+        self.__qtr_milli: int = 0
         self.__bpm: float = 0
-        self.__sleep_time: float = 1  # sleep time in seconds
+        self.__slp: float = 1  # sleep time in seconds
 
-        self.__upd: float = 0  # update time
+        self.__updt: float = 0  # update time
+        self.__strt: float = 0  # start time
+        self.__cnt: int = 0  # count bars since start
 
         if os.name != "posix":
             self.__out_port = MockMidiPort()
@@ -50,14 +59,22 @@ class MidiDrum(FakeDrum):
 
         Thread(target=self.__send_clock, name="send_clock_thread", daemon=True).start()
 
-    # MIDI sysex message that contains quarter notoes milli for tap tempo
-    # This integer is stored in 7bit valuse MSB, LSB]
-    def __sysex(self) -> List[int]:
-        beat_milli = self.__length * 1000 / 4 / SD_RATE
-        beat_milli = round(beat_milli)
-        byte_str: str = f'{beat_milli:014b}'
-        byte_lst = [int(byte_str[0: 7], 2), int(byte_str[7: 14], 2)]
-        return byte_lst
+    def __send_clock(self):
+        while True:
+            self.__play_event.wait()
+            now = time.perf_counter()
+            self.__cnt += 1
+            planned = self.__strt + self.__slp * self.__cnt
+            wait = planned - now
+            if wait > 0:
+                time.sleep(wait)
+            self.__out_port.send(mido.Message('clock'))
+
+    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
+        if self.__length:
+            if not (idx % self.__length):
+                self.__updt = self.__strt = time.perf_counter()
+                self.__cnt = 0
 
     def get_fixed(self) -> str:
         return f"{self}"
@@ -67,7 +84,7 @@ class MidiDrum(FakeDrum):
 
     def clear_drum(self) -> None:
         self.__length = 0
-        self.__sleep_time = 0
+        self.__slp = 0
         self.__play_event.clear()
         self.__out_port.send(mido.Message('stop'))
 
@@ -75,29 +92,16 @@ class MidiDrum(FakeDrum):
         assert length > 0
         self.__length = length
         self.__out_port.send(mido.Message('start'))
-        bar_seconds: float = length / SD_RATE
-        self.__bpm, self.__tap_milli = get_bpm_tempo(bar_seconds)
-        self.__sleep_time = bar_seconds / TICKS_PER_BAR
+        self.__bpm, self.__qtr_milli = bpm_qtr_milli(length / SD_RATE)
+        self.__slp = self.__qtr_milli / TICKS_PER_QTR / 1000
         self.__play_event.set()
-        lst = SYSEX_PREFIX + self.__sysex()
+        lst = SYSEX_PREFIX + sysex(self.__qtr_milli)
         self.__out_port.send(mido.Message('sysex', data=lst))
         self.__out_port.send(mido.Message('start'))
-        logging.info(f"Sleep time for MIDI clock: {self.__sleep_time}")
-
-    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        if not self.__length:
-            return
-        if not (idx % self.__length):
-            self.__upd = time.perf_counter()
-
-    def __send_clock(self):
-        while True:
-            self.__play_event.wait()
-            time.sleep(self.__sleep_time)
-            self.__out_port.send(mido.Message('clock'))
+        logging.info(f"Sleep time for MIDI clock: {self.__slp}")
 
     def __str__(self):
-        return f"Milli:{self.__tap_milli} BPM:{self.__bpm:.2F}"
+        return f"Milli:{self.__qtr_milli} BPM:{self.__bpm:.2F}"
 
 
 if __name__ == "__main__":
