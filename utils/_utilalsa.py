@@ -13,10 +13,9 @@ from utils._utilconfig import SD_TYPE, MAX_LEN
 
 
 class MockMidiPort:
-    def __init__(self, report_freq: int = 100):
+    def __init__(self):
         self.__notes: Dict[float, mido.Message] = dict()
         self.__count: int = 0
-        self.__report_freq: int = report_freq  # report sent messages: 100 - ervery 100th message
 
     def charge(self, notes: Dict[float, Tuple[int, int]]):
         """set dictionary of {time: (note,vel), ...} to send e.g. {0.1: (60,100), 0.2: (-60,0), 1.2:(62, 1)}
@@ -30,8 +29,7 @@ class MockMidiPort:
 
     def send(self, msg: mido.Message) -> None:
         self.__count += 1
-        if self.__count % self.__report_freq == 0:
-            print(f"Sent MIDI {msg}")
+        print(f"Sent MIDI {msg}")
 
     # noinspection PyUnusedLocal
     def receive(self, block=True) -> mido.Message:
