@@ -63,15 +63,12 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         self.get_drum().iterate(direction > 0)
 
     def _change_drum_nature(self) -> None:
-        drum = self.get_drum()
-        save_len = drum.get_length()
-        if not save_len:
-            return
-        if type(drum) == MidiDrum:
-            self.set_drum(RealDrum())
-        else:
-            self.set_drum(MidiDrum())
-        self.get_drum().prepare_drum(save_len)
+        save_len = self.get_drum().get_length()
+        is_midi = type(self.get_drum()) == MidiDrum
+        drum = RealDrum() if is_midi else MidiDrum()
+        self.set_drum(drum)
+        if save_len:
+            self.get_drum().prepare_drum(save_len)
 
     def _show_drum_type(self) -> str:
         return self.get_drum().get_str()
