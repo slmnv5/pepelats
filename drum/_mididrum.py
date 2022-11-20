@@ -70,8 +70,14 @@ class MidiDrum(FakeDrum):
     def get_length(self) -> int:
         return self.__length
 
+    def clear_drum(self) -> None:
+        self.__length = 0
+        self.__sleep_time = 0
+        self.__play_event.clear()
+        self.__out_port.send(CL_STOP)
+
     def prepare_drum(self, length: int) -> None:
-        self.__length: int = length
+        self.__length = length
         self.__play_event.set()
         self.__out_port.send(CL_START)
         self.__sleep_time = (length / SD_RATE) / TICKS_PER_BAR

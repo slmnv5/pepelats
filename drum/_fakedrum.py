@@ -22,6 +22,7 @@ class FakeDrum:
     def iterate(self, go_fwd: bool) -> None:
         pass
 
+    @abstractmethod
     def clear_drum(self) -> None:
         pass
 
