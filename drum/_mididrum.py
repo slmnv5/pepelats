@@ -33,17 +33,6 @@ def bar_seconds_to_bpm(bar_seconds: float) -> float:
     return 60 * 4 / bar_seconds
 
 
-def midi_clock(midi_output, bpm):
-    pulse_rate = 60.0 / (bpm.value * 24)
-    while True:
-        midi_output.send(CL_TICK)
-        t1 = time.perf_counter()
-        time.sleep(pulse_rate * 0.8)
-        t2 = time.perf_counter()
-        while (t2 - t1) < pulse_rate:
-            t2 = time.perf_counter()
-
-
 TICKS_PER_BAR: int = 96
 MAX_DELAY = 1
 
@@ -72,7 +61,7 @@ class MidiDrum(FakeDrum):
         Thread(target=self.__send_clock, name="send_clock_thread", daemon=True).start()
 
     def get_fixed(self) -> str:
-        return f"MIDI {self.__bpm:.2F} {self.__ratio:.2F}"
+        return f"MIDI {self.__bpm:.2F} {self.__ratio}"
 
     def get_length(self) -> int:
         return self.__length
@@ -93,14 +82,9 @@ class MidiDrum(FakeDrum):
         logging.info(f"Sleep time for MIDI clock: {self.__sleep_time}")
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        if not self.get_length():
+        if not self.__length:
             return
-        if not self.__play_event.is_set():
-            self.__upd = time.perf_counter()
-            self.__out_port.send(CL_START)
-            self.__play_event.set()
-            self.__ratio = self.__length / len(out_data)
-        elif not idx:
+        if not (idx % self.__length):
             self.__upd = time.perf_counter()
 
     def __send_clock(self):
