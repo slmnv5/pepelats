@@ -90,26 +90,28 @@ class MidiDrum(FakeDrum):
 
 
 if __name__ == "__main__":
-    def test():
+    def test(use_midi: bool):
         from loop._loopsimple import LoopSimple
         from loop._oneloopctrl import OneLoopCtrl
         from threading import Timer
-        # from drum import RealDrum
+        from drum import RealDrum
+
+        drum = MidiDrum() if use_midi else RealDrum()
 
         sound = make_sin_sound(440, 7.1)
-        drum = MidiDrum()
         drum.prepare_drum(100_000)
         while not drum.get_length():
             time.sleep(0.1)
 
         ctrl = OneLoopCtrl(drum)
         loop = LoopSimple(ctrl)
-        loop._record_samples(sound, 200_000)  # record in the middle of loop
-
+        loop._record_samples(sound, 0)  # record in the middle of loop
+        ctrl.idx = len(sound)
         print("======== start =============")
         loop.trim_buffer()
         Timer(3, ctrl.stop_at_bound, [0]).start()
         loop.play_buffer()
 
 
-    test()
+    test(True)
+    test(False)

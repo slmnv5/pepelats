@@ -9,7 +9,7 @@ from utils import MAX_LEN
 
 
 class ManyLoopCtrl(OneLoopCtrl, Song):
-    """added playback thread, MsgProcessor and Song.
+    """added playback thread and Song.
      Song is collection of song parts with related methods"""
 
     def __init__(self, drum: FakeDrum):
