@@ -87,7 +87,6 @@ class MidiDrum(FakeDrum):
             return
         if not (idx % self.__length):
             self.__upd = self.__start_at = time.perf_counter()
-            self.__out_port.send(CL_START)
 
     def __send_clock(self):
         while True:
@@ -97,7 +96,7 @@ class MidiDrum(FakeDrum):
             wait = self.__upd - now
             if wait > 0:
                 time.sleep(wait)
-            self.__out_port.send(CL_TICK.copy(time=self.__upd - self.__start_at))
+            self.__out_port.send(CL_TICK.copy())
             if wait > MAX_DELAY:
                 self.__play_event.clear()
                 self.__out_port.send(CL_STOP)
