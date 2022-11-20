@@ -71,7 +71,7 @@ class MidiDrum(FakeDrum):
         Thread(target=self.__send_clock, name="send_clock_thread", daemon=True).start()
 
     def get_fixed(self) -> str:
-        return f"MIDI {self.__bpm::.2F}"
+        return f"MIDI {self.__bpm:.2F}"
 
     def get_length(self) -> int:
         return self.__length
