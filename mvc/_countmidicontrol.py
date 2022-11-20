@@ -1,19 +1,15 @@
+import logging
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 from threading import Timer
 
 import mido
 
-import logging
 from utils import CmdTranslator
 
 
 def is_midi_note_on(msg):
     return 0x90 <= msg.bytes()[0] <= 0x9f
-
-
-def is_midi_ctrl_chg(msg):
-    return 0xb0 <= msg.bytes()[0] <= 0xbf
 
 
 def is_midi_note(msg):
@@ -35,7 +31,7 @@ class MidiCcToNote:
             self.__sent_on = False
             return msg
 
-        if not (is_midi_ctrl_chg(msg)):
+        if not msg.is_cc():
             self.__prev_msg = msg
             self.__sent_on = False
             return None
