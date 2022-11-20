@@ -97,6 +97,7 @@ class MidiDrum(FakeDrum):
 
     def __send_clock(self):
         while True:
+            time.sleep(1111111111)
             self.__play_event.wait()
             time.sleep(self.__sleep_time)
             msg = mido.Message('clock')
