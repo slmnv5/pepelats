@@ -33,7 +33,6 @@ class MidiDrum(FakeDrum):
         self.__bpm: float = 0
         self.__sleep_time: float = 1  # sleep time in seconds
 
-        self.__start_at: float = 0
         self.__upd: float = 0  # update time
 
         if os.name != "posix":
@@ -80,7 +79,6 @@ class MidiDrum(FakeDrum):
         self.__bpm, self.__tap_milli = get_bpm_tempo(bar_seconds)
         self.__sleep_time = bar_seconds / TICKS_PER_BAR
         self.__play_event.set()
-        self.__start_at = time.perf_counter()
         lst = SYSEX_PREFIX + self.__sysex()
         self.__out_port.send(mido.Message('sysex', data=lst))
         self.__out_port.send(mido.Message('start'))
@@ -90,7 +88,7 @@ class MidiDrum(FakeDrum):
         if not self.__length:
             return
         if not (idx % self.__length):
-            self.__upd = self.__start_at = time.perf_counter()
+            self.__upd = time.perf_counter()
 
     def __send_clock(self):
         while True:
@@ -99,8 +97,7 @@ class MidiDrum(FakeDrum):
             self.__out_port.send(mido.Message('clock'))
 
     def __str__(self):
-        return f"Len:{self.__length} TapMilli:{self.__tap_milli}  " \
-               f"BPM:{self.__bpm:.2F} SleepMilli:{1000 * self.__sleep_time:.2F}"
+        return f"Milli:{self.__tap_milli} BPM:{self.__bpm:.2F}"
 
 
 if __name__ == "__main__":
