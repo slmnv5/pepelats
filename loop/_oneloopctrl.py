@@ -13,14 +13,14 @@ class OneLoopCtrl:
     update_delay_seconds: float = 0.35
 
     def __init__(self, drum: FakeDrum):
-        self._drum: FakeDrum = drum
+        self.__drum: FakeDrum = drum
         self._is_rec: bool = False
         self.idx: int = 0
         self.__stop_len: int = MAX_32_INT
         self.__stop_event: Event = Event()
 
     def get_drum(self) -> FakeDrum:
-        return self._drum
+        return self.__drum
 
     @abstractmethod
     def _redraw(self) -> None:
