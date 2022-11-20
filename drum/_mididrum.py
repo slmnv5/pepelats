@@ -66,10 +66,9 @@ class MidiDrum(FakeDrum):
 
     def prepare_drum(self, length: int) -> None:
         self.__length: int = length
-        self.__start_at = 0
-        self.__out_port.send(mido.Message.from_bytes([0xFC]))
+        self.__start_at = time.monotonic()
+        self.__out_port.send(mido.Message.from_bytes([START]))
         self.__sleep_time = length / SD_RATE / TICKS_PER_BAR
-        self.__sleep_time = max(self.__sleep_time, MIN_SLEEP)
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         if not self.get_length():
