@@ -149,16 +149,20 @@ if __name__ == "__main__":
         # while not drum.get_length():
         #    time.sleep(0.1)
 
+        duration: float = 7.5
+
         print("======== start record =============")
         ctrl = ManyLoopCtrl(drum)
         ctrl.get_play_event().set()
-        Timer(3.1, ctrl.stop_at_bound, [0]).start()
-        time.sleep(3.1)
+        Timer(duration, ctrl.stop_at_bound, [0]).start()
+        time.sleep(duration)
 
         print("======== start palay =============")
         ctrl.get_play_event().set()
-        Timer(3.1, ctrl.stop_at_bound, [0]).start()
-        time.sleep(3.1)
+        Timer(duration, ctrl.stop_at_bound, [0]).start()
+        time.sleep(duration)
+
+
 
 
     test(True)
