@@ -29,6 +29,10 @@ def bpm_to_bar_seconds(bpm: float) -> float:
     return 60 * 4 / bpm
 
 
+def bar_seconds_to_bpm(bar_seconds: float) -> float:
+    return 60 * 4 / bar_seconds
+
+
 def midi_clock(midi_output, bpm):
     pulse_rate = 60.0 / (bpm.value * 24)
     while True:
@@ -47,6 +51,7 @@ MAX_DELAY = 1
 class MidiDrum(FakeDrum):
     def __init__(self):
         super().__init__()
+        self.__bpm: float = 0
         if os.name != "posix":
             self.__out_port = MockMidiPort()
         else:
@@ -58,6 +63,7 @@ class MidiDrum(FakeDrum):
                 raise RuntimeError(msg)
 
         self.__play_event: Event = Event()
+        assert not self.__play_event.is_set(), "Event must be clear in ctor"
         self.__sleep_time: float = 1  # sleep time in seconds
         self.__upd: float = 0  # update time
         self.__length: int = 0
@@ -65,7 +71,7 @@ class MidiDrum(FakeDrum):
         Thread(target=self.__send_clock, name="send_clock_thread", daemon=True).start()
 
     def get_fixed(self) -> str:
-        return "MIDI"
+        return f"MIDI {self.__bpm::.2F}"
 
     def get_length(self) -> int:
         return self.__length
@@ -80,7 +86,9 @@ class MidiDrum(FakeDrum):
         self.__length = length
         self.__play_event.set()
         self.__out_port.send(CL_START)
-        self.__sleep_time = (length / SD_RATE) / TICKS_PER_BAR
+        bar_seconds = length / SD_RATE
+        self.__bpm = bar_seconds_to_bpm(bar_seconds)
+        self.__sleep_time = bar_seconds / TICKS_PER_BAR
         logging.info(f"Sleep time for MIDI clock: {self.__sleep_time}")
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
