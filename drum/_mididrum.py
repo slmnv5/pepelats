@@ -2,7 +2,6 @@ import logging
 import os
 import time
 from threading import Thread
-from typing import List
 
 import mido
 import numpy as np
@@ -12,9 +11,9 @@ from utils import MockMidiPort
 from utils import SD_RATE
 from utils import open_midi_port
 
-TICK: int = 0xF8
-STOP: int = 0xFC
-START: int = 0xFA
+CL_STOP = mido.Message('stop')
+CL_START = mido.Message('start')
+CL_TICK = mido.Message('clock')
 
 
 def int_to_midi(k: int) -> mido.Message:
@@ -27,7 +26,19 @@ def int_to_midi(k: int) -> mido.Message:
 
 
 def bpm_to_bar_seconds(bpm: float) -> float:
-    return 60 / bpm * 4
+    return 60 * 4 / bpm
+
+
+def midi_clock(midi_output, bpm):
+    pulse_rate = 60.0 / (bpm.value * 24)
+    clock_tick = mido.Message('clock')
+    while True:
+        midi_output.send(clock_tick)
+        t1 = time.perf_counter()
+        time.sleep(pulse_rate * 0.8)
+        t2 = time.perf_counter()
+        while (t2 - t1) < pulse_rate:
+            t2 = time.perf_counter()
 
 
 TICKS_PER_BAR: int = 96
@@ -55,9 +66,6 @@ class MidiDrum(FakeDrum):
 
         Thread(target=self.__send_clock, name="send_clock_thread", daemon=True).start()
 
-    def __send_midi(self, msg: List[int]) -> None:
-        self.__out_port.send(mido.Message.from_bytes(msg))
-
     def get_fixed(self) -> str:
         return "MIDI"
 
@@ -67,8 +75,8 @@ class MidiDrum(FakeDrum):
     def prepare_drum(self, length: int) -> None:
         self.__length: int = length
         self.__start_at = time.monotonic()
-        self.__out_port.send(mido.Message.from_bytes([START]))
-        self.__sleep_time = length / SD_RATE / TICKS_PER_BAR
+        self.__out_port.send(CL_START)
+        self.__sleep_time = (length / SD_RATE) / TICKS_PER_BAR
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         if not self.get_length():
@@ -76,7 +84,7 @@ class MidiDrum(FakeDrum):
         self.__upd = time.monotonic()
         if not self.__start_at:
             self.__start_at = self.__upd
-            self.__send_midi([START])
+            self.__out_port.send(CL_START)
 
     def __send_clock(self):
         while True:
@@ -85,9 +93,9 @@ class MidiDrum(FakeDrum):
             if now - self.__upd > MAX_SLEEP:
                 if self.__start_at:
                     self.__start_at = 0
-                    self.__send_midi([STOP])
+                    self.__out_port.send(CL_STOP)
             else:
-                self.__send_midi([TICK])
+                self.__out_port.send(CL_TICK)
 
 
 if __name__ == "__main__":
