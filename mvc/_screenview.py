@@ -4,7 +4,7 @@ import time
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 from multiprocessing.connection import Pipe
-from threading import Thread
+from threading import Thread, Event
 from typing import Dict
 
 from utils import MsgProcessor, SD_RATE
@@ -53,9 +53,10 @@ class ScreenView(MsgProcessor):
 
     def __init__(self, recv_conn: Connection):
         MsgProcessor.__init__(self, recv_conn, None)
+        self.__play_event: Event = Event()
         self.__header = "".center(COLS)
         self.__descr_lines: int = 0
-        self.__is_stop: bool = True
+
         self.__loop_len = self.__idx = self.__delta = 1000000
         self.__sleep_time: float = 1
         Thread(target=self.__update_progress, name="update_progress", daemon=True).start()
@@ -83,8 +84,10 @@ class ScreenView(MsgProcessor):
 
     def __update_loops(self, redraw: RedrawScreen) -> None:
         logging.debug(f"Updating screen: {redraw}")
-        self.__is_stop = redraw.is_stop
-        if not self.__is_stop:
+        if redraw.is_stop:
+            self.__play_event.clear()
+        else:
+            self.__play_event.set()
             self.__idx = redraw.idx
             self.__loop_len = redraw.loop_len
             self.__delta = redraw.loop_len / UPDATES_PER_LOOP
@@ -106,13 +109,11 @@ class ScreenView(MsgProcessor):
 
     def __update_progress(self):
         while True:
+            self.__play_event.wait()
             time.sleep(self.__sleep_time)
-            if not self.__is_stop:
-                self.__idx += self.__delta
-                self.__idx %= self.__loop_len
-                pos = round(self.__idx / self.__loop_len * COLS)
-            else:
-                pos = 0
+            self.__idx += self.__delta
+            self.__idx %= self.__loop_len
+            pos = round(self.__idx / self.__loop_len * COLS)
             line = '\x1b[7m' + self.__header[:pos] + '\x1b[0m' + self.__header[pos:]
             # all starts at 1, 1
             print(f"\033[1;1H{line}")
