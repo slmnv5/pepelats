@@ -37,7 +37,7 @@ class MidiDrum(FakeDrum):
             self.__out_port = MockMidiPort()
         else:
             port_name = os.getenv('CLOCK_PORT_NAME', "DrumClock_in")
-            self.__out_port = open_midi_port(port_name, is_input=True)
+            self.__out_port = open_midi_port(port_name, is_input=False)
             if not self.__out_port:
                 msg = f"Failed to open MIDI port for clock output: {port_name}"
                 logging.error(msg)
