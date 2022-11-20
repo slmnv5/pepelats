@@ -86,7 +86,8 @@ class MidiDrum(FakeDrum):
         if not self.__length:
             return
         if not (idx % self.__length):
-            self.__upd = time.perf_counter()
+            self.__upd = self.__start_at = time.perf_counter()
+            self.__out_port.send(CL_START)
 
     def __send_clock(self):
         while True:
