@@ -74,7 +74,7 @@ class MidiDrum(FakeDrum):
 
     def prepare_drum(self, length: int) -> None:
         self.__length = length
-        self.__out_port.send(CL_START)
+        self.__out_port.send(CL_START.copy())
         bar_seconds = length / SD_RATE
         self.__bpm = bar_seconds_to_bpm(bar_seconds)
         self.__sleep_time = bar_seconds / TICKS_PER_BAR
@@ -99,7 +99,7 @@ class MidiDrum(FakeDrum):
             self.__out_port.send(CL_TICK.copy())
             if wait > MAX_DELAY:
                 self.__play_event.clear()
-                self.__out_port.send(CL_STOP)
+                self.__out_port.send(CL_STOP.copy())
 
 
 if __name__ == "__main__":
