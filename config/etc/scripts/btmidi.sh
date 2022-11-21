@@ -20,4 +20,7 @@ EOF1
 
 #B4:99:4C:60:B6:B2 livid
 #BC:6A:29:36:D1:F5 bbrd
+#60:06:E3:F2:B8:D7 Ipad9
+#58:E6:BA:67:24:64 SSH oldpad
+
 
