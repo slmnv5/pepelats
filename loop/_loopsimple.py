@@ -54,7 +54,7 @@ class LoopSimple(Player):
 if __name__ == "__main__":
     def test1():
         c1 = OneLoopCtrl(RealDrum())
-        c1._is_rec = True
+        c1.__is_rec = True
         Timer(2, c1.stop_at_bound, args=[0]).start()
         l1 = LoopSimple(c1)
         l1.play_buffer()
@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
     def test2():
         c1 = OneLoopCtrl(RealDrum())
-        c1._is_rec = True
+        c1.__is_rec = True
         Timer(3.9, c1.stop_at_bound, args=[0]).start()
         l1 = LoopSimple(c1)
         l1.play_buffer()

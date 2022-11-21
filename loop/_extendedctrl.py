@@ -26,16 +26,21 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
     def _send_redraw(self, redraw) -> None:
         self.__redraw = redraw
+        self.__redraw.header = f"{self.get_drum().get_fixed()}/{self._file_finder.get_fixed()}"
+
         if self.__redraw.update:
             # noinspection PyBroadException
             try:
                 method = getattr(self, self.__redraw.update)
                 self.__redraw.content = method()
             except Exception:
-                logging.error(
-                    f"ExtendedCtrl method: {self.__redraw.update}, error: {traceback.format_exc()}")
+                logging.error(f"ExtendedCtrl method: {self.__redraw.update},"
+                              f" error: {traceback.format_exc()}")
 
-        self.__redraw.header = f"{self.get_drum().get_fixed()}/{self._file_finder.get_fixed()}"
+        self.__redraw.idx = self.idx
+        self.__redraw.is_stop = self.get_stop_event().is_set()
+        self.__redraw.loop_len = self.get_part().length
+        self.__redraw.is_rec = self.is_rec
 
         MsgProcessor._send_redraw(self, self.__redraw)
 

@@ -14,7 +14,7 @@ class OneLoopCtrl:
 
     def __init__(self, drum: FakeDrum):
         self.__drum: FakeDrum = drum
-        self._is_rec: bool = False
+        self.__is_rec: bool = False
         self.idx: int = 0
         self.__stop_len: int = MAX_32_INT
         self.__stop_event: Event = Event()
@@ -31,7 +31,7 @@ class OneLoopCtrl:
 
     @property
     def is_rec(self) -> bool:
-        return self._is_rec
+        return self.__is_rec
 
     def is_stop_len_set(self) -> bool:
         return self.__stop_len < MAX_32_INT
