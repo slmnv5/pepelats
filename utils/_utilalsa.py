@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import sys
 import time
 from typing import Tuple, Union, Dict
 
@@ -53,8 +52,9 @@ def find_usb() -> None:
         new_str = usb_audio_str.strip(' ,').replace("'", "").replace('"', '').replace(',', '","')
         usb_audio = json.loads(f'["{new_str}"]')
     except Exception as err:
-        logging.error(f"Failed to parse env. variable USB_AUDIO_NAMES, error: {err}")
-        sys.exit(1)
+        msg = f"Failed to parse env. variable USB_AUDIO_NAMES, error: {err}"
+        logging.error(msg)
+        raise RuntimeError(msg)
 
     all_devices = sd.query_devices()
     for k, dev in enumerate(all_devices):

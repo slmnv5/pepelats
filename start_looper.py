@@ -1,5 +1,6 @@
 import logging
 import sys
+import traceback
 
 from utils import open_midi_port
 
@@ -62,4 +63,8 @@ def go() -> None:
 
 
 if __name__ == "__main__":
-    go()
+    # noinspection PyBroadException
+    try:
+        go()
+    except Exception:
+        logging.error(f"Start looper, error: {traceback.format_exc()}")
