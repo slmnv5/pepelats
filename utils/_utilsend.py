@@ -3,7 +3,6 @@ import traceback
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 from typing import Any, List, Optional
-from typing import Dict
 
 from utils._utilconfig import ConfigName
 from utils._utilother import MenuLoader, RedrawScreen
@@ -34,8 +33,8 @@ class MsgProcessor:
             msg = self.__recv_conn.recv()
             self.__process_message(msg)
 
-    def _send_redraw(self, infodic: Dict) -> None:
-        self.__send_conn.send([ConfigName.send_redraw, infodic])
+    def _send_redraw(self, redraw: RedrawScreen) -> None:
+        self.__send_conn.send([ConfigName.send_redraw, redraw])
 
 
 class CmdTranslator(MenuLoader):

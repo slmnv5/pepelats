@@ -40,7 +40,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         self.__redraw.idx = self.idx
         self.__redraw.is_stop = self.get_stop_event().is_set()
         self.__redraw.loop_len = self.get_part().length
-        self.__redraw.is_rec = self.is_rec
+        self.__redraw.is_rec = self.get_is_rec()
 
         MsgProcessor._send_redraw(self, self.__redraw)
 
@@ -119,20 +119,20 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         self.append(new_part)
 
     def _undo_part(self) -> None:
-        save_undo = not self._is_rec
-        self._is_rec = False
+        save_undo = not self.get_is_rec()
+        self.set_is_rec(False)
         part = self.get_part()
         part.delete(part.item_count - 1, save_undo)
 
     def _redo_part(self) -> None:
-        self._is_rec = False
+        self.set_is_rec(False)
         part = self.get_part()
         part.redo()
 
     def _redo_all(self) -> None:
         if self.id != self.fixed_id:
             return
-        self._is_rec = False
+        self.set_is_rec(False)
         part = self.get_part()
         for _ in range(part.undo_count):
             part.redo()
@@ -140,8 +140,9 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     #  ================= One song part view and related commands
 
     def _change_loop(self, *params) -> None:
-        if self._is_rec:
-            self._is_rec = False
+        if self.get_is_rec():
+            self.set_is_rec(False)
+
         part = self.get_part()
         if params[0] == "prev":
             part.iterate(False)

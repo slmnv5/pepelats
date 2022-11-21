@@ -52,11 +52,11 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             self.get_stop_event().clear()
             self._stop_never()
             self.idx = 0
-            self._is_rec = part.is_empty
+            self.set_is_rec(part.is_empty)
             part.play_buffer()
 
     def _stop_song(self, wait: int = 0) -> None:
-        self._is_rec = False
+        self.set_is_rec(False)
         self._play_event.clear()
         if not wait:
             self.stop_at_bound(0)
@@ -64,7 +64,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             self.stop_at_bound(self.get_part().length)
 
     def _record_part(self):
-        if self.id == self.fixed_id and self._is_rec:
+        if self.id == self.fixed_id and self.get_is_rec():
             part = self.get_part()
             loop = part.get_item()
             if not loop.is_empty:
@@ -84,16 +84,16 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
 
         part = self.get_part()
         loop = part.get_item()
-        if part.id > 0 and self._is_rec and loop.is_empty:
+        if part.id > 0 and self.get_is_rec() and loop.is_empty:
             loop.finalize(self.idx, part.length)
 
         if self.id == self.fixed_id:
-            if self._is_rec:
-                self._is_rec = False
+            if self.get_is_rec():
+                self.set_is_rec(False)
             else:
                 part.append(LoopSimple(self, part.length))
                 part.go_id(part.item_count - 1)
-                self._is_rec = True
+                self.set_is_rec(True)
 
         self.__stop_quantized()
 

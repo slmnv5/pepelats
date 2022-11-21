@@ -30,7 +30,7 @@ class Player(WrapBuffer):
             assert len(out_data) == len(in_data) == frame_count
             self._play_samples(out_data, self._ctrl.idx)
 
-            if self._ctrl.is_rec:
+            if self._ctrl.get_is_rec():
                 self._record_samples(in_data, self._ctrl.idx)
 
             self._ctrl.idx += frame_count

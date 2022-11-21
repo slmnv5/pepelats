@@ -29,9 +29,11 @@ class OneLoopCtrl:
     def _redraw(self) -> None:
         pass
 
-    @property
-    def is_rec(self) -> bool:
+    def get_is_rec(self) -> bool:
         return self.__is_rec
+
+    def set_is_rec(self, is_rec) -> None:
+        self.__is_rec = is_rec
 
     def is_stop_len_set(self) -> bool:
         return self.__stop_len < MAX_32_INT
@@ -55,7 +57,7 @@ class OneLoopCtrl:
             Timer(self.__stop_len / SD_RATE + OneLoopCtrl.update_delay_seconds, self._redraw).start()
 
     def __str__(self):
-        return f"{self.__class__.__name__} Stop:{self.__stop_len} Drum:{self.get_drum()} IsRec:{self.is_rec}"
+        return f"{self.__class__.__name__} Stop:{self.__stop_len} Drum:{self.get_drum()} IsRec:{self.get_is_rec()}"
 
 
 if __name__ == "__main__":
