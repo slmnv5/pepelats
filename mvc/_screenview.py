@@ -50,40 +50,27 @@ def get_with_color(line: str, is_rec: bool) -> str:
 
 
 class ScreenView(MsgProcessor):
-
     def __init__(self, recv_conn: Connection):
         MsgProcessor.__init__(self, recv_conn, None)
         self.__play_event: Event = Event()
         self.__header = "".center(COLS)
-        self.__descr_lines: int = 0
 
         self.__loop_len = self.__idx = self.__delta = 1000000
         self.__sleep_time: float = 1
         Thread(target=self.__update_progress, name="update_progress", daemon=True).start()
 
-    def _send_redraw(self, infodic: Dict) -> None:
-        logging.debug("Get redraw: " + str(infodic))
-        if "header" in infodic:
-            self.__header = infodic["header"].center(COLS)
+    def _send_redraw(self, redraw: RedrawScreen) -> None:
+        logging.debug(f"Get redraw: {redraw}")
+        self.__header = redraw.header.center(COLS)
 
-        if "description" in infodic:
-            self.__update_description(infodic["description"])
-
-        if "redraw" in infodic:
-            self.__update_loops(infodic["redraw"])
-
-    def __update_description(self, description: str) -> None:
-        if description:
-            extra_chars = len(description) % COLS
+        descr_lines: int = 0
+        if redraw.description:
+            extra_chars = len(redraw.description) % COLS
             if extra_chars:
-                description = description + '.' * (COLS - extra_chars)
-            self.__descr_lines = len(description) // COLS
-            print(f"\033[2;1H{description}")
-        else:
-            self.__descr_lines = 0
+                redraw.description = redraw.description + '.' * (COLS - extra_chars)
+            descr_lines = len(redraw.description) // COLS
+            print(f"\033[2;1H{redraw.description}")
 
-    def __update_loops(self, redraw: RedrawScreen) -> None:
-        logging.debug(f"Updating screen: {redraw}")
         if redraw.is_stop:
             self.__play_event.clear()
         else:
@@ -95,7 +82,7 @@ class ScreenView(MsgProcessor):
                 self.__sleep_time = self.__delta / SD_RATE
 
         lines = redraw.content.split('\n')
-        left_lines: int = max(0, ROWS - 1 - self.__descr_lines)
+        left_lines: int = max(0, ROWS - 1 - descr_lines)
         lines = lines[:left_lines]
         lines_count = len(lines)
         tmp = ""
@@ -103,9 +90,9 @@ class ScreenView(MsgProcessor):
             line = lines[k][:COLS].ljust(COLS)
             line = get_with_color(line, redraw.is_rec)
             tmp += line + NEWL
-        left_lines = max(0, ROWS - 1 - self.__descr_lines - lines_count)
+        left_lines = max(0, ROWS - 1 - descr_lines - lines_count)
         tmp += ' ' * COLS * left_lines + NEWL
-        print(f"\033[{2 + self.__descr_lines};1H{tmp}", end='', flush=True)
+        print(f"\033[{2 + descr_lines};1H{tmp}", end='', flush=True)
 
     def __update_progress(self):
         while True:

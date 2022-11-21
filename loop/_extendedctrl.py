@@ -4,7 +4,6 @@ import os
 import traceback
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
-from typing import Dict
 
 from drum import MidiDrum, RealDrum
 from loop._loopsimple import LoopSimple
@@ -20,36 +19,25 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     def __init__(self, recv_conn: Connection, send_conn: Connection):
         ManyLoopCtrl.__init__(self, RealDrum())
         MsgProcessor.__init__(self, recv_conn, send_conn)
-        self.__redraw = RedrawScreen("", "", 0, 0, True, False)
+        self.__redraw = RedrawScreen()
 
     def _redraw(self) -> None:
-        self._send_redraw({"redraw": 0})
+        self._send_redraw(self.__redraw)
 
-    def _send_redraw(self, infodic: Dict) -> None:
-        if "update_method" in infodic:
-            self.__redraw.update_method = infodic["update_method"]
+    def _send_redraw(self, redraw) -> None:
+        self.__redraw = redraw
+        if self.__redraw.update:
+            # noinspection PyBroadException
+            try:
+                method = getattr(self, self.__redraw.update)
+                self.__redraw.content = method()
+            except Exception:
+                logging.error(
+                    f"ExtendedCtrl method: {self.__redraw.update}, error: {traceback.format_exc()}")
 
-        if "redraw" in infodic:
-            self.__redraw.content = ""
-            if self.__redraw.update_method:
-                # noinspection PyBroadException
-                try:
-                    method = getattr(self, self.__redraw.update_method)
-                    self.__redraw.content = method()
-                except Exception:
-                    logging.error(
-                        f"ExtendedCtrl method: {self.__redraw.update_method}, error: {traceback.format_exc()}")
+        self.__redraw.header = f"{self.get_drum().get_fixed()}/{self._file_finder.get_fixed()}"
 
-            self.__redraw.idx = self.idx
-            self.__redraw.is_stop = self.get_stop_event().is_set()
-            self.__redraw.loop_len = self.get_part().length
-            self.__redraw.is_rec = self.is_rec
-            infodic["redraw"] = self.__redraw
-
-        if "header" in infodic:
-            infodic["header"] = f"{self.get_drum().get_fixed()}/{self._file_finder.get_fixed()}"
-
-        MsgProcessor._send_redraw(self, infodic)
+        MsgProcessor._send_redraw(self, self.__redraw)
 
     # ================ show methods
 

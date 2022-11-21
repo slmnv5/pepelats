@@ -188,21 +188,18 @@ class FileFinder(CollectionOwner[str]):
 
 
 class RedrawScreen:
-    def __init__(self, content: str, update_method: str, loop_len: int, idx: int, is_stop: bool,
-                 is_rec: bool):
-        self.content: str = content
-        self.update_method: str = update_method
-        self.loop_len: int = loop_len
-        self.idx: int = idx
-        self.is_stop: bool = is_stop
-        self.is_rec: bool = is_rec
+    def __init__(self):
+        self.header: str = ""
+        self.descript: str = ""
+        self.content: str = ""
+        self.update: str = ""
+        self.loop_len: int = 0
+        self.idx: int = 0
+        self.is_stop: bool = True
+        self.is_rec: bool = False
 
     def __str__(self):
-        return f"{self.update_method}|{self.loop_len}|" \
-               f"{self.idx}|{self.is_stop}|{self.is_rec}"
-
-    def __repr__(self):
-        return f"{self.update_method}|{self.loop_len}|" \
+        return f"{self.update}|{self.loop_len}|" \
                f"{self.idx}|{self.is_stop}|{self.is_rec}"
 
 

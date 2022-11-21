@@ -6,7 +6,7 @@ from typing import Any, List, Optional
 from typing import Dict
 
 from utils._utilconfig import ConfigName
-from utils._utilother import MenuLoader
+from utils._utilother import MenuLoader, RedrawScreen
 
 
 def msg_string(msg: List[Any]) -> List[str]:
@@ -46,14 +46,13 @@ class CmdTranslator(MenuLoader):
         MenuLoader.__init__(self, load_dir, map_name, map_id)
         self.__s_conn = send_conn
         self.__menu_loader = MenuLoader(load_dir, map_name, map_id)
-        self.__send_prepare_redraw()
+        self.__redraw: RedrawScreen = RedrawScreen()
+        self.__prepare_redraw()
 
-    def __send_prepare_redraw(self):
-        infodic: Dict = {"description": self.__menu_loader.get(ConfigName.description),
-                         "update_method": self.__menu_loader.get(ConfigName.update_method),
-                         "header": 0, "redraw": 0}
-        logging.info(f"Send prepare redraw: {infodic}")
-        self.__s_conn.send([ConfigName.send_redraw, infodic])
+    def __prepare_redraw(self):
+        self.__redraw.header = ""
+        self.__redraw.description = self.__menu_loader.get(ConfigName.description)
+        self.__redraw.update = self.__menu_loader.get(ConfigName.update_method)
 
     def _translate_and_send(self, str_note: str) -> None:
         # map note to command in JSON menu files
@@ -81,11 +80,11 @@ class CmdTranslator(MenuLoader):
         method_name, *params = cmd
         if method_name == ConfigName.change_map:
             self.__menu_loader.change_map(params[0], params[1])
-            self.__send_prepare_redraw()
+            self.__prepare_redraw()
         else:
             self.__s_conn.send(cmd)
 
-        self.__s_conn.send([ConfigName.send_redraw, {"redraw": 0}])
+        self.__s_conn.send([ConfigName.send_redraw, self.__redraw])
 
 
 if __name__ == "__main__":
