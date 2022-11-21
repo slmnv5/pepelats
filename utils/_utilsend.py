@@ -47,6 +47,7 @@ class CmdTranslator(MenuLoader):
         self.__menu_loader = MenuLoader(load_dir, map_name, map_id)
         self.__redraw: RedrawScreen = RedrawScreen()
         self.__prepare_redraw()
+        self.__s_conn.send([ConfigName.send_redraw, self.__redraw])
 
     def __prepare_redraw(self):
         self.__redraw.header = ""
