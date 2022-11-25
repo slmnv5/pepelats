@@ -39,7 +39,7 @@ for var in "$@"; do
   fi
 done
 
-PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py  $*"
+PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py  $* 2> $THIS_DIR/messages.txt"
 echo "$PYTHON_CMD"
 
 # disable under voltage error on screen and disable typing echo

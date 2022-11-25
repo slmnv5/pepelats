@@ -13,6 +13,9 @@ build
 .idea
 #other
 *.pyc
+# log files
+messages.txt
+
 
 
 
