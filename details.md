@@ -1,6 +1,6 @@
 ## Drums configuration
 
-Drums are configured in a text files (in [config/drums/pop](config/drums/pop)) using JSON format. Several popular drum
+Drums are configured in a text files (in [config/drums/pop](config/audiodrum/_1_pop)) using JSON format. Several popular drum
 patterns are pre-configured. Looper uses randomness to make it less repetitive. Drum
 breaks play when loop is switched or when a button is pushed. Drums accompaniment is created after the first loop is
 recorded and BPM is defined by length of this loop. Drum volume and swing may be changed on the run. Swing settings is
@@ -9,7 +9,7 @@ same as Linn's LM-1, from 0.5 to 0.75.
 ## MIDI foot controller
 
 Any MIDI controller sending notes may be configured to work with the looper. MIDI commands and looper actions are
-configured in a text files (e.g. [etc/midi/playing.json](config/midi/playing.json)) for Irig Blueboard foot controller.
+configured in a text files (e.g. [etc/midi/playing.json](config/midicontrol/playing.json)) for Irig Blueboard foot controller.
 There are 4 buttons on this pedal named A,B,C,D and 2 extra buttons attached to MIDI expression inputs named E1 and E2.
 
 MIDI over Bluetooth needs manual pairing. You may use wired USB MIDI controller as well or even typing keyboard. Check
@@ -57,7 +57,7 @@ Direct configuration is used to for song parts and indirect for loops in a part,
 - song selection - scroll, load, delete
 
 MIDI commands assigned to buttons are different for these views and are listed in [commands.md](commands.md)
-located alongside JSON files in [config/midi/](config/midi)
+located alongside JSON files in [config/midi/](config/midicontrol)
 
 ## Extending MIDI foot controller commands
 
@@ -81,7 +81,7 @@ indispensable.
 
 ### Installation of LCD:
 
-As additinal reference check files I use [config.txt](config/etc/txt/config.txt)
-and [cmdline.txt](config/etc/txt/cmdline.txt) - working for my version of LCD screen.
+As additinal reference check files I use [config.txt](etc/txt/config.txt)
+and [cmdline.txt](etc/txt/cmdline.txt) - working for my version of LCD screen.
 
 

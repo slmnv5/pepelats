@@ -19,7 +19,7 @@ set CLOCK_PORT_NAME='Sshpadnew'
 set USB_AUDIO_NAMES='VALETON GP,USB Audio'
 
 set THIS_DIR=%~dp0
-cd "%THIS_DIR%" || goto stop
+cd "%THIS_DIR%\src" || goto stop
 
 ::exit if already running, search for cmd window title
 title no_title

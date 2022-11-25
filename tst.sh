@@ -22,35 +22,8 @@ export USB_AUDIO_NAMES='VALETON GP,USB Audio'
 THIS_DIR=$(dirname "$0")
 cd "$THIS_DIR/src" || exit 1
 
-found=$(pgrep --full start_looper.py)
-if [ -n "$found" ]; then
-  echo "Exiting, already running"
-  exit 1
-fi
+#killall -9 python
+export PYTHONPATH="${PYTHONPATH}:$HOME/mypi_music/src:$HOME/mypi_music"
 
-CODE_OPTIMIZE="-O"
-SUDO=""
-for var in "$@"; do
-  if [ "$var" = "--debug" ]; then
-    CODE_OPTIMIZE=""
-  fi
-  if [ "$var" = "--kbd" ]; then
-    SUDO="sudo"
-  fi
-done
+python ./drum/_mididrum.py
 
-PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py  $*"
-echo "$PYTHON_CMD"
-
-# disable under voltage error on screen and disable typing echo
-sudo dmesg -D
-stty -echo
-
-while true; do
-  killall -s 9 -w -v python
-  sleep 10
-  $PYTHON_CMD
-done
-
-sudo dmesg -E
-stty echo

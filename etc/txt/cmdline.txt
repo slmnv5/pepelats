@@ -1,0 +1,3 @@
+fbcon=map:1 console=tty1 console=serial0,115200 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline rootwait
+
+
