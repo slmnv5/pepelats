@@ -29,17 +29,19 @@ if [ -n "$found" ]; then
 fi
 
 CODE_OPTIMIZE="-O"
+REDIRECT="2> $THIS_DIR/messages.txt"
 SUDO=""
 for var in "$@"; do
-  if [ "$var" = "--debug" ]; then
+  if [ "$var" = "--debug" ] || [ "$var" = "--info"  ]; then
     CODE_OPTIMIZE=""
+    REDIRECT=""
   fi
   if [ "$var" = "--kbd" ]; then
     SUDO="sudo"
   fi
 done
 
-PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py  $* 2> $THIS_DIR/messages.txt"
+PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py  $* $REDIRECT"
 echo "$PYTHON_CMD"
 
 # disable under voltage error on screen and disable typing echo
