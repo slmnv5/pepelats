@@ -27,4 +27,4 @@ To enable auto start edit ~/.bashrc file, append this line:
 
 - $HOME/pepelats/looper.sh
 
-# [Read more details](./details.md)
+# [Read more details](details.md)
