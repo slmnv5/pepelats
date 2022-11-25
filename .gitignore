@@ -5,7 +5,6 @@ rules.txt
 kbdmap.txt
 # app data
 save_song
-src/tests
 #pyinstall files
 dist
 build
@@ -13,8 +12,6 @@ build
 #PyCharm
 .idea
 #other
-log.txt
-log.log
 *.pyc
 
 
