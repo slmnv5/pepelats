@@ -4,7 +4,7 @@ __pycache__
 rules.txt
 kbdmap.txt
 # app data
-save_song
+tests
 #pyinstall files
 dist
 build
@@ -12,9 +12,8 @@ build
 #PyCharm
 .idea
 #other
+log*.txt
 *.pyc
-# log files
-messages.txt
 
 
 
@@ -23,5 +22,4 @@ messages.txt
 
 
 
-
-/src/tests/
+/tests/

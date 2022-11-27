@@ -2,22 +2,20 @@
 from multiprocessing.connection import Connection
 from threading import Timer
 
-import mido
-
 from utils import CmdTranslator
 from utils.log import LOGGER
 
 
 def is_midi_cc(msg):
-    return 0xB0 <= msg.bytes()[0] <= 0xBF
+    return 0xB0 <= msg[0] <= 0xBF
 
 
 def is_midi_note_on(msg):
-    return 0x90 <= msg.bytes()[0] <= 0x9F
+    return 0x90 <= msg[0] <= 0x9F
 
 
 def is_midi_note(msg):
-    return 0x80 <= msg.bytes()[0] <= 0x9F
+    return 0x80 <= msg[0] <= 0x9F
 
 
 class MidiCcToNote:
@@ -26,7 +24,7 @@ class MidiCcToNote:
     Use this to convert expression pedal CC into note ON/OFF"""
 
     def __init__(self):
-        self.__prev_msg = mido.Message.from_bytes([0x80, 0, 0])
+        self.__prev_msg = [0x80, 0, 0]
         self.__sent_on = False
 
     def convert(self, msg):
@@ -40,24 +38,24 @@ class MidiCcToNote:
             self.__sent_on = False
             return None
 
-        if msg.bytes()[1] != self.__prev_msg.bytes()[1]:
+        if msg[1] != self.__prev_msg[1]:
             self.__prev_msg = msg
             self.__sent_on = False
             return None
 
         # expression pedal goes down, hence value goes down
-        if self.__prev_msg.bytes()[2] > msg.bytes()[2]:
+        if self.__prev_msg[2] > msg[2]:
             if not self.__sent_on:
                 self.__prev_msg = msg
                 self.__sent_on = True
-                return mido.Message.from_bytes([0x90, msg.bytes()[1], 100])
+                return [0x90, msg[1], 100]
             else:
                 return None
         else:
             if self.__sent_on:
                 self.__prev_msg = msg
                 self.__sent_on = False
-                return mido.Message.from_bytes([0x80, msg.bytes()[1], 0])
+                return [0x80, msg[1], 0]
             else:
                 return None
 
@@ -70,7 +68,7 @@ class CountMidiControl(CmdTranslator):
         --add 5 if the last tap is long e.g. 80+2+5, send note 87
         --after inactivity period ~0.6 sec. count of taps set to zero"""
 
-    count_restart_seconds: float = 0.600
+    __count_sec: float = 0.600
 
     def __init__(self, in_port, send_conn: Connection, directory: str, map_name: str, map_id: str):
         CmdTranslator.__init__(self, send_conn, directory, map_name, map_id)
@@ -84,13 +82,13 @@ class CountMidiControl(CmdTranslator):
     def monitor(self) -> None:
         LOGGER.info(f"Started MidiConverter")
         while True:
-            msg = self.__in_port.receive(block=True)
+            msg = self.__in_port.receive()
             msg = self.__midi_cc_to_note.convert(msg)
             if not msg:
                 continue
 
             LOGGER.debug(f"{self.__class__.__name__} got MIDI message: {msg}")
-            note: int = msg.bytes()[1]
+            note: int = msg[1]
             vel: int = 100
             str_note = f"{note}:{vel}"
 
@@ -103,7 +101,7 @@ class CountMidiControl(CmdTranslator):
             self.__past_note = note
             self.__update_count(note, is_on)
             on_count, off_count = self.__on_count, self.__off_count
-            Timer(CountMidiControl.count_restart_seconds, self.__count_and_send,
+            Timer(CountMidiControl.__count_sec, self.__count_and_send,
                   [on_count, off_count, note]).start()
 
     def __update_count(self, note: int, is_on: bool) -> None:
@@ -148,14 +146,13 @@ if __name__ == "__main__":
         from multiprocessing.dummy import Pipe
         import os
         from multiprocessing import Pipe
-
+        from rtmidi.midiutil import open_midiinput
         from mvc import CountMidiControl
-        from utils.utilalsa import open_midi_port
 
         from utils.log import LOGGER
         recv_fake, send_fake = Pipe()
         port_name = os.getenv('PEDAL_PORT_NAME', "PedalCommands_out")
-        in_port = open_midi_port(port_name, is_input=True)
+        in_port, _ = open_midiinput(port_name, interactive=False)
         if not in_port:
             msg = f"Failed to open MIDI port for commands input: {port_name}"
             raise RuntimeError(msg)

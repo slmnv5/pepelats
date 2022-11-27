@@ -27,11 +27,9 @@ class ConfigName:
     default_config: str = "default_config"
     update_method: str = "update_method"
     description: str = "description"
+    comment: str = "comment"
 
     # redraw related methods
     change_map: str = "_change_map"
     send_redraw: str = "_send_redraw"
-
-    #  drum related
-    default_pattern: str = "default_pattern"
-    comment: str = "comment"
+    stop_monitor: str = "_stop_monitor"

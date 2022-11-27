@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from threading import Event, Timer
 
-from drum import FakeDrum
+from drum.basedrum import RealDrum
 from utils import MAX_32_INT, SD_RATE
 from utils import MAX_LATE_SECONDS
 
@@ -12,17 +12,17 @@ class OneLoopCtrl:
     max_late_samples: int = round(MAX_LATE_SECONDS * SD_RATE)
     update_delay_seconds: float = 0.35
 
-    def __init__(self, drum: FakeDrum):
-        self.__drum: FakeDrum = drum
+    def __init__(self, drum: RealDrum):
+        self.__drum: RealDrum = drum
         self.__is_rec: bool = False
         self.idx: int = 0
         self.__stop_len: int = MAX_32_INT
         self.__stop_event: Event = Event()
 
-    def get_drum(self) -> FakeDrum:
+    def get_drum(self) -> RealDrum:
         return self.__drum
 
-    def set_drum(self, drum: FakeDrum) -> None:
+    def set_drum(self, drum: RealDrum) -> None:
         self.__drum = drum
 
     @abstractmethod

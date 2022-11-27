@@ -3,18 +3,19 @@ import traceback
 from multiprocessing.connection import Connection
 
 from control._manyloopctrl import ManyLoopCtrl
-from drum import AudioDrum
+from drum.audiodrum import AudioDrum
+from drum.mididrum import MidiDrum
 from song import SongPart
 from utils import MsgProcessor
 from utils.log import LOGGER
-from utils.utilother import kill_python, run_os_cmd, RedrawScreen
+from utils.utilother import run_os_cmd, RedrawScreen
 
 
 class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     """Adds screen connection, Mixer, looper commands"""
 
     def __init__(self, recv_conn: Connection, send_conn: Connection):
-        ManyLoopCtrl.__init__(self, AudioDrum())
+        ManyLoopCtrl.__init__(self, MidiDrum())
         MsgProcessor.__init__(self, recv_conn, send_conn)
         self.__redraw = RedrawScreen()
 
@@ -51,6 +52,16 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     def _change_drum_type(self, direction) -> None:
         self.get_drum().iterate(direction > 0)
 
+    def _change_drum_nature(self) -> None:
+        drum = self.get_drum()
+        length = drum.get_length()
+        if isinstance(drum, MidiDrum):
+            drum = AudioDrum()
+        else:
+            drum = MidiDrum()
+        drum.prepare_drum(length)
+        self.set_drum(drum)
+
     def _show_drum_type(self) -> str:
         return self.get_drum().get_str()
 
@@ -64,17 +75,10 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     def _show_all_parts(self) -> str:
         return self.get_str()
 
-    # ================ other methods
-
-    @staticmethod
-    def _restart() -> None:
-        kill_python()
-
     @staticmethod
     def _check_updates() -> None:
         run_os_cmd(["git", "reset", "--hard"])
         run_os_cmd(["git", "pull", "--ff-only"])
-        kill_python()
 
     #  ============ All song parts view and related commands
 

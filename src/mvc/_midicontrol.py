@@ -12,13 +12,13 @@ class MidiControl(CmdTranslator):
         self.__in_port = in_port
 
     def monitor(self) -> None:
-        LOGGER.info("Started MidiController")
+        LOGGER.info("Started MidiControl's monitor")
         while True:
             msg = self.__in_port.receive(block=True)
             LOGGER.debug(f"{self.__class__.__name__} got MIDI message: {msg}")
 
-            note = msg.bytes()[1]
-            vel = msg.bytes()[2]
+            note = msg[1]
+            vel = msg[2]
             self._translate_and_send(f"{note}:{vel}")
 
     def __str__(self):

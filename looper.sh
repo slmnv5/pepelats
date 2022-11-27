@@ -29,10 +29,10 @@ if [ -n "$found" ]; then
 fi
 
 CODE_OPTIMIZE="-O"
-REDIRECT="2> $THIS_DIR/messages.txt"
 SUDO=""
+REDIRECT="2>>log.txt"
 for var in "$@"; do
-  if [ "$var" = "--debug" ] || [ "$var" = "--info"  ]; then
+  if [ "$var" = "--debug" ] || [ "$var" = "--info" ]; then
     CODE_OPTIMIZE=""
     REDIRECT=""
   fi

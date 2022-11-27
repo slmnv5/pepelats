@@ -5,7 +5,6 @@ import numpy as np
 from buffer import LoopSimple
 from buffer import Player
 from buffer import WrapBuffer
-from drum import AudioDrum
 from loopctrl import OneLoopCtrl
 from utils.utilother import CollectionOwner
 
@@ -48,12 +47,13 @@ class SongPart(CollectionOwner[LoopSimple], Player):
         if not self._collection_str:
             first = self.get_id(0)
             self._collection_str = f"L:{first.length // self.get_drum().get_length():02} " \
-                                   f"V:{first.volume:02} {self.item_count:02}/{self.undo_count:02}"
+                                   f"V:{first.volume:.2F} {self.item_count:02}/{self.undo_count:02}"
         return self._collection_str
 
 
 if __name__ == "__main__":
-    def test2():
+    def test():
+        from drum.audiodrum import AudioDrum
         c1 = OneLoopCtrl(AudioDrum())
         c1.__is_rec = True
         Timer(3, c1.stop_at_bound, args=[0]).start()
@@ -65,4 +65,4 @@ if __name__ == "__main__":
         l1.set_ctrl(c1)
 
 
-    test2()
+    test()

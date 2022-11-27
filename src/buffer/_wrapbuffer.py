@@ -31,7 +31,7 @@ class WrapBuffer:
     @property
     def volume(self) -> float:
         if not self.__volume:
-            self.__volume = np.max(self.__buff) * 100 // SD_MAX
+            self.__volume = np.max(self.__buff) // SD_MAX
         return self.__volume
 
     def _show_properties(self) -> str:

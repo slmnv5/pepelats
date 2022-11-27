@@ -1,5 +1,5 @@
 {
-  "default_pattern": {
+  "default_config": {
     "steps": 16,
     "acc": "5"
   },

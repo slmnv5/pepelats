@@ -3,7 +3,7 @@ from threading import Timer
 import numpy as np
 
 from buffer._player import Player
-from drum import AudioDrum
+from drum.audiodrum import AudioDrum
 from loopctrl import OneLoopCtrl
 from utils import MAX_LEN
 from utils.log import LOGGER
@@ -46,7 +46,7 @@ class LoopSimple(Player):
         if not self.get_drum().get_length() or self.is_empty:
             return "---------"
         if not self._str:
-            self._str = f"L:{self.length // self.get_drum().get_length():02} V:{self.volume:02} " \
+            self._str = f"L:{self.length // self.get_drum().get_length():02} V:{self.volume:.2F} " \
                         f"{self._show_properties()}"
         return self._str
 

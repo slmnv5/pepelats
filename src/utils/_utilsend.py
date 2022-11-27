@@ -1,10 +1,11 @@
-from utils.log import LOGGER
+import sys
 import traceback
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 from typing import Any, List, Optional
 
 from utils.config import ConfigName
+from utils.log import LOGGER
 from utils.utilother import MenuLoader, RedrawScreen
 
 
@@ -81,6 +82,8 @@ class CmdTranslator(MenuLoader):
         if method_name == ConfigName.change_map:
             self.__menu_loader.change_map(params[0], params[1])
             self.__prepare_redraw()
+        elif method_name == ConfigName.stop_monitor:
+            sys.exit(0)
         else:
             self.__s_conn.send(cmd)
 

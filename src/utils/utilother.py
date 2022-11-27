@@ -13,7 +13,7 @@ def run_os_cmd(cmd_list: list[str]) -> int:
     return output.returncode
 
 
-def kill_python() -> None:
+def kill_python_not_used() -> None:
     if os.name == "posix":
         run_os_cmd(["killall", "-9", "python"])
     else:

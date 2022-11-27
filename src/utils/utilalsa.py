@@ -1,9 +1,8 @@
 import json
 import os
 import time
-from typing import Tuple, Union, Dict
+from typing import Tuple, Union, Dict, List
 
-import mido
 import numpy as np
 import sounddevice as sd
 
@@ -13,7 +12,7 @@ from utils.log import LOGGER
 
 class MockMidiPort:
     def __init__(self):
-        self.__notes: Dict[float, mido.Message] = dict()
+        self.__notes: Dict[float, List[int]] = dict()
         self.__count: int = 0
 
     def charge(self, notes: Dict[float, Tuple[int, int]]):
@@ -22,11 +21,11 @@ class MockMidiPort:
         self.__notes.clear()
         for k, v in notes.items():
             if v[0] >= 0 and v[1] > 0:
-                self.__notes[k] = mido.Message.from_bytes([0x90, v[0], v[1]])
+                self.__notes[k] = [0x90, v[0], v[1]]
             else:
-                self.__notes[k] = mido.Message.from_bytes([0x80, -v[0], 0])
+                self.__notes[k] = [0x80, -v[0], 0]
 
-    def send(self, msg: mido.Message) -> None:
+    def send_message(self, msg: List[int]) -> None:
         msg = f"MockMidiPort: sent MIDI {msg}"
         if 'clock' in msg:
             self.__count += 1
@@ -36,7 +35,7 @@ class MockMidiPort:
             print(msg)
 
     # noinspection PyUnusedLocal
-    def receive(self, block=True) -> mido.Message:
+    def receive(self) -> List[int]:
         if len(self.__notes) == 0:
             raise EOFError
 
@@ -139,7 +138,7 @@ def sound_test(buffer: np.ndarray, duration_sec: float, record: bool) -> None:
         sd.sleep(int(duration_sec * 1000))
 
 
-def make_sin_sound(sound_freq: int, duration_sec: float, amplitude: int = 9000) -> np.ndarray:
+def make_sin_sound(sound_freq: int, duration_sec: float, amplitude: int = 3000) -> np.ndarray:
     points_in_array = int(sd.default.samplerate * duration_sec)
     t = np.linspace(0, duration_sec, points_in_array)
     x = amplitude * np.sin(2 * np.pi * sound_freq * t)
@@ -154,7 +153,7 @@ def make_changing_sound() -> np.ndarray:
     return np.concatenate((a, b, a), axis=0)
 
 
-def open_midi_port(name: str, is_input: bool):
+def open_midi_port111111111(name: str, is_input: bool):
     # noinspection PyUnresolvedReferences
     port_list = mido.get_input_names() if is_input else mido.get_output_names()
     for port_name in port_list:

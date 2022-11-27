@@ -1,10 +1,9 @@
 import json
 import os
 from queue import Queue
-from typing import Dict
+from typing import Dict, List
 
 import keyboard
-import mido
 
 KBD_NOTES = "KBD_NOTES"
 
@@ -38,19 +37,19 @@ class KbdMidiPort:
 
         val = self.__kbd_notes.get(kbd_event.name, None)
         if val is not None and not self.pressed_key:
-            msg = mido.Message.from_bytes([0x90, val, 100])
+            msg = [0x90, val, 100]
             self.__queue.put(msg)
             self.pressed_key = True
 
     def on_release(self, kbd_event):
         val = self.__kbd_notes.get(kbd_event.name, None)
         if val is not None and self.pressed_key:
-            msg = mido.Message.from_bytes([0x80, val, 0])
+            msg = [0x80, val, 0]
             self.__queue.put(msg)
             self.pressed_key = False
 
-    def receive(self, block=True) -> mido.Message:
-        tmp = self.__queue.get(block)
+    def receive(self) -> List[int]:
+        tmp = self.__queue.get()
         return tmp
 
 

@@ -8,15 +8,13 @@ from threading import Thread, Event
 from typing import Dict
 
 from utils import MsgProcessor, SD_RATE
-
 from utils.log import LOGGER
 from utils.utilother import RedrawScreen
 
+NEWL: str = '\n'
 if os.name == "posix":
-    NEWL: str = '\n'
-    UPDATES_PER_LOOP: float = 16
+    UPDATES_PER_LOOP: float = 8
 else:
-    NEWL: str = '\n'
     UPDATES_PER_LOOP: float = 1
 
 try:

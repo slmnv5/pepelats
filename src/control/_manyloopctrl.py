@@ -1,7 +1,7 @@
 from threading import Thread, Event
 
 from buffer import LoopSimple
-from drum import FakeDrum
+from drum.basedrum import RealDrum
 from loopctrl import OneLoopCtrl
 from song import Song
 from song import SongPart
@@ -12,7 +12,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
     """added playback thread and Song.
      Song is collection of song parts with related methods"""
 
-    def __init__(self, drum: FakeDrum):
+    def __init__(self, drum: RealDrum):
         self._play_event: Event = Event()
         OneLoopCtrl.__init__(self, drum)
         Song.__init__(self, SongPart(self))
@@ -121,8 +121,11 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
     def _change_drum_volume(self, change_factor: float) -> None:
         self.get_drum().change_volume(change_factor)
 
-    def _change_drum_swing(self, change_steps: int) -> None:
-        self.get_drum().change_swing(change_steps)
+    def _change_drum_swing(self, change_by: float) -> None:
+        self.get_drum().change_swing(change_by)
+
+    def _change_drum_shift(self, change_by: float) -> None:
+        self.get_drum().change_shift(change_by)
 
     def _change_drum(self) -> None:
         self.get_drum().play_break_now()
@@ -131,15 +134,14 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         self.get_drum().change_intensity(change_by)
 
     def _show_drum_param(self) -> str:
-        return f"Drum parameters:\nvolume(0-100):{self.get_drum().get_volume():.0F}\n" \
-               f"swing(0.5-0.75):{self.get_drum().get_swing():.2F}"
+        return self.get_drum().show_drum_param()
 
 
 if __name__ == "__main__":
     def test():
         from loopctrl import OneLoopCtrl
         from threading import Timer
-        from drum import AudioDrum
+        from drum.audiodrum import AudioDrum
         import time
 
         drum = AudioDrum()
