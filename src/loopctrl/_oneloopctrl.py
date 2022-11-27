@@ -2,8 +2,8 @@ from abc import abstractmethod
 from threading import Event, Timer
 
 from drum.basedrum import RealDrum
-from utils import MAX_32_INT, SD_RATE
-from utils import MAX_LATE_SECONDS
+from utils.config import MAX_32_INT, SD_RATE
+from utils.config import MAX_LATE_SECONDS
 
 
 class OneLoopCtrl:

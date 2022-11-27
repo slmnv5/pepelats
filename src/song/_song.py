@@ -5,7 +5,7 @@ from time import sleep
 from drum.basedrum import RealDrum
 from loopctrl import OneLoopCtrl
 from song._songpart import SongPart
-from utils import generate_name
+from utils.utilname import generate_name
 from utils.log import LOGGER
 from utils.utilother import CollectionOwner, FileFinder
 

@@ -5,7 +5,7 @@ import numpy as np
 from buffer._player import Player
 from drum.audiodrum import AudioDrum
 from loopctrl import OneLoopCtrl
-from utils import MAX_LEN
+from utils.config import MAX_LEN
 from utils.log import LOGGER
 
 

@@ -6,7 +6,7 @@ from typing import List, Any, Dict
 import numpy as np
 
 from drum._utildrum import bpm_from_length, Intensity, load_all_patterns
-from utils import SD_RATE
+from utils.config import SD_RATE
 from utils.log import LOGGER
 from utils.utilother import FileFinder
 

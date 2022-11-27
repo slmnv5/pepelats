@@ -1,6 +1,6 @@
 ## Drums configuration
 
-Drums are configured in a text files (in [config/drums/pop](config/audiodrum/_1_pop)) using JSON format. Several popular drum
+Drums are configured in a text files (in [config/drum/_1_pop](config/drum/_1_pop)) using JSON format. Several popular drum
 patterns are pre-configured. Looper uses randomness to make it less repetitive. Drum
 breaks play when loop is switched or when a button is pushed. Drums accompaniment is created after the first loop is
 recorded and BPM is defined by length of this loop. Drum volume and swing may be changed on the run. Swing settings is
@@ -9,7 +9,7 @@ same as Linn's LM-1, from 0.5 to 0.75.
 ## MIDI foot controller
 
 Any MIDI controller sending notes may be configured to work with the looper. MIDI commands and looper actions are
-configured in a text files (e.g. [etc/midi/playing.json](config/midicontrol/playing.json)) for Irig Blueboard foot controller.
+configured in a text files (e.g. [config/midicontrol/playing.json](config/midicontrol/playing.json)) for Irig Blueboard foot controller.
 There are 4 buttons on this pedal named A,B,C,D and 2 extra buttons attached to MIDI expression inputs named E1 and E2.
 
 MIDI over Bluetooth needs manual pairing. You may use wired USB MIDI controller as well or even typing keyboard. Check

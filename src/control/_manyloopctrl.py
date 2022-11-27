@@ -5,7 +5,7 @@ from drum.basedrum import RealDrum
 from loopctrl import OneLoopCtrl
 from song import Song
 from song import SongPart
-from utils import MAX_LEN
+from utils.config import MAX_LEN
 
 
 class ManyLoopCtrl(OneLoopCtrl, Song):

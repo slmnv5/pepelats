@@ -1,6 +1,6 @@
 import numpy as np
 
-from utils import MAX_LEN, SD_MAX
+from utils.config import MAX_LEN, SD_MAX
 from utils.log import LOGGER
 from utils.utilalsa import make_zero_buffer, play_sound_buff, record_sound_buff
 

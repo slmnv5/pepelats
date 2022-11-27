@@ -1,10 +1,9 @@
-from utils.log import LOGGER
-
 import sounddevice as sd
 
-from loopctrl import OneLoopCtrl
 from buffer._wrapbuffer import WrapBuffer
-from utils import MAX_LEN
+from loopctrl import OneLoopCtrl
+from utils.config import MAX_LEN
+from utils.log import LOGGER
 
 
 class Player(WrapBuffer):

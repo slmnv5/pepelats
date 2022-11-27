@@ -14,7 +14,7 @@ build
 #other
 log*.txt
 *.pyc
-
+save_song
 
 
 

@@ -7,9 +7,7 @@ import numpy as np
 import soundfile
 
 from utils import JsonDict
-from utils import SD_RATE
-from utils import SD_TYPE
-from utils.config import ROOT_DIR, ConfigName, SD_MAX
+from utils.config import SD_RATE, SD_TYPE, ROOT_DIR, ConfigName, SD_MAX
 from utils.log import LOGGER
 
 
