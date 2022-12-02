@@ -2,27 +2,25 @@ from time import sleep
 
 import numpy as np
 
-from drum._auloader import AuLoader
-from drum._utildrum import Intensity
+from drum.basedrum import ProtoDrum, LoadDrum
 from utils.utilalsa import play_sound_buff
 
 
-class AudioDrum(AuLoader):
+class AudioDrum(LoadDrum):
     """Play drums generated from patterns, change patterns and intencity """
 
     def __init__(self):
-        AuLoader.__init__(self)
+        LoadDrum.__init__(self)
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        if self._intensity == Intensity.SILENT or not self._length:
+        if self._intensity == ProtoDrum._MUTE or not self._length:
             return
 
-        if self._intensity & Intensity.BREAK:
+        if self._intensity == ProtoDrum._BREAK:
             play_sound_buff(self._bk, out_data, idx)
-            return
-        if self._intensity & Intensity.LVL1:
+        elif self._intensity == ProtoDrum._LEVEL1:
             play_sound_buff(self._l1, out_data, idx)
-        if self._intensity & Intensity.LVL2:
+        elif self._intensity == ProtoDrum._LEVEL2:
             play_sound_buff(self._l2, out_data, idx)
 
     def __str__(self):

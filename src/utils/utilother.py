@@ -1,10 +1,15 @@
 import os
 import subprocess as sp
-from typing import Dict, Optional
-from typing import List, TypeVar, Generic, Union
+import traceback
+from json import dump, load
+# noinspection PyProtectedMember
+from multiprocessing.connection import Connection
+from typing import Dict, Any
+from typing import List, Optional
+from typing import TypeVar, Generic, Union
 
-from utils._utilloader import JsonDict
-from utils.config import ConfigName, ROOT_DIR
+from utils.config import ConfigName
+from utils.config import ROOT_DIR
 from utils.log import LOGGER
 
 
@@ -191,20 +196,43 @@ class FileFinder(CollectionOwner[str]):
             os.remove(path)
 
 
-class RedrawScreen:
-    def __init__(self):
-        self.header: str = ""
-        self.description: str = ""
-        self.content: str = ""
-        self.update: str = ""
-        self.loop_len: int = 0
-        self.idx: int = 0
-        self.is_stop: bool = True
-        self.is_rec: bool = False
+class JsonDict:
+    def __init__(self, filename: str):
+        self.__dic: Dict[str, Any] = dict()
+        self.__filename: str = os.path.join(ROOT_DIR, filename)
+        # noinspection PyBroadException
+        try:
+            with open(self.__filename) as f:
+                self.__dic = load(f)
 
-    def __str__(self):
-        return f"{self.update}|{self.loop_len}|" \
-               f"{self.idx}|{self.is_stop}|{self.is_rec}"
+            if not isinstance(self.__dic, dict):
+                raise RuntimeError("JSON file must have dictionary {self.__filename}")
+
+        except Exception:
+            self.save()
+
+    def dic(self) -> Dict:
+        return self.__dic
+
+    def save(self) -> None:
+        if self.__filename:
+            with open(self.__filename, "w") as f:
+                dump(self.__dic, f, indent=2)
+
+    def get_filename(self) -> str:
+        return self.__filename
+
+    def get_dir(self) -> str:
+        return os.path.dirname(self.__filename)
+
+    def get(self, k, default) -> Any:
+        return self.__dic.get(k, default)
+
+    def set(self, k, v) -> None:
+        self.__dic[k] = v
+
+    def set_defaults(self, default_dic: Dict) -> None:
+        self.__dic = dict(default_dic, **self.__dic)
 
 
 class MenuLoader:
@@ -263,6 +291,90 @@ class MenuLoader:
 
     def __str__(self):
         return self.__class__.__name__ + ": " + str(self.__items)
+
+
+class MenuSender(MenuLoader):
+    """Translate menu command with parameters and sends to a connection. Use inner class to hold info """
+
+    class DrawInfo:
+        def __init__(self):
+            self.header: str = ""
+            self.description: str = ""
+            self.content: str = ""
+            self.update: str = ""
+            self.loop_len: int = 0
+            self.idx: int = 0
+            self.is_stop: bool = True
+            self.is_rec: bool = False
+
+        def __str__(self):
+            return f"{self.update}|{self.loop_len}|" \
+                   f"{self.idx}|{self.is_stop}|{self.is_rec}"
+
+    def __init__(self, send_conn: Connection, load_dir: str, map_name: str, map_id: str):
+        MenuLoader.__init__(self, load_dir, map_name, map_id)
+        self.__s_conn = send_conn
+        self.__redraw = MenuSender.DrawInfo()
+        self.__prepare_redraw()
+        self.__s_conn.send([ConfigName.send_redraw, self.__redraw])
+        self._stopped: bool = False
+
+    def __prepare_redraw(self):
+        self.__redraw.header = ""
+        self.__redraw.description = self.get(ConfigName.description)
+        self.__redraw.update = self.get(ConfigName.update_method)
+
+    def _send(self, str_note: str) -> None:
+        # map note to command in JSON menu files
+        cmd = self.get(str_note)
+        self.__process_list(cmd)
+        LOGGER.info(f"{self.__class__.__name__} sent command: {cmd}")
+
+    def __process_list(self, cmd: list) -> None:
+        if not cmd:
+            return
+        head, *tail = cmd
+        if isinstance(head, list):
+            self.__process_list(head)
+            self.__process_list(tail)
+        else:
+            if head == ConfigName.change_map:
+                self.change_map(tail[0], tail[1])
+                self.__prepare_redraw()
+                self.__s_conn.send([ConfigName.send_redraw, self.__redraw])
+            elif head == ConfigName.stop_monitor:
+                self._stopped = True
+            else:
+                self.__s_conn.send(cmd)
+
+
+class MsgProcessor:
+    def __init__(self, recv_conn: Connection, send_conn: Optional[Connection]):
+        self.__recv_conn: Connection = recv_conn
+        self.__send_conn: Connection = send_conn
+
+    @staticmethod
+    def msg_string(msg: List[Any]) -> List[str]:
+        return [str(part) for part in msg]
+
+    def __process_message(self, msg: List[Any]) -> None:
+        LOGGER.debug(f"{self.__class__.__name__} got message {MsgProcessor.msg_string(msg)}")
+        assert type(msg) == list and len(msg) > 0
+        method_name, *params = msg
+        # noinspection PyBroadException
+        try:
+            method = getattr(self, method_name)
+            method(*params)
+        except Exception:
+            LOGGER.error(f"{self.__class__.__name__} in: {method_name} error: {traceback.format_exc()}")
+
+    def process_messages(self):
+        while True:
+            msg = self.__recv_conn.recv()
+            self.__process_message(msg)
+
+    def _send_redraw(self, param) -> None:
+        self.__send_conn.send([ConfigName.send_redraw, param])
 
 
 if __name__ == "__main__":

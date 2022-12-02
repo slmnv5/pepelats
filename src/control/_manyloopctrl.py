@@ -1,7 +1,7 @@
 from threading import Thread, Event
 
 from buffer import LoopSimple
-from drum.basedrum import RealDrum
+from drum.basedrum import SimpleDrum
 from loopctrl import OneLoopCtrl
 from song import Song
 from song import SongPart
@@ -12,7 +12,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
     """added playback thread and Song.
      Song is collection of song parts with related methods"""
 
-    def __init__(self, drum: RealDrum):
+    def __init__(self, drum: SimpleDrum):
         self._play_event: Event = Event()
         OneLoopCtrl.__init__(self, drum)
         Song.__init__(self, SongPart(self))
@@ -70,16 +70,16 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             if not loop.is_empty:
                 loop.resize_buff(MAX_LEN)
 
-    def _play_part_id(self, fixed_id: int) -> None:
+    def _play_part(self, pid: int) -> None:
         if not self._play_event.is_set():
-            self.go_id(fixed_id)
+            self.go_id(pid)
             self._play_event.set()
             return
 
-        if fixed_id != self.id:
-            self.go_id(fixed_id)
+        if pid != self.id:
+            self.go_id(pid)
             self._stop_never()
-            if fixed_id == self.fixed_id:
+            if pid == self.fixed_id:
                 return
 
         part = self.get_fixed()
@@ -96,7 +96,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
                 self.set_is_rec(True)
 
         self.__stop_quantized()
-
+        
     def __stop_quantized(self) -> None:
         """the method for quantized playback and recording,
         has logic when to stop playback"""

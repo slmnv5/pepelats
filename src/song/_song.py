@@ -2,7 +2,7 @@ import pickle
 from abc import abstractmethod
 from time import sleep
 
-from drum.basedrum import RealDrum
+from drum.basedrum import SimpleDrum
 from loopctrl import OneLoopCtrl
 from song._songpart import SongPart
 from utils.utilname import generate_name
@@ -21,7 +21,7 @@ class Song(CollectionOwner[SongPart]):
         self.set_fixed(self.get_item())
 
     @abstractmethod
-    def get_drum(self) -> RealDrum:
+    def get_drum(self) -> SimpleDrum:
         pass
 
     @abstractmethod

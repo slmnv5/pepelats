@@ -10,7 +10,7 @@ KBD_NOTES = "KBD_NOTES"
 
 # noinspection PyUnresolvedReferences
 class KbdMidiPort:
-    """Using keyboard keys instead of MIDI notes """
+    """Using keyboard keys instead of MIDI notes"""
 
     def __init__(self):
         kbd_map_str: str = os.getenv(KBD_NOTES)

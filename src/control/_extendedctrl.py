@@ -5,9 +5,9 @@ from multiprocessing.connection import Connection
 from control._manyloopctrl import ManyLoopCtrl
 from drum.audiodrum import AudioDrum
 from song import SongPart
-from utils import MsgProcessor
 from utils.log import LOGGER
-from utils.utilother import run_os_cmd, RedrawScreen
+from utils.utilother import MsgProcessor, MenuSender
+from utils.utilother import run_os_cmd
 
 
 class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
@@ -17,29 +17,29 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         ManyLoopCtrl.__init__(self, AudioDrum())
         MsgProcessor.__init__(self, recv_conn, send_conn)
 
-        self.__redraw = RedrawScreen()
+        self.__draw_info = MenuSender.DrawInfo()
 
     def _redraw(self) -> None:
-        self._send_redraw(self.__redraw)
+        self._send_redraw(self.__draw_info)
 
     def _send_redraw(self, redraw) -> None:
-        self.__redraw = redraw
-        self.__redraw.header = f"{self.get_drum()}/{self._file_finder.get_fixed()}"
+        self.__draw_info = redraw
+        self.__draw_info.header = f"{self.get_drum()}/{self._file_finder.get_fixed()}"
 
-        if self.__redraw.update:
+        if self.__draw_info.update:
             # noinspection PyBroadException
             try:
-                method = getattr(self, self.__redraw.update)
-                self.__redraw.content = method()
+                method = getattr(self, self.__draw_info.update)
+                self.__draw_info.content = method()
             except Exception:
-                LOGGER.error(f"ExtendedCtrl method: {self.__redraw.update}, error: {traceback.format_exc()}")
+                LOGGER.error(f"ExtendedCtrl method: {self.__draw_info.update}, error: {traceback.format_exc()}")
 
-        self.__redraw.idx = self.idx
-        self.__redraw.is_stop = self.get_stop_event().is_set()
-        self.__redraw.loop_len = self.get_fixed().length
-        self.__redraw.is_rec = self.get_is_rec()
+        self.__draw_info.idx = self.idx
+        self.__draw_info.is_stop = self.get_stop_event().is_set()
+        self.__draw_info.loop_len = self.get_fixed().length
+        self.__draw_info.is_rec = self.get_is_rec()
 
-        MsgProcessor._send_redraw(self, self.__redraw)
+        MsgProcessor._send_redraw(self, self.__draw_info)
 
     # ================ show methods
 

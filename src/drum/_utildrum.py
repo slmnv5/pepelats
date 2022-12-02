@@ -1,20 +1,12 @@
 import os
-from enum import IntEnum
 from math import ceil, log10
 from typing import List, Dict, Union, Tuple
 
 import numpy as np
 import soundfile
 
-from utils import JsonDict
+from utils.utilother import JsonDict
 from utils.config import SD_RATE, SD_TYPE, ROOT_DIR, ConfigName, SD_MAX
-
-
-class Intensity(IntEnum):
-    SILENT = 0
-    LVL1 = 1
-    LVL2 = 2
-    BREAK = 4
 
 
 def extend_list(some_list: Union[List, str], new_len: int) -> List:

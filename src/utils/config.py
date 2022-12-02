@@ -6,12 +6,6 @@ import sounddevice as sd
 
 ROOT_DIR = Path(__file__).parent.parent.parent
 
-MAX_LATE_SECONDS = os.getenv("MAX_LATE_SECONDS", "0.1")
-try:
-    MAX_LATE_SECONDS = float(MAX_LATE_SECONDS)
-except ValueError:
-    MAX_LATE_SECONDS = 0.1
-
 SD_RATE: int = int(os.getenv("SD_RATE", "44100"))
 sd.default.samplerate = SD_RATE
 SD_TYPE: str = 'int16'

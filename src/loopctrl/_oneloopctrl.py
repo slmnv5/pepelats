@@ -1,28 +1,28 @@
 from abc import abstractmethod
 from threading import Event, Timer
 
-from drum.basedrum import RealDrum
+from drum.basedrum import SimpleDrum
 from utils.config import MAX_32_INT, SD_RATE
-from utils.config import MAX_LATE_SECONDS
 
 
 class OneLoopCtrl:
     """class with events to control one loop, has playback index"""
 
-    max_late_samples: int = round(MAX_LATE_SECONDS * SD_RATE)
-    update_delay_seconds: float = 0.35
+    __late_sec = 0.1
+    __delay_redraw = 0.15
+    __late_samples: int = round(__late_sec * SD_RATE)
 
-    def __init__(self, drum: RealDrum):
-        self.__drum: RealDrum = drum
+    def __init__(self, drum: SimpleDrum):
+        self.__drum: SimpleDrum = drum
         self.__is_rec: bool = False
         self.idx: int = 0
         self.__stop_len: int = MAX_32_INT
         self.__stop_event: Event = Event()
 
-    def get_drum(self) -> RealDrum:
+    def get_drum(self) -> SimpleDrum:
         return self.__drum
 
-    def set_drum(self, drum: RealDrum) -> None:
+    def set_drum(self, drum: SimpleDrum) -> None:
         self.__drum = drum
 
     @abstractmethod
@@ -49,12 +49,13 @@ class OneLoopCtrl:
 
     def stop_at_bound(self, bound_value: int) -> None:
         over: int = self.idx % bound_value if bound_value else 0
-        if over < OneLoopCtrl.max_late_samples:
+        if over < OneLoopCtrl.__late_samples:
             self.__stop_event.set()
-            Timer(OneLoopCtrl.update_delay_seconds, self._redraw).start()
+            delay = OneLoopCtrl.__delay_redraw
         else:
             self.__stop_len = self.idx - over + bound_value
-            Timer(self.__stop_len / SD_RATE + OneLoopCtrl.update_delay_seconds, self._redraw).start()
+            delay = self.__stop_len / SD_RATE + OneLoopCtrl.__delay_redraw
+        Timer(delay, self._redraw).start()
 
     def __str__(self):
         return f"{self.__class__.__name__} Stop:{self.__stop_len} Drum:{self.get_drum()} IsRec:{self.get_is_rec()}"

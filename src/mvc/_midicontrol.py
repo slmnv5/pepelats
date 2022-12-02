@@ -1,14 +1,14 @@
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 
-from utils import CmdTranslator
+from utils.utilother import MenuSender
 from utils.log import LOGGER
 
 
-class MidiControl(CmdTranslator):
+class MidiControl(MenuSender):
 
     def __init__(self, in_port, send_conn: Connection, directory: str, map_name: str, map_id: str):
-        CmdTranslator.__init__(self, send_conn, directory, map_name, map_id)
+        MenuSender.__init__(self, send_conn, directory, map_name, map_id)
         self.__in_port = in_port
 
     def monitor(self) -> None:
@@ -19,7 +19,7 @@ class MidiControl(CmdTranslator):
 
             note = msg[1]
             vel = msg[2]
-            self._translate_and_send(f"{note}:{vel}")
+            self._send(f"{note}:{vel}")
 
     def __str__(self):
         return f"{self.__class__.__name__}"

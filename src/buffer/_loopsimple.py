@@ -25,11 +25,12 @@ class LoopSimple(Player):
         otherwise trims self.length to multiple of drum length"""
         idx: int = self._ctrl.idx
         LOGGER.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
-        if not self.get_drum().get_length():
-            self.get_drum().prepare_drum(idx)
+        drum = self.get_drum()
+        if not drum.get_length():
+            Timer(0.2, drum.prepare_drum, [idx]).start()
             self.finalize(idx, 0)
         else:
-            self.finalize(idx, self.get_drum().get_length())
+            self.finalize(idx, drum.get_length())
 
     def __getstate__(self):
         state = self.__dict__.copy()

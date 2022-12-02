@@ -2,7 +2,7 @@
 from multiprocessing.connection import Connection
 from threading import Timer
 
-from utils import CmdTranslator
+from utils.utilother import MenuSender
 from utils.log import LOGGER
 
 
@@ -60,7 +60,7 @@ class MidiCcToNote:
                 return None
 
 
-class CountMidiControl(CmdTranslator):
+class CountMidiControl(MenuSender):
     """Count MIDI notes to increase number of messages MIDI pedal send,
     tap, double tap, long tap - send different notes. Count algorithm:
     --take the original note 60, find the mapped note 80
@@ -71,7 +71,7 @@ class CountMidiControl(CmdTranslator):
     __count_sec: float = 0.600
 
     def __init__(self, in_port, send_conn: Connection, directory: str, map_name: str, map_id: str):
-        CmdTranslator.__init__(self, send_conn, directory, map_name, map_id)
+        MenuSender.__init__(self, send_conn, directory, map_name, map_id)
         self.__in_port = in_port
         self.__on_count: int = 0
         self.__off_count: int = 0
@@ -96,7 +96,7 @@ class CountMidiControl(CmdTranslator):
             if is_on and self.__past_note != note:
                 # do not sent same note many times, we count it below
                 LOGGER.debug(f"Sending original note: {note}")
-                self._translate_and_send(str_note)
+                self._send(str_note)
 
             self.__past_note = note
             self.__update_count(note, is_on)
@@ -133,7 +133,7 @@ class CountMidiControl(CmdTranslator):
         self.__on_count = self.__off_count = 0
         str_note = f"{note}:{count}"
         LOGGER.debug(f"Sending counted note: {str_note}")
-        self._translate_and_send(str_note)
+        self._send(str_note)
 
     def __str__(self):
         return f"{self.__class__.__name__} note={self.__past_count_note} " \

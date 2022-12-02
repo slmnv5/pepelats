@@ -7,10 +7,9 @@ from multiprocessing.connection import Pipe
 from threading import Thread, Event
 from typing import Dict, List
 
-from utils import MsgProcessor
 from utils.config import SD_RATE
 from utils.log import LOGGER
-from utils.utilother import RedrawScreen
+from utils.utilother import MsgProcessor
 
 NEWL: str = '\n'
 if os.name == "posix":
@@ -24,7 +23,7 @@ except OSError:
     COLS, ROWS = 30, 10
 
 LOGGER.error(f"Screen size: cols={COLS} rows={ROWS}")
-SHOW_ERRORS = "--debug" in sys.argv or "--info" in sys.argv
+SHOW_ERRORS = "--debug" in sys.argv or "--info" in sys.argv or os.name != "posix"
 
 # foreground, background ends with '40m'
 ScrColors: Dict[str, str] = {
@@ -56,8 +55,8 @@ def get_with_color(line: str, is_rec: bool) -> str:
 def clr_screen() -> None:
     if SHOW_ERRORS:
         return
-    # print("\033c\033[3J", end='')
-    print("\033c")
+    print(f"\033[3;1H{' ' * COLS * (ROWS - 3)}", end='', flush=True)
+    # print("\033c")
 
 
 class ScreenView(MsgProcessor):
@@ -70,7 +69,7 @@ class ScreenView(MsgProcessor):
         self.__sleep_time: float = 1
         Thread(target=self.__update_progress, name="update_progress", daemon=True).start()
 
-    def _send_redraw(self, redraw: RedrawScreen) -> None:
+    def _send_redraw(self, redraw) -> None:
         LOGGER.debug(f"Get redraw: {redraw}")
         if redraw.is_stop:
             self.__play_event.clear()
