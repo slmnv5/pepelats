@@ -5,7 +5,7 @@ import time
 from multiprocessing.connection import Connection
 from multiprocessing.connection import Pipe
 from threading import Thread, Event
-from typing import Dict
+from typing import Dict, List
 
 from utils import MsgProcessor
 from utils.config import SD_RATE
@@ -64,7 +64,7 @@ class ScreenView(MsgProcessor):
     def __init__(self, recv_conn: Connection):
         MsgProcessor.__init__(self, recv_conn, None)
         self.__play_event: Event = Event()
-        self.__header = "".center(COLS)
+        self.__header: List[str] = ["=>Pepelats Looper<="]
 
         self.__loop_len = self.__idx = self.__delta = 1000000
         self.__sleep_time: float = 1
@@ -83,7 +83,9 @@ class ScreenView(MsgProcessor):
                 self.__sleep_time = self.__delta / SD_RATE
 
         clr_screen()
-        self.__header = redraw.header.center(COLS)
+        self.__header = redraw.header.split('/')
+        for k, line in enumerate(self.__header):
+            self.__header[k] = line.center(COLS)
 
         descr_lines: int = 0
         if redraw.description:
@@ -104,13 +106,19 @@ class ScreenView(MsgProcessor):
         print(f"\033[{2 + descr_lines};1H{tmp}", end='', flush=True)
 
     def __update_progress(self):
+        k1 = k2 = 0
         while True:
             self.__play_event.wait()
+            k1 += 1
+            if k1 > UPDATES_PER_LOOP:
+                k1 = 0
+                k2 += 1
+            show_line: str = self.__header[k2 % len(self.__header)]
             time.sleep(self.__sleep_time)
             self.__idx += self.__delta
             self.__idx %= self.__loop_len
             pos = round(self.__idx / self.__loop_len * COLS)
-            line = '\x1b[7m' + self.__header[:pos] + '\x1b[0m' + self.__header[pos:]
+            line = '\x1b[7m' + show_line[:pos] + '\x1b[0m' + show_line[pos:]
             # all starts at 1, 1
             print(f"\033[1;1H{line}")
 

@@ -1,16 +1,18 @@
 import random
 
-words = ['here', 'we', 'are', 'go', 'to', 'learn', 'about', 'how', 'moon', 'random', 'sent', 'in',
-         'pit', 'can', 'get', 'us', 'use', 'like', 'secret', 'mode', 'slim', 'fat', 'fart',
-         'many', 'of', 'us', 'are', 'only', 'fame', 'fake', 'price', 'soon', 'war', 'pop', 'rock',
-         'with', 'any', 'one', 'of', 'mood', 'but', 'try', 'happy', 'sad', 'old', 'new', 'cold',
-         'hot', 'heavy', 'learn', 'all', 'post', 'ways', 'that', 'will', 'be', 'use', 'this', 'art', 'dog',
-         'cover', 'milk', 'news', 'of', 'when', 'ways', 'put', 'lost', 'cat',
-         'in', 'pit', 'man', 'love', 'must', 'sing', 'song', 'mine', 'this', 'them', 'he', 'she']
+words1 = ['we', 'go', 'to', 'how', 'in', 'pit', 'can', 'get', 'us', 'use', 'fat', 'of', 'us', 'are', 'any', 'one', 'of',
+          'but', 'try', 'sad', 'old', 'new', 'hot', 'all', 'be', 'use', 'art', 'do', 'off', 'put', 'cat', 'in', 'pit',
+          'man', 'he', 'she', 'see', 'out', 'up']
+
+words2 = ['here', 'learn', 'about', 'moon', 'random', 'sent', 'like', 'secret', 'mode', 'slim', 'fart', 'many', 'only',
+          'fame', 'fake', 'price', 'soon', 'rock', 'with', 'mood', 'happy', 'warm', 'cold', 'happy', 'happy', 'happy',
+          'heavy', 'learn', 'post', 'ways', 'that', 'will', 'this', 'cover', 'milk', 'news', 'when', 'ways', 'lost',
+          'love', 'must', 'sing', 'song', 'mine', 'this', 'them', ]
 
 
-def generate_name(word_count: int = 3) -> str:
-    lst = random.choices(words, k=word_count)
+def generate_name() -> str:
+    lst = random.choices(words1, k=1) + random.choices(words2, k=1) + \
+          random.choices(words1, k=2)
     return "_".join(lst)
 
 

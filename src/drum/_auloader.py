@@ -1,10 +1,9 @@
 from abc import ABC
-from threading import Timer
 from typing import Dict, Any
 
 import numpy as np
 
-from drum._utildrum import load_sounds, max_volume_audio, position_with_swing
+from drum._utildrum import load_audio, max_volume_audio, position_with_swing
 from drum.basedrum import RealDrum
 from utils.log import LOGGER
 from utils.utilalsa import make_zero_buffer, record_sound_buff, SD_TYPE
@@ -16,15 +15,9 @@ class AuLoader(RealDrum, ABC):
 
     def __init__(self):
         RealDrum.__init__(self)
-        self._sounds: Dict[str, np.ndarray] = load_sounds(load_midi=False)
+        self._sounds: Dict[str, np.ndarray] = load_audio()
         self.max_volume: float = max_volume_audio(self._sounds)
         self._load_all()
-
-    def prepare_drum(self, length: int) -> None:
-        """ Non blocking drum init in another thread  """
-        if not length:
-            return
-        Timer(0.2, self._prepare_all, [length]).start()
 
     def _prepare_one(self, pattern, length: int) -> Any:
         LOGGER.debug(f"Preapring pattern: {pattern}")
@@ -46,7 +39,7 @@ class AuLoader(RealDrum, ABC):
                 if notes[step_number] != '.':
                     step_accent = int(accents[step_number])
                     step_volume = step_accent / 9 * self._volume
-                    pos = position_with_swing(length, step_number, step_len, self._swing, self._shift)
+                    pos = position_with_swing(step_number, step_len, self._swing)
                     tmp = (sound * step_volume).astype(SD_TYPE)
                     record_sound_buff(result, tmp, pos)
 

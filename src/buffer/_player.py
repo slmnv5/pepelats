@@ -1,6 +1,7 @@
 import sounddevice as sd
 
 from buffer._wrapbuffer import WrapBuffer
+from drum.basedrum import RealDrum
 from loopctrl import OneLoopCtrl
 from utils.config import MAX_LEN
 from utils.log import LOGGER
@@ -13,7 +14,7 @@ class Player(WrapBuffer):
         WrapBuffer.__init__(self, length)
         self._ctrl: OneLoopCtrl = ctrl
 
-    def get_drum(self):
+    def get_drum(self) -> RealDrum:
         return self._ctrl.get_drum()
 
     def set_ctrl(self, ctrl: OneLoopCtrl) -> None:

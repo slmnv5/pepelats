@@ -274,9 +274,9 @@ if __name__ == "__main__":
         find1 = co.find_first_id(lambda x: co.get_id(x) == 'F')
         assert find1 == 5, f"found: {find1} expected: 5"
         co.go_id(8)  # letter I
+        assert "I" == co.get_item()
         list_str = co.get_str()
-        print(list_str)
-        assert "H" == list_str[0]
+        assert " H" == list_str[0:2]
         assert "~I" in list_str
 
 

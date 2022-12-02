@@ -2,16 +2,18 @@
 
 ## Features
 
-- Any number of song parts (verse/chorus/bridge) each made of any number of parallel loops
-- Parallel loops in song part may have different length (number of bars)
-- Song parts have unlimited number "undo/redo" and may be added/deleted on the run
-- Drum machine with random patterns and breaks configureable in a text file
-- Quantization - time of changing parts, recording is adjusted to keep rhythm intact
+- Any number of song parts (verse/chorus/bridge) each made of parallel loops
+- Parallel loops in part may have different length, multiple of a bar
+- Full history for "undo/redo", not only the latest change
+- Loops, parts may be added/deleted on the run
+- Drum machine with random patterns/breaks configureable in a text file
+- Drums played as sound samples (WAV files) or as MIDI commands
+- Quantization - time of changing parts, recording is adjusted to keep the rhythm
 - Songs may be saved and loaded from SD card
-- MIDI over Bluetooth or USB configureable in a text file
+- Control by MIDI (Bluetooth / USB) configureable in a text file
 - Typing keyboard may be used as MIDI controller
-- Text console shows loop position, state, length and volume of each part and loop
-- Menu to display, change looper parameters using only foot controller
+- Text console shows loop position, state, length, volume
+- Menu for looper parameters using foot controller
 
 ## Installation:
 

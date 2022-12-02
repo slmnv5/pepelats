@@ -1,4 +1,3 @@
-import sys
 import traceback
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
@@ -49,6 +48,7 @@ class CmdTranslator(MenuLoader):
         self.__redraw: RedrawScreen = RedrawScreen()
         self.__prepare_redraw()
         self.__s_conn.send([ConfigName.send_redraw, self.__redraw])
+        self._stopped: bool = False
 
     def __prepare_redraw(self):
         self.__redraw.header = ""
@@ -83,7 +83,7 @@ class CmdTranslator(MenuLoader):
             self.__menu_loader.change_map(params[0], params[1])
             self.__prepare_redraw()
         elif method_name == ConfigName.stop_monitor:
-            sys.exit(0)
+            self._stopped = True
         else:
             self.__s_conn.send(cmd)
 

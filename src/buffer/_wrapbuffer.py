@@ -9,7 +9,7 @@ class WrapBuffer:
     """buffer that can wrap over the end when get and set data. Can undo, redo"""
 
     def __init__(self, length: int = MAX_LEN):
-        self.__volume: int = 0
+        self.__volume: float = 0
         self.__is_reverse: bool = False
         self.__is_silent: bool = False
         self.__buff: np.ndarray = make_zero_buffer(length)
@@ -31,7 +31,7 @@ class WrapBuffer:
     @property
     def volume(self) -> float:
         if not self.__volume:
-            self.__volume = np.max(self.__buff) // SD_MAX
+            self.__volume = np.max(self.__buff) / SD_MAX
         return self.__volume
 
     def _show_properties(self) -> str:
@@ -71,7 +71,7 @@ class WrapBuffer:
 
         LOGGER.debug(f"before trim: len {len(self.__buff)} trim_len {trim_len} start {self.__start} idx {idx}")
         assert self.is_empty, "buffer must be empty"
-        assert self.__start >= 0, "start must be non negative"
+        assert self.__start >= 0, f"start must be non negative: {self.__start}"
 
         if trim_len <= 0:
             assert self.__start == 0, "start must be zero"

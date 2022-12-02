@@ -1,11 +1,11 @@
 import random
-from abc import ABC
+from abc import ABC, abstractmethod
 from threading import Timer
 from typing import List, Any, Dict
 
 import numpy as np
 
-from drum._utildrum import bpm_from_length, Intensity, load_all_patterns
+from drum._utildrum import Intensity, load_all_patterns, bpm_from_length
 from utils.config import SD_RATE
 from utils.log import LOGGER
 from utils.utilother import FileFinder
@@ -19,6 +19,10 @@ class FakeDrum:
         self._file_finder = FileFinder("config/drum", False, "")
         self._length: int = 0
         self._bpm: float = 0
+        self._sounds: Dict = dict()
+        self._ptn_l1: List[Dict[str, Any]] = []
+        self._ptn_l2: List[Dict[str, Any]] = []
+        self._ptn_bk: List[Dict[str, Any]] = []
 
     def clear_drum(self) -> None:
         self._length = 0
@@ -39,11 +43,27 @@ class FakeDrum:
     def get_length(self) -> int:
         return self._length
 
+    @abstractmethod
+    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
+        pass
+
+    @abstractmethod
     def prepare_drum(self, length: int) -> None:
         pass
 
-    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        pass
+    def _load_all(self) -> None:
+        directory: str = self._file_finder.get_full_name()
+        lst1 = ["drum_level1", "drum_level2", "drum_break"]
+        lst2 = [self._ptn_l1, self._ptn_l2, self._ptn_bk]
+        for k in range(3):
+            LOGGER.info(f"Loaded patterns from directory: {directory}, file: {lst1[k]}")
+            load_all_patterns(directory, lst1[k], lst2[k], [*self._sounds])
+
+    def load_drum_type(self) -> None:
+        self._file_finder.set_fixed(self._file_finder.get_item())
+        self._load_all()
+        if self._length:
+            self.prepare_drum(self._length)
 
 
 class RealDrum(FakeDrum, ABC):
@@ -54,27 +74,18 @@ class RealDrum(FakeDrum, ABC):
         super().__init__()
         self._intensity: Intensity = Intensity.LVL1
         self._is_break_pending: bool = False
-        self._sounds: Dict = dict()
         self._volume: float = 1.0  # from 0 to 1
         self._max_volume: float = 1.0  # from 0 to 1
         self._swing: float = 0.75
-        self._shift: int = 0  # samples shift, play early, fix OS delay
 
-        self._ptn_l1: List[Dict[str, Any]] = []
-        self._ptn_l2: List[Dict[str, Any]] = []
-        self._ptn_bk: List[Dict[str, Any]] = []
         self._l1 = self._l2 = self._bk = []
         self._snd_l1 = []
         self._snd_l2 = []
         self._snd_bk = []
 
-    def load_drum_type(self) -> None:
-        self._file_finder.set_fixed(self._file_finder.get_item())
-        self._load_all()
-        if self._length:
-            self.prepare_drum(self._length)
-
-    def _prepare_all(self, length: int) -> None:
+    def prepare_drum(self, length: int) -> None:
+        if not length:
+            return
         self._length = 0  # keep it zero until sound load is done
         self._bpm = bpm_from_length(length)
         self._snd_l1 = [self._prepare_one(p, length) for p in self._ptn_l1]
@@ -85,14 +96,6 @@ class RealDrum(FakeDrum, ABC):
 
     def _prepare_one(self, pattern, length: int) -> Any:
         pass
-
-    def _load_all(self) -> None:
-        directory: str = self._file_finder.get_full_name()
-        lst1 = ["drum_level1", "drum_level2", "drum_break"]
-        lst2 = [self._ptn_l1, self._ptn_l2, self._ptn_bk]
-        for k in range(3):
-            LOGGER.info(f"Loaded patterns from directory: {directory}, file: {lst1[k]}")
-            load_all_patterns(directory, lst1[k], lst2[k], [*self._sounds])
 
     def change_volume(self, change_factor: float) -> None:
         self._volume = round(self._volume * change_factor, 2)
@@ -108,39 +111,27 @@ class RealDrum(FakeDrum, ABC):
             self._swing = 0.75
         self.prepare_drum(self._length)
 
-    def change_shift(self, change_by: float) -> None:
-        self._shift += int(change_by * SD_RATE)
-        if self._shift > 0.5 * SD_RATE:
-            self._shift = 0
-        elif self._shift < 0:
-            self._shift = int(0.5 * SD_RATE)
-        self.prepare_drum(self._length)
-
     def show_drum_param(self) -> str:
         return f"Drum parameters:\nvolume(0.0-1.0):{self._volume:.2F}\n" \
-               f"swing(0.5-0.75):{self._swing:.2F}\n" \
-               f"shift(0.0-0.5):{self._shift / SD_RATE:.2F}"
+               f"swing(0.5-0.75):{self._swing:.2F}"
 
     def change_intensity(self, change_by: int) -> None:
         i = self._intensity + change_by
-        if i > 3:
-            i = 0
-        if i < 0:
-            i = 3
+        i = 0 if i > 3 else i
+        i = 3 if i < 0 else i
         self._intensity = i
 
     def play_break_later(self, part_len: int, idx: int) -> None:
         if self._is_break_pending:
             return
-        bars = 0.5
-        samples = self._length * bars
+        samples = self._length // 2
         idx %= part_len
         start_at = (part_len - idx) - samples
         if start_at > 0:
             self._is_break_pending = True
-            Timer(start_at / SD_RATE, self.play_break_now, [bars]).start()
+            Timer(start_at / SD_RATE, self.play_break_now).start()
 
-    def play_break_now(self, bars: float = 0) -> None:
+    def play_break_now(self) -> None:
         if self._intensity == Intensity.SILENT:
             self._intensity = Intensity.LVL1
 
@@ -152,9 +143,7 @@ class RealDrum(FakeDrum, ABC):
         self._l1 = random.choice(self._snd_l1)
         self._bk = random.choice(self._snd_bk)
         self._intensity |= Intensity.BREAK
-        if bars <= 0:
-            bars = 0.5 if random.random() < 0.5 else 1
-        samples = self._length * bars
+        samples = self._length // 2
         Timer(samples / SD_RATE, revert).start()
 
     def __str__(self):

@@ -7,14 +7,13 @@
     "13:6": ["_change_map", "0", "song"]
   },
  "0": {
-    "description": "Drum_Type: A/B-scroll C2-restart C3-update D2-load_drum D3-audio_midi",
+    "description": "Drum_Type: A/B-scroll C2-restart C3-update D2-load_drum",
     "update_method": "_show_drum_type",
     "60:100": ["_change_drum_type", -1],
     "62:100": ["_change_drum_type", 1],
     "64:2": ["_stop_monitor"],
     "64:3": [["_check_updates"], ["_stop_monitor"]],
-    "65:2": [["_load_drum_type"], ["_change_map", "0", "playing"]],
-    "65:3": [["_change_drum_nature"], ["_change_map", "0", "playing"]]
+    "65:2": [["_load_drum_type"], ["_change_map", "0", "playing"]]
  },
   "1": {
     "description": "Drum: A1/2-volume C1/2-swing D1/2-shift",

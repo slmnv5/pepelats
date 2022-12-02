@@ -16,7 +16,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         self._play_event: Event = Event()
         OneLoopCtrl.__init__(self, drum)
         Song.__init__(self, SongPart(self))
-        Thread(target=self.__playback, name="playback_thread", daemon=True).start()
+        Thread(target=self.__playback, name="playback", daemon=True).start()
         self._file_finder.go_id(0)
         self._init_song()
 
@@ -124,9 +124,6 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
     def _change_drum_swing(self, change_by: float) -> None:
         self.get_drum().change_swing(change_by)
 
-    def _change_drum_shift(self, change_by: float) -> None:
-        self.get_drum().change_shift(change_by)
-
     def _change_drum(self) -> None:
         self.get_drum().play_break_now()
 
@@ -152,13 +149,11 @@ if __name__ == "__main__":
 
         duration: float = 7.5
 
-        print("======== start record =============")
         ctrl = ManyLoopCtrl(drum)
         ctrl.get_play_event().set()
         Timer(duration, ctrl.stop_at_bound, [0]).start()
         time.sleep(duration)
 
-        print("======== start palay =============")
         ctrl.get_play_event().set()
         Timer(duration, ctrl.stop_at_bound, [0]).start()
         time.sleep(duration)

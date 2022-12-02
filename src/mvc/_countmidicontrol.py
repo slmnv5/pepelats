@@ -80,8 +80,8 @@ class CountMidiControl(CmdTranslator):
         self.__midi_cc_to_note = MidiCcToNote()
 
     def monitor(self) -> None:
-        LOGGER.info(f"Started MidiConverter")
-        while True:
+        LOGGER.info(f"Started {self.__class__.__name__}")
+        while not self._stopped:
             msg = self.__in_port.receive()
             msg = self.__midi_cc_to_note.convert(msg)
             if not msg:

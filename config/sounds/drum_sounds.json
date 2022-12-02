@@ -47,8 +47,10 @@
   },
     "tp1": {
     "midi": [144, 81, 127],
-    "file_name": "TapTempo.wav",
-    "volume": 1.0,
     "optional_long_name": "tap tempo MIDI note for funkbox IOS app"
+  },
+    "sp0": {
+    "midi": [242, 0, 0],
+    "optional_long_name": "song position =0, drum starts loop [F2,0,0]"
   }
 }

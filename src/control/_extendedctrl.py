@@ -4,7 +4,6 @@ from multiprocessing.connection import Connection
 
 from control._manyloopctrl import ManyLoopCtrl
 from drum.audiodrum import AudioDrum
-from drum.mididrum import MidiDrum
 from song import SongPart
 from utils import MsgProcessor
 from utils.log import LOGGER
@@ -15,8 +14,9 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     """Adds screen connection, Mixer, looper commands"""
 
     def __init__(self, recv_conn: Connection, send_conn: Connection):
-        ManyLoopCtrl.__init__(self, MidiDrum())
+        ManyLoopCtrl.__init__(self, AudioDrum())
         MsgProcessor.__init__(self, recv_conn, send_conn)
+
         self.__redraw = RedrawScreen()
 
     def _redraw(self) -> None:
@@ -51,16 +51,6 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
     def _change_drum_type(self, direction) -> None:
         self.get_drum().iterate(direction > 0)
-
-    def _change_drum_nature(self) -> None:
-        drum = self.get_drum()
-        length = drum.get_length()
-        if isinstance(drum, MidiDrum):
-            drum = AudioDrum()
-        else:
-            drum = MidiDrum()
-        drum.prepare_drum(length)
-        self.set_drum(drum)
 
     def _show_drum_type(self) -> str:
         return self.get_drum().get_str()

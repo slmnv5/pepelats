@@ -13,7 +13,7 @@ class MidiControl(CmdTranslator):
 
     def monitor(self) -> None:
         LOGGER.info("Started MidiControl's monitor")
-        while True:
+        while not self._stopped:
             msg = self.__in_port.receive(block=True)
             LOGGER.debug(f"{self.__class__.__name__} got MIDI message: {msg}")
 
@@ -41,7 +41,6 @@ if __name__ == "__main__":
             pass
 
         send_fake.close()
-        print("===================")
         while recv_fake.poll():
             msg = recv_fake.recv(timeout=0.001)
             print(msg)

@@ -54,24 +54,14 @@ class LoopSimple(Player):
 if __name__ == "__main__":
     def test1():
         c1 = OneLoopCtrl(AudioDrum())
-        c1.__is_rec = True
+        c1.set_is_rec(True)
         Timer(2, c1.stop_at_bound, args=[0]).start()
         l1 = LoopSimple(c1)
         l1.play_buffer()
         c1.get_stop_event().clear()
         Timer(3, c1.stop_at_bound, args=[0]).start()
         l1.play_buffer()
+        print(f"Volume: {l1}")
 
 
-    def test2():
-        c1 = OneLoopCtrl(AudioDrum())
-        c1.__is_rec = True
-        Timer(3.9, c1.stop_at_bound, args=[0]).start()
-        l1 = LoopSimple(c1)
-        l1.play_buffer()
-        c1.get_stop_event().clear()
-        Timer(5, c1.stop_at_bound, args=[0]).start()
-        l1.play_buffer()
-
-
-    test2()
+    test1()
