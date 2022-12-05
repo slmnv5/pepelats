@@ -2,6 +2,7 @@
 - Buttons A,B,C,D switch between 4 different song parts.
     - 1 tap: play/record if empty/overdub if playing
     - 1 tap + hold: clear part
+    - 2 taps: same as 1 tap but new recorded loop may have length 1/4, 1/2, 1, 2, 4, ... of the 1st loop in a part. 
 - Buttons E1 and E2 affect the whole looper or currently playing song part:
     - Button E1
         - 1 tap: play drum break then change pattern
