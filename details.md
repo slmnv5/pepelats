@@ -1,8 +1,7 @@
 ## Drums configuration
 
 Drums are configured in a text files (in [config/drum/_1_pop](config/drum/_1_pop)) using JSON format. Several popular drum
-patterns are pre-configured. Looper uses randomness to make it less repetitive. Drum
-breaks play when loop is switched or when a button is pushed. Drums accompaniment is created after the first loop is
+patterns are pre-configured. Looper uses randomness to make it less repetitive. Drums accompaniment is created after the first loop is
 recorded and BPM is defined by length of this loop. Drum volume and swing may be changed on the run. Swing settings is
 same as Linn's LM-1, from 0.5 to 0.75.
 
