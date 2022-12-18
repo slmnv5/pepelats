@@ -1,20 +1,20 @@
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 
-from utils.utilother import MenuSender
+from mvc.menucontrol import MenuControl, MenuLoader
 from utils.log import LOGGER
 
 
-class MidiControl(MenuSender):
+class MidiControl(MenuControl):
 
-    def __init__(self, in_port, send_conn: Connection, directory: str, map_name: str, map_id: str):
-        MenuSender.__init__(self, send_conn, directory, map_name, map_id)
+    def __init__(self, in_port, send_conn: Connection, menu_loader: MenuLoader):
+        MenuControl.__init__(self, send_conn, menu_loader)
         self.__in_port = in_port
 
     def monitor(self) -> None:
         LOGGER.info("Started MidiControl's monitor")
-        while not self._stopped:
-            msg = self.__in_port.receive(block=True)
+        while True:
+            msg = self.__in_port.receive()
             LOGGER.debug(f"{self.__class__.__name__} got MIDI message: {msg}")
 
             note = msg[1]
@@ -33,8 +33,8 @@ if __name__ == "__main__":
         recv_fake, send_fake = Pipe()
         in_port = MockMidiPort()
         in_port.charge({0.1: (60, 100), 0.2: (-60, 0), 1.2: (62, 1)})
-
-        m_ctrl = MidiControl(in_port, send_fake, "config/midicontrol", "playing", "0")
+        menu_loader = MenuLoader("config/menu", "play", "0")
+        m_ctrl = MidiControl(in_port, send_fake, menu_loader)
         try:
             m_ctrl.monitor()  # will throw EOF when all mesages processed
         except EOFError:

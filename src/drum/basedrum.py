@@ -8,10 +8,8 @@ from typing import List
 import numpy as np
 
 from drum._utildrum import load_all_patterns, bpm_from_length
-from drum._utildrum import load_audio, max_volume_audio, position_with_swing
 from utils.config import SD_RATE
 from utils.log import LOGGER
-from utils.utilalsa import make_zero_buffer, record_sound_buff, SD_TYPE
 from utils.utilother import FileFinder
 
 
@@ -73,7 +71,7 @@ class ProtoDrum:
             LOGGER.info(f"Loaded patterns from directory: {directory}, file: {lst1[k]}")
             load_all_patterns(directory, lst1[k], lst2[k], [*self._sounds])
 
-    def load_drum_type(self) -> None:
+    def load_drum_name(self) -> None:
         self._file_finder.set_fixed(self._file_finder.get_item())
         self._load_all()
         if self._length:
@@ -133,6 +131,7 @@ class SimpleDrum(ProtoDrum, ABC):
         self._snd_bk = [self._prepare_one(p, length) for p in self._ptn_bk]
         self._l1 = self._l2 = self._bk = self._snd_l1[0]
         self._length = length
+        self._bpm = bpm_from_length(length)
 
     def _prepare_one(self, pattern, length: int) -> Any:
         pass
@@ -156,6 +155,8 @@ class SimpleDrum(ProtoDrum, ABC):
                f"swing(0.5-0.75):{self._swing:.2F}"
 
     def _randomize(self):
+        if not self._length:
+            return
         self._l2 = random.choice(self._snd_l2)
         self._l1 = random.choice(self._snd_l1)
         self._bk = random.choice(self._snd_bk)
@@ -166,53 +167,5 @@ class SimpleDrum(ProtoDrum, ABC):
                f", sounds: {len(self._snd_l1)}/{len(self._snd_l2)}/{len(self._snd_bk)}"
 
 
-class LoadDrum(SimpleDrum, ABC):
-    """ class to load drum patterns, drum sounds, generate audio bufferes with
-    drum tracks using volume and swing parameters """
-
-    def __init__(self):
-        SimpleDrum.__init__(self)
-        self._sounds: Dict[str, np.ndarray] = load_audio()
-        self.max_volume: float = max_volume_audio(self._sounds)
-        self._load_all()
-
-    def _prepare_one(self, pattern, length: int) -> Any:
-        LOGGER.debug(f"Preapring pattern: {pattern}")
-        accents = pattern["acc"]
-        result: np.ndarray = make_zero_buffer(length)
-        for sound_name in [x for x in self._sounds if x in pattern]:
-            notes = pattern[sound_name]
-            steps = len(notes)
-            if notes.count("!") + notes.count(".") != steps:
-                LOGGER.error(f"sound {sound_name} notes {notes} must contain only '.' and '!'")
-
-            step_len = length // steps
-            sound: np.ndarray = self._sounds[sound_name]
-            sound = sound[:length]
-            assert sound.ndim == 2 and sound.shape[1] == 2
-            assert 0 < sound.shape[0] <= length, f"Must be: 0 < {sound.shape[0]} <= {length}"
-
-            for step_number in range(steps):
-                if notes[step_number] != '.':
-                    step_accent = int(accents[step_number])
-                    step_volume = step_accent / 9 * self._volume
-                    pos = position_with_swing(step_number, step_len, self._swing)
-                    tmp = (sound * step_volume).astype(SD_TYPE)
-                    record_sound_buff(result, tmp, pos)
-
-        return result
-
-
 if __name__ == "__main__":
-    def test():
-        import time
-        LOGGER.setLevel("DEBUG")
-        loader = LoadDrum()
-        loader.prepare_drum(100_000)
-        while loader.get_length() == 0:
-            time.sleep(0.1)
-
-        print(f"loader: {loader}")
-
-
-    test()
+    pass

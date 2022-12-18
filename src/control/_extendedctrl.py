@@ -3,10 +3,10 @@ import traceback
 from multiprocessing.connection import Connection
 
 from control._manyloopctrl import ManyLoopCtrl
-from drum.audiodrum import AudioDrum
 from song import SongPart
+from utils.config import SD_RATE
 from utils.log import LOGGER
-from utils.utilother import MsgProcessor, MenuSender
+from utils.utilother import MsgProcessor, DrawInfo
 from utils.utilother import run_os_cmd
 
 
@@ -14,29 +14,30 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     """Adds screen connection, Mixer, looper commands"""
 
     def __init__(self, recv_conn: Connection, send_conn: Connection):
-        ManyLoopCtrl.__init__(self, AudioDrum())
+        ManyLoopCtrl.__init__(self)
         MsgProcessor.__init__(self, recv_conn, send_conn)
 
-        self.__draw_info = MenuSender.DrawInfo()
+        self.__draw_info = DrawInfo()
 
     def _redraw(self) -> None:
         self._send_redraw(self.__draw_info)
 
-    def _send_redraw(self, redraw) -> None:
+    def _send_redraw(self, redraw: DrawInfo) -> None:
         self.__draw_info = redraw
-        self.__draw_info.header = f"{self.get_drum()}/{self._file_finder.get_fixed()}"
-
-        if self.__draw_info.update:
+        self.__draw_info.header = f"{self.get_drum()}"
+        self.__draw_info.content = ""
+        if self.__draw_info.update_method:
             # noinspection PyBroadException
             try:
-                method = getattr(self, self.__draw_info.update)
+                method = getattr(self, self.__draw_info.update_method)
                 self.__draw_info.content = method()
             except Exception:
-                LOGGER.error(f"ExtendedCtrl method: {self.__draw_info.update}, error: {traceback.format_exc()}")
+                LOGGER.error(f"ExtendedCtrl method: {self.__draw_info.update_method}, error: {traceback.format_exc()}")
 
-        self.__draw_info.idx = self.idx
+        length = self.get_fixed().length
+        self.__draw_info.loop_seconds = length / SD_RATE
+        self.__draw_info.loop_position = (self.idx % length) / length
         self.__draw_info.is_stop = self.get_stop_event().is_set()
-        self.__draw_info.loop_len = self.get_fixed().length
         self.__draw_info.is_rec = self.get_is_rec()
 
         MsgProcessor._send_redraw(self, self.__draw_info)
@@ -49,14 +50,14 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     def _show_song(self) -> str:
         return self._file_finder.get_str()
 
-    def _change_drum_type(self, direction) -> None:
+    def _change_drum_name(self, direction) -> None:
         self.get_drum().iterate(direction > 0)
 
-    def _show_drum_type(self) -> str:
+    def _show_drum_name(self) -> str:
         return self.get_drum().get_str()
 
-    def _load_drum_type(self) -> None:
-        self.get_drum().load_drum_type()
+    def _load_drum_name(self) -> None:
+        self.get_drum().load_drum_name()
 
     def _show_one_part(self) -> str:
         part = self.get_fixed()
@@ -69,6 +70,9 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     def _check_updates() -> None:
         run_os_cmd(["git", "reset", "--hard"])
         run_os_cmd(["git", "pull", "--ff-only"])
+
+    def _drum_kind(self):
+        self.change_drum_kind()
 
     #  ============ All song parts view and related commands
 

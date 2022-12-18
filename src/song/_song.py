@@ -2,8 +2,9 @@ import pickle
 from abc import abstractmethod
 from time import sleep
 
+from buffer import OneLoopCtrl
 from drum.basedrum import SimpleDrum
-from loopctrl import OneLoopCtrl
+
 from song._songpart import SongPart
 from utils.utilname import generate_name
 from utils.log import LOGGER
@@ -42,13 +43,13 @@ class Song(CollectionOwner[SongPart]):
         self._stop_song()
         full_name = self._file_finder.get_full_name()
         with open(full_name, 'rb') as f:
-            length, drum_type, load_list = pickle.load(f)
+            length, drum_name, load_list = pickle.load(f)
 
         assert length > 0, f"Loading song: length <= 0: {full_name}"
         assert len(load_list) == 4, f"Loading song: wrong number of parts: {full_name}"
 
-        self.get_drum().set_fixed(drum_type)
-        self.get_drum().load_drum_type()
+        self.get_drum().set_fixed(drum_name)
+        self.get_drum().load_drum_name()
         self.get_drum().prepare_drum(length)
 
         ctrl = self._get_control()

@@ -1,7 +1,9 @@
 from abc import abstractmethod
 from threading import Event, Timer
 
+from drum.audiodrum import AudioDrum
 from drum.basedrum import SimpleDrum
+from drum.mididrum import MidiDrum
 from utils.config import MAX_32_INT, SD_RATE
 
 
@@ -12,8 +14,8 @@ class OneLoopCtrl:
     __delay_redraw = 0.15
     __late_samples: int = round(__late_sec * SD_RATE)
 
-    def __init__(self, drum: SimpleDrum):
-        self.__drum: SimpleDrum = drum
+    def __init__(self):
+        self.__drum: SimpleDrum = AudioDrum()
         self.__is_rec: bool = False
         self.idx: int = 0
         self.__stop_len: int = MAX_32_INT
@@ -22,8 +24,14 @@ class OneLoopCtrl:
     def get_drum(self) -> SimpleDrum:
         return self.__drum
 
-    def set_drum(self, drum: SimpleDrum) -> None:
-        self.__drum = drum
+    def change_drum_kind(self) -> None:
+        length: int = self.__drum.get_length()
+        if isinstance(self.__drum, AudioDrum):
+            self.__drum = MidiDrum()
+        else:
+            self.__drum = AudioDrum()
+        if length:
+            self.__drum.prepare_drum(length)
 
     @abstractmethod
     def _redraw(self) -> None:

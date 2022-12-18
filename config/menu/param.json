@@ -1,0 +1,39 @@
+{
+  "default_config": {
+    "description": "Parent for below",
+    "12:1": ["_change_map", "prev", ""],
+    "13:1": ["_change_map", "next", ""],
+    "12:6": ["_change_map", "0", "play"],
+    "13:6": ["_change_map", "0", "song"],
+    "[prev]": ["_change_map", "prev", ""],
+    "[next]": ["_change_map", "next", ""],
+    "[song]": ["_change_map", "0", "song"],
+    "[param]": ["_change_map", "0", "param"],
+    "[play]": ["_change_map", "0", "play"],
+    "[menu]": ["_change_map", "0", "menu"]
+  },
+ "0": {
+    "description": "[prev] [menu] [play] [next] drum type: A1-[go_up] B1-[go_dn] D2-[load] DH-[drum_kind]",
+    "update_method": "_show_drum_name",
+    "60:100": [["_change_drum_name", -1], ["_redraw"]],
+    "[go_up]": [["_change_drum_name", -1], ["_redraw"]],
+    "62:100": [["_change_drum_name", 1], ["_redraw"]],
+    "[go_dn]": [["_change_drum_name", 1], ["_redraw"]],
+    "65:2": [["_load_drum_name"], ["_change_map", "0", "play"]],
+    "[load]": [["_load_drum_name"], ["_change_map", "0", "play"]],
+    "65:6": [["_drum_kind"], ["_change_map", "0", "play"]],
+    "[drum_kind]": [["_drum_kind"], ["_change_map", "0", "play"]]
+ },
+  "1": {
+    "description": "[prev] [menu] [play] [next] drum: A1-[volume_dn] A2-[volume_up] C1-[swing_dn] C2-[swing_up]",
+    "update_method": "_show_drum_param",
+    "60:1": [["_change_drum_volume", 0.8], ["_redraw"]],
+    "[volume_dn]": [["_change_drum_volume", 0.8], ["_redraw"]],
+    "60:2": [["_change_drum_volume", 1.2], ["_redraw"]],
+    "[volume_up]": [["_change_drum_volume", 1.2], ["_redraw"]],
+    "62:1": [["_change_drum_swing", -0.05], ["_redraw"]],
+    "[swing_dn]": [["_change_drum_swing", -0.05], ["_redraw"]],
+    "62:2": [["_change_drum_swing", 0.05], ["_redraw"]],
+    "[swing_up]": [["_change_drum_swing", 0.05], ["_redraw"]]
+  }
+}

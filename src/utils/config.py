@@ -20,7 +20,7 @@ class ConfigName:
     # menu and midi config related
     default_config: str = "default_config"
     update_method: str = "update_method"
-    description: str = "description"
+    text: str = "description"
     comment: str = "comment"
 
     # redraw related methods

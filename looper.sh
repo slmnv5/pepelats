@@ -30,7 +30,7 @@ fi
 
 CODE_OPTIMIZE="-O"
 SUDO=""
-REDIRECT="2>>log.txt"
+REDIRECT=" 2>>log.txt"
 for var in "$@"; do
   if [ "$var" = "--debug" ] || [ "$var" = "--info" ]; then
     CODE_OPTIMIZE=""

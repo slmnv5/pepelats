@@ -6,11 +6,13 @@ from json import dump, load
 from multiprocessing.connection import Connection
 from typing import Dict, Any
 from typing import List, Optional
-from typing import TypeVar, Generic, Union
+from typing import TypeVar, Generic
 
 from utils.config import ConfigName
 from utils.config import ROOT_DIR
 from utils.log import LOGGER
+
+T = TypeVar('T')
 
 
 def run_os_cmd(cmd_list: list[str]) -> int:
@@ -18,14 +20,27 @@ def run_os_cmd(cmd_list: list[str]) -> int:
     return output.returncode
 
 
-def kill_python_not_used() -> None:
+def kill_python() -> None:
     if os.name == "posix":
         run_os_cmd(["killall", "-9", "python"])
     else:
         run_os_cmd(["taskkill", "/F", "/IM", "python.exe"])
 
 
-T = TypeVar('T')
+class DrawInfo:
+    def __init__(self):
+        self.update_method: str = ""
+        self.header: str = ""
+        self.text: str = ""
+        self.content: str = ""
+        self.loop_seconds: float = 0
+        self.loop_position: float = 0
+        self.is_stop: bool = True
+        self.is_rec: bool = False
+
+    def __str__(self):
+        return f"{self.update_method}|{self.loop_seconds:2F}|" \
+               f"{self.loop_position:2F}|{self.is_stop}|{self.is_rec}"
 
 
 class CollectionOwner(Generic[T]):
@@ -233,119 +248,6 @@ class JsonDict:
 
     def set_defaults(self, default_dic: Dict) -> None:
         self.__dic = dict(default_dic, **self.__dic)
-
-
-class MenuLoader:
-    """ class loading mapping dict. from JSON files
-    It parses directory for JSON files """
-
-    def __init__(self, load_dir: str, map_name: str, map_id: str):
-        ff = FileFinder(load_dir, True, ".json")
-        self.__map_name: str = map_name
-        self.__map_id: str = map_id
-        self.__items: Dict[str, Dict[str, Dict]] = dict()
-
-        for _ in range(ff.item_count):
-            file: str = str(ff.get_full_name())
-            item: str = ff.get_item()[:-len(ff.get_end_with())]
-            ff.iterate(True)
-            LOGGER.info(f"Loading control config from {file}")
-            loader = JsonDict(file)
-            default_dic = loader.get(ConfigName.default_config, dict())
-            dic1 = dict()
-
-            for key in [x for x in loader.dic() if x not in [ConfigName.default_config, ConfigName.comment]]:
-                value = loader.get(key, None)
-                assert type(value) == dict, f"Must be dictionary key={key} in file {item}"
-                assert len(value) > 0, f"Dictionary must be non empty key={key} in file {item}"
-                dic1[key] = dict(default_dic, **value)
-
-            self.__items[item] = dic1
-
-    def get(self, key: str) -> Union[List, str]:
-        try:
-            return self.__items[self.__map_name][self.__map_id][key]
-        except KeyError:
-            return ""
-
-    def change_map(self, new_id: str, new_name: str) -> None:
-        LOGGER.debug(f"{self.__class__.__name__} change_map: {new_name}, {new_id}")
-        # noinspection PyBroadException
-        try:
-            self.__map_name = new_name
-            if new_id in ["prev", "next"]:
-                lst = list(self.__items[self.__map_name])
-                k = lst.index(self.__map_id)
-                if new_id == "next":
-                    k += 1
-                    k = 0 if k >= len(lst) else k
-                elif new_id == "prev":
-                    k -= 1
-                    k = len(lst) - 1 if k < 0 else k
-                self.__map_id = lst[k]
-            else:
-                self.__map_id = new_id
-            _ = self.__items[self.__map_name][self.__map_id]
-        except Exception:
-            LOGGER.error(f"{self.__class__.__name__} change_map, incorrect name, id: {new_name}, {new_id}")
-
-    def __str__(self):
-        return self.__class__.__name__ + ": " + str(self.__items)
-
-
-class MenuSender(MenuLoader):
-    """Translate menu command with parameters and sends to a connection. Use inner class to hold info """
-
-    class DrawInfo:
-        def __init__(self):
-            self.header: str = ""
-            self.description: str = ""
-            self.content: str = ""
-            self.update: str = ""
-            self.loop_len: int = 0
-            self.idx: int = 0
-            self.is_stop: bool = True
-            self.is_rec: bool = False
-
-        def __str__(self):
-            return f"{self.update}|{self.loop_len}|" \
-                   f"{self.idx}|{self.is_stop}|{self.is_rec}"
-
-    def __init__(self, send_conn: Connection, load_dir: str, map_name: str, map_id: str):
-        MenuLoader.__init__(self, load_dir, map_name, map_id)
-        self.__s_conn = send_conn
-        self.__redraw = MenuSender.DrawInfo()
-        self.__prepare_redraw()
-        self.__s_conn.send([ConfigName.send_redraw, self.__redraw])
-        self._stopped: bool = False
-
-    def __prepare_redraw(self):
-        self.__redraw.header = ""
-        self.__redraw.description = self.get(ConfigName.description)
-        self.__redraw.update = self.get(ConfigName.update_method)
-
-    def _send(self, str_note: str) -> None:
-        # map note to command in JSON menu files
-        cmd = self.get(str_note)
-        self.__process_list(cmd)
-        LOGGER.info(f"{self.__class__.__name__} sent command: {cmd}")
-
-    def __process_list(self, cmd: list) -> None:
-        if not cmd:
-            return
-        head, *tail = cmd
-        if isinstance(head, list):
-            self.__process_list(head)
-            self.__process_list(tail)
-        else:
-            if head == ConfigName.change_map:
-                self.change_map(tail[0], tail[1])
-                self.__prepare_redraw()
-                self.__s_conn.send([ConfigName.send_redraw, self.__redraw])
-            elif head == ConfigName.stop_monitor:
-                self._stopped = True
-            else:
-                self.__s_conn.send(cmd)
 
 
 class MsgProcessor:

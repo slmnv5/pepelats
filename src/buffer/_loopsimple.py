@@ -2,9 +2,8 @@ from threading import Timer
 
 import numpy as np
 
+from buffer._oneloopctrl import OneLoopCtrl
 from buffer._player import Player
-from drum.audiodrum import AudioDrum
-from loopctrl import OneLoopCtrl
 from utils.config import MAX_LEN
 from utils.log import LOGGER
 
@@ -54,7 +53,7 @@ class LoopSimple(Player):
 
 if __name__ == "__main__":
     def test1():
-        c1 = OneLoopCtrl(AudioDrum())
+        c1 = OneLoopCtrl()
         c1.set_is_rec(True)
         Timer(2, c1.stop_at_bound, args=[0]).start()
         l1 = LoopSimple(c1)

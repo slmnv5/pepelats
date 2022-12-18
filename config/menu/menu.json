@@ -1,0 +1,23 @@
+{
+  "default_config": {
+    "description": "Parent for below",
+    "[prev]": ["_change_map", "prev", ""],
+    "[next]": ["_change_map", "next", ""],
+    "[song]": ["_change_map", "0", "song"],
+    "[param]": ["_change_map", "0", "param"],
+    "[menu]": ["_change_map", "0", "menu"],
+    "[play]": ["_change_map", "0", "play"],
+    "60:100": ["_change_map", "0", "play"],
+    "62:100": ["_change_map", "0", "play"],
+    "64:100": ["_change_map", "0", "play"],
+    "65:100": ["_change_map", "0", "play"],
+    "12:100": ["_change_map", "0", "play"],
+    "13:100": ["_change_map", "0", "play"]
+  },
+  "0": {
+    "description": "[prev] [menu] [play] [next] restart: [update] [restart]",
+    "update_method": "",
+    "[update]": ["_check_updates"],
+    "[restart]": ["_stop_monitor"]
+ }
+}

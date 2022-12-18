@@ -1,19 +1,23 @@
 {
   "default_config": {
-    "description": "",
-    "default_menu": "_screen_menu",
     "12:1": ["_change_drum"],
     "12:2": ["_change_drum_intensity", -1],
     "12:3": ["_change_drum_intensity", 1],
-    "12:6": ["_change_map", "next", "playing"],
+    "12:6": ["_change_map", "next", ""],
     "13:1": [["_undo_part"], ["_redraw"]],
     "13:2": [["_redo_part"], ["_redraw"]],
     "13:3": [["_redo_all"], ["_redraw"]],
     "13:6": ["_change_map", "0", "song" ],
-    "13:7": [["_duplicate_part"], ["_redraw"]]
-},
+    "13:7": [["_duplicate_part"], ["_redraw"]],
+    "[prev]": ["_change_map", "prev", ""],
+    "[next]": ["_change_map", "next", ""],
+    "[song]": ["_change_map", "0", "song"],
+    "[param]": ["_change_map", "0", "param"],
+    "[play]": ["_change_map", "0", "play"],
+    "[menu]": ["_change_map", "0", "menu"]
+  },
   "0": {
-    "description": "All parts: A/B/C/D-switch",
+    "description": "[menu] [song] [param] [next] all parts A/B/C/D-play/record",
     "update_method": "_show_all_parts",
     "60:100": [["_play_part", 0], ["_redraw"]],
     "62:100": [["_play_part", 1], ["_redraw"]],
@@ -29,12 +33,14 @@
     "65:6": [["_clear_part"], ["_redraw"]]
   },
   "1": {
-    "description": "One part: A/B-scroll C-reverse D-silence D2-move DH-delete",
+    "description": "[menu] [song] [param] [next] one part: A/B-scroll C1-[reverse] D1-[silent] D2-move DH-delete",
     "update_method": "_show_one_part",
     "60:100": [["_change_loop", "prev"], ["_redraw"]],
     "62:100": [["_change_loop", "next"], ["_redraw"]],
     "64:1": [["_change_loop", "reverse"], ["_redraw"]],
+    "[reverse]": [["_change_loop", "reverse"], ["_redraw"]],
     "65:1": [["_change_loop", "silent"], ["_redraw"]],
+    "[silent]": [["_change_loop", "silent"], ["_redraw"]],
     "65:2": [["_change_loop", "move"], ["_redraw"]],
     "65:6": [["_change_loop", "delete"], ["_redraw"]]
   }

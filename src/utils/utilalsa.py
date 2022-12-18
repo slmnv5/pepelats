@@ -30,9 +30,9 @@ class MockMidiPort:
         if 'clock' in msg:
             self.__count += 1
             if self.__count % 300 == 0:
-                print(msg)
+                LOGGER.info(msg)
         else:
-            print(msg)
+            LOGGER.info(msg)
 
     # noinspection PyUnusedLocal
     def receive(self) -> List[int]:
@@ -42,6 +42,9 @@ class MockMidiPort:
         k = list(self.__notes)[0]
         time.sleep(k)
         return self.__notes.pop(k)
+
+    def __str__(self):
+        return f"{self.__class__.__name__}"
 
 
 def find_usb() -> None:

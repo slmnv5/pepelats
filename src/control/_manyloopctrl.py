@@ -1,8 +1,7 @@
 from threading import Thread, Event
 
 from buffer import LoopSimple
-from drum.basedrum import SimpleDrum
-from loopctrl import OneLoopCtrl
+from buffer import OneLoopCtrl
 from song import Song
 from song import SongPart
 from utils.config import MAX_LEN
@@ -12,9 +11,9 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
     """added playback thread and Song.
      Song is collection of song parts with related methods"""
 
-    def __init__(self, drum: SimpleDrum):
+    def __init__(self):
         self._play_event: Event = Event()
-        OneLoopCtrl.__init__(self, drum)
+        OneLoopCtrl.__init__(self)
         Song.__init__(self, SongPart(self))
         Thread(target=self.__playback, name="playback", daemon=True).start()
         self._file_finder.go_id(0)
@@ -96,7 +95,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
                 self.set_is_rec(True)
 
         self.__stop_quantized()
-        
+
     def __stop_quantized(self) -> None:
         """the method for quantized playback and recording,
         has logic when to stop playback"""
@@ -136,12 +135,12 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
 
 if __name__ == "__main__":
     def test():
-        from loopctrl import OneLoopCtrl
+        from buffer._oneloopctrl import OneLoopCtrl
         from threading import Timer
-        from drum.audiodrum import AudioDrum
         import time
 
-        drum = AudioDrum()
+        ctrl = ManyLoopCtrl()
+        drum = ctrl.get_drum()
 
         drum.prepare_drum(100_000)
         while not drum.get_length():
@@ -149,7 +148,6 @@ if __name__ == "__main__":
 
         duration: float = 7.5
 
-        ctrl = ManyLoopCtrl(drum)
         ctrl.get_play_event().set()
         Timer(duration, ctrl.stop_at_bound, [0]).start()
         time.sleep(duration)
