@@ -4,6 +4,7 @@ import time
 from multiprocessing.connection import Connection
 from multiprocessing.connection import Pipe
 from threading import Thread
+from typing import List
 
 from mvc._touchscreen import TouchScreen
 from mvc.menucontrol import MenuControl, MenuLoader
@@ -31,8 +32,22 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
     def _send_redraw(self, redraw: DrawInfo) -> None:
         LOGGER.debug(f"Get redraw: {redraw}")
         self._set_loop(redraw.loop_seconds, redraw.loop_position, redraw.is_rec, redraw.is_stop)
-        text: str = redraw.header + '\n' + redraw.text + "\n" + redraw.content
-        self._set_text(text)
+        self._set_text(redraw.header, 0, 0, 100, 100, 100)  # x, y, red, green, blue
+        k: int = 1
+        for line in redraw.text.split(sep='\n'):
+            self._set_text(line, 0, 0, 80, 80, 80)  # x, y, red, green, blue
+            k += 1
+
+        for line in redraw.content.split(sep='\n'):
+            color: List = [50, 50, 100]
+            if not len(line):
+                continue
+            if line[0] == '*':
+                color = ([120, 30, 30] if redraw.is_rec else [30, 120, 30])
+            elif line[0] == '~':
+                color = ([120, 30, 30] if redraw.is_rec else [30, 120, 30])
+            k += 1
+            self._set_text(line, 0, k, *color)
 
     def monitor(self):
         while True:
