@@ -16,7 +16,6 @@ from utils.utilother import MsgProcessor, DrawInfo
 LVL_DEBUG_LIB = "--debug" in sys.argv or "--info" in sys.argv
 
 
-
 class CcScreen(MsgProcessor, MenuControl, TouchScreen):
     """ C++ shared library is used for graphics and touch input via TouchScreen"""
 
@@ -43,7 +42,6 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
         k: int = 1
         lines = wrap(redraw.text, self._get_cols())
         for line in lines:
-            print(111111111, line, self._get_cols())
             self._set_row_text(k, line, *grey_color)  # x, y, red, green, blue
             k += 1
 
@@ -52,7 +50,7 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
             if not len(line):
                 continue
             if line[0] == '*':
-                color = ([127, 100, 100] if redraw.is_rec else [100, 127, 100])
+                color = ([127, 30, 30] if redraw.is_rec else [30, 127, 30])
             elif line[0] == '~':
                 color = [127, 127, 0]
             k += 1
