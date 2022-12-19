@@ -53,10 +53,8 @@ def get_with_color(line: str, is_rec: bool) -> str:
 
 
 def clr_screen() -> None:
-    if SHOW_ERRORS:
-        return
-    print(f"\033[3;1H{' ' * COLS * (ROWS - 3)}", end='', flush=True)
-    # print("\033c")
+    if not SHOW_ERRORS:
+        print(f"\033[3;1H{' ' * COLS * (ROWS - 3)}", end='', flush=True)
 
 
 class PyScreen(MsgProcessor):
@@ -81,8 +79,8 @@ class PyScreen(MsgProcessor):
         self.__header = redraw.header[:COLS].center(COLS)
         lines = wrap(redraw.text)
         k: int = 2
-        for line in lines:
-            print(f"\033[{k};1H{line}")
+        for line in [x for x in lines if x]:
+            print(f"\033[{k};1H{line}", end='')
             k += 1
 
         lines = redraw.content.split('\n')
@@ -106,7 +104,7 @@ class PyScreen(MsgProcessor):
             pos = round(self.__loop_position * COLS)
             line = '\x1b[7m' + self.__header[:pos] + '\x1b[0m' + self.__header[pos:]
             # all starts at 1, 1
-            print(f"\033[1;1H{line}")
+            print(f"\033[1;1H{line}", end='', flush=True)
 
 
 if __name__ == "__main__":
@@ -117,10 +115,12 @@ if __name__ == "__main__":
         Thread(target=scr_view.process_messages, daemon=True).start()
         time.sleep(8)
 
+
     def test2():
         text = "[AAAAAAA] BBB CCC DDD EEE [FFFFFF] GGG " * 5
         lines = wrap(text, COLS)
         for line in lines:
             print(line)
+
 
     test2()

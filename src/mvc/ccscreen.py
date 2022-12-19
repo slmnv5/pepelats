@@ -41,7 +41,7 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
         self._set_row_text(0, redraw.header, *grey_color)  # x, y, red, green, blue
         k: int = 1
         lines = wrap(redraw.text, self._get_cols())
-        for line in lines:
+        for line in [x for x in lines if x]:
             self._set_row_text(k, line, *grey_color)  # x, y, red, green, blue
             k += 1
 
