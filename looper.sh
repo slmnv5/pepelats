@@ -51,8 +51,8 @@ stty -echo
 while true; do
   killall -s 9 -w -v python
   sleep 10
-  cat .env
-  source .env
+  cat ./../.env
+  source ./../.env
   $PYTHON_CMD
 done
 
