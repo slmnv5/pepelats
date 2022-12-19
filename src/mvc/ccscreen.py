@@ -18,7 +18,7 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
     """ C++ shared library is used for graphics and touch input via TouchScreen"""
 
     def __init__(self, recv_conn: Connection, send_conn: Connection, menu_loader: MenuLoader):
-        TouchScreen.__init__(self)
+        TouchScreen.__init__(self, 1)
         MenuControl.__init__(self, send_conn, menu_loader)
         MsgProcessor.__init__(self, recv_conn, send_conn)
         Thread(target=self.monitor, name="monitor_thread", daemon=True).start()

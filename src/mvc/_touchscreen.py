@@ -1,13 +1,15 @@
 import os
 from ctypes import cdll, c_int, c_void_p, c_char_p, c_double, c_bool
+from pathlib import Path
 
-from utils.config import ROOT_DIR
+ROOT_DIR = Path(__file__).parent.parent.parent
 
 LIB_FILE = os.path.join(ROOT_DIR, "touchscr5.so")
 
 lib = cdll.LoadLibrary(LIB_FILE)
 
 # Each one of the below calls is a C function call contained
+lib.createTouchScreen.argtypes = [c_int]
 lib.createTouchScreen.restype = c_void_p
 
 lib.clearScreen.argtypes = [c_void_p]
@@ -36,8 +38,8 @@ class TouchScreen:
     get_click_event() returns text in brakets
     """
 
-    def __init__(self):
-        self.tch_scr = lib.createTouchScreen()
+    def __init__(self, fb_id: int):
+        self.tch_scr = lib.createTouchScreen(fb_id)
 
     def __del__(self):
         return lib.deleteTouchScreen(self.tch_scr)
@@ -65,7 +67,7 @@ class TouchScreen:
 
 if __name__ == "__main__":
     def test1():
-        x = TouchScreen()
+        x = TouchScreen(1)
         text: str = "Menu: [button 1] is first\n new line [button 2]\n no buttons on this line\n [button 3] "
         x._set_row_text(0, text, 100, 100, 100)
         while True:
