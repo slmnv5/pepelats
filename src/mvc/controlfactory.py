@@ -6,7 +6,7 @@ from typing import Union
 from mvc import CountMidiControl
 from mvc import MidiControl
 from mvc.menucontrol import MenuLoader, MenuControl
-from mvc.pyscreen import PyScreen
+from mvc._pyscreen import PyScreen
 from utils.log import LOGGER
 
 
@@ -37,7 +37,7 @@ class ControlFactory:
             return None
         # noinspection PyBroadException
         try:
-            from mvc.ccscreen import CcScreen
+            from mvc._ccscreen import CcScreen
             return CcScreen(self.recv_conn, self.send_conn, self.menu_loader)
         except Exception:
             LOGGER.warn("Error loading C++ shared library 'touchscr5.so'")
