@@ -11,7 +11,8 @@ from typing import List
 from mvc._touchscreen import TouchScreen
 from mvc.menucontrol import MenuControl, MenuLoader
 from utils.log import LOGGER
-from utils.utilother import MsgProcessor, DrawInfo
+from utils.msgprocessor import MsgProcessor
+from utils.utilother import DrawInfo
 
 LVL_DEBUG_LIB = "--debug" in sys.argv or "--info" in sys.argv
 

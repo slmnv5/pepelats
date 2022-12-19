@@ -9,7 +9,7 @@ from typing import Dict
 
 from mvc.menucontrol import MenuControl, MenuLoader
 from utils.log import LOGGER
-from utils.utilother import MsgProcessor
+from utils.msgprocessor import MsgProcessor
 
 if os.name == "posix":
     UPDATES_PER_LOOP: float = 16

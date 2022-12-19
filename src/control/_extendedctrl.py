@@ -6,7 +6,8 @@ from control._manyloopctrl import ManyLoopCtrl
 from song import SongPart
 from utils.config import SD_RATE
 from utils.log import LOGGER
-from utils.utilother import MsgProcessor, DrawInfo
+from utils.msgprocessor import MsgProcessor
+from utils.utilother import DrawInfo
 from utils.utilother import run_os_cmd
 
 
