@@ -39,23 +39,25 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
         LOGGER.info(f"Set debug level for shared library, result: {result}")
 
     def _send_redraw(self, redraw: DrawInfo) -> None:
+        grey_color: List = [100, 100, 100]
         LOGGER.debug(f"Get redraw: {redraw}")
         self._set_loop(redraw.loop_seconds, redraw.loop_position, redraw.is_rec, redraw.is_stop)
         self._clear_screen()
-        self._set_row_text(0, redraw.header, 110, 110, 110)  # x, y, red, green, blue
+        self._set_row_text(0, redraw.header, *grey_color)  # x, y, red, green, blue
         k: int = 1
         for line in wrap(redraw.text, COLS):
-            self._set_row_text(k, line, 90, 90, 90)  # x, y, red, green, blue
+            print(111111111, line)
+            self._set_row_text(k, line, *grey_color)  # x, y, red, green, blue
             k += 1
 
         for line in redraw.content.split(sep='\n'):
-            color: List = [100, 100, 100]
+            color: List = grey_color
             if not len(line):
                 continue
             if line[0] == '*':
-                color = ([127, 90, 90] if redraw.is_rec else [90, 127, 90])
+                color = ([127, 100, 100] if redraw.is_rec else [100, 127, 100])
             elif line[0] == '~':
-                color = [120, 120, 0]
+                color = [127, 127, 0]
             k += 1
             self._set_row_text(k, line, *color)
 
