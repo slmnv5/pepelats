@@ -26,4 +26,4 @@ class ConfigName:
     # redraw related methods
     change_map: str = "_change_map"
     send_redraw: str = "_send_redraw"
-    stop_monitor: str = "_stop_monitor"
+    kill_app: str = "_kill_app"

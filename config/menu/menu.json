@@ -15,11 +15,10 @@
     "13:100": ["_change_map", "0", "play"]
   },
   "0": {
-    "description": "[menu] [play] [update] [restart] [text_screen] [gui_screen]",
+    "description": "[prev] [menu] [play] [next] restart: [update] [restart] [screen_kind]",
     "update_method": "",
-    "[update]": ["_check_updates"],
-    "[restart]": ["_stop_monitor"],
-    "[text_screen]": ["_text_screen"],
-    "[gui_screen]": ["_gui_screen"]
+    "[update]": [["_check_updates"], ["_kill_app"]],
+    "[restart]": ["_kill_app"],
+    "[screen_kind]": [["_screen_kind"], ["_kill_app"]]
  }
 }

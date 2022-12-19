@@ -68,26 +68,22 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         return self.get_str()
 
     @staticmethod
+    def _sleep_sec(sec: int) -> None:
+        os.system(f"timeout {sec}")
+        os.system(f"sleep {sec}")
+
+    @staticmethod
     def _check_updates() -> None:
-        os.system("git reset --hard; git pull --ff-only; killall -9 python")
+        os.system("git reset --hard")
+        os.system("git pull --ff-only")
 
     @staticmethod
     def _text_screen():
-        if os.name != "posix":
-            return
-        if os.getenv("TEXT_SCREEN"):  # any non zero value to use text streen
-            return
         os.system("echo 'export TEXT_SCREEN=1'>" + ROOT_DIR + "/.env")
-        os.system("killall -9 python")
 
     @staticmethod
     def _gui_screen():
-        if os.name != "posix":
-            return
-        if not os.getenv("TEXT_SCREEN"):  # any non zero value to use text streen
-            return
         os.system("echo 'export TEXT_SCREEN=0'>" + ROOT_DIR + "/.env")
-        os.system("killall -9 python")
 
     def _drum_kind(self):
         self.change_drum_kind()

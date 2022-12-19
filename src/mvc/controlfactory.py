@@ -28,7 +28,8 @@ class ControlFactory:
             # noinspection PyBroadException
             try:
                 from mvc._ccscreen import CcScreen
-                return CcScreen(self.recv_conn, self.send_conn, self.menu_loader)
+                fb_id: str = os.getenv("FRAME_BUFFER_ID", "1")
+                return CcScreen(self.recv_conn, self.send_conn, self.menu_loader, fb_id)
             except Exception:
                 DumbLog.error("Cannot load C++ shared library 'touchscr5.so'")
 

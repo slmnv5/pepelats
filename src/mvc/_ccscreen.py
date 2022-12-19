@@ -1,4 +1,3 @@
-import os
 import sys
 import time
 # noinspection PyProtectedMember
@@ -20,9 +19,8 @@ LVL_DEBUG_LIB = "--debug" in sys.argv or "--info" in sys.argv
 class CcScreen(MsgProcessor, MenuControl, TouchScreen):
     """ C++ shared library used for graphics and touch input via TouchScreen"""
 
-    def __init__(self, recv_conn: Connection, send_conn: Connection, menu_loader: MenuLoader):
-        fb_id_str: str = os.getenv("FRAME_BUFFER_ID", "1")
-        fb_id = int(fb_id_str)
+    def __init__(self, recv_conn: Connection, send_conn: Connection, menu_loader: MenuLoader, fb_id: str):
+        fb_id: int = int(fb_id)
         TouchScreen.__init__(self, fb_id)
         MenuControl.__init__(self, send_conn, menu_loader)
         MsgProcessor.__init__(self, recv_conn, send_conn)
@@ -67,6 +65,6 @@ if __name__ == "__main__":
     def test1():
         recv_view, send_view = Pipe(False)  # screen update messages
         menu_loader = MenuLoader("config/menu", "play", "0")
-        scr_view = CcScreen(recv_view, send_view, menu_loader)
+        scr_view = CcScreen(recv_view, send_view, menu_loader, "1")
         Thread(target=scr_view.process_messages, daemon=True).start()
         time.sleep(8)
