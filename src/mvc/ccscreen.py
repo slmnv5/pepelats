@@ -51,7 +51,7 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
 
     def monitor(self):
         while True:
-            cmd: str = self._get_click_event()
+            cmd: str = self._get_click_event_word()
             self._send(cmd)
 
 

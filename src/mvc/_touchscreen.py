@@ -21,8 +21,8 @@ lib.setRowText.restype = c_int
 lib.setLoop.argtypes = [c_void_p, c_double, c_double, c_bool, c_bool]
 lib.setLoop.restype = c_int
 
-lib.getClickEvent.argtypes = [c_void_p]
-lib.getClickEvent.restype = c_char_p
+lib.getClickEventWord.argtypes = [c_void_p]
+lib.getClickEventWord.restype = c_char_p
 
 lib.setLogLevel.argtypes = [c_int]
 lib.setLogLevel.restype = c_int
@@ -53,8 +53,8 @@ class TouchScreen:
     def _set_loop(self, loop_sec: float, loop_pos: float, is_rec: bool, is_stop: bool) -> int:
         return lib.setLoop(self.tch_scr, loop_sec, loop_pos, is_rec, is_stop)
 
-    def _get_click_event(self) -> str:
-        bytes_arr = lib.getClickEvent(self.tch_scr)
+    def _get_click_event_word(self) -> str:
+        bytes_arr = lib.getClickEventWord(self.tch_scr)
         return bytes_arr.decode('utf-8')
 
     def _delete_screen(self) -> None:
@@ -71,6 +71,6 @@ if __name__ == "__main__":
         text: str = "Menu: [button 1] is first\n new line [button 2]\n no buttons on this line\n [button 3] "
         x._set_row_text(0, text, 100, 100, 100)
         while True:
-            ss: str = x._get_click_event()
+            ss: str = x._get_click_event_word()
             assert ss.startswith('button')
             print(f"Got click: {ss}")
