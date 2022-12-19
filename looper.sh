@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # use GUI screen
-export TEXT_SCREEN=0
+export TEXT_SCREEN=1
 # use this frame buffer if there are few (e.g. HDMI, small LCD)
 FRAME_BUFFER_ID=1
 
