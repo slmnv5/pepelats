@@ -40,6 +40,8 @@ class TouchScreen:
 
     def __init__(self, fb_id: int):
         self.tch_scr = lib.createTouchScreen(fb_id)
+        if not self.tch_scr:
+            raise RuntimeError("Shared library error, cannot crate screen")
 
     def __del__(self):
         return lib.deleteTouchScreen(self.tch_scr)
