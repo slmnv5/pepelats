@@ -15,9 +15,10 @@
     "13:100": ["_change_map", "0", "play"]
   },
   "0": {
-    "description": "[prev] [menu] [play] [next] restart: [update] [restart]",
+    "description": "[prev] [menu] [play] [next] restart: [update] [restart] [screen_kind]",
     "update_method": "",
     "[update]": ["_check_updates"],
-    "[restart]": ["_stop_monitor"]
+    "[restart]": ["_stop_monitor"],
+    "[screen_kind]": ["_screen_kind"]
  }
 }

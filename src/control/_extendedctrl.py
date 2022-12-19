@@ -1,3 +1,4 @@
+import os
 import traceback
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
@@ -71,6 +72,15 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     def _check_updates() -> None:
         run_os_cmd(["git", "reset", "--hard"])
         run_os_cmd(["git", "pull", "--ff-only"])
+
+    @staticmethod
+    def _screen_kind(self):
+        if os.name != "posix":
+            return
+        fb_id_str: str = os.getenv("FRAME_BUFFER_ID", "1")
+        fb_id = int(fb_id_str)
+        fb_id = 0 if fb_id == 1 else 1
+        run_os_cmd(["export", f"FRAME_BUFFER_ID={fb_id}"])
 
     def _drum_kind(self):
         self.change_drum_kind()
