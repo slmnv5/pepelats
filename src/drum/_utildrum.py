@@ -5,8 +5,8 @@ from typing import List, Dict, Union, Tuple
 import numpy as np
 import soundfile
 
-from utils.utilother import JsonDict
 from utils.config import SD_RATE, SD_TYPE, ROOT_DIR, ConfigName, SD_MAX
+from utils.utilother import JsonDict
 
 
 def extend_list(some_list: Union[List, str], new_len: int) -> List:
@@ -95,7 +95,7 @@ def max_volume_midi(sounds: Dict[str, List[int]]) -> float:
 
 def load_audio() -> Dict[str, np.ndarray]:
     """Loads WAV sounds, change volume to given value"""
-    path = os.path.join(ROOT_DIR, "config/sounds/drum_sounds.json")
+    path = ROOT_DIR + "/config/sounds/drum_sounds.json"
     loader = JsonDict(path)
     result = dict()
     for name in loader.dic():
@@ -117,7 +117,7 @@ def load_audio() -> Dict[str, np.ndarray]:
 
 def load_midi() -> Dict[str, List[int]]:
     """Loads WAV sounds, change volume to given value"""
-    path = os.path.join(ROOT_DIR, "config/sounds/drum_sounds.json")
+    path = ROOT_DIR + "/config/sounds/drum_sounds.json"
     loader = JsonDict(path)
     result = dict()
     for name in loader.dic():

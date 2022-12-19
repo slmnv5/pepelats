@@ -1,10 +1,8 @@
-import os
 from ctypes import cdll, c_int, c_void_p, c_char_p, c_double, c_bool
-from pathlib import Path
 
-ROOT_DIR = Path(__file__).parent.parent.parent
+from utils.config import ROOT_DIR
 
-LIB_FILE = os.path.join(ROOT_DIR, "touchscr5.so")
+LIB_FILE = ROOT_DIR + "/touchscr5.so"
 
 lib = cdll.LoadLibrary(LIB_FILE)
 

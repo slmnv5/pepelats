@@ -1,5 +1,4 @@
 import os
-import subprocess as sp
 from json import dump, load
 # noinspection PyProtectedMember
 from typing import Dict, Any
@@ -9,18 +8,6 @@ from typing import TypeVar, Generic
 from utils.config import ROOT_DIR
 
 T = TypeVar('T')
-
-
-def run_os_cmd(cmd_list: list[str]) -> int:
-    output = sp.run(cmd_list)
-    return output.returncode
-
-
-def kill_python() -> None:
-    if os.name == "posix":
-        os.system("killall -9  python")
-    else:
-        os.system("taskkill /F /IM python.exe")
 
 
 class DrawInfo:
@@ -172,7 +159,7 @@ class FileFinder(CollectionOwner[str]):
 
     def __init__(self, directory: str, is_file: bool, end_with: str):
         self.__end_with: str = end_with
-        self.__dir: str = os.path.join(ROOT_DIR, directory)
+        self.__dir: str = ROOT_DIR + "/" + directory
 
         found_items: List[str] = [x for x in os.listdir(str(self.__dir))
                                   if self.__chk_match(self.__dir, x, is_file)]
@@ -210,7 +197,7 @@ class FileFinder(CollectionOwner[str]):
 class JsonDict:
     def __init__(self, filename: str):
         self.__dic: Dict[str, Any] = dict()
-        self.__filename: str = os.path.join(ROOT_DIR, filename)
+        self.__filename: str = ROOT_DIR + "/" + filename
         # noinspection PyBroadException
         try:
             with open(self.__filename) as f:

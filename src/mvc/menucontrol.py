@@ -1,3 +1,4 @@
+import os
 from abc import abstractmethod
 # noinspection PyProtectedMember
 # noinspection PyProtectedMember
@@ -6,7 +7,7 @@ from typing import Dict, Union, List
 
 from utils.config import ConfigName
 from utils.log import DumbLog
-from utils.utilother import FileFinder, JsonDict, DrawInfo, kill_python
+from utils.utilother import FileFinder, JsonDict, DrawInfo
 
 
 class MenuLoader:
@@ -98,7 +99,10 @@ class MenuControl:
                 self.__prepare_redraw()
                 self.__s_conn.send([ConfigName.send_redraw, self.__redraw])
             elif head == ConfigName.stop_monitor:
-                kill_python()
+                if os.name == "posix":
+                    os.system("killall -9 python")
+                else:
+                    os.system("taskkill /F /IM python.exe")
             else:
                 self.__s_conn.send(cmd)
 
