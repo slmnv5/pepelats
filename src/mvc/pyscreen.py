@@ -116,3 +116,11 @@ if __name__ == "__main__":
         scr_view = PyScreen(recv_view)
         Thread(target=scr_view.process_messages, daemon=True).start()
         time.sleep(8)
+
+    def test2():
+        text = "[AAAAAAA] BBB CCC DDD EEE [FFFFFF] GGG " * 5
+        lines = wrap(text)
+        for line in lines:
+            print(line)
+
+    test2()
