@@ -6,7 +6,7 @@ import numpy as np
 import sounddevice as sd
 
 from utils.config import SD_TYPE, MAX_LEN
-from utils.log import LOGGER
+from utils.log import DumbLog
 
 
 def find_usb() -> None:
@@ -25,10 +25,10 @@ def find_usb() -> None:
         for sd_name in usb_audio:
             full_name = dev["name"]
             if sd_name in full_name:
-                LOGGER.info(f"Found requested device {sd_name} in {full_name}")
+                DumbLog.info(f"Found requested device {sd_name} in {full_name}")
                 sd.default.device = k, k
                 return
-    LOGGER.error(f"Not found requested device: {usb_audio}")
+    DumbLog.error(f"Not found requested device: {usb_audio}")
 
 
 find_usb()

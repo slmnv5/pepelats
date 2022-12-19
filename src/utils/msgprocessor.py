@@ -5,7 +5,7 @@ from typing import Any
 from typing import List, Optional
 
 from utils.config import ConfigName
-from utils.log import LOGGER
+from utils.log import DumbLog
 
 
 class MsgProcessor:
@@ -18,7 +18,7 @@ class MsgProcessor:
         return [str(part) for part in msg]
 
     def __process_message(self, msg: List[Any]) -> None:
-        LOGGER.debug(f"{self.__class__.__name__} got message {MsgProcessor.msg_string(msg)}")
+        DumbLog.debug(f"{self.__class__.__name__} got message {MsgProcessor.msg_string(msg)}")
         assert type(msg) == list and len(msg) > 0
         method_name, *params = msg
         # noinspection PyBroadException
@@ -26,7 +26,7 @@ class MsgProcessor:
             method = getattr(self, method_name)
             method(*params)
         except Exception:
-            LOGGER.error(f"{self.__class__.__name__} in: {method_name} error: {traceback.format_exc()}")
+            DumbLog.error(f"{self.__class__.__name__} in: {method_name} error: {traceback.format_exc()}")
 
     def process_messages(self):
         while True:

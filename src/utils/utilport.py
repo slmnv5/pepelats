@@ -7,7 +7,7 @@ from typing import Tuple, Dict, List
 import keyboard
 import rtmidi.midiutil
 
-from utils.log import LOGGER
+from utils.log import DumbLog
 
 
 class MyRtmidi:
@@ -44,9 +44,9 @@ class MockMidiPort:
         if 'clock' in msg:
             self.__count += 1
             if self.__count % 300 == 0:
-                LOGGER.info(msg)
+                DumbLog.info(msg)
         else:
-            LOGGER.info(msg)
+            DumbLog.info(msg)
 
     # noinspection PyUnusedLocal
     def receive(self) -> List[int]:

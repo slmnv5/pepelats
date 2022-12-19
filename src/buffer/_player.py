@@ -5,7 +5,7 @@ from buffer._oneloopctrl import OneLoopCtrl
 from drum.basedrum import SimpleDrum
 
 from utils.config import MAX_LEN
-from utils.log import LOGGER
+from utils.log import DumbLog
 
 
 class Player(WrapBuffer):
@@ -22,7 +22,7 @@ class Player(WrapBuffer):
         self._ctrl = ctrl
 
     def play_buffer(self):
-        LOGGER.debug(f"===Start {self.__class__.__name__}")
+        DumbLog.debug(f"===Start {self.__class__.__name__}")
 
         # noinspection PyUnusedLocal
         def callback(in_data, out_data, frame_count, time_info, status):
@@ -44,12 +44,12 @@ class Player(WrapBuffer):
         if self.is_empty:
             self.trim_buffer()
 
-        LOGGER.debug(f"===Stop {self.__class__.__name__}")
+        DumbLog.debug(f"===Stop {self.__class__.__name__}")
 
     def trim_buffer(self) -> None:
         """trim buffer to the length at stop event = idx. Overridden by child class"""
         idx: int = self._ctrl.idx
-        LOGGER.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
+        DumbLog.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
         self.finalize(idx, 0)
 
     def __getstate__(self):

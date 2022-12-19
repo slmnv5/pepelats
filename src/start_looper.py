@@ -11,7 +11,7 @@ from rtmidi.midiutil import open_midiinput
 from control import ExtendedCtrl
 from mvc.controlfactory import ControlFactory
 from mvc.menucontrol import MenuLoader
-from utils.log import LOGGER
+from utils.log import DumbLog
 from utils.utilport import MyRtmidi
 
 
@@ -21,7 +21,8 @@ def do_looper(recv_looper: connection.Connection, send_view: connection.Connecti
         looper = ExtendedCtrl(recv_looper, send_view)
         looper.process_messages()
     except Exception:
-        LOGGER.error(f"process_looper, error: {traceback.format_exc()}")
+        DumbLog.error(f"process_looper, error: {traceback.format_exc()}")
+        DumbLog.flush()
 
 
 # noinspection PyBroadException
@@ -30,7 +31,8 @@ def do_screenview(control_factory: ControlFactory) -> None:
         scr_view = control_factory.get_screen_control(True)
         scr_view.monitor()
     except Exception:
-        LOGGER.error(f"process_screenview, error: {traceback.format_exc()}")
+        DumbLog.error(f"process_screenview, error: {traceback.format_exc()}")
+        DumbLog.flush()
 
 
 def go() -> None:
@@ -58,11 +60,14 @@ def go() -> None:
     time.sleep(2)  # wait other objects to start
 
     pedal_control = control_factory.get_pedal_control()
-    # start only if other process started
-    if pr1.is_alive() and pr2.is_alive():
-        pedal_control.monitor()
-    else:
-        sys.exit(1)
+
+    if not pr1.is_alive():
+        raise RuntimeError("Looper process did exit already")
+    if not pr2.is_alive():
+        raise RuntimeError("Screen thread did exit already")
+
+    pedal_control.monitor()
+    DumbLog.flush()
 
 
 if __name__ == "__main__":
@@ -70,5 +75,6 @@ if __name__ == "__main__":
     try:
         go()
     except Exception:
-        LOGGER.error(f"Start looper, error: {traceback.format_exc()}")
+        DumbLog.error(f"Start looper, error: {traceback.format_exc()}")
+        DumbLog.flush()
         sys.exit(2)

@@ -1,40 +1,58 @@
+import os
 import sys
 from datetime import datetime
+from pathlib import Path
 from typing import Dict
-
-level: str = "WARN"
-if "--debug" in sys.argv:
-    level = "DEBUG"
-if "--info" in sys.argv:
-    level = "INFO"
 
 
 class DumbLog:
-    """ Simplest log, use redirection to file """
-    levelDict: Dict[str, int] = {"DEBUG": 0, "INFO": 1, "WARN": 2, "ERROR": 3}
+    """ Simple log to file and to screen if DEBUG or INFO """
+    __level_dict: Dict[str, int] = {"DEBUG": 0, "INFO": 1, "WARN": 2, "ERROR": 3}
+    tmp = Path(__file__).parent.parent.parent
+    tmp = os.path.join(tmp, "log.txt")
+    __file = open(tmp, 'a')
+    tmp = "WARN"
+    if "--debug" in sys.argv:
+        tmp = "DEBUG"
+    elif "--info" in sys.argv:
+        tmp = "INFO"
+    __lvl: int = __level_dict[tmp]
+    print(1111111111111111, 555555555)
+    print(f"====Starting log: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}", file=__file)
+    __file.flush()
 
-    def __init__(self, lvl: str):
-        self.__level: int = self.levelDict.get(lvl, 3)
-        print(f"Starting log: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}", file=sys.stderr)
+    @staticmethod
+    def flush():
+        DumbLog.__file.flush()
 
-    def error(self, msg: str) -> None:
-        if self.__level <= 3:
-            print("ERROR: " + msg, file=sys.stderr)
+    @staticmethod
+    def __report(msg: str) -> None:
+        print(msg, file=DumbLog.__file)
+        if DumbLog.__lvl < 2:
+            print(msg, file=sys.stderr)
 
-    def warn(self, msg: str) -> None:
-        if self.__level <= 2:
-            print("WARN: " + msg, file=sys.stderr)
+    @staticmethod
+    def error(msg: str) -> None:
+        if DumbLog.__lvl <= 3:
+            DumbLog.__report("ERROR: " + msg)
 
-    def info(self, msg: str) -> None:
-        if self.__level <= 1:
-            print("INFO: " + msg, file=sys.stderr)
+    @staticmethod
+    def warn(msg: str) -> None:
+        if DumbLog.__lvl <= 2:
+            DumbLog.__report("WARN: " + msg)
 
-    def debug(self, msg: str) -> None:
-        if self.__level <= 0:
-            print("DEBUG: " + msg, file=sys.stderr)
+    @staticmethod
+    def info(msg: str) -> None:
+        if DumbLog.__lvl <= 1:
+            DumbLog.__report("INFO: " + msg)
 
-    def set_level(self, lvl: str) -> None:
-        self.__level = self.levelDict.get(lvl, 3)
+    @staticmethod
+    def debug(msg: str) -> None:
+        if DumbLog.__lvl <= 0:
+            DumbLog.__report("DEBUG: " + msg)
 
-
-LOGGER = DumbLog(level)
+    @staticmethod
+    def set_level(lvl: str) -> None:
+        if lvl not in DumbLog.__level_dict:
+            return
+        DumbLog.__lvl = DumbLog.__level_dict[lvl]

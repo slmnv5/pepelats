@@ -6,7 +6,7 @@ from multiprocessing.connection import Connection
 from control._manyloopctrl import ManyLoopCtrl
 from song import SongPart
 from utils.config import SD_RATE
-from utils.log import LOGGER
+from utils.log import DumbLog
 from utils.msgprocessor import MsgProcessor
 from utils.utilother import DrawInfo
 from utils.utilother import run_os_cmd
@@ -34,7 +34,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
                 method = getattr(self, self.__draw_info.update_method)
                 self.__draw_info.content = method()
             except Exception:
-                LOGGER.error(f"ExtendedCtrl method: {self.__draw_info.update_method}, error: {traceback.format_exc()}")
+                DumbLog.error(f"ExtendedCtrl method: {self.__draw_info.update_method}, error: {traceback.format_exc()}")
 
         length = self.get_fixed().length
         self.__draw_info.loop_seconds = length / SD_RATE
@@ -74,7 +74,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         run_os_cmd(["git", "pull", "--ff-only"])
 
     @staticmethod
-    def _screen_kind(self):
+    def _screen_kind():
         if os.name != "posix":
             return
         fb_id_str: str = os.getenv("FRAME_BUFFER_ID", "1")

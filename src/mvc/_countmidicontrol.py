@@ -3,7 +3,7 @@ from multiprocessing.connection import Connection
 from threading import Timer
 
 from mvc.menucontrol import MenuControl, MenuLoader
-from utils.log import LOGGER
+from utils.log import DumbLog
 
 
 def is_midi_cc(msg):
@@ -80,14 +80,14 @@ class CountMidiControl(MenuControl):
         self.__midi_cc_to_note = MidiCcToNote()
 
     def monitor(self) -> None:
-        LOGGER.info(f"Started {self.__class__.__name__}")
+        DumbLog.info(f"Started {self.__class__.__name__}")
         while True:
             msg = self.__in_port.receive()
             msg = self.__midi_cc_to_note.convert(msg)
             if not msg:
                 continue
 
-            LOGGER.debug(f"{self.__class__.__name__} got MIDI message: {msg}")
+            DumbLog.debug(f"{self.__class__.__name__} got MIDI message: {msg}")
             note: int = msg[1]
             vel: int = 100
             str_note = f"{note}:{vel}"
@@ -95,7 +95,7 @@ class CountMidiControl(MenuControl):
             is_on = is_midi_note_on(msg)
             if is_on and self.__past_note != note:
                 # do not sent same note many times, we count it below
-                LOGGER.debug(f"Sending original note: {note}")
+                DumbLog.debug(f"Sending original note: {note}")
                 self._send(str_note)
 
             self.__past_note = note
@@ -132,7 +132,7 @@ class CountMidiControl(MenuControl):
 
         self.__on_count = self.__off_count = 0
         str_note = f"{note}:{count}"
-        LOGGER.debug(f"Sending counted note: {str_note}")
+        DumbLog.debug(f"Sending counted note: {str_note}")
         self._send(str_note)
 
     def __str__(self):
@@ -149,7 +149,6 @@ if __name__ == "__main__":
         from rtmidi.midiutil import open_midiinput
         from mvc import CountMidiControl
 
-        from utils.log import LOGGER
         recv_fake, send_fake = Pipe()
         port_name = os.getenv('PEDAL_PORT_NAME', "PedalCommands_out")
         in_port, _ = open_midiinput(port_name, interactive=False)

@@ -7,7 +7,7 @@ from drum.basedrum import SimpleDrum
 
 from song._songpart import SongPart
 from utils.utilname import generate_name
-from utils.log import LOGGER
+from utils.log import DumbLog
 from utils.utilother import CollectionOwner, FileFinder
 
 
@@ -69,7 +69,7 @@ class Song(CollectionOwner[SongPart]):
         while not self.get_drum().get_length():
             sleep(0.1)
 
-        LOGGER.info(f"Loaded song file: {full_name}")
+        DumbLog.info(f"Loaded song file: {full_name}")
 
     def _save_song(self) -> None:
         if not self._file_finder.get_fixed():
@@ -86,7 +86,7 @@ class Song(CollectionOwner[SongPart]):
         with open(full_name, 'wb') as f:
             pickle.dump((length, self.get_drum().get_item(), save_list), f)
 
-        LOGGER.info(f"Saved song file {full_name}")
+        DumbLog.info(f"Saved song file {full_name}")
 
     def _save_new_song(self):
         tmp = self.__new_song_name()

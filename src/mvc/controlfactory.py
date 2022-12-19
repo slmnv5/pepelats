@@ -7,7 +7,7 @@ from mvc import CountMidiControl
 from mvc import MidiControl
 from mvc.menucontrol import MenuLoader, MenuControl
 from mvc._pyscreen import PyScreen
-from utils.log import LOGGER
+from utils.log import DumbLog
 
 
 class ControlFactory:
@@ -33,13 +33,13 @@ class ControlFactory:
 
     def __get_gui_screen(self) -> Union[MenuControl, None]:
         if self.__failed_gui:
-            LOGGER.warn("Had an error with 'touchscr5.so'")
+            DumbLog.warn("Had an error with 'touchscr5.so'")
             return None
         # noinspection PyBroadException
         try:
             from mvc._ccscreen import CcScreen
             return CcScreen(self.recv_conn, self.send_conn, self.menu_loader)
         except Exception:
-            LOGGER.warn("Error loading C++ shared library 'touchscr5.so'")
+            DumbLog.warn("Error loading C++ shared library 'touchscr5.so'")
             self.__failed_gui = True
             return None

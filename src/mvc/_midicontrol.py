@@ -2,7 +2,7 @@
 from multiprocessing.connection import Connection
 
 from mvc.menucontrol import MenuControl, MenuLoader
-from utils.log import LOGGER
+from utils.log import DumbLog
 
 
 class MidiControl(MenuControl):
@@ -12,10 +12,10 @@ class MidiControl(MenuControl):
         self.__in_port = in_port
 
     def monitor(self) -> None:
-        LOGGER.info("Started MidiControl's monitor")
+        DumbLog.info("Started MidiControl's monitor")
         while True:
             msg = self.__in_port.receive()
-            LOGGER.debug(f"{self.__class__.__name__} got MIDI message: {msg}")
+            DumbLog.debug(f"{self.__class__.__name__} got MIDI message: {msg}")
 
             note = msg[1]
             vel = msg[2]
