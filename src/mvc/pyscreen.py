@@ -119,7 +119,7 @@ if __name__ == "__main__":
 
     def test2():
         text = "[AAAAAAA] BBB CCC DDD EEE [FFFFFF] GGG " * 5
-        lines = wrap(text)
+        lines = wrap(text, COLS)
         for line in lines:
             print(line)
 
