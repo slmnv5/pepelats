@@ -15,10 +15,6 @@ from utils.utilother import MsgProcessor, DrawInfo
 
 LVL_DEBUG_LIB = "--debug" in sys.argv or "--info" in sys.argv
 
-try:
-    COLS, ROWS = os.get_terminal_size()
-except OSError:
-    COLS, ROWS = 30, 10
 
 
 class CcScreen(MsgProcessor, MenuControl, TouchScreen):
@@ -45,9 +41,9 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
         self._clear_screen()
         self._set_row_text(0, redraw.header, *grey_color)  # x, y, red, green, blue
         k: int = 1
-        lines = wrap(redraw.text, COLS)
+        lines = wrap(redraw.text, self._get_cols())
         for line in lines:
-            print(111111111, line, COLS)
+            print(111111111, line, self._get_cols())
             self._set_row_text(k, line, *grey_color)  # x, y, red, green, blue
             k += 1
 
