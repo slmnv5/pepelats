@@ -15,6 +15,12 @@ lib.createTouchScreen.restype = c_void_p
 lib.clearScreen.argtypes = [c_void_p]
 lib.clearScreen.restype = c_int
 
+lib.getCols.argtypes = [c_void_p]
+lib.getCols.restype = c_int
+
+lib.getRows.argtypes = [c_void_p]
+lib.getRows.restype = c_int
+
 lib.setRowText.argtypes = [c_void_p, c_int, c_char_p, c_int, c_int, c_int]
 lib.setRowText.restype = c_int
 
@@ -48,6 +54,12 @@ class TouchScreen:
 
     def _clear_screen(self) -> int:
         return lib.clearScreen(self.tch_scr)
+
+    def _get_cols(self) -> int:
+        return lib.getCols(self.tch_scr)
+
+    def _get_rows(self) -> int:
+        return lib.getRows(self.tch_scr)
 
     def _set_row_text(self, row: int, text: str, r: int, g: int, b: int) -> int:
         return lib.setRowText(self.tch_scr, row, text.encode('utf-8'), r, g, b)
