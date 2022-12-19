@@ -27,7 +27,7 @@ def do_looper(recv_looper: connection.Connection, send_view: connection.Connecti
 # noinspection PyBroadException
 def do_screenview(control_factory: ControlFactory) -> None:
     try:
-        scr_view = control_factory.get_screen_control(True)
+        scr_view = control_factory.get_screen_control()
         scr_view.monitor()
     except Exception:
         DumbLog.error(f"process_screenview, error: {traceback.format_exc()}")

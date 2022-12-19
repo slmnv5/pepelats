@@ -1,5 +1,10 @@
 #!/bin/sh
-# This script starts pepelats audio looper
+
+# use GUI screen
+export TEXT_SCREEN=0
+# use this frame buffer if there are few (e.g. HDMI, small LCD)
+FRAME_BUFFER_ID=1
+
 # Options are:
 # --debug or --info - level of logging
 # --kbd - use keyboard for MIDI input (see KBD_NOTES)
