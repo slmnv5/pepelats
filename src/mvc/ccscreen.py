@@ -42,20 +42,20 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
         LOGGER.debug(f"Get redraw: {redraw}")
         self._set_loop(redraw.loop_seconds, redraw.loop_position, redraw.is_rec, redraw.is_stop)
         self._clear_screen()
-        self._set_row_text(0, redraw.header, 100, 100, 100)  # x, y, red, green, blue
+        self._set_row_text(0, redraw.header, 100, 110, 110)  # x, y, red, green, blue
         k: int = 1
         for line in wrap(redraw.text, COLS):
-            self._set_row_text(k, line, 80, 80, 80)  # x, y, red, green, blue
+            self._set_row_text(k, line, 90, 90, 80)  # x, y, red, green, blue
             k += 1
 
         for line in redraw.content.split(sep='\n'):
-            color: List = [50, 50, 100]
+            color: List = [100, 100, 100]
             if not len(line):
                 continue
             if line[0] == '*':
-                color = ([120, 30, 30] if redraw.is_rec else [30, 120, 30])
+                color = ([127, 50, 50] if redraw.is_rec else [50, 127, 50])
             elif line[0] == '~':
-                color = ([120, 30, 30] if redraw.is_rec else [30, 120, 30])
+                color = [100, 100, 30]
             k += 1
             self._set_row_text(k, line, *color)
 
