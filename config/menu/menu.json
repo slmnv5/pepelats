@@ -17,8 +17,8 @@
   "0": {
     "description": "[prev] [menu] [play] [next] restart: [update] [restart] [screen_kind]",
     "update_method": "",
-    "[update]": ["_check_updates"],
+    "[update]": [["_check_updates"], ["_stop_monitor"]],
     "[restart]": ["_stop_monitor"],
-    "[screen_kind]": ["_screen_kind"]
+    "[screen_kind]": [["_screen_kind"], ["_stop_monitor"]]
  }
 }
