@@ -10,11 +10,11 @@ lib = cdll.LoadLibrary(LIB_FILE)
 # Each one of the below calls is a C function call contained
 lib.createTouchScreen.restype = c_void_p
 
-lib.clearScreen.argtypes = [c_void_p, c_int]
+lib.clearScreen.argtypes = [c_void_p]
 lib.clearScreen.restype = c_int
 
-lib.setText.argtypes = [c_void_p, c_char_p, c_int, c_int, c_int, c_int, c_int]
-lib.setText.restype = c_int
+lib.setRowText.argtypes = [c_void_p, c_int, c_char_p, c_int, c_int, c_int]
+lib.setRowText.restype = c_int
 
 lib.setLoop.argtypes = [c_void_p, c_double, c_double, c_bool, c_bool]
 lib.setLoop.restype = c_int
@@ -42,11 +42,11 @@ class TouchScreen:
     def __del__(self):
         return lib.deleteTouchScreen(self.tch_scr)
 
-    def _clear_screen(self, start_y: int) -> int:
-        return lib.clearScreen(self.tch_scr, start_y)
+    def _clear_screen(self) -> int:
+        return lib.clearScreen(self.tch_scr)
 
-    def _set_text(self, text: str, x: int, y: int, r: int, g: int, b: int) -> int:
-        return lib.setText(self.tch_scr, text.encode('utf-8'), x, y, r, g, b)
+    def _set_row_text(self, row: int, text: str, r: int, g: int, b: int) -> int:
+        return lib.setRowText(self.tch_scr, row, text.encode('utf-8'), r, g, b)
 
     def _set_loop(self, loop_sec: float, loop_pos: float, is_rec: bool, is_stop: bool) -> int:
         return lib.setLoop(self.tch_scr, loop_sec, loop_pos, is_rec, is_stop)
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     def test1():
         x = TouchScreen()
         text: str = "Menu: [button 1] is first\n new line [button 2]\n no buttons on this line\n [button 3] "
-        x._set_text(text, 0, 0, 100, 100, 100)
+        x._set_row_text(0, text, 100, 100, 100)
         while True:
             ss: str = x._get_click_event()
             assert ss.startswith('button')
