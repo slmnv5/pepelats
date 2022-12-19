@@ -17,7 +17,6 @@ class DumbLog:
     elif "--info" in sys.argv:
         tmp = "INFO"
     __lvl: int = __level_dict[tmp]
-    print(1111111111111111, 555555555)
     print(f"====Starting log: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}", file=__file)
     __file.flush()
 
