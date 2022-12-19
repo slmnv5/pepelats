@@ -11,7 +11,6 @@ from typing import Dict
 from utils.log import LOGGER
 from utils.utilother import MsgProcessor
 
-NEWL: str = '\n'
 if os.name == "posix":
     UPDATES_PER_LOOP: float = 16
 else:
