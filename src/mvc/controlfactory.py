@@ -5,7 +5,6 @@ from typing import Union
 
 from mvc import CountMidiControl
 from mvc import MidiControl
-from mvc.ccscreen import CcScreen
 from mvc.menucontrol import MenuLoader, MenuControl
 from mvc.pyscreen import PyScreen
 from utils.log import LOGGER
@@ -27,16 +26,18 @@ class ControlFactory:
 
     def get_screen_control(self, gui: bool) -> MenuControl:
         if gui:
-            if not self.__get_gui_screen():
-                return PyScreen(self.recv_conn)
-        else:
-            return PyScreen(self.recv_conn)
+            gui_scvreen = self.__get_gui_screen()
+            if gui_scvreen:
+                return gui_scvreen
+        return PyScreen(self.recv_conn, self.send_conn, self.menu_loader)
 
     def __get_gui_screen(self) -> Union[MenuControl, None]:
         if self.__failed_gui:
+            LOGGER.warn("Had an error with 'touchscr5.so'")
             return None
         # noinspection PyBroadException
         try:
+            from mvc.ccscreen import CcScreen
             return CcScreen(self.recv_conn, self.send_conn, self.menu_loader)
         except Exception:
             LOGGER.warn("Error loading C++ shared library 'touchscr5.so'")

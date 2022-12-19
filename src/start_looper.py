@@ -28,7 +28,7 @@ def do_looper(recv_looper: connection.Connection, send_view: connection.Connecti
 def do_screenview(control_factory: ControlFactory) -> None:
     try:
         scr_view = control_factory.get_screen_control(True)
-        scr_view.process_messages()
+        scr_view.monitor()
     except Exception:
         LOGGER.error(f"process_screenview, error: {traceback.format_exc()}")
 

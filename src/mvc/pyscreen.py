@@ -4,7 +4,7 @@ import time
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 from textwrap import wrap
-from threading import Thread, Event
+from threading import Event
 from typing import Dict
 
 from mvc.menucontrol import MenuControl, MenuLoader
@@ -63,9 +63,7 @@ class PyScreen(MsgProcessor, MenuControl):
         MenuControl.__init__(self, send_conn, menu_loader)
         self.__play_event: Event = Event()
         self.__header: str = "=>Pepelats Looper<="
-
         self.__loop_seconds = self.__loop_position = 3
-        Thread(target=self.__update_progress, name="update_progress", daemon=True).start()
 
     def _send_redraw(self, redraw) -> None:
         LOGGER.debug(f"Get redraw: {redraw}")
@@ -94,7 +92,7 @@ class PyScreen(MsgProcessor, MenuControl):
             k += 1
         print("", end='', flush=True)
 
-    def __update_progress(self):
+    def process_messages(self):
         while True:
             self.__play_event.wait()
             time.sleep(self.__loop_seconds / UPDATES_PER_LOOP)
