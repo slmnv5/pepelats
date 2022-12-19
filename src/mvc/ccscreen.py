@@ -1,8 +1,10 @@
+import os
 import sys
 import time
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 from multiprocessing.connection import Pipe
+from textwrap import wrap
 from threading import Thread
 from typing import List
 
@@ -12,6 +14,11 @@ from utils.log import LOGGER
 from utils.utilother import MsgProcessor, DrawInfo
 
 LVL_DEBUG_LIB = "--debug" in sys.argv or "--info" in sys.argv
+
+try:
+    COLS, ROWS = os.get_terminal_size()
+except OSError:
+    COLS, ROWS = 30, 10
 
 
 class CcScreen(MsgProcessor, MenuControl, TouchScreen):
@@ -32,9 +39,10 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
     def _send_redraw(self, redraw: DrawInfo) -> None:
         LOGGER.debug(f"Get redraw: {redraw}")
         self._set_loop(redraw.loop_seconds, redraw.loop_position, redraw.is_rec, redraw.is_stop)
+        self._clear_screen()
         self._set_row_text(0, redraw.header, 100, 100, 100)  # x, y, red, green, blue
         k: int = 1
-        for line in redraw.text.split(sep='\n'):
+        for line in wrap(redraw.text, COLS):
             self._set_row_text(k, line, 80, 80, 80)  # x, y, red, green, blue
             k += 1
 

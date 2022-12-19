@@ -19,19 +19,19 @@ class DumbLog:
 
     def error(self, msg: str) -> None:
         if self.__level <= 3:
-            print(msg, file=sys.stderr)
+            print("ERROR: " + msg, file=sys.stderr)
 
     def warn(self, msg: str) -> None:
         if self.__level <= 2:
-            print(msg, file=sys.stderr)
+            print("WARN: " + msg, file=sys.stderr)
 
     def info(self, msg: str) -> None:
         if self.__level <= 1:
-            print(msg, file=sys.stderr)
+            print("INFO: " + msg, file=sys.stderr)
 
     def debug(self, msg: str) -> None:
         if self.__level <= 0:
-            print(msg, file=sys.stderr)
+            print("DEBUG: " + msg, file=sys.stderr)
 
     def set_level(self, lvl: str) -> None:
         self.__level = self.levelDict.get(lvl, 3)

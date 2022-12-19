@@ -4,6 +4,7 @@ import time
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 from multiprocessing.connection import Pipe
+from textwrap import wrap
 from threading import Thread, Event
 from typing import Dict
 
@@ -78,24 +79,21 @@ class PyScreen(MsgProcessor):
 
         clr_screen()
         self.__header = redraw.header[:COLS].center(COLS)
-
-        descr_lines: int = 0
-        if redraw.text:
-            extra_chars = len(redraw.text) % COLS
-            if extra_chars:
-                redraw.text = redraw.text + '.' * (COLS - extra_chars)
-            descr_lines = len(redraw.text) // COLS
-            print(f"\033[2;1H{redraw.text}")
+        lines = wrap(redraw.text)
+        k: int = 2
+        for line in lines:
+            print(f"\033[{k};1H{line}")
+            k += 1
 
         lines = redraw.content.split('\n')
-        left_lines: int = max(0, ROWS - 1 - descr_lines)
-        lines = lines[:left_lines]
-        tmp = ""
         for line in lines:
+            if k > ROWS:
+                break
             line = line[:COLS]
             line = get_with_color(line, redraw.is_rec)
-            tmp += line + NEWL
-        print(f"\033[{2 + descr_lines};1H{tmp}", end='', flush=True)
+            print(f"\033[{k};1H{line}", end='')
+            k += 1
+        print("", end='', flush=True)
 
     def __update_progress(self):
         while True:
