@@ -17,7 +17,7 @@ LVL_DEBUG_LIB = "--debug" in sys.argv or "--info" in sys.argv
 
 
 class CcScreen(MsgProcessor, MenuControl, TouchScreen):
-    """ C++ shared library is used for graphics and touch input via TouchScreen"""
+    """ C++ shared library used for graphics and touch input via TouchScreen"""
 
     def __init__(self, recv_conn: Connection, send_conn: Connection, menu_loader: MenuLoader):
         fb_id_str: str = os.getenv("FRAME_BUFFER_ID", "1")
