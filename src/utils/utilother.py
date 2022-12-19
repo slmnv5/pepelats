@@ -18,9 +18,9 @@ def run_os_cmd(cmd_list: list[str]) -> int:
 
 def kill_python() -> None:
     if os.name == "posix":
-        run_os_cmd(["killall", "-9", "python"])
+        os.system("killall -9  python")
     else:
-        run_os_cmd(["taskkill", "/F", "/IM", "python.exe"])
+        os.system("taskkill /F /IM python.exe")
 
 
 class DrawInfo:
