@@ -13,8 +13,10 @@ from utils.msgprocessor import MsgProcessor
 
 if os.name == "posix":
     UPDATES_PER_LOOP: float = 16
+    NEWLINE = '\n'
 else:
     UPDATES_PER_LOOP: float = 1
+    NEWLINE = ''
 
 try:
     COLS, ROWS = os.get_terminal_size()
@@ -80,7 +82,7 @@ class PyScreen(MsgProcessor, MenuControl):
         lines = wrap(redraw.text)
         k: int = 2
         for line in [x for x in lines if x]:
-            print(f"\033[{k};1H{line}", end='')
+            print(f"\033[{k};1H{line}", end=NEWLINE)
             k += 1
 
         lines = redraw.content.split('\n')
@@ -89,7 +91,7 @@ class PyScreen(MsgProcessor, MenuControl):
                 break
             line = line[:COLS]
             line = get_with_color(line, redraw.is_rec)
-            print(f"\033[{k};1H{line}", end='')
+            print(f"\033[{k};1H{line}", end=NEWLINE)
             k += 1
         print("", end='', flush=True)
 
