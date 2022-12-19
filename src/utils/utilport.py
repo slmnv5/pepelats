@@ -1,7 +1,7 @@
 import json
 import os
 import time
-from queue import Queue
+from multiprocessing import Queue
 from typing import Tuple, Dict, List
 
 import keyboard

@@ -4,7 +4,6 @@ import time
 import traceback
 from multiprocessing import Pipe, Process
 from multiprocessing import connection
-from threading import Thread
 
 from rtmidi.midiutil import open_midiinput
 
@@ -54,7 +53,7 @@ def go() -> None:
     pr1 = Process(target=do_looper, args=(recv_looper, send_view), name="looper", daemon=True)
     pr1.start()
 
-    pr2 = Thread(target=do_screenview, args=[control_factory], name="screen", daemon=True)
+    pr2 = Process(target=do_screenview, args=(control_factory,), name="screen", daemon=True)
     pr2.start()
 
     time.sleep(2)  # wait other objects to start
