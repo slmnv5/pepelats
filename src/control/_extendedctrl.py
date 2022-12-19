@@ -69,15 +69,25 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
     @staticmethod
     def _check_updates() -> None:
-        os.system("git reset --hard; git pull --ff-only")
+        os.system("git reset --hard; git pull --ff-only; killall -9 python")
 
     @staticmethod
-    def _screen_kind():
+    def _text_screen():
         if os.name != "posix":
             return
-        fb_id: str = os.getenv("FRAME_BUFFER_ID", "1")
-        fb_id = "0" if fb_id == "1" else "1"
-        os.system("echo 'export FRAME_BUFFER_ID=" + fb_id + "'>" + ROOT_DIR + "/.env")
+        if os.getenv("TEXT_SCREEN"):  # any non zero value to use text streen
+            return
+        os.system("echo 'export TEXT_SCREEN=1'>" + ROOT_DIR + "/.env")
+        os.system("killall -9 python")
+
+    @staticmethod
+    def _gui_screen():
+        if os.name != "posix":
+            return
+        if not os.getenv("TEXT_SCREEN"):  # any non zero value to use text streen
+            return
+        os.system("echo 'export TEXT_SCREEN=0'>" + ROOT_DIR + "/.env")
+        os.system("killall -9 python")
 
     def _drum_kind(self):
         self.change_drum_kind()
