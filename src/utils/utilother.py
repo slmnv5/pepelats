@@ -197,17 +197,11 @@ class FileFinder(CollectionOwner[str]):
 class JsonDict:
     def __init__(self, filename: str):
         self.__dic: Dict[str, Any] = dict()
-        self.__filename: str = ROOT_DIR + "/" + filename
-        # noinspection PyBroadException
-        try:
-            with open(self.__filename) as f:
-                self.__dic = load(f)
-
-            if not isinstance(self.__dic, dict):
-                raise RuntimeError("JSON file must have dictionary {self.__filename}")
-
-        except Exception:
-            self.save()
+        self.__filename: str = filename
+        with open(self.__filename) as f:
+            self.__dic = load(f)
+        if not isinstance(self.__dic, dict):
+            raise RuntimeError("JSON file must have dictionary {self.__filename}")
 
     def dic(self) -> Dict:
         return self.__dic

@@ -21,7 +21,7 @@ class MenuLoader:
         self.__items: Dict[str, Dict[str, Dict]] = dict()
 
         for _ in range(ff.item_count):
-            file: str = str(ff.get_full_name())
+            file: str = ff.get_full_name()
             item: str = ff.get_item()[:-len(ff.get_end_with())]
             ff.iterate(True)
             DumbLog.info(f"Loading control config from {file}")

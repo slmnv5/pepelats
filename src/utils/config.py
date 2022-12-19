@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import sounddevice as sd
 
-ROOT_DIR = Path(__file__).parent.parent.parent
+ROOT_DIR = str(Path(__file__).parent.parent.parent)
 
 SD_RATE: int = int(os.getenv("SD_RATE", "44100"))
 sd.default.samplerate = SD_RATE
