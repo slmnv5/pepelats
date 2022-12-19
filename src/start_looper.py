@@ -12,7 +12,7 @@ from control import ExtendedCtrl
 from mvc.controlfactory import ControlFactory
 from mvc.menucontrol import MenuLoader
 from utils.log import LOGGER
-from utils.myrtmidi import MyRtmidi
+from utils.utilport import MyRtmidi
 
 
 # noinspection PyBroadException
@@ -39,7 +39,7 @@ def go() -> None:
     recv_looper, send_looper = Pipe(False)  # looper control messages
 
     if "--kbd" in sys.argv:
-        from utils.utilkbd import KbdMidiPort
+        from utils.utilport import KbdMidiPort
 
         midi_in = KbdMidiPort()
     else:

@@ -1,50 +1,12 @@
 import json
 import os
-import time
-from typing import Tuple, Union, Dict, List
+from typing import Tuple, Union
 
 import numpy as np
 import sounddevice as sd
 
 from utils.config import SD_TYPE, MAX_LEN
 from utils.log import LOGGER
-
-
-class MockMidiPort:
-    def __init__(self):
-        self.__notes: Dict[float, List[int]] = dict()
-        self.__count: int = 0
-
-    def charge(self, notes: Dict[float, Tuple[int, int]]):
-        """set dictionary of {time: (note,vel), ...} to send e.g. {0.1: (60,100), 0.2: (-60,0), 1.2:(62, 1)}
-        negative values are note off messages"""
-        self.__notes.clear()
-        for k, v in notes.items():
-            if v[0] >= 0 and v[1] > 0:
-                self.__notes[k] = [0x90, v[0], v[1]]
-            else:
-                self.__notes[k] = [0x80, -v[0], 0]
-
-    def send_message(self, msg: List[int]) -> None:
-        msg = f"MockMidiPort: sent MIDI {msg}"
-        if 'clock' in msg:
-            self.__count += 1
-            if self.__count % 300 == 0:
-                LOGGER.info(msg)
-        else:
-            LOGGER.info(msg)
-
-    # noinspection PyUnusedLocal
-    def receive(self) -> List[int]:
-        if len(self.__notes) == 0:
-            raise EOFError
-
-        k = list(self.__notes)[0]
-        time.sleep(k)
-        return self.__notes.pop(k)
-
-    def __str__(self):
-        return f"{self.__class__.__name__}"
 
 
 def find_usb() -> None:

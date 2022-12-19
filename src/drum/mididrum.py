@@ -10,7 +10,7 @@ from drum._utildrum import load_midi, max_volume_midi
 from drum._utildrum import position_with_swing
 from drum.basedrum import ProtoDrum, SimpleDrum
 from utils.log import LOGGER
-from utils.utilalsa import MockMidiPort
+from utils.utilport import MockMidiPort
 
 
 class LoadDrumMidi(SimpleDrum, ABC):
