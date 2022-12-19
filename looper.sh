@@ -35,18 +35,16 @@ fi
 
 CODE_OPTIMIZE="-O"
 SUDO=""
-REDIRECT=" 2>>log.txt"
 for var in "$@"; do
   if [ "$var" = "--debug" ] || [ "$var" = "--info" ]; then
     CODE_OPTIMIZE=""
-    REDIRECT=""
   fi
   if [ "$var" = "--kbd" ]; then
     SUDO="sudo"
   fi
 done
 
-PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py  $* $REDIRECT"
+PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py  $*"
 echo "$PYTHON_CMD"
 
 # disable under voltage error on screen and disable typing echo
