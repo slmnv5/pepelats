@@ -1,11 +1,12 @@
 import sys
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
+from typing import Union
 
 from mvc import CountMidiControl
 from mvc import MidiControl
 from mvc.ccscreen import CcScreen
-from mvc.menucontrol import MenuLoader
+from mvc.menucontrol import MenuLoader, MenuControl
 from mvc.pyscreen import PyScreen
 from utils.log import LOGGER
 
@@ -18,20 +19,20 @@ class ControlFactory:
         self.menu_loader = menu_loader
         self.__failed_gui = False
 
-    def get_pedal_control(self):
+    def get_pedal_control(self) -> MenuControl:
         if "--count" in sys.argv:  # will be counting notes in python controller
-            m_ctrl = CountMidiControl(self.midi_in, self.send_looper, self.menu_loader)
+            return CountMidiControl(self.in_port, self.send_conn, self.menu_loader)
         else:
-            m_ctrl = MidiControl(self.midi_in, self.send_looper, self.menu_loader)
+            return MidiControl(self.in_port, self.send_conn, self.menu_loader)
 
-    def get_screen_control(self, gui: bool):
+    def get_screen_control(self, gui: bool) -> MenuControl:
         if gui:
             if not self.__get_gui_screen():
-                return PyScreen(self.recv_view)
+                return PyScreen(self.recv_conn)
         else:
-            return PyScreen(self.recv_view)
+            return PyScreen(self.recv_conn)
 
-    def __get_gui_screen(self):
+    def __get_gui_screen(self) -> Union[MenuControl, None]:
         if self.__failed_gui:
             return None
         # noinspection PyBroadException

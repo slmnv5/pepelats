@@ -3,11 +3,11 @@ import sys
 import time
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
-from multiprocessing.connection import Pipe
 from textwrap import wrap
 from threading import Thread, Event
 from typing import Dict
 
+from mvc.menucontrol import MenuControl, MenuLoader
 from utils.log import LOGGER
 from utils.utilother import MsgProcessor
 
@@ -56,9 +56,11 @@ def clr_screen() -> None:
         print(f"\033[3;1H{' ' * COLS * (ROWS - 3)}", end='', flush=True)
 
 
-class PyScreen(MsgProcessor):
-    def __init__(self, recv_conn: Connection):
+class PyScreen(MsgProcessor, MenuControl):
+
+    def __init__(self, recv_conn: Connection, send_conn: Connection, menu_loader: MenuLoader):
         MsgProcessor.__init__(self, recv_conn, None)
+        MenuControl.__init__(self, send_conn, menu_loader)
         self.__play_event: Event = Event()
         self.__header: str = "=>Pepelats Looper<="
 
@@ -105,15 +107,11 @@ class PyScreen(MsgProcessor):
             # all starts at 1, 1
             print(f"\033[1;1H{line}", end='', flush=True)
 
+    def monitor(self):
+        pass
+
 
 if __name__ == "__main__":
-    def test():
-        recv_view, send_view = Pipe(False)  # screen update messages
-
-        scr_view = PyScreen(recv_view)
-        Thread(target=scr_view.process_messages, daemon=True).start()
-        time.sleep(8)
-
 
     def test2():
         text = "[AAAAAAA] BBB CCC DDD EEE [FFFFFF] GGG " * 5
