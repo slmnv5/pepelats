@@ -24,9 +24,10 @@ class ControlFactory:
             return MidiControl(self.in_port, self.send_conn, self.menu_loader)
 
     def get_screen_control(self) -> MenuControl:
-        if not os.getenv("TEXT_SCREEN"):
+        if os.getenv("TEXT_SCREEN") == "0":
             # noinspection PyBroadException
             try:
+                DumbLog.info("Trying to load GUI screen")
                 from mvc._ccscreen import CcScreen
                 fb_id: str = os.getenv("FRAME_BUFFER_ID", "1")
                 return CcScreen(self.recv_conn, self.send_conn, self.menu_loader, fb_id)
