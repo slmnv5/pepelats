@@ -26,7 +26,7 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
         TouchScreen.__init__(self, fb_id)
         MenuControl.__init__(self, send_conn, menu_loader)
         MsgProcessor.__init__(self, recv_conn, send_conn)
-        Thread(target=self.monitor, name="monitor_thread", daemon=True).start()
+        Thread(target=self.process_messages, name="message_thread", daemon=True).start()
 
         if LVL_DEBUG_LIB:
             result = self._set_log_level(0)
