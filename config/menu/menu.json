@@ -15,13 +15,13 @@
   "0": {
     "description": "[play] global: A2-[update] B2-[restart] C2-[text_screen] D2-[gui_screen]",
     "update_method": "",
-    "60:2": [["_check_updates"], ["_stop_looper"]],
-    "[update]": [["_check_updates"], ["_stop_looper"]],
-    "62:2": ["_stop_looper"],
-    "[restart]": ["_stop_looper"],
-    "64:2": [["_text_screen"], ["_stop_looper"]],
-    "[text_screen]": [["_text_screen"], ["_stop_looper"]],
-    "65:2": [["_gui_screen"], ["_stop_looper"]],
-    "[gui_screen]": [["_gui_screen"], ["_stop_looper"]]
+    "60:2": ["_check_updates"],
+    "[update]": ["_check_updates"],
+    "62:2": ["_text_screen"],
+    "[text_screen]": ["_text_screen"],
+    "64:2": ["_gui_screen"],
+    "[gui_screen]": ["_gui_screen"],
+    "65:2": ["_stop_looper"],
+    "[restart]": ["_stop_looper"]
   }
 }
