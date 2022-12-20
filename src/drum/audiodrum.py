@@ -1,3 +1,4 @@
+import logging
 from abc import ABC
 from typing import Dict, Any
 
@@ -5,7 +6,6 @@ import numpy as np
 
 from drum._utildrum import load_audio, max_volume_audio, position_with_swing
 from drum.basedrum import ProtoDrum, SimpleDrum
-import logging
 from utils.utilalsa import make_zero_buffer, record_sound_buff, SD_TYPE
 from utils.utilalsa import play_sound_buff
 

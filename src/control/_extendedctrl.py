@@ -1,3 +1,4 @@
+import logging
 import os
 import traceback
 # noinspection PyProtectedMember
@@ -6,7 +7,6 @@ from multiprocessing.connection import Connection
 from control._manyloopctrl import ManyLoopCtrl
 from song import SongPart
 from utils.config import SD_RATE
-import logging
 from utils.msgprocessor import MsgProcessor
 from utils.utilother import DrawInfo
 
