@@ -13,7 +13,7 @@
     "[play]": ["_change_map", "0", "play"]
    },
   "0": {
-    "description": "[play] global: A2-[update] B2-[restart] C-2[text_screen] D2-[gui_screen]",
+    "description": "[play] global: A2-[update] B2-[restart] C2-[text_screen] D2-[gui_screen]",
     "update_method": "",
     "60:2": [["_check_updates"], ["_kill_app"]],
     "[update]": [["_check_updates"], ["_kill_app"]],
