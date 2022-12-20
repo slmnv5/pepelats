@@ -6,6 +6,7 @@ build
 *.pyc
 #PyCharm
 .idea
+.run
 #other
 tests
 mimap5
