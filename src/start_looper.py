@@ -23,11 +23,15 @@ elif "--info" in sys.argv:
 
 # log = logging.getLogger()
 # log.setLevel(logging.DEBUG)
-for handler in logging.root.handlers:
-    logging.root.removeHandler(handler)
+# for handler in logging.root.handlers:
+#    logging.root.removeHandler(handler)
 
-logging.basicConfig(level=tmp, filename=file, filemode='a', format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(force=True, level=tmp, filename=file, filemode='a', format='%(name)s - %(levelname)s - %(message)s')
 logging.critical("=============Starting log==============")
+
+
+# c_handler = logging.StreamHandler()
+# logging.getLogger().addHandler(c_handler)
 
 
 # noinspection PyBroadException
