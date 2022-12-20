@@ -36,20 +36,14 @@ logging.critical("=============Starting log==============")
 
 # noinspection PyBroadException
 def do_looper(recv_looper: connection.Connection, send_view: connection.Connection) -> None:
-    try:
-        looper = ExtendedCtrl(recv_looper, send_view)
-        looper.process_messages()
-    except Exception:
-        logging.error(f"process_looper, error: {traceback.format_exc()}")
+    looper = ExtendedCtrl(recv_looper, send_view)
+    looper.process_messages()
 
 
 # noinspection PyBroadException
 def do_screenview(control_factory: ControlFactory) -> None:
-    try:
-        scr_view = control_factory.get_screen_control()
-        scr_view.monitor()
-    except Exception:
-        logging.error(f"process_screenview, error: {traceback.format_exc()}")
+    scr_view = control_factory.get_screen_control()
+    scr_view.monitor()
 
 
 def go() -> None:
@@ -84,6 +78,9 @@ def go() -> None:
         raise RuntimeError("Screen thread did exit already")
 
     pedal_control.monitor()
+    logging.error(f"============Wait==============")
+    pr1.join()
+    pr2.join()
 
 
 if __name__ == "__main__":
@@ -91,5 +88,5 @@ if __name__ == "__main__":
     try:
         go()
     except Exception:
-        logging.error(f"Start looper, error: {traceback.format_exc()}")
+        logging.error(f"============Error: {traceback.format_exc()}")
         sys.exit(2)

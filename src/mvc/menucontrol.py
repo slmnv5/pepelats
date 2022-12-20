@@ -1,4 +1,4 @@
-import os
+import logging
 from abc import abstractmethod
 # noinspection PyProtectedMember
 # noinspection PyProtectedMember
@@ -6,7 +6,6 @@ from multiprocessing.connection import Connection
 from typing import Dict, Union, List
 
 from utils.config import ConfigName
-import logging
 from utils.utilother import FileFinder, JsonDict, DrawInfo
 
 
@@ -98,9 +97,8 @@ class MenuControl:
                 self._menu_loader.change_map(tail[0], tail[1])
                 self.__prepare_redraw()
                 self.__s_conn.send([ConfigName.send_redraw, self.__redraw])
-            elif head == ConfigName.kill_app:
-                os.system("killall -9 python")
-                os.system("taskkill /F /IM python.exe")
+            elif head == ConfigName.stop_looper:
+                raise RuntimeError("Stopped looper")
             else:
                 self.__s_conn.send(cmd)
 

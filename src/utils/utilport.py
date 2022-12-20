@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import time
 from multiprocessing import Queue
@@ -6,8 +7,6 @@ from typing import Tuple, Dict, List
 
 import keyboard
 import rtmidi.midiutil
-
-import logging
 
 
 class MyRtmidi:
@@ -18,6 +17,9 @@ class MyRtmidi:
 
     def __call__(self, event, *args):
         event, _ = event
+        self._queue.put_nowait(event)
+
+    def put(self, event):
         self._queue.put_nowait(event)
 
     def receive(self):
@@ -77,6 +79,9 @@ class KbdMidiPort:
         self.pressed_key = False
         keyboard.on_press(callback=self.on_press, suppress=True)
         keyboard.on_release(callback=self.on_release, suppress=True)
+
+    def put(self, event) -> None:
+        self.__queue.put_nowait(event)
 
     def on_press(self, kbd_event):
         # print(type(kbd_event), str(kbd_event.__dict__))

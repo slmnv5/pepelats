@@ -1,9 +1,9 @@
+import logging
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 from threading import Timer
 
 from mvc.menucontrol import MenuControl, MenuLoader
-import logging
 
 
 def is_midi_cc(msg):
@@ -24,20 +24,10 @@ class MidiCcToNote:
     Use this to convert expression pedal CC into note ON/OFF"""
 
     def __init__(self):
-        self.__prev_msg = [0x80, 0, 0]
+        self.__prev_msg = None
         self.__sent_on = False
 
     def convert(self, msg):
-        if is_midi_note(msg):
-            self.__prev_msg = msg
-            self.__sent_on = False
-            return msg
-
-        if not is_midi_cc(msg):
-            self.__prev_msg = msg
-            self.__sent_on = False
-            return None
-
         if msg[1] != self.__prev_msg[1]:
             self.__prev_msg = msg
             self.__sent_on = False
@@ -83,26 +73,31 @@ class CountMidiControl(MenuControl):
         logging.info(f"Started {self.__class__.__name__}")
         while True:
             msg = self.__in_port.receive()
-            msg = self.__midi_cc_to_note.convert(msg)
-            if not msg:
+            if is_midi_cc(msg):
+                msg = self.__midi_cc_to_note.convert(msg)
+            if not msg or not is_midi_note(msg):
                 continue
 
             logging.debug(f"{self.__class__.__name__} got MIDI message: {msg}")
             note: int = msg[1]
-            vel: int = 100
-            str_note = f"{note}:{vel}"
-
+            velo: int = msg[2]
+            str_note = f"{note}:{velo}"
             is_on = is_midi_note_on(msg)
+            if is_on and velo < 10:
+                # this is counted note inserted in queue
+                logging.debug(f"Sending counted note: {str_note}")
+                self._send(str_note)
+                continue
+
             if is_on and self.__past_note != note:
                 # do not sent same note many times, we count it below
-                logging.debug(f"Sending original note: {note}")
+                logging.debug(f"Sending note: {str_note}")
                 self._send(str_note)
 
             self.__past_note = note
             self.__update_count(note, is_on)
-            on_count, off_count = self.__on_count, self.__off_count
-            Timer(CountMidiControl.__count_sec, self.__count_and_send,
-                  [on_count, off_count, note]).start()
+            Timer(CountMidiControl.__count_sec, self.__count_enqueue,
+                  [self.__on_count, self.__off_count, note]).start()
 
     def __update_count(self, note: int, is_on: bool) -> None:
         # if we got another note number, restart count
@@ -117,9 +112,9 @@ class CountMidiControl(MenuControl):
             if self.__on_count > 0:
                 self.__off_count += 1
 
-    def __count_and_send(self, on_count: int, off_count: int, note: int) -> None:
+    def __count_enqueue(self, on_count: int, off_count: int, note: int) -> None:
         # if we came here after a delay and note counts have changed we do not send
-        self.__past_note = -1
+        self.__past_note = -1  # need reset as we ignore same notes
         if self.__past_count_note != note \
                 or self.__on_count != on_count \
                 or self.__off_count != off_count:
@@ -131,9 +126,8 @@ class CountMidiControl(MenuControl):
             count += 5
 
         self.__on_count = self.__off_count = 0
-        str_note = f"{note}:{count}"
-        logging.debug(f"Sending counted note: {str_note}")
-        self._send(str_note)
+        event = [0x90, note, count]
+        self.__in_port.put(event)
 
     def __str__(self):
         return f"{self.__class__.__name__} note={self.__past_count_note} " \

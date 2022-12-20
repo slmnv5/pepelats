@@ -15,13 +15,13 @@
   "0": {
     "description": "[play] global: A2-[update] B2-[restart] C2-[text_screen] D2-[gui_screen]",
     "update_method": "",
-    "60:2": [["_check_updates"], ["_kill_app"]],
-    "[update]": [["_check_updates"], ["_kill_app"]],
-    "62:2": ["_kill_app"],
-    "[restart]": ["_kill_app"],
-    "64:2": [["_text_screen"], ["_kill_app"]],
-    "[text_screen]": [["_text_screen"], ["_kill_app"]],
-    "65:2": [["_gui_screen"], ["_kill_app"]],
-    "[gui_screen]": [["_gui_screen"], ["_kill_app"]]
+    "60:2": [["_check_updates"], ["_stop_looper"]],
+    "[update]": [["_check_updates"], ["_stop_looper"]],
+    "62:2": ["_stop_looper"],
+    "[restart]": ["_stop_looper"],
+    "64:2": [["_text_screen"], ["_stop_looper"]],
+    "[text_screen]": [["_text_screen"], ["_stop_looper"]],
+    "65:2": [["_gui_screen"], ["_stop_looper"]],
+    "[gui_screen]": [["_gui_screen"], ["_stop_looper"]]
   }
 }

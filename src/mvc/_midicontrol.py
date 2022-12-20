@@ -18,8 +18,8 @@ class MidiControl(MenuControl):
             logging.debug(f"{self.__class__.__name__} got MIDI message: {msg}")
 
             note = msg[1]
-            vel = msg[2]
-            self._send(f"{note}:{vel}")
+            velo = msg[2]
+            self._send(f"{note}:{velo}")
 
     def __str__(self):
         return f"{self.__class__.__name__}"
