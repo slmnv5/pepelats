@@ -21,34 +21,30 @@ class DumbLog:
     __file.flush()
 
     @staticmethod
-    def flush():
-        DumbLog.__file.flush()
-
-    @staticmethod
     def __report(msg: str) -> None:
-        print(msg, file=DumbLog.__file)
+        print(msg, file=DumbLog.__file, flush=True)
         if DumbLog.__lvl < 2:
             print(msg, file=sys.stderr)
 
     @staticmethod
     def error(msg: str) -> None:
         if DumbLog.__lvl <= 3:
-            DumbLog.__report("ERROR: " + msg)
+            DumbLog.__report("PY-ERROR: " + msg)
 
     @staticmethod
     def warn(msg: str) -> None:
         if DumbLog.__lvl <= 2:
-            DumbLog.__report("WARN: " + msg)
+            DumbLog.__report("PY-WARN: " + msg)
 
     @staticmethod
     def info(msg: str) -> None:
         if DumbLog.__lvl <= 1:
-            DumbLog.__report("INFO: " + msg)
+            DumbLog.__report("PY-INFO: " + msg)
 
     @staticmethod
     def debug(msg: str) -> None:
         if DumbLog.__lvl <= 0:
-            DumbLog.__report("DEBUG: " + msg)
+            DumbLog.__report("PY-DEBUG: " + msg)
 
     @staticmethod
     def set_level(lvl: str) -> None:

@@ -21,7 +21,6 @@ def do_looper(recv_looper: connection.Connection, send_view: connection.Connecti
         looper.process_messages()
     except Exception:
         DumbLog.error(f"process_looper, error: {traceback.format_exc()}")
-        DumbLog.flush()
 
 
 # noinspection PyBroadException
@@ -31,7 +30,6 @@ def do_screenview(control_factory: ControlFactory) -> None:
         scr_view.monitor()
     except Exception:
         DumbLog.error(f"process_screenview, error: {traceback.format_exc()}")
-        DumbLog.flush()
 
 
 def go() -> None:
@@ -66,7 +64,6 @@ def go() -> None:
         raise RuntimeError("Screen thread did exit already")
 
     pedal_control.monitor()
-    DumbLog.flush()
 
 
 if __name__ == "__main__":
@@ -75,5 +72,4 @@ if __name__ == "__main__":
         go()
     except Exception:
         DumbLog.error(f"Start looper, error: {traceback.format_exc()}")
-        DumbLog.flush()
         sys.exit(2)

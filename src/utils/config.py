@@ -22,6 +22,7 @@ class ConfigName:
     update_method: str = "update_method"
     text: str = "description"
     comment: str = "comment"
+    shared_lib: str = "touchscr5.so"
 
     # redraw related methods
     change_map: str = "_change_map"

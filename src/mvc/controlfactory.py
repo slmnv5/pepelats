@@ -7,6 +7,7 @@ from mvc import CountMidiControl
 from mvc import MidiControl
 from mvc._pyscreen import PyScreen
 from mvc.menucontrol import MenuLoader, MenuControl
+from utils.config import ConfigName, ROOT_DIR
 from utils.log import DumbLog
 
 
@@ -24,14 +25,16 @@ class ControlFactory:
             return MidiControl(self.in_port, self.send_conn, self.menu_loader)
 
     def get_screen_control(self) -> MenuControl:
-        if os.getenv("TEXT_SCREEN") == "0":
-            # noinspection PyBroadException
-            try:
-                DumbLog.info("Trying to load GUI screen")
-                from mvc._ccscreen import CcScreen
-                fb_id: str = os.getenv("FRAME_BUFFER_ID", "1")
-                return CcScreen(self.recv_conn, self.send_conn, self.menu_loader, fb_id)
-            except Exception:
-                DumbLog.error("Cannot load C++ shared library 'touchscr5.so'")
+        if not os.path.isfile(ROOT_DIR + "/" + ConfigName.shared_lib):
+            DumbLog.warn("Libarry touchscr5.so not found, GUI not avalable, using text")
+            return PyScreen(self.recv_conn, self.send_conn, self.menu_loader)
 
-        return PyScreen(self.recv_conn, self.send_conn, self.menu_loader)
+        # noinspection PyBroadException
+        try:
+            DumbLog.info("Library touchscr5.so found, loading GUI")
+            from mvc._ccscreen import CcScreen
+            fb_id: str = os.getenv("FRAME_BUFFER_ID", "1")
+            return CcScreen(self.recv_conn, self.send_conn, self.menu_loader, fb_id)
+        except Exception:
+            DumbLog.error("Library touchscr5.so load error, GUI not avalable, using text")
+            return PyScreen(self.recv_conn, self.send_conn, self.menu_loader)
