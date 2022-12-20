@@ -15,11 +15,16 @@ from utils.config import ROOT_DIR
 from utils.utilport import MyRtmidi
 
 file = ROOT_DIR + "/log.txt"
-tmp = "WARN"
+tmp = logging.WARN
 if "--debug" in sys.argv:
-    tmp = "DEBUG"
+    tmp = logging.DEBUG
 elif "--info" in sys.argv:
-    tmp = "INFO"
+    tmp = logging.INFO
+
+# log = logging.getLogger()
+# log.setLevel(logging.DEBUG)
+for handler in logging.root.handlers:
+    logging.root.removeHandler(handler)
 
 logging.basicConfig(level=tmp, filename=file, filemode='a', format='%(name)s - %(levelname)s - %(message)s')
 logging.critical("=============Starting log==============")
