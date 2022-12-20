@@ -2,19 +2,20 @@ import logging
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 from threading import Timer
+from typing import List
 
 from mvc.menucontrol import MenuControl, MenuLoader
 
 
-def is_midi_cc(msg):
+def is_midi_cc(msg: List[int]) -> bool:
     return 0xB0 <= msg[0] <= 0xBF
 
 
-def is_midi_note_on(msg):
+def is_midi_note_on(msg: List[int]) -> bool:
     return 0x90 <= msg[0] <= 0x9F
 
 
-def is_midi_note(msg):
+def is_midi_note(msg: List[int]) -> bool:
     return 0x80 <= msg[0] <= 0x9F
 
 
@@ -24,12 +25,12 @@ class MidiCcToNote:
     Use this to convert expression pedal CC into note ON/OFF"""
 
     def __init__(self):
-        self.__prev_msg = None
+        self.__prev_msg: List[int] = [80, 0, 0]
         self.__sent_on = False
 
-    def convert(self, msg):
+    def convert(self, msg: List[int]):
         if msg[1] != self.__prev_msg[1]:
-            self.__prev_msg = msg
+            self.__prev_msg: List[int] = msg
             self.__sent_on = False
             return None
 
@@ -72,7 +73,7 @@ class CountMidiControl(MenuControl):
     def monitor(self) -> None:
         logging.info(f"Started {self.__class__.__name__}")
         while True:
-            msg = self.__in_port.receive()
+            msg: List[int] = self.__in_port.receive()
             if is_midi_cc(msg):
                 msg = self.__midi_cc_to_note.convert(msg)
             if not msg or not is_midi_note(msg):
