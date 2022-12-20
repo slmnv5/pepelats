@@ -81,7 +81,7 @@ class MidiDrum(LoadDrumMidi):
             self.__play_midi_pattern(self._bk, pos1, pos2)
 
     def __str__(self):
-        return f"{self._file_finder.get_fixed()} {self._bpm:.2F}"
+        return f"MIDI:{self._file_finder.get_fixed()} {self._bpm:.2F}"
 
 
 if __name__ == "__main__":
