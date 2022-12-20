@@ -17,7 +17,7 @@
     "[menu]": ["_change_map", "0", "menu"]
   },
   "0": {
-    "description": "[menu] [song] [param] [next] all parts A/B/C/D-play/record",
+    "description": "[menu] [song] [param] [next] all parts: A/B/C/D-play/record",
     "update_method": "_show_all_parts",
     "60:100": [["_play_part", 0], ["_redraw"]],
     "62:100": [["_play_part", 1], ["_redraw"]],

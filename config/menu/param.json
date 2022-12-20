@@ -13,7 +13,7 @@
     "[menu]": ["_change_map", "0", "menu"]
   },
  "0": {
-    "description": "[prev] [menu] [play] [next] drum type: A1-[go_up] B1-[go_dn] D2-[load] DH-[drum_kind]",
+    "description": "[menu] [play] [next] drum: A1-[go_up] B1-[go_dn] D2-[load] DH-[drum_kind]",
     "update_method": "_show_drum_name",
     "60:100": [["_change_drum_name", -1], ["_redraw"]],
     "[go_up]": [["_change_drum_name", -1], ["_redraw"]],
@@ -25,7 +25,7 @@
     "[drum_kind]": [["_drum_kind"], ["_change_map", "0", "play"]]
  },
   "1": {
-    "description": "[prev] [menu] [play] [next] drum: A1-[volume_dn] A2-[volume_up] C1-[swing_dn] C2-[swing_up]",
+    "description": "[menu] [play] [next] drum: A1-[volume_dn] A2-[volume_up] C1-[swing_dn] C2-[swing_up]",
     "update_method": "_show_drum_param",
     "60:1": [["_change_drum_volume", 0.8], ["_redraw"]],
     "[volume_dn]": [["_change_drum_volume", 0.8], ["_redraw"]],
