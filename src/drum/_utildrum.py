@@ -87,10 +87,9 @@ def max_volume_audio(sounds: Dict[str, np.ndarray]) -> float:
 
 def max_volume_midi(sounds: Dict[str, List[int]]) -> float:
     max_found: float = 0
-    for name, sound in sounds.items():
-        assert isinstance(sound, list), f"Incorrect MIDI type for sound: {name}"
+    for sound in [x for x in sounds.values() if x[0] & 0xF0 == 0x90]:
         max_found = max(max_found, sound[2])
-    return max_found / 127
+    return max_found / 127.0
 
 
 def load_audio() -> Dict[str, np.ndarray]:
@@ -127,9 +126,6 @@ def load_midi() -> Dict[str, List[int]]:
         midi_bytes: List[int] = drum_sound.get("midi")
         if not midi_bytes:
             continue
-        is_note = (midi_bytes[0] & 0xF0 == 0x90)
-        has_volume = (midi_bytes[2] > 0)
-        assert not is_note or has_volume, f"Zero volume for note: {midi_bytes} in {name}"
         result[name] = midi_bytes
 
     return result
