@@ -4,7 +4,7 @@
     "12:1": ["_change_map", "prev", ""],
     "13:1": ["_change_map", "next", ""],
     "12:6": ["_change_map", "0", "play"],
-    "13:6": ["_change_map", "0", "song"],
+    "13:6": ["_change_map", "0", "menu"],
     "[prev]": ["_change_map", "prev", ""],
     "[next]": ["_change_map", "next", ""],
     "[song]": ["_change_map", "0", "song"],

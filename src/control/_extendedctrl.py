@@ -5,7 +5,7 @@ from multiprocessing.connection import Connection
 
 from control._manyloopctrl import ManyLoopCtrl
 from song import SongPart
-from utils.config import SD_RATE, ROOT_DIR
+from utils.config import SD_RATE
 from utils.log import DumbLog
 from utils.msgprocessor import MsgProcessor
 from utils.utilother import DrawInfo
@@ -79,11 +79,11 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
     @staticmethod
     def _text_screen():
-        os.system("echo 'export TEXT_SCREEN=1'>" + ROOT_DIR + "/.env")
+        os.system("mv -v ./../touchscr5.so ./../touchscr5.so.bak")
 
     @staticmethod
     def _gui_screen():
-        os.system("echo 'export TEXT_SCREEN=0'>" + ROOT_DIR + "/.env")
+        os.system("mv -v ./../touchscr5.so.bak ./../touchscr5.so")
 
     def _drum_kind(self):
         self.change_drum_kind()

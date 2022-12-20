@@ -1,12 +1,7 @@
 #!/bin/sh
 
-# use GUI screen
-export TEXT_SCREEN=1
-# use this frame buffer if there are few (e.g. HDMI, small LCD)
-FRAME_BUFFER_ID=1
-
-# Options are:
-# --debug or --info - level of logging
+# Options:
+# --debug or --info - set level of logging
 # --kbd - use keyboard for MIDI input (see KBD_NOTES)
 # --count - count notes
 
@@ -20,6 +15,8 @@ export SD_RATE=44100
 export PEDAL_PORT_NAME='BlueBoard'
 # Use this MIDI port as clock output
 export CLOCK_PORT_NAME='Sshpadnew'
+# use this frame buffer if there are few, only Linux
+FRAME_BUFFER_ID=1
 
 #check ALSA devices and use first one found
 export USB_AUDIO_NAMES='VALETON GP,USB Audio'
@@ -54,8 +51,6 @@ stty -echo
 while true; do
   killall -s 9 -w -v python
   sleep 10
-  cat ./../.env
-  source ./../.env
   $PYTHON_CMD
 done
 
