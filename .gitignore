@@ -1,20 +1,18 @@
 __pycache__
-# optional note converter
-mimap5
-touchscr5.so
-rules.txt
-kbdmap.txt
-# app data
-tests
 #pyinstall files
 dist
 build
 *.spec
+*.pyc
 #PyCharm
 .idea
 #other
+tests
+mimap5
+touchscr5*
+rules.txt
+kbdmap.txt
 log*.txt
-*.pyc
 save_song
 
 
