@@ -80,7 +80,7 @@ class PyScreen(MsgProcessor, MenuControl):
 
         clr_screen()
         self.__header = redraw.header[:COLS].center(COLS)
-        lines = wrap(redraw.text)
+        lines = wrap(redraw.text, COLS)
         k: int = 2
         for line in [x for x in lines if x]:
             print(f"\033[{k};1H{line}", end=NEWLINE)
@@ -88,8 +88,6 @@ class PyScreen(MsgProcessor, MenuControl):
 
         lines = redraw.content.split('\n')
         for line in lines:
-            if k > ROWS:
-                break
             line = line[:COLS]
             line = get_with_color(line, redraw.is_rec)
             print(f"\033[{k};1H{line}", end=NEWLINE)

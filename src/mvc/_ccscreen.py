@@ -52,8 +52,8 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
                 color = ([127, 30, 30] if redraw.is_rec else [30, 127, 30])
             elif line[0] == '~':
                 color = [127, 127, 0]
-            k += 1
             self._set_row_text(k, line, *color)
+            k += 1
 
     def monitor(self):
         while True:
