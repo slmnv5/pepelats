@@ -14,19 +14,25 @@ from mvc.menucontrol import MenuLoader
 from utils.config import ROOT_DIR
 from utils.utilport import MyRtmidi
 
+root = logging.getLogger()
+for handler in logging.root.handlers:
+    logging.root.removeHandler(handler)
+
+handler = None
 file = ROOT_DIR + "/log.txt"
 tmp = logging.WARN
 if "--debug" in sys.argv:
     tmp = logging.DEBUG
+    handler = logging.StreamHandler(sys.stdout)
 elif "--info" in sys.argv:
     tmp = logging.INFO
-
-# log = logging.getLogger()
-# log.setLevel(logging.DEBUG)
-# for handler in logging.root.handlers:
-#    logging.root.removeHandler(handler)
+    handler = logging.StreamHandler(sys.stdout)
 
 logging.basicConfig(force=True, level=tmp, filename=file, filemode='a', format='%(name)s - %(levelname)s - %(message)s')
+if handler:
+    handler.setLevel(logging.DEBUG)
+    root.addHandler(handler)
+
 logging.critical("=============Starting log==============")
 
 
