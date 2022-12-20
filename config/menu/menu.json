@@ -17,7 +17,7 @@
     "update_method": "",
     "60:2": [["_check_updates"], ["_kill_app"]],
     "[update]": [["_check_updates"], ["_kill_app"]],
-    "62-2": ["_kill_app"],
+    "62:2": ["_kill_app"],
     "[restart]": ["_kill_app"],
     "64:2": [["_text_screen"], ["_kill_app"]],
     "[text_screen]": [["_text_screen"], ["_kill_app"]],
