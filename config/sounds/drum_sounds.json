@@ -50,8 +50,8 @@
     "optional_long_name": "tap tempo MIDI note for funkbox IOS app"
    },
     "tp2": {
-    "midi": [144, 104, 127],
-    "optional_long_name": "tap tempo MIDI note for thumbjam IOS app"
+    "midi": [176, 104, 127],
+    "optional_long_name": "tap tempo MIDI CC 104 for thumbjam IOS app"
   },
     "tp3": {
     "midi": [250],
