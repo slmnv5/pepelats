@@ -75,7 +75,7 @@ if __name__ == "__main__":
         from threading import Timer
         from utils.utilalsa import make_sin_sound
         from time import sleep
-        logging.set_level("DEBUG")
+        logging.basicConfig(level=logging.DEBUG)
         ctrl = OneLoopCtrl()
         drum = ctrl.get_drum()
         drum.load_drum_name()
