@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 import time
@@ -10,8 +11,18 @@ from rtmidi.midiutil import open_midiinput
 from control import ExtendedCtrl
 from mvc.controlfactory import ControlFactory
 from mvc.menucontrol import MenuLoader
-import logging
+from utils.config import ROOT_DIR
 from utils.utilport import MyRtmidi
+
+file = ROOT_DIR + "/log.txt"
+tmp = "WARN"
+if "--debug" in sys.argv:
+    tmp = "DEBUG"
+elif "--info" in sys.argv:
+    tmp = "INFO"
+
+logging.basicConfig(level=tmp, filename=file, filemode='a', format='%(name)s - %(levelname)s - %(message)s')
+logging.critical("=============Starting log==============")
 
 
 # noinspection PyBroadException
