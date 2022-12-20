@@ -9,7 +9,7 @@ from rtmidi.midiutil import open_midioutput
 from drum._utildrum import load_midi, max_volume_midi
 from drum._utildrum import position_with_swing
 from drum.basedrum import ProtoDrum, SimpleDrum
-from utils.log import DumbLog
+import logging
 from utils.utilport import MockMidiPort
 
 
@@ -26,17 +26,17 @@ class LoadDrumMidi(SimpleDrum, ABC):
         else:
             port_name = os.getenv('CLOCK_PORT_NAME', "DrumClock_in")
             self._out_port, _ = open_midioutput(port_name, interactive=False)
-        DumbLog.info(f"Opened port for MIDI drum {str(self._out_port)}")
+        logging.info(f"Opened port for MIDI drum {str(self._out_port)}")
 
     def _prepare_one(self, pattern, length: int) -> Any:
-        DumbLog.debug(f"Preapring pattern: {pattern}")
+        logging.debug(f"Preapring pattern: {pattern}")
         accents = pattern["acc"]
         result: Dict[int, List[List[int]]] = dict()
         for sound_name in [x for x in self._sounds if x in pattern]:
             notes = pattern[sound_name]
             steps = len(notes)
             if notes.count("!") + notes.count(".") != steps:
-                DumbLog.error(f"sound {sound_name} notes {notes} must contain only '.' and '!'")
+                logging.error(f"sound {sound_name} notes {notes} must contain only '.' and '!'")
 
             step_len = length // steps
             sound: List[int] = self._sounds[sound_name]
@@ -52,7 +52,7 @@ class LoadDrumMidi(SimpleDrum, ABC):
                     lst = result.get(pos, list())
                     lst.append(sound)
                     result[pos] = lst
-        DumbLog.debug(f"Prepared pattern: {result}")
+        logging.debug(f"Prepared pattern: {result}")
         return result
 
 
@@ -92,7 +92,7 @@ if __name__ == "__main__":
         from utils.utilalsa import make_sin_sound
         from time import sleep
 
-        DumbLog.set_level("DEBUG")
+        logging.set_level("DEBUG")
         ctrl = OneLoopCtrl()
         ctrl.change_drum_kind()
         drum = ctrl.get_drum()

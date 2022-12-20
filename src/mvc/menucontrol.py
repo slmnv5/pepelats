@@ -6,7 +6,7 @@ from multiprocessing.connection import Connection
 from typing import Dict, Union, List
 
 from utils.config import ConfigName
-from utils.log import DumbLog
+import logging
 from utils.utilother import FileFinder, JsonDict, DrawInfo
 
 
@@ -24,7 +24,7 @@ class MenuLoader:
             file: str = ff.get_full_name()
             item: str = ff.get_item()[:-len(ff.get_end_with())]
             ff.iterate(True)
-            DumbLog.info(f"Loading control config from {file}")
+            logging.info(f"Loading control config from {file}")
             loader = JsonDict(file)
             default_dic = loader.get(ConfigName.default_config, dict())
             dic1 = dict()
@@ -44,7 +44,7 @@ class MenuLoader:
             return ""
 
     def change_map(self, new_id: str, new_name: str) -> None:
-        DumbLog.debug(f"{self.__class__.__name__} change_map: {new_id}, {new_name}")
+        logging.debug(f"{self.__class__.__name__} change_map: {new_id}, {new_name}")
         if new_name and new_id not in ["prev", "next"]:
             self.__map_name = new_name
         if new_id in ["prev", "next"]:
@@ -59,7 +59,7 @@ class MenuLoader:
         try:
             _ = self.__items[self.__map_name][self.__map_id]
         except IndexError:
-            DumbLog.error(f"{self.__class__.__name__} change_map, incorrect id, name: {new_id}, {new_name}")
+            logging.error(f"{self.__class__.__name__} change_map, incorrect id, name: {new_id}, {new_name}")
 
     def __str__(self):
         return self.__class__.__name__ + ": " + str(self.__items)
@@ -84,7 +84,7 @@ class MenuControl:
         cmd = self._menu_loader.get(cmd)
         if cmd:
             self.__process_list(cmd)
-            DumbLog.info(f"{self.__class__.__name__} sent command: {cmd}")
+            logging.info(f"{self.__class__.__name__} sent command: {cmd}")
 
     def __process_list(self, cmd: list) -> None:
         if not cmd:

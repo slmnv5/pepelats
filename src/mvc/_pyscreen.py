@@ -8,7 +8,7 @@ from threading import Event, Thread
 from typing import Dict
 
 from mvc.menucontrol import MenuControl, MenuLoader
-from utils.log import DumbLog
+import logging
 from utils.msgprocessor import MsgProcessor
 
 if os.name == "posix":
@@ -23,7 +23,7 @@ try:
 except OSError:
     COLS, ROWS = 30, 10
 
-DumbLog.error(f"Screen size: cols={COLS} rows={ROWS}")
+logging.error(f"Screen size: cols={COLS} rows={ROWS}")
 SHOW_ERRORS = "--debug" in sys.argv or "--info" in sys.argv or os.name != "posix"
 
 # foreground, background ends with '40m'
@@ -70,7 +70,7 @@ class PyScreen(MsgProcessor, MenuControl):
         Thread(target=self.process_messages, name="message_thread", daemon=True).start()
 
     def _send_redraw(self, redraw) -> None:
-        DumbLog.debug(f"Get redraw: {redraw}")
+        logging.debug(f"Get redraw: {redraw}")
         if redraw.is_stop:
             self.__play_event.clear()
         else:

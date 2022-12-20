@@ -9,7 +9,7 @@ import numpy as np
 
 from drum._utildrum import load_all_patterns, bpm_from_length
 from utils.config import SD_RATE
-from utils.log import DumbLog
+import logging
 from utils.utilother import FileFinder
 
 
@@ -68,7 +68,7 @@ class ProtoDrum:
         lst1 = ["drum_level1", "drum_level2", "drum_break"]
         lst2 = [self._ptn_l1, self._ptn_l2, self._ptn_bk]
         for k in range(3):
-            DumbLog.info(f"Loaded patterns from directory: {directory}, file: {lst1[k]}")
+            logging.info(f"Loaded patterns from directory: {directory}, file: {lst1[k]}")
             load_all_patterns(directory, lst1[k], lst2[k], [*self._sounds])
 
     def load_drum_name(self) -> None:

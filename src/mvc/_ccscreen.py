@@ -9,7 +9,7 @@ from typing import List
 
 from mvc._touchscreen import TouchScreen
 from mvc.menucontrol import MenuControl, MenuLoader
-from utils.log import DumbLog
+import logging
 from utils.msgprocessor import MsgProcessor
 from utils.utilother import DrawInfo
 
@@ -30,11 +30,11 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
             result = self._set_log_level(0)
         else:
             result = self._set_log_level(4)
-        DumbLog.info(f"Set debug level for shared library, result: {result}")
+        logging.info(f"Set debug level for shared library, result: {result}")
 
     def _send_redraw(self, redraw: DrawInfo) -> None:
         grey_color: List = [100, 100, 100]
-        DumbLog.debug(f"Get redraw: {redraw}")
+        logging.debug(f"Get redraw: {redraw}")
         self._set_loop(redraw.loop_seconds, redraw.loop_position, redraw.is_rec, redraw.is_stop)
         self._clear_screen()
         self._set_row_text(0, redraw.header, *grey_color)  # x, y, red, green, blue

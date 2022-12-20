@@ -6,7 +6,7 @@ from multiprocessing.connection import Connection
 from control._manyloopctrl import ManyLoopCtrl
 from song import SongPart
 from utils.config import SD_RATE
-from utils.log import DumbLog
+import logging
 from utils.msgprocessor import MsgProcessor
 from utils.utilother import DrawInfo
 
@@ -33,7 +33,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
                 method = getattr(self, self.__draw_info.update_method)
                 self.__draw_info.content = method()
             except Exception:
-                DumbLog.error(f"ExtendedCtrl method: {self.__draw_info.update_method}, error: {traceback.format_exc()}")
+                logging.error(f"ExtendedCtrl method: {self.__draw_info.update_method}, error: {traceback.format_exc()}")
 
         length = self.get_fixed().length
         self.__draw_info.loop_seconds = length / SD_RATE

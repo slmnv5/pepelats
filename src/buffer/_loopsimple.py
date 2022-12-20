@@ -5,7 +5,7 @@ import numpy as np
 from buffer._oneloopctrl import OneLoopCtrl
 from buffer._player import Player
 from utils.config import MAX_LEN
-from utils.log import DumbLog
+import logging
 
 
 class LoopSimple(Player):
@@ -23,7 +23,7 @@ class LoopSimple(Player):
         """create drums of correct length if drum is empty,
         otherwise trims self.length to multiple of drum length"""
         idx: int = self._ctrl.idx
-        DumbLog.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
+        logging.debug(f"trim_buffer {self.__class__.__name__} idx {idx}")
         drum = self.get_drum()
         if not drum.get_length():
             Timer(0.2, drum.prepare_drum, [idx]).start()

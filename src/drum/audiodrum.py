@@ -5,7 +5,7 @@ import numpy as np
 
 from drum._utildrum import load_audio, max_volume_audio, position_with_swing
 from drum.basedrum import ProtoDrum, SimpleDrum
-from utils.log import DumbLog
+import logging
 from utils.utilalsa import make_zero_buffer, record_sound_buff, SD_TYPE
 from utils.utilalsa import play_sound_buff
 
@@ -21,14 +21,14 @@ class LoadDrumWave(SimpleDrum, ABC):
         self._load_all()
 
     def _prepare_one(self, pattern, length: int) -> Any:
-        DumbLog.debug(f"Preapring pattern: {pattern}")
+        logging.debug(f"Preapring pattern: {pattern}")
         accents = pattern["acc"]
         result: np.ndarray = make_zero_buffer(length)
         for sound_name in [x for x in self._sounds if x in pattern]:
             notes = pattern[sound_name]
             steps = len(notes)
             if notes.count("!") + notes.count(".") != steps:
-                DumbLog.error(f"sound {sound_name} notes {notes} must contain only '.' and '!'")
+                logging.error(f"sound {sound_name} notes {notes} must contain only '.' and '!'")
 
             step_len = length // steps
             sound: np.ndarray = self._sounds[sound_name]
@@ -75,7 +75,7 @@ if __name__ == "__main__":
         from threading import Timer
         from utils.utilalsa import make_sin_sound
         from time import sleep
-        DumbLog.set_level("DEBUG")
+        logging.set_level("DEBUG")
         ctrl = OneLoopCtrl()
         drum = ctrl.get_drum()
         drum.load_drum_name()

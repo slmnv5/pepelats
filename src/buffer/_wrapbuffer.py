@@ -1,7 +1,7 @@
 import numpy as np
 
 from utils.config import MAX_LEN, SD_MAX
-from utils.log import DumbLog
+import logging
 from utils.utilalsa import make_zero_buffer, play_sound_buff, record_sound_buff
 
 
@@ -69,7 +69,7 @@ class WrapBuffer:
         """Trim is called once to fix buffer length. Buffer must be multiple of trim_len.
          If this length is negative use only idx value"""
 
-        DumbLog.debug(f"before trim: len {len(self.__buff)} trim_len {trim_len} start {self.__start} idx {idx}")
+        logging.debug(f"before trim: len {len(self.__buff)} trim_len {trim_len} start {self.__start} idx {idx}")
         assert self.is_empty, "buffer must be empty"
         assert self.__start >= 0, f"start must be non negative: {self.__start}"
 
@@ -101,7 +101,7 @@ class WrapBuffer:
         play_sound_buff(self.__buff, new_buff, self.__start)
         self.__buff = new_buff
 
-        DumbLog.debug(f"after trim: len {len(self.__buff)} trim_len {trim_len} start {self.__start} idx {idx}")
+        logging.debug(f"after trim: len {len(self.__buff)} trim_len {trim_len} start {self.__start} idx {idx}")
         assert self.length % trim_len == 0 and self.length > 0, "incorrect buffer trim"
         self._str = None
 

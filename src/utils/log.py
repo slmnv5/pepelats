@@ -22,32 +22,32 @@ class DumbLog:
 
     @staticmethod
     def __report(msg: str) -> None:
-        print(msg, file=DumbLog.__file, flush=True)
-        if DumbLog.__lvl < 2:
+        print(msg, file=logging.__file, flush=True)
+        if logging.__lvl < 2:
             print(msg, file=sys.stderr)
 
     @staticmethod
     def error(msg: str) -> None:
-        if DumbLog.__lvl <= 3:
-            DumbLog.__report("PY-ERROR: " + msg)
+        if logging.__lvl <= 3:
+            logging.__report("PY-ERROR: " + msg)
 
     @staticmethod
     def warn(msg: str) -> None:
-        if DumbLog.__lvl <= 2:
-            DumbLog.__report("PY-WARN: " + msg)
+        if logging.__lvl <= 2:
+            logging.__report("PY-WARN: " + msg)
 
     @staticmethod
     def info(msg: str) -> None:
-        if DumbLog.__lvl <= 1:
-            DumbLog.__report("PY-INFO: " + msg)
+        if logging.__lvl <= 1:
+            logging.__report("PY-INFO: " + msg)
 
     @staticmethod
     def debug(msg: str) -> None:
-        if DumbLog.__lvl <= 0:
-            DumbLog.__report("PY-DEBUG: " + msg)
+        if logging.__lvl <= 0:
+            logging.__report("PY-DEBUG: " + msg)
 
     @staticmethod
     def set_level(lvl: str) -> None:
-        if lvl not in DumbLog.__level_dict:
+        if lvl not in logging.__level_dict:
             return
-        DumbLog.__lvl = DumbLog.__level_dict[lvl]
+        logging.__lvl = logging.__level_dict[lvl]

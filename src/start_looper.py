@@ -10,7 +10,7 @@ from rtmidi.midiutil import open_midiinput
 from control import ExtendedCtrl
 from mvc.controlfactory import ControlFactory
 from mvc.menucontrol import MenuLoader
-from utils.log import DumbLog
+import logging
 from utils.utilport import MyRtmidi
 
 
@@ -20,7 +20,7 @@ def do_looper(recv_looper: connection.Connection, send_view: connection.Connecti
         looper = ExtendedCtrl(recv_looper, send_view)
         looper.process_messages()
     except Exception:
-        DumbLog.error(f"process_looper, error: {traceback.format_exc()}")
+        logging.error(f"process_looper, error: {traceback.format_exc()}")
 
 
 # noinspection PyBroadException
@@ -29,7 +29,7 @@ def do_screenview(control_factory: ControlFactory) -> None:
         scr_view = control_factory.get_screen_control()
         scr_view.monitor()
     except Exception:
-        DumbLog.error(f"process_screenview, error: {traceback.format_exc()}")
+        logging.error(f"process_screenview, error: {traceback.format_exc()}")
 
 
 def go() -> None:
@@ -71,5 +71,5 @@ if __name__ == "__main__":
     try:
         go()
     except Exception:
-        DumbLog.error(f"Start looper, error: {traceback.format_exc()}")
+        logging.error(f"Start looper, error: {traceback.format_exc()}")
         sys.exit(2)
