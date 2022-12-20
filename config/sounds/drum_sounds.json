@@ -48,9 +48,13 @@
     "tp1": {
     "midi": [144, 81, 127],
     "optional_long_name": "tap tempo MIDI note for funkbox IOS app"
-  },
+   },
     "tp2": {
-    "midi": [242, 0, 0],
-    "optional_long_name": "tap tempo MIDI note for midifire IOS app, dynamic clock"
+    "midi": [144, 104, 127],
+    "optional_long_name": "tap tempo MIDI note for thumbjam IOS app"
+  },
+    "tp3": {
+    "midi": [250],
+    "optional_long_name": "MIDI start 0xFA"
   }
 }
