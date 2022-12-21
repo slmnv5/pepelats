@@ -1,3 +1,4 @@
+import logging
 import random
 from abc import ABC
 from abc import abstractmethod
@@ -9,12 +10,11 @@ import numpy as np
 
 from drum._utildrum import load_all_patterns, bpm_from_length
 from utils.config import SD_RATE
-import logging
 from utils.utilother import FileFinder
 
 
 # noinspection PyMethodMayBeStatic
-class ProtoDrum:
+class ProtoDrum(FileFinder):
     """ Prototype or interface, default implemFentation of somes methods """
 
     _MUTE = 0
@@ -23,7 +23,7 @@ class ProtoDrum:
     _BREAK = 3
 
     def __init__(self):
-        self._file_finder = FileFinder("config/drum", False, "")
+        FileFinder.__init__(self, "config/drum", False, "")
         self._length: int = 0
         self._bpm: float = 0
         self._sounds: Dict = dict()
@@ -36,18 +36,6 @@ class ProtoDrum:
     def clear_drum(self) -> None:
         self._length = 0
         self._bpm = 0
-
-    def get_item(self) -> str:
-        return self._file_finder.get_item()
-
-    def set_fixed(self, fixed: str) -> None:
-        return self._file_finder.set_fixed(fixed)
-
-    def get_str(self) -> str:
-        return self._file_finder.get_str()
-
-    def iterate(self, go_fwd: bool) -> None:
-        return self._file_finder.iterate(go_fwd)
 
     def get_length(self) -> int:
         return self._length
@@ -64,7 +52,7 @@ class ProtoDrum:
         pass
 
     def _load_all(self) -> None:
-        directory: str = self._file_finder.get_full_name()
+        directory: str = self.get_full_name()
         lst1 = ["drum_level1", "drum_level2", "drum_break"]
         lst2 = [self._ptn_l1, self._ptn_l2, self._ptn_bk]
         for k in range(3):
@@ -72,7 +60,7 @@ class ProtoDrum:
             load_all_patterns(directory, lst1[k], lst2[k], [*self._sounds])
 
     def load_drum_name(self) -> None:
-        self._file_finder.set_fixed(self._file_finder.get_item())
+        self.set_fixed(self.get_item())
         self._load_all()
         if self._length:
             self.prepare_drum(self._length)
