@@ -64,7 +64,6 @@ class CountMidiControl(MenuControl):
         self.__in_port = in_port
         self.__on_count: int = 0
         self.__off_count: int = 0
-        self.__past_count_note: int = 0  # mapped for count
         self.__past_note: int = -1  # original MIDI note
         self.__midi_cc_to_note = MidiCcToNote()
 
@@ -93,16 +92,15 @@ class CountMidiControl(MenuControl):
                 logging.info(f"Sending note: {str_note}")
                 self._send(str_note)
 
-            self.__past_note = note
             self.__update_count(note, is_on)
             Timer(CountMidiControl.__count_sec, self.__count_enqueue,
                   [self.__on_count, self.__off_count, note]).start()
 
     def __update_count(self, note: int, is_on: bool) -> None:
         # if we got another note number, restart count
-        if self.__past_count_note != note:
+        if self.__past_note != note:
             self.__on_count = self.__off_count = 0
-            self.__past_count_note = note
+            self.__past_note = note
 
         if is_on:
             self.__on_count += 1
@@ -113,10 +111,7 @@ class CountMidiControl(MenuControl):
 
     def __count_enqueue(self, on_count: int, off_count: int, note: int) -> None:
         # if we came here after a delay and note counts have changed we do not send
-        self.__past_note = -1  # need reset as we ignore same notes
-        if self.__past_count_note != note \
-                or self.__on_count != on_count \
-                or self.__off_count != off_count:
+        if self.__past_note != note or self.__on_count != on_count or self.__off_count != off_count:
             return
 
         # note and count did not change for long, we send MIDI
@@ -125,6 +120,7 @@ class CountMidiControl(MenuControl):
             count += 5
 
         self.__on_count = self.__off_count = 0
+        self.__past_note = -1
         event = [0x90, note, count]
         self.__in_port.put(event)
 
