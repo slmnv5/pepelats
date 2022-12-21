@@ -125,7 +125,7 @@ class CountMidiControl(MenuControl):
         self.__in_port.put(event)
 
     def __str__(self):
-        return f"{self.__class__.__name__} note={self.__past_count_note} " \
+        return f"{self.__class__.__name__} note={self.__past_note} " \
                f"on_count={self.__on_count} off_count={self.__off_count}"
 
 
