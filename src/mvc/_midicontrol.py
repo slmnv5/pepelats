@@ -28,7 +28,7 @@ class MidiControl(MenuControl):
 if __name__ == "__main__":
 
     def test():
-        from utils.utilport import MockMidiPort
+        from midi._utilport import MockMidiPort
         from multiprocessing.dummy.connection import Pipe
         recv_fake, send_fake = Pipe()
         in_port = MockMidiPort()

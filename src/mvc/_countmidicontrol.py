@@ -4,6 +4,7 @@ from multiprocessing.connection import Connection
 from threading import Timer
 from typing import List
 
+from midi.midiportfactory import MidiPortFactory
 from mvc.menucontrol import MenuControl, MenuLoader
 
 
@@ -21,8 +22,7 @@ def is_midi_note(msg: List[int]) -> bool:
 
 class MidiCcToNote:
     """Convert MIDI control change to note ON/OFF messages.
-    Needed for expression pedal to send note ON/OF when pedal goes Down/Up
-    Use this to convert expression pedal CC into note ON/OFF"""
+    Useed for expression pedal to send note ON/OF when pedal goes Down/Up """
 
     def __init__(self):
         self.__prev_msg: List[int] = [80, 0, 0]
@@ -52,12 +52,10 @@ class MidiCcToNote:
 
 
 class CountMidiControl(MenuControl):
-    """Count MIDI notes to increase number of messages MIDI pedal send,
-    tap, double tap, long tap - send different notes. Count algorithm:
-    --take the original note 60, find the mapped note 80
-        --to mapped note add number of counted taps e.g. 80+2
-        --add 5 if the last tap is long e.g. 80+2+5, send note 87
-        --after inactivity period ~0.6 sec. count of taps set to zero"""
+    """Count MIDI notes to increase number of messages MIDI pedal can send,
+    tap, double tap, long tap - send notes with different velocity. Count algorithm:
+    take the original note, count taps, +5 if the last tap is long,
+    set velocity of note to counted value. After inactivity period ~0.6 sec. count is reset"""
 
     __count_sec: float = 0.600
 
@@ -86,13 +84,13 @@ class CountMidiControl(MenuControl):
             is_on = is_midi_note_on(msg)
             if is_on and velo < 10:
                 # this is counted note inserted in queue
-                logging.debug(f"Sending counted note: {str_note}")
+                logging.info(f"Sending counted note: {str_note}")
                 self._send(str_note)
                 continue
 
             if is_on and self.__past_note != note:
                 # do not sent same note many times, we count it below
-                logging.debug(f"Sending note: {str_note}")
+                logging.info(f"Sending note: {str_note}")
                 self._send(str_note)
 
             self.__past_note = note
@@ -140,13 +138,11 @@ if __name__ == "__main__":
     def test():
         from multiprocessing.dummy import Pipe
         import os
-        from multiprocessing import Pipe
-        from rtmidi.midiutil import open_midiinput
-        from mvc import CountMidiControl
 
+        logging.getLogger().setLevel(logging.INFO)
         recv_fake, send_fake = Pipe()
         port_name = os.getenv('PEDAL_PORT_NAME', "PedalCommands_out")
-        in_port, _ = open_midiinput(port_name, interactive=False)
+        in_port = MidiPortFactory().get_input()
         if not in_port:
             msg = f"Failed to open MIDI port for commands input: {port_name}"
             raise RuntimeError(msg)

@@ -27,6 +27,8 @@ class MyRtmidi:
 
 
 class MockMidiPort:
+    """ For testing when there is no MIDI ports """
+
     def __init__(self):
         self.__notes: Dict[float, List[int]] = dict()
         self.__count: int = 0
@@ -68,7 +70,7 @@ class KbdMidiPort:
     """Using keyboard keys instead of MIDI notes"""
 
     def __init__(self):
-        kbd_map_str: str = os.getenv("KBD_NOTES")
+        kbd_map_str: str = os.getenv("KBD_NOTES", '"q": 12, "w": 13, "1":60, "2": 62, "3": 64, "4": 65')
         try:
             self.__kbd_notes: Dict[str, int] = json.loads("{" + kbd_map_str + "}")
         except Exception as err:

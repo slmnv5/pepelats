@@ -1,16 +1,14 @@
-import os
+import logging
 from abc import ABC
 from typing import Dict, Any
 from typing import List
 
 import numpy as np
-from rtmidi.midiutil import open_midioutput
 
 from drum._utildrum import load_midi, max_volume_midi
 from drum._utildrum import position_with_swing
 from drum.basedrum import ProtoDrum, SimpleDrum
-import logging
-from utils.utilport import MockMidiPort
+from midi.midiportfactory import MidiPortFactory
 
 
 class LoadDrumMidi(SimpleDrum, ABC):
@@ -21,12 +19,8 @@ class LoadDrumMidi(SimpleDrum, ABC):
         self._sounds: Dict[str, List[int]] = load_midi()
         self.max_volume = max_volume_midi(self._sounds)
         self._load_all()
-        if os.name != "posix":
-            self._out_port = MockMidiPort()
-        else:
-            port_name = os.getenv('CLOCK_PORT_NAME', "DrumClock_in")
-            self._out_port, _ = open_midioutput(port_name, interactive=False)
-        logging.info(f"Opened port for MIDI drum {str(self._out_port)}")
+        midi_port_factory = MidiPortFactory()
+        self._out_port = midi_port_factory.get_output()
 
     def _prepare_one(self, pattern, length: int) -> Any:
         logging.debug(f"Preapring pattern: {pattern}")

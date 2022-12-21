@@ -1,18 +1,15 @@
 import logging
-import os
 import sys
 import time
 import traceback
 from multiprocessing import Pipe, Process
 from multiprocessing import connection
 
-from rtmidi.midiutil import open_midiinput
-
 from control import ExtendedCtrl
+from midi.midiportfactory import MidiPortFactory
 from mvc.controlfactory import ControlFactory
 from mvc.menucontrol import MenuLoader
 from utils.config import ROOT_DIR
-from utils.utilport import MyRtmidi
 
 root = logging.getLogger()
 for handler in logging.root.handlers:
@@ -57,14 +54,8 @@ def go() -> None:
     recv_view, send_view = Pipe(False)  # screen update messages
     recv_looper, send_looper = Pipe(False)  # looper control messages
 
-    if "--kbd" in sys.argv:
-        from utils.utilport import KbdMidiPort
-
-        midi_in = KbdMidiPort()
-    else:
-        port_name = os.getenv('PEDAL_PORT_NAME', "PedalCommands_out")
-        midi_in, _ = open_midiinput(port_name, interactive=False)  # may throw
-        midi_in = MyRtmidi(midi_in)  # adapter classs
+    midi_port_factory = MidiPortFactory()
+    midi_in = midi_port_factory.get_input()
 
     control_factory = ControlFactory(midi_in, recv_view, send_looper, menu_loader)
 
