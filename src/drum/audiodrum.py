@@ -81,7 +81,6 @@ if __name__ == "__main__":
         logging.basicConfig(level=logging.DEBUG)
         ctrl = OneLoopCtrl()
         drum = ctrl.get_drum()
-        drum.load_drum_name()
         drum.prepare_drum(100_000)
         sound = make_sin_sound(440, 7.1)
         while not drum._length:

@@ -46,9 +46,9 @@ class Song(CollectionOwnerExt[SongPart]):
 
         assert len(load_list) == 4, f"Loading song: wrong number of parts: {full_name}"
 
-        self.get_drum().attach(drum_name)
-        self.get_drum().load_drum_name()
-        self.get_drum().prepare_drum(length)
+        drum = self.get_drum()
+        drum.load_drum_name(drum_name)
+        drum.prepare_drum(length)
 
         ctrl = self._get_control()
         load_list = [x if x is not None else SongPart(ctrl) for x in load_list]

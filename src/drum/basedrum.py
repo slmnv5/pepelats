@@ -60,7 +60,10 @@ class ProtoDrum(FileFinder):
             logging.info(f"Loaded patterns from directory: {directory}, file: {lst1[k]}")
             load_all_patterns(directory, lst1[k], lst2[k], [*self._sounds])
 
-    def load_drum_name(self) -> None:
+    def load_drum_name(self, drum_name: str) -> None:
+        if self._name == drum_name:
+            return
+        self.go_id(self.find_item(drum_name))
         self._name = self.get_item()
         self._load_all()
 

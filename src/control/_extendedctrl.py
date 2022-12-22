@@ -59,7 +59,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
     def _load_drum_name(self) -> None:
         drum = self.get_drum()
-        drum.load_drum_name()
+        drum.load_drum_name(drum.get_item())
         drum.prepare_drum(drum.get_length())
 
     def _show_one_part(self) -> str:
