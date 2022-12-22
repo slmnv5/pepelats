@@ -89,7 +89,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         if part.is_empty:
             return
         self.set_item(SongPart(self))
-        self.go_fixed()
+        self.go_id(self.fixed_id)
 
     def _duplicate_part(self) -> None:
         if self.id != self.fixed_id:

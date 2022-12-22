@@ -150,10 +150,6 @@ class CollectionOwnerExt(CollectionOwner[T]):
         self.attach(item)
         self.__fixed = item
 
-    def go_fixed(self) -> None:
-        fixed = self.get_fixed()
-        self.__id = self.__items.index(fixed)
-
     @property
     def fixed_id(self) -> int:
         return self.find_item(self.__fixed)
