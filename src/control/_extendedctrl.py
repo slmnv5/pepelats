@@ -77,14 +77,6 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         os.system("git reset --hard")
         os.system("git pull --ff-only")
 
-    @staticmethod
-    def _text_screen():
-        os.system("mv -v ./../touchscr5.so ./../touchscr5.so.bak")
-
-    @staticmethod
-    def _gui_screen():
-        os.system("mv -v ./../touchscr5.so.bak ./../touchscr5.so")
-
     def _drum_kind(self):
         self.change_drum_kind()
 
