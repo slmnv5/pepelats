@@ -1,3 +1,4 @@
+import logging
 from threading import Timer
 
 import numpy as np
@@ -5,7 +6,6 @@ import numpy as np
 from buffer._oneloopctrl import OneLoopCtrl
 from buffer._player import Player
 from utils.config import MAX_LEN
-import logging
 
 
 class LoopSimple(Player):

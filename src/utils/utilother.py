@@ -43,10 +43,6 @@ class CollectionOwner(Generic[T]):
         return len(self.__items)
 
     @property
-    def undo_count(self) -> int:
-        return len(self.__undo)
-
-    @property
     def id(self) -> int:
         return self.__id
 
@@ -77,13 +73,13 @@ class CollectionOwner(Generic[T]):
         deleted = self.delete(self.item_count - 1)
         self.__undo.append(deleted)
 
-    def redo(self) -> None:
-        try:
-            item = self.__undo.pop()
-            self.__items.append(item)
-            self._collection_str = ""
-        except IndexError:
-            pass
+    def redo(self) -> bool:
+        if not self.__undo:
+            return False
+        item = self.__undo.pop()
+        self.__items.append(item)
+        self._collection_str = ""
+        return True
 
     def go_id(self, k: int) -> None:
         self.__id = k
@@ -136,6 +132,9 @@ class CollectionOwner(Generic[T]):
             self.__id = 0
         if self.__id < 0:
             self.__id = self.item_count - 1
+
+    def __str__(self):
+        return f"{len(self.__items):02}/{len(self.__undo):02}"
 
 
 class CollectionOwnerExt(CollectionOwner[T]):

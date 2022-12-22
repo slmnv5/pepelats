@@ -105,12 +105,9 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         part = self.get_item()
         if part.is_empty:
             return
-
-        empty_id = self.find_first_id(lambda x: self.get_id(x).is_empty)
-        if empty_id < 0:
+        empty = self.find_first(lambda x: self.get_id(x).is_empty)
+        if not empty:
             return
-
-        empty = self.get_id(empty_id)
         part.apply_to_each(lambda x: empty.attach(x))
         empty.delete(0)
 
@@ -130,8 +127,8 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
             return
         self.set_is_rec(False)
         part = self.get_fixed()
-        for _ in range(part.undo_count):
-            part.redo()
+        while part.redo():
+            pass
 
     #  ================= One song part view and related commands
 
