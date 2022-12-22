@@ -142,15 +142,11 @@ class CollectionOwnerExt(CollectionOwner[T]):
         self.__fixed: T = first
 
     def get_fixed(self) -> T:
-        if self.__fixed not in self.__items:
-            self.__fixed = self.__items[0]
         return self.__fixed
 
-    def set_fixed(self, fixed: T) -> None:
-        if fixed not in self.__items:
-            self.__items.append(fixed)
-        self.__id = self.__items.index(fixed)
-        self.__fixed = fixed
+    def set_fixed(self, item: T) -> None:
+        self.attach(item)
+        self.__fixed = item
 
     def go_fixed(self) -> None:
         fixed = self.get_fixed()
