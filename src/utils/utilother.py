@@ -91,6 +91,9 @@ class CollectionOwner(Generic[T]):
     def get_id(self, k: int) -> T:
         return self.__items[k]
 
+    def find_item(self, item: T) -> int:
+        return self.__items.index(item)
+
     def attach(self, item: T) -> None:
         """ add item only if not there, set id to added item"""
         assert isinstance(item, type(self.__items[0]))
@@ -154,8 +157,10 @@ class CollectionOwnerExt(CollectionOwner[T]):
 
     @property
     def fixed_id(self) -> int:
-        fixed = self.get_fixed()
-        return self.__items.index(fixed)
+        return self.find_item(self.__fixed)
+
+    def get_str(self, fixed: T = None) -> str:
+        return super().get_str(self.__fixed)
 
 
 class FileFinder(CollectionOwner[str]):
