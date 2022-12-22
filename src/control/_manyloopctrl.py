@@ -54,10 +54,10 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
     def _stop_song(self, wait: int = 0) -> None:
         self.set_is_rec(False)
         self._play_event.clear()
-        if not wait:
-            self.stop_at_bound(0)
-        else:
+        if wait:
             self.stop_at_bound(self.get_fixed().length)
+        else:
+            self.stop_at_bound(0)
 
     def _record_part(self):
         if self.id == self.fixed_id and self.get_is_rec():

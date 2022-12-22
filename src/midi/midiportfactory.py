@@ -27,7 +27,7 @@ class MidiPortFactory:
         return self._midi_output
 
     def _init_input(self):
-        if "--kbd" in sys.argv or os.name != "posix":
+        if "--kbd" in sys.argv:
             self._midi_input = KbdMidiPort()
             port_name = "KbdMidiPort"
         else:

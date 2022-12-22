@@ -1,3 +1,4 @@
+import logging
 from ctypes import cdll, c_int, c_void_p, c_char_p, c_double, c_bool
 
 from utils.config import ROOT_DIR, ConfigName
@@ -51,19 +52,34 @@ class TouchScreen:
         return lib.deleteTouchScreen(self.tch_scr)
 
     def _clear_screen(self) -> int:
-        return lib.clearScreen(self.tch_scr)
+        result = lib.clearScreen(self.tch_scr)
+        if result < 0:
+            logging.error("TouchScreen: error _clear_screen")
+        return result
 
     def _get_cols(self) -> int:
-        return lib.getCols(self.tch_scr)
+        result = lib.getCols(self.tch_scr)
+        if result < 0:
+            logging.error("TouchScreen: error _get_cols")
+        return result
 
     def _get_rows(self) -> int:
-        return lib.getRows(self.tch_scr)
+        result = lib.getRows(self.tch_scr)
+        if result < 0:
+            logging.error("TouchScreen: error _get_rows")
+        return result
 
     def _set_row_text(self, row: int, text: str, r: int, g: int, b: int) -> int:
-        return lib.setRowText(self.tch_scr, row, text.encode('utf-8'), r, g, b)
+        result = lib.setRowText(self.tch_scr, row, text.encode('utf-8'), r, g, b)
+        if result < 0:
+            logging.error("TouchScreen: error _set_row_text")
+        return result
 
     def _set_loop(self, loop_sec: float, loop_pos: float, is_rec: bool, is_stop: bool) -> int:
-        return lib.setLoop(self.tch_scr, loop_sec, loop_pos, is_rec, is_stop)
+        result = lib.setLoop(self.tch_scr, loop_sec, loop_pos, is_rec, is_stop)
+        if result < 0:
+            logging.error("TouchScreen: error _set_loop")
+        return result
 
     def _get_click_event_word(self) -> str:
         bytes_arr = lib.getClickEventWord(self.tch_scr)
@@ -74,7 +90,10 @@ class TouchScreen:
 
     @staticmethod
     def _set_log_level(lvl: int) -> int:
-        return lib.setLogLevel(lvl)
+        result = lib.setLogLevel(lvl)
+        if result < 0:
+            logging.error("TouchScreen: error _set_log_level")
+        return result
 
 
 if __name__ == "__main__":

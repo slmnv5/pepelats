@@ -58,8 +58,9 @@ class Song(CollectionOwnerExt[SongPart]):
             part.set_ctrl(ctrl)
             self.attach(part)
 
+        self.go_id(0)
         while self.item_count > 4:
-            self.delete(0)
+            self.delete()
 
         while not self.get_drum().get_length():
             sleep(0.1)
@@ -91,10 +92,9 @@ class Song(CollectionOwnerExt[SongPart]):
         self._save_song()
 
     def _delete_song(self) -> None:
-        del_playing = self._file_finder.get_item() == self._name
-        self._file_finder.delete(self._file_finder.id)
-        if del_playing:
-            self._load_song()
+        if self._file_finder.get_item() == self._name:
+            self._stop_song()
+        self._file_finder.delete()
 
     def __new_song_name(self) -> str:
         return generate_name() + self._file_finder.get_end_with()

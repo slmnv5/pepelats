@@ -103,7 +103,8 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         if not empty:
             return
         part.apply_to_each(lambda x: empty.attach(x))
-        empty.delete(0)
+        empty.go_id(0)
+        empty.delete()
 
     def _undo_part(self) -> None:
         was_rec = self.get_is_rec()
@@ -112,7 +113,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         if not was_rec:
             part.undo()
         else:
-            part.delete(part.item_count - 1)
+            part.delete()
 
     def _redo_part(self) -> None:
         self.set_is_rec(False)
@@ -139,7 +140,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         elif params[0] == "next":
             part.iterate(True)
         elif params[0] == "delete":
-            part.delete(part.id)
+            part.delete()
         elif params[0] == "silent":
             loop = part.get_item()
             loop.flip_silent()
@@ -147,8 +148,9 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
             loop = part.get_item()
             loop.flip_reverse()
         elif params[0] == "move" and part.id:
-            deleted = part.delete(part.id)
-            part.attach(deleted)
+            deleted = part.delete()
+            if deleted:
+                part.attach(deleted)
 
 
 if __name__ == "__main__":

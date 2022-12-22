@@ -57,21 +57,21 @@ class CollectionOwner(Generic[T]):
     def find_first(self, method) -> Optional[T]:
         return next((x for x in self.__items if method(x)), None)
 
-    def delete(self, k: int) -> T:
-        if k < 1 or k >= self.item_count:
+    def delete(self) -> T:
+        if self.item_count <= 1:
             return None
-        item = self.__items.pop(k)
+        item = self.__items.pop(self.__id)
         self._collection_str = ""
-        if self.__id >= k:
-            self.__id -= 1
+        self.__id = 0
         return item
 
     def undo(self) -> bool:
-        item = self.delete(self.item_count - 1)
-        if item:
-            self.__undo.append(item)
-            return True
-        return False
+        if self.item_count <= 1:
+            return False
+        item = self.__items.pop()
+        self.__undo.append(item)
+        self._collection_str = ""
+        return True
 
     def redo(self) -> bool:
         if not self.__undo:
@@ -189,10 +189,9 @@ class FileFinder(CollectionOwner[str]):
     def get_end_with(self) -> str:
         return self.__end_with
 
-    def delete(self, k: int, save_undo: bool = False) -> None:
-        self.go_id(k)
+    def delete(self, save_undo: bool = False) -> None:
         path = self.get_full_name()
-        deleted = CollectionOwner.delete(self, k)
+        deleted = CollectionOwner.delete(self)
         if deleted and os.path.isfile(path):
             os.remove(path)
 
