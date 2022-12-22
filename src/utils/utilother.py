@@ -35,28 +35,7 @@ class CollectionOwner(Generic[T]):
         self.__items.append(first)
         self.__undo: List[T] = []
         self.__id: int = 0
-        self.__fixed: T = first
         self._collection_str: str = ""
-
-    def get_fixed(self) -> T:
-        if self.__fixed not in self.__items:
-            self.__fixed = self.__items[0]
-        return self.__fixed
-
-    def set_fixed(self, fixed: T) -> None:
-        if fixed not in self.__items:
-            self.__items.append(fixed)
-        self.__id = self.__items.index(fixed)
-        self.__fixed = fixed
-
-    def go_fixed(self) -> None:
-        fixed = self.get_fixed()
-        self.__id = self.__items.index(fixed)
-
-    @property
-    def fixed_id(self) -> int:
-        fixed = self.get_fixed()
-        return self.__items.index(fixed)
 
     @property
     def item_count(self) -> int:
