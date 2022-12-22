@@ -37,6 +37,7 @@ class Song(CollectionOwnerExt[SongPart]):
     def _load_song(self) -> None:
         if not self._file_finder.get_item():
             return
+        self._name = self._file_finder.get_item()
         self._stop_song()
         full_name = self._file_finder.get_full_name()
         with open(full_name, 'rb') as f:
@@ -60,19 +61,16 @@ class Song(CollectionOwnerExt[SongPart]):
         while self.item_count > 4:
             self.delete(0)
 
-        self._file_finder.set_fixed(self._file_finder.get_item())
-        self.go_id(0)
-        self.align_ids()
         while not self.get_drum().get_length():
             sleep(0.1)
 
         logging.info(f"Loaded song file: {full_name}")
 
     def _save_song(self) -> None:
-        if not self._file_finder.get_fixed():
+        if not self._name:
             return
 
-        self._file_finder.go_fixed()
+        self._file_finder.attach(self._name)
         full_name = self._file_finder.get_full_name()
         length: int = self.get_drum().get_length()
         save_list = list()
@@ -86,12 +84,11 @@ class Song(CollectionOwnerExt[SongPart]):
         logging.info(f"Saved song file {full_name}")
 
     def _save_new_song(self):
-        tmp = self.__new_song_name()
-        self._file_finder.set_fixed(tmp)
+        self._name = self.__new_song_name()
         self._save_song()
 
     def _delete_song(self) -> None:
-        del_playing = self._file_finder.id == self._file_finder.fixed_id
+        del_playing = self._file_finder.get_item() == self._name
         self._file_finder.delete(self._file_finder.id)
         if del_playing:
             self._load_song()
