@@ -26,15 +26,15 @@ class ControlFactory:
 
     def get_screen_control(self) -> MenuControl:
         if not os.path.isfile(ROOT_DIR + "/" + ConfigName.shared_lib):
-            logging.warning("Libarry touchscr5.so not found, GUI not avalable, using text")
+            logging.warning(f"Libarry {ConfigName.shared_lib} not found, GUI not avalable, using text")
             return PyScreen(self.recv_conn, self.send_conn, self.menu_loader)
 
         # noinspection PyBroadException
         try:
-            logging.info("Library touchscr5.so found, loading GUI")
+            logging.info(f"Library {ConfigName.shared_lib} found, loading GUI")
             from mvc._ccscreen import CcScreen
             fb_id: str = os.getenv("FRAME_BUFFER_ID", "1")
             return CcScreen(self.recv_conn, self.send_conn, self.menu_loader, fb_id)
         except Exception:
-            logging.error("Library touchscr5.so load error, GUI not avalable, using text")
+            logging.error(f"Library {ConfigName.shared_lib} load error, GUI not avalable, using text")
             return PyScreen(self.recv_conn, self.send_conn, self.menu_loader)

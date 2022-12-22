@@ -1,8 +1,8 @@
 from ctypes import cdll, c_int, c_void_p, c_char_p, c_double, c_bool
 
-from utils.config import ROOT_DIR
+from utils.config import ROOT_DIR, ConfigName
 
-LIB_FILE = ROOT_DIR + "/touchscr5.so"
+LIB_FILE = ROOT_DIR + f"/{ConfigName.shared_lib}"
 
 lib = cdll.LoadLibrary(LIB_FILE)
 

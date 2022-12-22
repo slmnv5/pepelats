@@ -66,7 +66,7 @@ class CollectionOwner(Generic[T]):
             self.__id -= 1
         return item
 
-    def undo(self) -> None:
+    def undo(self) -> bool:
         item = self.delete(self.item_count - 1)
         if item:
             self.__undo.append(item)
