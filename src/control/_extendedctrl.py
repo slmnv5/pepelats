@@ -97,7 +97,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         part = self.get_item()
         if part.is_empty:
             return
-        empty = self.find_first(lambda x: self.get_id(x).is_empty)
+        empty = self.find_first(lambda x: x.is_empty)
         if not empty:
             return
         part.apply_to_each(lambda x: empty.attach(x))
