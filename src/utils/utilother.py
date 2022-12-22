@@ -155,6 +155,33 @@ class CollectionOwner(Generic[T]):
             self.__id = self.item_count - 1
 
 
+class CollectionOwnerExt(CollectionOwner[T]):
+
+    def __init__(self, first: T):
+        CollectionOwner.__init__(self, first)
+        self.__fixed: T = first
+
+    def get_fixed(self) -> T:
+        if self.__fixed not in self.__items:
+            self.__fixed = self.__items[0]
+        return self.__fixed
+
+    def set_fixed(self, fixed: T) -> None:
+        if fixed not in self.__items:
+            self.__items.append(fixed)
+        self.__id = self.__items.index(fixed)
+        self.__fixed = fixed
+
+    def go_fixed(self) -> None:
+        fixed = self.get_fixed()
+        self.__id = self.__items.index(fixed)
+
+    @property
+    def fixed_id(self) -> int:
+        fixed = self.get_fixed()
+        return self.__items.index(fixed)
+
+
 class FileFinder(CollectionOwner[str]):
 
     def __init__(self, directory: str, is_file: bool, end_with: str):
