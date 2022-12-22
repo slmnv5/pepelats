@@ -104,10 +104,13 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         empty.delete(0)
 
     def _undo_part(self) -> None:
-        save_undo = not self.get_is_rec()
+        was_rec = self.get_is_rec()
         self.set_is_rec(False)
         part = self.get_fixed()
-        part.delete(part.item_count - 1, save_undo)
+        if not was_rec:
+            part.undo()
+        else:
+            part.delete(part.item_count - 1)
 
     def _redo_part(self) -> None:
         self.set_is_rec(False)

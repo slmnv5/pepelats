@@ -57,21 +57,21 @@ class CollectionOwner(Generic[T]):
     def find_first(self, method) -> Optional[T]:
         return next((x for x in self.__items if method(x)), None)
 
-    def delete(self, k: int, save_undo: bool = False) -> T:
-        if self.item_count <= 1 or k < 0 or k >= self.item_count:
+    def delete(self, k: int) -> T:
+        if k < 1 or k >= self.item_count:
             return None
         item = self.__items.pop(k)
         self._collection_str = ""
         if self.__id >= k:
             self.__id -= 1
-            self.__id = max(0, self.__id)
-        if save_undo:
-            self.__undo.append(item)
         return item
 
     def undo(self) -> None:
-        deleted = self.delete(self.item_count - 1)
-        self.__undo.append(deleted)
+        item = self.delete(self.item_count - 1)
+        if item:
+            self.__undo.append(item)
+            return True
+        return False
 
     def redo(self) -> bool:
         if not self.__undo:
