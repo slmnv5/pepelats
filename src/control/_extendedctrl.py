@@ -58,7 +58,9 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         return self.get_drum().get_str()
 
     def _load_drum_name(self) -> None:
-        self.get_drum().load_drum_name()
+        drum = self.get_drum()
+        drum.load_drum_name()
+        drum.prepare_drum(drum.get_length())
 
     def _show_one_part(self) -> str:
         part = self.get_fixed()
