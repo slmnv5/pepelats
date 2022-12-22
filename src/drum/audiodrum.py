@@ -69,6 +69,9 @@ class AudioDrum(LoadDrumWave):
 
 
 if __name__ == "__main__":
+    logging.getLogger().setLevel(logging.DEBUG)
+
+
     def test():
         from buffer import LoopSimple
         from buffer._oneloopctrl import OneLoopCtrl

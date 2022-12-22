@@ -240,29 +240,35 @@ if __name__ == "__main__":
         co = CollectionOwner(lst[0])
         for k in lst[1:]:
             co.attach(k)
-        find1 = co.find_first_id(lambda x: co.get_id(x) == 'F')
-        assert find1 == 5, f"found: {find1} expected: 5"
+        found_list = list()
+        co.apply_to_each(lambda x: found_list.append(x if x == 'F' else None))
+        assert 'F' in found_list
+        find1 = found_list.index('F')
+        assert find1 == 5
         co.go_id(8)  # letter I
         assert "I" == co.get_item()
         list_str = co.get_str()
-        assert "7) H" in list_str
-        assert "~I" in list_str
+        print(list_str)
+        assert ".7) H" in list_str
+        assert "~8) I" in list_str
 
 
     def test2():
         ff = FileFinder(".", True, "")
         for k in range(ff.item_count):
-            print(ff.get_id(k))
-
-        find1 = ff.find_first_id(lambda x: 'l' in ff.get_id(x))
-        assert find1 >= 0
+            print(ff.get_item())
+            ff.iterate(True)
+        print("================")
+        found_list = list()
+        ff.apply_to_each(lambda x: found_list.append(x if 'lo' in x else None))
+        for item in [x for x in found_list if x]:
+            print(item)
 
 
     def test3():
         ff = FileFinder(".", True, ".lkjlkjhkj")
-        print(ff.get_item())
-        print(ff.item_count)
         assert "" == ff.get_item()
+        assert 1 == ff.item_count
 
 
     test1()
