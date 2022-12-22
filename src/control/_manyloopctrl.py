@@ -32,20 +32,17 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         self._stop_song()
         Song.__init__(self, SongPart(self))
         while self.item_count < 4:
-            self.append(SongPart(self))
+            self.attach(SongPart(self))
 
-        ff = self._file_finder
-        ff.set_fixed("")
-
+        self._name = ""
         self.set_fixed(self.get_id(0))
-        self.align_ids()
         self.get_drum().clear_drum()
 
     def __playback(self) -> None:
         """runs in a thread, play and record current song part"""
         while True:
             self._play_event.wait()
-            self.align_ids()
+            self.set_fixed(self.get_item())
 
             part = self.get_fixed()
             self.get_stop_event().clear()
@@ -90,7 +87,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             if self.get_is_rec():
                 self.set_is_rec(False)
             else:
-                part.append(LoopSimple(self, part.length))
+                part.attach(LoopSimple(self, part.length))
                 part.go_id(part.item_count - 1)
                 self.set_is_rec(True)
 

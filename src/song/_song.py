@@ -1,25 +1,22 @@
+import logging
 import pickle
 from abc import abstractmethod
 from time import sleep
 
 from buffer import OneLoopCtrl
 from drum.basedrum import SimpleDrum
-
 from song._songpart import SongPart
 from utils.utilname import generate_name
-import logging
-from utils.utilother import CollectionOwner, FileFinder
+from utils.utilother import FileFinder, CollectionOwnerExt
 
 
-class Song(CollectionOwner[SongPart]):
+class Song(CollectionOwnerExt[SongPart]):
     """Song keeps SongParts as CollectionOwner, can save and load from file"""
 
     def __init__(self, first: SongPart):
-        CollectionOwner.__init__(self, first)
+        CollectionOwnerExt.__init__(self, first)
         self._file_finder: FileFinder = FileFinder("save_song", True, ".s")
-
-    def align_ids(self) -> None:
-        self.set_fixed(self.get_item())
+        self._name: str = ""
 
     @abstractmethod
     def get_drum(self) -> SimpleDrum:
@@ -48,7 +45,7 @@ class Song(CollectionOwner[SongPart]):
         assert length > 0, f"Loading song: length <= 0: {full_name}"
         assert len(load_list) == 4, f"Loading song: wrong number of parts: {full_name}"
 
-        self.get_drum().set_fixed(drum_name)
+        self.get_drum().attach(drum_name)
         self.get_drum().load_drum_name()
         self.get_drum().prepare_drum(length)
 
@@ -58,7 +55,7 @@ class Song(CollectionOwner[SongPart]):
         for part in load_list:
             assert type(part) == SongPart
             part.set_ctrl(ctrl)
-            self.append(part)
+            self.attach(part)
 
         while self.item_count > 4:
             self.delete(0)

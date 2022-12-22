@@ -5,6 +5,7 @@ from typing import Dict, Any
 from typing import List, Optional
 from typing import TypeVar, Generic
 
+from utils._utilnumpy import get_stable_list
 from utils.config import ROOT_DIR
 
 T = TypeVar('T')
@@ -90,11 +91,14 @@ class CollectionOwner(Generic[T]):
     def get_id(self, k: int) -> T:
         return self.__items[k]
 
-    def append(self, item: T) -> None:
+    def attach(self, item: T) -> None:
+        """ add item only if not there, set id to added item"""
         assert isinstance(item, type(self.__items[0]))
-        self.__items.append(item)
+        if item not in self.__items:
+            self.__items.append(item)
         self.__undo.clear()
         self._collection_str = ""
+        self.__id = self.__items.index(item)
 
     def get_item(self) -> T:
         return self.__items[self.__id]
@@ -102,29 +106,26 @@ class CollectionOwner(Generic[T]):
     def set_item(self, item: T) -> None:
         self.__items[self.__id] = item
 
-    def get_str(self) -> str:
-        lst_size = min(7, len(self.__items))
-        start_id = (self.__id // lst_size) * lst_size
-        lst = self.__items[start_id:start_id + lst_size]
-        roll_over_count = lst_size - len(lst)
-        if roll_over_count > 0:
-            lst = lst + self.__items[:roll_over_count]
-        fixed = self.get_fixed()
-        item = self.get_item()
-        tmp: str = ""
-        for elm in lst:
-            elm_str = str(elm)
-            if not elm_str:
-                continue
-            if elm is fixed:
+    def get_str(self, fixed: T = None) -> str:
+        item_sub_list, id_sub_list = get_stable_list(self.__id, self.__items, 5)
+        fixed_id = -1
+        if fixed and fixed in self.__items:
+            fixed_id = self.__items.index(fixed)
+
+        result: str = ""
+        for k in range(len(item_sub_list)):
+            item: Any = item_sub_list[k]
+            index: int = id_sub_list[k]
+            item_str = str(index) + ") " + str(item)
+            if index == fixed_id:
                 prefix = "*"
-            elif elm is item:
+            elif index == self.__id:
                 prefix = "~"
             else:
-                prefix = " "
-            tmp += prefix + elm_str + '\n'
+                prefix = "."
+            result += prefix + item_str + '\n'
 
-        return tmp[:-1]
+        return result[:-1]
 
     def iterate(self, go_fwd: bool) -> None:
         self.__id += 1 if go_fwd else -1
@@ -176,7 +177,7 @@ class FileFinder(CollectionOwner[str]):
 
         CollectionOwner.__init__(self, found_items[0])
         for item in found_items[1:]:
-            self.append(item)
+            self.attach(item)
 
     def __chk_match(self, d: str, f: str, is_file: bool) -> bool:
         match1 = is_file == os.path.isfile(os.path.join(d, f))
@@ -238,7 +239,7 @@ if __name__ == "__main__":
         lst = [chr(k) for k in range(65, 80)]
         co = CollectionOwner(lst[0])
         for k in lst[1:]:
-            co.append(k)
+            co.attach(k)
         find1 = co.find_first_id(lambda x: co.get_id(x) == 'F')
         assert find1 == 5, f"found: {find1} expected: 5"
         co.go_id(8)  # letter I

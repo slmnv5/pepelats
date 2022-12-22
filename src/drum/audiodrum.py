@@ -65,7 +65,7 @@ class AudioDrum(LoadDrumWave):
             play_sound_buff(self._l2, out_data, idx)
 
     def __str__(self):
-        return f"AUDIO:{self.get_fixed()} {self._bpm:.2F}"
+        return f"AUDIO:{self._name} {self._bpm:.2F}"
 
 
 if __name__ == "__main__":

@@ -111,7 +111,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
             return
 
         empty = self.get_id(empty_id)
-        part.apply_to_each(lambda x: empty.append(x))
+        part.apply_to_each(lambda x: empty.attach(x))
         empty.delete(0)
 
     def _undo_part(self) -> None:
@@ -154,7 +154,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
             loop.flip_reverse()
         elif params[0] == "move" and part.id:
             deleted = part.delete(part.id)
-            part.append(deleted)
+            part.attach(deleted)
 
 
 if __name__ == "__main__":

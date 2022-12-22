@@ -32,10 +32,12 @@ class ProtoDrum(FileFinder):
         self._ptn_bk: List[Dict[str, Any]] = []
         self._intensity: int = ProtoDrum._LEVEL1
         self._is_break_pending: bool = False
+        self._name: str = ""
 
     def clear_drum(self) -> None:
         self._length = 0
         self._bpm = 0
+        self._name = ""
 
     def get_length(self) -> int:
         return self._length
@@ -60,10 +62,8 @@ class ProtoDrum(FileFinder):
             load_all_patterns(directory, lst1[k], lst2[k], [*self._sounds])
 
     def load_drum_name(self) -> None:
-        self.set_fixed(self.get_item())
+        self._name = self.get_item()
         self._load_all()
-        if self._length:
-            self.prepare_drum(self._length)
 
     def change_intensity(self, change_by: int) -> None:
         i = self._intensity + change_by
