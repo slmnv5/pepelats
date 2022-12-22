@@ -245,7 +245,7 @@ if __name__ == "__main__":
         co.go_id(8)  # letter I
         assert "I" == co.get_item()
         list_str = co.get_str()
-        assert " H" == list_str[0:2]
+        assert "7) H" in list_str
         assert "~I" in list_str
 
 

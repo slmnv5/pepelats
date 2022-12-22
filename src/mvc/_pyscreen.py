@@ -23,7 +23,7 @@ try:
 except OSError:
     COLS, ROWS = 30, 10
 
-logging.error(f"Screen size: cols={COLS} rows={ROWS}")
+logging.info(f"Text screen size: cols={COLS} rows={ROWS}")
 SHOW_ERRORS = "--debug" in sys.argv or "--info" in sys.argv or os.name != "posix"
 
 # foreground, background ends with '40m'
