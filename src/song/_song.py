@@ -37,13 +37,13 @@ class Song(CollectionOwnerExt[SongPart]):
     def _load_song(self) -> None:
         if not self._file_finder.get_item():
             return
+
         self._name = self._file_finder.get_item()
         self._stop_song()
         full_name = self._file_finder.get_full_name()
         with open(full_name, 'rb') as f:
             length, drum_name, load_list = pickle.load(f)
 
-        assert length > 0, f"Loading song: length <= 0: {full_name}"
         assert len(load_list) == 4, f"Loading song: wrong number of parts: {full_name}"
 
         self.get_drum().attach(drum_name)
@@ -67,8 +67,11 @@ class Song(CollectionOwnerExt[SongPart]):
         logging.info(f"Loaded song file: {full_name}")
 
     def _save_song(self) -> None:
-        if not self._name:
+        if not self.get_drum().get_length():
             return
+
+        if not self._name:
+            self._name = self.__new_song_name()
 
         self._file_finder.attach(self._name)
         full_name = self._file_finder.get_full_name()
@@ -84,7 +87,7 @@ class Song(CollectionOwnerExt[SongPart]):
         logging.info(f"Saved song file {full_name}")
 
     def _save_new_song(self):
-        self._name = self.__new_song_name()
+        self._name = ""
         self._save_song()
 
     def _delete_song(self) -> None:
