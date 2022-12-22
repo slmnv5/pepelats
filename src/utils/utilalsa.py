@@ -1,12 +1,12 @@
 import json
+import logging
 import os
-from typing import Tuple, Union
 
 import numpy as np
 import sounddevice as sd
 
+from utils._utilnumpy import calc_slices
 from utils.config import SD_TYPE, MAX_LEN
-import logging
 
 
 def find_usb() -> None:
@@ -38,16 +38,6 @@ if OUT_CH != 2:
     raise RuntimeError(f"ALSA audio device must have 2 output channels, got {OUT_CH}")
 if IN_CH not in [1, 2]:
     raise RuntimeError(f"ALSA audio device must have 1 or 2 input channels, got {IN_CH}")
-
-
-def calc_slices(buff_len: int, data_len: int, idx: int) -> Tuple[slice, Union[slice, None]]:
-    assert 0 < data_len <= buff_len, f"Must be: 0 < data_len {data_len} <= buff_len {buff_len}"
-    idx1 = idx % buff_len
-    idx2 = (idx + data_len) % buff_len
-    if idx2 > idx1:
-        return slice(idx1, idx2), None
-    else:
-        return slice(idx1, buff_len), slice(0, idx2)
 
 
 def record_sound_buff(buff: np.ndarray, np_data: np.ndarray, idx: int) -> None:
