@@ -25,9 +25,12 @@ elif "--info" in sys.argv:
     tmp = logging.INFO
     handler = logging.StreamHandler(sys.stdout)
 
-logging.basicConfig(force=True, level=tmp, filename=file, filemode='a', format='%(name)s - %(levelname)s - %(message)s')
+fmt_str = '%(filename)s %(levelname)s - %(message)s'
+
+logging.basicConfig(force=True, level=tmp, filename=file, filemode='a', format=fmt_str)
 if handler:
-    handler.setLevel(logging.DEBUG)
+    handler.setLevel(tmp)
+    handler.setFormatter(logging.Formatter(fmt=fmt_str))
     root.addHandler(handler)
 
 logging.critical("=============Starting log==============")
