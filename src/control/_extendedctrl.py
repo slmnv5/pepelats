@@ -4,8 +4,8 @@ import traceback
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 
+from buffer import OneLoopCtrl
 from control._manyloopctrl import ManyLoopCtrl
-from drum.mididrum import MidiDrum
 from song import SongPart
 from utils.config import SD_RATE
 from utils.msgprocessor import MsgProcessor
@@ -81,16 +81,10 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         os.system("git pull --ff-only")
 
     def _drum_midi(self) -> None:
-        OneloopControl.self._drum_midi()
-        self.__drum = MidiDrum()
-        if length:
-            self.__drum.prepare_drum(length)
+        OneLoopCtrl._drum_midi(self)
 
     def _drum_audio(self) -> None:
-        length: int = self.__drum.get_length()
-        self.__drum = AudioDrum()
-        if length:
-            self.__drum.prepare_drum(length)
+        OneLoopCtrl._drum_audio(self)
 
     #  ============ All song parts view and related commands
 

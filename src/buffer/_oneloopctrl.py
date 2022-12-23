@@ -27,14 +27,12 @@ class OneLoopCtrl:
     def _drum_midi(self) -> None:
         length: int = self.__drum.get_length()
         self.__drum = MidiDrum()
-        if length:
-            self.__drum.prepare_drum(length)
+        self.__drum.prepare_drum(length)
 
     def _drum_audio(self) -> None:
         length: int = self.__drum.get_length()
         self.__drum = AudioDrum()
-        if length:
-            self.__drum.prepare_drum(length)
+        self.__drum.prepare_drum(length)
 
     @abstractmethod
     def _redraw(self) -> None:
