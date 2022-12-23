@@ -27,7 +27,7 @@ class LoadDrumMidi(SimpleDrum, ABC):
 
     def close_port(self):
         self._out_port.close_port()
-        
+
     def _prepare_one(self, pattern, length: int) -> Any:
         # logging.debug(f"Preapring pattern: {pattern}")
         accents = pattern["acc"]
@@ -59,7 +59,7 @@ class LoadDrumMidi(SimpleDrum, ABC):
 class MidiDrum(LoadDrumMidi):
     """ MIDI Drum version sending configurable MIDI messages and sysex """
 
-    def __init__(self, ):
+    def __init__(self):
         super().__init__()
 
     def __play_midi_pattern(self, pattern: Dict[int, List[List[int]]], pos1: int, pos2: int) -> None:
