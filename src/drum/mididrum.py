@@ -25,6 +25,9 @@ class LoadDrumMidi(SimpleDrum, ABC):
     def __del__(self):
         self._out_port.close_port()
 
+    def close_port(self):
+        self._out_port.close_port()
+        
     def _prepare_one(self, pattern, length: int) -> Any:
         # logging.debug(f"Preapring pattern: {pattern}")
         accents = pattern["acc"]
