@@ -69,6 +69,7 @@ class CollectionOwner(Generic[T]):
         if self.item_count <= 1:
             return False
         item = self.__items.pop()
+        self.__id = 0
         self.__undo.append(item)
         self._collection_str = ""
         return True
@@ -149,6 +150,15 @@ class CollectionOwnerExt(CollectionOwner[T]):
     def set_fixed(self, item: T) -> None:
         self.attach(item)
         self.__fixed = item
+
+    def undo(self) -> bool:
+        assert False, "This method should not run"
+
+    def redo(self) -> bool:
+        assert False, "This method should not run"
+
+    def delete(self) -> T:
+        assert False, "This method should not run"
 
     @property
     def fixed_id(self) -> int:
