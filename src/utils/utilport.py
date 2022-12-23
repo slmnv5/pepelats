@@ -38,6 +38,9 @@ class FakePort:
     def __init__(self):
         self.__count: int = 0
 
+    def is_open(self) -> bool:
+        return self.__count > -1
+
     def send_message(self, msg: List[int]) -> None:
         if self.__count % 100 == 0:
             msg = f"MockMidiPort: sent MIDI: {msg}"
