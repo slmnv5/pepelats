@@ -6,10 +6,11 @@ from multiprocessing import Pipe, Process
 from multiprocessing import connection
 
 from control import ExtendedCtrl
-from midi.midiportfactory import MidiPortFactory
 from mvc.controlfactory import ControlFactory
 from mvc.menucontrol import MenuLoader
+from utils.utilport import KbdMidiPort
 from utils.config import ROOT_DIR
+from utils.utilalsa import get_midi_in
 
 root = logging.getLogger()
 for handler in logging.root.handlers:
@@ -57,8 +58,10 @@ def go() -> None:
     recv_view, send_view = Pipe(False)  # screen update messages
     recv_looper, send_looper = Pipe(False)  # looper control messages
 
-    midi_port_factory = MidiPortFactory()
-    midi_in = midi_port_factory.get_input()
+    if "--kbd" in sys.argv:
+        midi_in = KbdMidiPort()
+    else:
+        midi_in = get_midi_in()  # may throw
 
     control_factory = ControlFactory(midi_in, recv_view, send_looper, menu_loader)
 

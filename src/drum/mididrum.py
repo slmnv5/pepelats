@@ -4,11 +4,12 @@ from typing import Dict, Any
 from typing import List
 
 import numpy as np
+import rtmidi
 
 from drum._utildrum import load_midi, max_volume_midi
 from drum._utildrum import position_with_swing
 from drum.basedrum import ProtoDrum, SimpleDrum
-from midi.midiportfactory import MidiPortFactory
+from utils.utilalsa import get_midi_out
 
 
 class LoadDrumMidi(SimpleDrum, ABC):
@@ -19,11 +20,13 @@ class LoadDrumMidi(SimpleDrum, ABC):
         self._sounds: Dict[str, List[int]] = load_midi()
         self.max_volume = max_volume_midi(self._sounds)
         self._load_all()
-        midi_port_factory = MidiPortFactory()
-        self._out_port = midi_port_factory.get_output()
+        self._out_port: rtmidi.MidiOut = get_midi_out()
+
+    def __del__(self):
+        self._out_port.close_port()
 
     def _prepare_one(self, pattern, length: int) -> Any:
-        logging.debug(f"Preapring pattern: {pattern}")
+        # logging.debug(f"Preapring pattern: {pattern}")
         accents = pattern["acc"]
         result: Dict[int, List[List[int]]] = dict()
         for sound_name in [x for x in self._sounds if x in pattern]:

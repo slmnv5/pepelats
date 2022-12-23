@@ -10,7 +10,7 @@ import rtmidi.midiutil
 
 
 class MyRtmidi:
-    def __init__(self, midi_input):
+    def __init__(self, midi_input: rtmidi.MidiIn):
         self._input = midi_input
         self._input.set_callback(self)
         self._queue = Queue()
@@ -25,8 +25,11 @@ class MyRtmidi:
     def receive(self):
         return self._queue.get()
 
+    def __del__(self):
+        self._input.close_port()
 
-class BlackHolePort:
+
+class FakePort:
     """ When there is no MIDI OUT ports """
 
     def __init__(self):
@@ -35,7 +38,7 @@ class BlackHolePort:
     def send_message(self, msg: List[int]) -> None:
         if self.__count % 100 == 0:
             msg = f"MockMidiPort: sent MIDI: {msg}"
-            logging.info(msg)
+            logging.debug(msg)
         self.__count += 1
 
     def __str__(self):

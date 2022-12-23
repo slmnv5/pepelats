@@ -4,8 +4,8 @@ from multiprocessing.connection import Connection
 from threading import Timer
 from typing import List
 
-from midi.midiportfactory import MidiPortFactory
 from mvc.menucontrol import MenuControl, MenuLoader
+from utils.utilalsa import get_midi_in
 
 
 def is_midi_cc(msg: List[int]) -> bool:
@@ -133,15 +133,10 @@ if __name__ == "__main__":
 
     def test():
         from multiprocessing.dummy import Pipe
-        import os
 
         logging.getLogger().setLevel(logging.INFO)
         recv_fake, send_fake = Pipe()
-        port_name = os.getenv('PEDAL_PORT_NAME', "PedalCommands_out")
-        in_port = MidiPortFactory().get_input()
-        if not in_port:
-            msg = f"Failed to open MIDI port for commands input: {port_name}"
-            raise RuntimeError(msg)
+        in_port = get_midi_in()
 
         menu_loader = MenuLoader("config/menu", "play", "0")
         m_ctrl = CountMidiControl(in_port, send_fake, menu_loader)

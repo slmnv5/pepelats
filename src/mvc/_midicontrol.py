@@ -28,7 +28,7 @@ class MidiControl(MenuControl):
 if __name__ == "__main__":
 
     def test():
-        from midi._utilport import ChargedMidiPort
+        from utils.utilport import ChargedMidiPort
         from multiprocessing.dummy.connection import Pipe
         recv_fake, send_fake = Pipe()
         in_port = ChargedMidiPort()

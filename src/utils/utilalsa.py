@@ -1,12 +1,33 @@
 import json
 import logging
 import os
+from typing import Union
 
 import numpy as np
+import rtmidi
 import sounddevice as sd
+from rtmidi.midiutil import open_midiinput, open_midioutput
 
 from utils._utilnumpy import calc_slices
 from utils.config import SD_TYPE, MAX_LEN
+from utils.utilport import MyRtmidi, FakePort
+
+
+def get_midi_in() -> MyRtmidi:
+    port_name = os.getenv('PEDAL_PORT_NAME', "PedalCommands_out")
+    midi_in, _ = open_midiinput(port_name, interactive=False)  # may throw
+    return MyRtmidi(midi_in)  # adapter classs
+
+
+def get_midi_out() -> Union[rtmidi.MidiOut, FakePort]:
+    port_name = os.getenv('CLOCK_PORT_NAME', "DrumClock_in")
+    # noinspection PyBroadException
+    try:
+        midi_out, _ = open_midioutput(port_name, interactive=False)
+        return midi_out
+    except Exception:
+        logging.error(f"Cannot open port for MIDI output: {port_name}, using FakePort")
+        return FakePort()
 
 
 def find_usb() -> None:
