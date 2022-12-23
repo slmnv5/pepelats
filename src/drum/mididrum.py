@@ -88,7 +88,6 @@ if __name__ == "__main__":
 
         logging.basicConfig(level=logging.DEBUG)
         ctrl = OneLoopCtrl()
-        ctrl.change_drum_kind()
         drum = ctrl.get_drum()
 
         drum.prepare_drum(100_000)

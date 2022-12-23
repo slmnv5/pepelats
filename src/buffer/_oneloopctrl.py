@@ -24,12 +24,15 @@ class OneLoopCtrl:
     def get_drum(self) -> SimpleDrum:
         return self.__drum
 
-    def change_drum_kind(self) -> None:
+    def _drum_midi(self) -> None:
         length: int = self.__drum.get_length()
-        if isinstance(self.__drum, AudioDrum):
-            self.__drum = MidiDrum()
-        else:
-            self.__drum = AudioDrum()
+        self.__drum = MidiDrum()
+        if length:
+            self.__drum.prepare_drum(length)
+
+    def _drum_audio(self) -> None:
+        length: int = self.__drum.get_length()
+        self.__drum = AudioDrum()
         if length:
             self.__drum.prepare_drum(length)
 

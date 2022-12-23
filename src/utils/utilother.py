@@ -138,6 +138,7 @@ class CollectionOwner(Generic[T]):
         return f"{len(self.__items):02}/{len(self.__undo):02}"
 
 
+# noinspection PyUnreachableCode
 class CollectionOwnerExt(CollectionOwner[T]):
 
     def __init__(self, first: T):
@@ -153,12 +154,15 @@ class CollectionOwnerExt(CollectionOwner[T]):
 
     def undo(self) -> bool:
         assert False, "This method should not run"
+        return False
 
     def redo(self) -> bool:
         assert False, "This method should not run"
+        return False
 
     def delete(self) -> T:
         assert False, "This method should not run"
+        return False
 
     @property
     def fixed_id(self) -> int:
