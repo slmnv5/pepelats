@@ -25,6 +25,9 @@ class MyRtmidi:
     def receive(self):
         return self._queue.get()
 
+    def close_port(self):
+        self._input.close_port()
+
     def __del__(self):
         self._input.close_port()
 

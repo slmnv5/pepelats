@@ -4,13 +4,14 @@ import time
 import traceback
 from multiprocessing import Pipe, Process
 from multiprocessing import connection
+from typing import Union
 
 from control import ExtendedCtrl
 from mvc.controlfactory import ControlFactory
 from mvc.menucontrol import MenuLoader
-from utils.utilport import KbdMidiPort
 from utils.config import ROOT_DIR
 from utils.utilalsa import get_midi_in
+from utils.utilport import KbdMidiPort, MyRtmidi
 
 root = logging.getLogger()
 for handler in logging.root.handlers:
@@ -58,6 +59,7 @@ def go() -> None:
     recv_view, send_view = Pipe(False)  # screen update messages
     recv_looper, send_looper = Pipe(False)  # looper control messages
 
+    midi_in: Union[MyRtmidi, KbdMidiPort]
     if "--kbd" in sys.argv:
         midi_in = KbdMidiPort()
     else:
