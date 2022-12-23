@@ -44,13 +44,14 @@ class MockMidiPort:
                 self.__notes[k] = [0x80, -v[0], 0]
 
     def send_message(self, msg: List[int]) -> None:
-        msg = f"MockMidiPort: sent MIDI {msg}"
-        if 'clock' in msg:
-            self.__count += 1
-            if self.__count % 300 == 0:
-                logging.info(msg)
-        else:
+        if 'clock' in msg and self.__count % 500 == 0:
+            msg = f"MockMidiPort: sent MIDI: {msg}"
             logging.info(msg)
+        elif self.__count % 100 == 0:
+            msg = f"MockMidiPort: sent MIDI: {msg}"
+            logging.info(msg)
+
+        self.__count += 1
 
     # noinspection PyUnusedLocal
     def receive(self) -> List[int]:

@@ -37,13 +37,15 @@ class MidiPortFactory:
         logging.info(f"Opened port for MIDI input: {port_name}")
 
     def _init_output(self):
-        if os.name != "posix":
-            self._midi_output = MockMidiPort()
-            port_name = "MockMidiPort"
-        else:
+        # noinspection PyBroadException
+        try:
             port_name = os.getenv('CLOCK_PORT_NAME', "DrumClock_in")
             self._midi_output, _ = open_midioutput(port_name, interactive=False)
-        logging.info(f"Opened port for MIDI output: {port_name}")
+        except Exception:
+            logging.error(f"Cannot open port for MIDI output: {port_name}")
+            port_name = "MockMidiPort"
+            self._midi_output = MockMidiPort()
+            logging.info(f"Opened port for MIDI output: {port_name}")
 
 
 if __name__ == "__main__":
