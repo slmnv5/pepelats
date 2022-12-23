@@ -26,7 +26,23 @@ class MyRtmidi:
         return self._queue.get()
 
 
-class MockMidiPort:
+class BlackHolePort:
+    """ When there is no MIDI OUT ports """
+
+    def __init__(self):
+        self.__count: int = 0
+
+    def send_message(self, msg: List[int]) -> None:
+        if self.__count % 100 == 0:
+            msg = f"MockMidiPort: sent MIDI: {msg}"
+            logging.info(msg)
+        self.__count += 1
+
+    def __str__(self):
+        return f"{self.__class__.__name__}"
+
+
+class ChargedMidiPort:
     """ For testing when there is no MIDI ports """
 
     def __init__(self):
@@ -42,12 +58,6 @@ class MockMidiPort:
                 self.__notes[k] = [0x90, v[0], v[1]]
             else:
                 self.__notes[k] = [0x80, -v[0], 0]
-
-    def send_message(self, msg: List[int]) -> None:
-        if self.__count % 100 == 0:
-            msg = f"MockMidiPort: sent MIDI: {msg}"
-            logging.info(msg)
-        self.__count += 1
 
     # noinspection PyUnusedLocal
     def receive(self) -> List[int]:

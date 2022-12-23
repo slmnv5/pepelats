@@ -1,8 +1,8 @@
+import logging
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 
 from mvc.menucontrol import MenuControl, MenuLoader
-import logging
 
 
 class MidiControl(MenuControl):
@@ -28,10 +28,10 @@ class MidiControl(MenuControl):
 if __name__ == "__main__":
 
     def test():
-        from midi._utilport import MockMidiPort
+        from midi._utilport import ChargedMidiPort
         from multiprocessing.dummy.connection import Pipe
         recv_fake, send_fake = Pipe()
-        in_port = MockMidiPort()
+        in_port = ChargedMidiPort()
         in_port.charge({0.1: (60, 100), 0.2: (-60, 0), 1.2: (62, 1)})
         menu_loader = MenuLoader("config/menu", "play", "0")
         m_ctrl = MidiControl(in_port, send_fake, menu_loader)
