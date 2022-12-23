@@ -53,7 +53,9 @@ class SongPart(CollectionOwner[LoopSimple], Player):
 
 if __name__ == "__main__":
     def test():
-        c1 = OneLoopCtrl()
+        from drum.audiodrum import AudioDrum
+
+        c1 = OneLoopCtrl(AudioDrum())
         c1.__is_rec = True
         Timer(3, c1.stop_at_bound, args=[0]).start()
         l1 = SongPart(c1)

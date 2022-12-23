@@ -9,18 +9,17 @@ import rtmidi
 from drum._utildrum import load_midi, max_volume_midi
 from drum._utildrum import position_with_swing
 from drum.basedrum import ProtoDrum, SimpleDrum
-from utils.utilalsa import get_midi_out
 
 
 class LoadDrumMidi(SimpleDrum, ABC):
     """ Load JSON config for MIDI commands """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, out_port: rtmidi.MidiOut):
+        SimpleDrum.__init__(self)
         self._sounds: Dict[str, List[int]] = load_midi()
         self.max_volume = max_volume_midi(self._sounds)
         self._load_all()
-        self._out_port: rtmidi.MidiOut = get_midi_out()
+        self._out_port: rtmidi.MidiOut = out_port
 
     def __del__(self):
         self._out_port.close_port()
@@ -59,8 +58,8 @@ class LoadDrumMidi(SimpleDrum, ABC):
 class MidiDrum(LoadDrumMidi):
     """ MIDI Drum version sending configurable MIDI messages and sysex """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, out_port: rtmidi.MidiOut):
+        LoadDrumMidi.__init__(self, out_port)
 
     def __play_midi_pattern(self, pattern: Dict[int, List[List[int]]], pos1: int, pos2: int) -> None:
         for msg_lst in [pattern[x] for x in pattern if pos1 <= x < pos2]:
@@ -91,9 +90,10 @@ if __name__ == "__main__":
         from threading import Timer
         from utils.utilalsa import make_sin_sound
         from time import sleep
+        from drum.audiodrum import AudioDrum
 
         logging.basicConfig(level=logging.DEBUG)
-        ctrl = OneLoopCtrl()
+        ctrl = OneLoopCtrl(AudioDrum())
         drum = ctrl.get_drum()
 
         drum.prepare_drum(100_000)

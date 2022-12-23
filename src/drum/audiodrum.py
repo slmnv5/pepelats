@@ -79,7 +79,7 @@ if __name__ == "__main__":
         from utils.utilalsa import make_sin_sound
         from time import sleep
         logging.basicConfig(level=logging.DEBUG)
-        ctrl = OneLoopCtrl()
+        ctrl = OneLoopCtrl(AudioDrum())
         drum = ctrl.get_drum()
         drum.prepare_drum(100_000)
         sound = make_sin_sound(440, 7.1)

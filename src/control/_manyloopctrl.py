@@ -2,6 +2,7 @@ from threading import Thread, Event
 
 from buffer import LoopSimple
 from buffer import OneLoopCtrl
+from drum.basedrum import SimpleDrum
 from song import Song
 from song import SongPart
 from utils.config import MAX_LEN
@@ -11,9 +12,9 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
     """added playback thread and Song.
      Song is collection of song parts with related methods"""
 
-    def __init__(self):
+    def __init__(self, drum: SimpleDrum):
         self._play_event: Event = Event()
-        OneLoopCtrl.__init__(self)
+        OneLoopCtrl.__init__(self, drum)
         Song.__init__(self, SongPart(self))
         Thread(target=self.__playback, name="playback", daemon=True).start()
         self._file_finder.go_id(0)
@@ -134,9 +135,10 @@ if __name__ == "__main__":
     def test():
         from buffer._oneloopctrl import OneLoopCtrl
         from threading import Timer
+        from drum.audiodrum import AudioDrum
         import time
 
-        ctrl = ManyLoopCtrl()
+        ctrl = ManyLoopCtrl(AudioDrum())
         drum = ctrl.get_drum()
 
         drum.prepare_drum(100_000)

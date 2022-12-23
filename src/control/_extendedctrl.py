@@ -4,8 +4,12 @@ import traceback
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
 
-from buffer import OneLoopCtrl
+import rtmidi
+
 from control._manyloopctrl import ManyLoopCtrl
+from drum.audiodrum import AudioDrum
+from drum.basedrum import SimpleDrum
+from drum.mididrum import MidiDrum
 from song import SongPart
 from utils.config import SD_RATE
 from utils.msgprocessor import MsgProcessor
@@ -15,10 +19,14 @@ from utils.utilother import DrawInfo
 class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     """Adds screen connection, Mixer, looper commands"""
 
-    def __init__(self, recv_conn: Connection, send_conn: Connection):
-        ManyLoopCtrl.__init__(self)
+    def __init__(self, recv_conn: Connection, send_conn: Connection, out_port: rtmidi.MidiOut):
+        self._dr_a: SimpleDrum = AudioDrum()
+        ManyLoopCtrl.__init__(self, self._dr_a)
         MsgProcessor.__init__(self, recv_conn, send_conn)
 
+        self._dr_m: SimpleDrum = self._dr_a
+        if out_port and out_port.is_port_open():
+            self._dr_m = MidiDrum(out_port)
         self.__draw_info = DrawInfo()
 
     def _redraw(self) -> None:
@@ -81,80 +89,86 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         os.system("git pull --ff-only")
 
     def _drum_midi(self) -> None:
-        OneLoopCtrl._drum_midi(self)
+        self._set_drum(self._dr_m)
 
     def _drum_audio(self) -> None:
-        OneLoopCtrl._drum_audio(self)
+        self._set_drum(self._dr_a)
 
-    #  ============ All song parts view and related commands
 
-    def _clear_part(self) -> None:
-        if self.id == self.fixed_id:
-            return
-        part = self.get_item()
-        if part.is_empty:
-            return
-        self.set_item(SongPart(self))
-        self.go_id(self.fixed_id)
+#  ============ All song parts view and related commands
 
-    def _duplicate_part(self) -> None:
-        if self.id != self.fixed_id:
-            return
-        part = self.get_item()
-        if part.is_empty:
-            return
-        empty = self.find_first(lambda x: x.is_empty)
-        if not empty:
-            return
-        part.apply_to_each(lambda x: empty.attach(x))
-        empty.go_id(0)
-        empty.delete()
+def _clear_part(self) -> None:
+    if self.id == self.fixed_id:
+        return
+    part = self.get_item()
+    if part.is_empty:
+        return
+    self.set_item(SongPart(self))
+    self.go_id(self.fixed_id)
 
-    def _undo_part(self) -> None:
-        was_rec = self.get_is_rec()
+
+def _duplicate_part(self) -> None:
+    if self.id != self.fixed_id:
+        return
+    part = self.get_item()
+    if part.is_empty:
+        return
+    empty = self.find_first(lambda x: x.is_empty)
+    if not empty:
+        return
+    part.apply_to_each(lambda x: empty.attach(x))
+    empty.go_id(0)
+    empty.delete()
+
+
+def _undo_part(self) -> None:
+    was_rec = self.get_is_rec()
+    self.set_is_rec(False)
+    part = self.get_fixed()
+    if not was_rec:
+        part.undo()
+    else:
+        part.delete()
+
+
+def _redo_part(self) -> None:
+    self.set_is_rec(False)
+    part = self.get_fixed()
+    part.redo()
+
+
+def _redo_all(self) -> None:
+    if self.id != self.fixed_id:
+        return
+    self.set_is_rec(False)
+    part = self.get_fixed()
+    while part.redo():
+        pass
+
+
+#  ================= One song part view and related commands
+
+def _change_loop(self, *params) -> None:
+    if self.get_is_rec():
         self.set_is_rec(False)
-        part = self.get_fixed()
-        if not was_rec:
-            part.undo()
-        else:
-            part.delete()
 
-    def _redo_part(self) -> None:
-        self.set_is_rec(False)
-        part = self.get_fixed()
-        part.redo()
-
-    def _redo_all(self) -> None:
-        if self.id != self.fixed_id:
-            return
-        self.set_is_rec(False)
-        part = self.get_fixed()
-        while part.redo():
-            pass
-
-    #  ================= One song part view and related commands
-
-    def _change_loop(self, *params) -> None:
-        if self.get_is_rec():
-            self.set_is_rec(False)
-
-        part = self.get_fixed()
-        if params[0] == "prev":
-            part.iterate(False)
-        elif params[0] == "next":
-            part.iterate(True)
-        elif params[0] == "delete":
-            part.delete()
-        elif params[0] == "silent":
-            loop = part.get_item()
-            loop.flip_silent()
-        elif params[0] == "reverse":
-            loop = part.get_item()
-            loop.flip_reverse()
-        elif params[0] == "move" and part.id:
-            deleted = part.delete()
-            if deleted:
-                part.attach(deleted)
+    part = self.get_fixed()
+    if params[0] == "prev":
+        part.iterate(False)
+    elif params[0] == "next":
+        part.iterate(True)
+    elif params[0] == "delete":
+        part.delete()
+    elif params[0] == "silent":
+        loop = part.get_item()
+        loop.flip_silent()
+    elif params[0] == "reverse":
+        loop = part.get_item()
+        loop.flip_reverse()
+    elif params[0] == "move" and part.id:
+        deleted = part.delete()
+        if deleted:
+            part.attach(deleted)
 
 
 if __name__ == "__main__":

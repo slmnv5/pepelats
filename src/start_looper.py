@@ -6,6 +6,8 @@ from multiprocessing import Pipe, Process
 from multiprocessing import connection
 from typing import Union
 
+import rtmidi
+
 from control import ExtendedCtrl
 from mvc.controlfactory import ControlFactory
 from mvc.menucontrol import MenuLoader
@@ -43,8 +45,8 @@ logging.critical("=============Starting log==============")
 
 
 # noinspection PyBroadException
-def do_looper(recv_looper: connection.Connection, send_view: connection.Connection) -> None:
-    looper = ExtendedCtrl(recv_looper, send_view)
+def do_looper(recv_looper: connection.Connection, send_view: connection.Connection, out_port: rtmidi.MidiOut) -> None:
+    looper = ExtendedCtrl(recv_looper, send_view, out_port)
     looper.process_messages()
 
 
