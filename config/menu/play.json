@@ -40,10 +40,15 @@
     "update_method": "_show_one_part",
     "60:100": "[go_up]",
     "62:100": "[go_dn]",
-    "65:100": "[silent]",
+    "64:1": "[vol_dn]",
+    "64:2": "[vol_up]",
+    "65:1": "[silent]",
     "65:2": "[reverse]",
     "65:3": "[move]",
     "65:6": "[delete]",
+
+    "[vol_dn]": [["_loop_volume", 0.9], ["_redraw"]],
+    "[vol_up]": [["_loop_volume", 1.1], ["_redraw"]],
 
     "[go_up]": [["_change_loop", -1], ["_redraw"]],
     "[go_dn]": [["_change_loop", 1], ["_redraw"]],

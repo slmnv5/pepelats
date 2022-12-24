@@ -17,23 +17,25 @@
  "0": {
     "description": "drum: A1-[go_up] B1-[go_dn] D2-[load]",
     "update_method": "_show_drum_name",
-    "60:1": [["_change_drum_name", -1], ["_redraw"]],
-    "[go_dn]": [["_change_drum_name", -1], ["_redraw"]],
-    "62:1": [["_change_drum_name", 1], ["_redraw"]],
+    "60:100": "[go_up]",
+    "62:100": "[go_dn]",
+    "65:2": "[load]",
+
     "[go_up]": [["_change_drum_name", 1], ["_redraw"]],
-    "65:2": [["_load_drum_name"], ["_change_map", "play", "0"]],
+    "[go_dn]": [["_change_drum_name", -1], ["_redraw"]],
     "[load]": [["_load_drum_name"], ["_change_map", "play", "0"]]
  },
   "1": {
     "description": "drum: A1-[volume_dn] A2-[volume_up] B1-[swing_dn] B2-[swing_up]",
     "update_method": "_show_drum_param",
-    "60:1": [["_change_drum_volume", 0.8], ["_redraw"]],
+    "60:1": "[volume_dn]",
+    "60:2": "[volume_up]",
+    "62:1": "[volume_dn]",
+    "62:2": "[volume_up]",
+
     "[volume_dn]": [["_change_drum_volume", 0.8], ["_redraw"]],
-    "60:2": [["_change_drum_volume", 1.2], ["_redraw"]],
     "[volume_up]": [["_change_drum_volume", 1.2], ["_redraw"]],
-    "62:1": [["_change_drum_swing", -0.05], ["_redraw"]],
     "[swing_dn]": [["_change_drum_swing", -0.05], ["_redraw"]],
-    "62:2": [["_change_drum_swing", 0.05], ["_redraw"]],
     "[swing_up]": [["_change_drum_swing", 0.05], ["_redraw"]]
   }
 }

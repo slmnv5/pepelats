@@ -2,7 +2,7 @@ import logging
 
 import numpy as np
 
-from utils.config import MAX_LEN, SD_MAX
+from utils.config import MAX_LEN, SD_MAX, SD_TYPE
 from utils.utilalsa import make_zero_buffer, play_sound_buff, record_sound_buff
 
 
@@ -42,8 +42,11 @@ class WrapBuffer:
     def is_empty(self) -> bool:
         return len(self.__buff) == MAX_LEN
 
-    def zero_buff(self):
+    def zero_buff(self) -> None:
         self.__buff[:] = 0
+
+    def multiply_buff(self, chg_factor: float) -> None:
+        self.__buff = (self.__buff * chg_factor).astype(SD_TYPE)
 
     def resize_buff(self, length: int) -> None:
         diff = length - len(self.__buff)
