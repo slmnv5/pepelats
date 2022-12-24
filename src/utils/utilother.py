@@ -38,11 +38,9 @@ class CollectionOwner(Generic[T]):
         self.__id: int = 0
         self._collection_str: str = ""
 
-    @property
     def item_count(self) -> int:
         return len(self.__items)
 
-    @property
     def get_id(self) -> int:
         return self.__id
 
@@ -58,7 +56,7 @@ class CollectionOwner(Generic[T]):
         return next((x for x in self.__items if method(x)), None)
 
     def delete(self) -> T:
-        if self.item_count <= 1:
+        if self.item_count() <= 1:
             return None
         item = self.__items.pop(self.__id)
         self._collection_str = ""
@@ -66,7 +64,7 @@ class CollectionOwner(Generic[T]):
         return item
 
     def undo(self) -> bool:
-        if self.item_count <= 1:
+        if self.item_count() <= 1:
             return False
         item = self.__items.pop()
         self.__id = 0
@@ -126,10 +124,10 @@ class CollectionOwner(Generic[T]):
 
     def iterate(self, go_fwd: bool) -> None:
         self.__id += 1 if go_fwd else -1
-        if self.__id >= self.item_count:
+        if self.__id >= self.item_count():
             self.__id = 0
         if self.__id < 0:
-            self.__id = self.item_count - 1
+            self.__id = self.item_count() - 1
 
     def __str__(self):
         return f"{len(self.__items):02}/{len(self.__undo):02}"
@@ -261,7 +259,7 @@ if __name__ == "__main__":
 
     def test2():
         ff = FileFinder(".", True, "")
-        for k in range(ff.item_count):
+        for k in range(ff.item_count()):
             print(ff.get_item())
             ff.iterate(True)
         print("================")
@@ -274,7 +272,7 @@ if __name__ == "__main__":
     def test3():
         ff = FileFinder(".", True, ".lkjlkjhkj")
         assert "" == ff.get_item()
-        assert 1 == ff.item_count
+        assert 1 == ff.item_count()
 
 
     test1()

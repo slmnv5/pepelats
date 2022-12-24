@@ -32,7 +32,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
     def _init_song(self) -> None:
         self._stop_song()
         Song.__init__(self, SongPart(self))
-        while self.item_count < 4:
+        while self.item_count() < 4:
             self.attach(SongPart(self))
 
         self._name = ""
@@ -61,7 +61,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             self.stop_at_bound(0)
 
     def _record_part(self):
-        if self.get_id == self.fixed_id and self.get_is_rec():
+        if self.get_id() == self.fixed_id and self.get_is_rec():
             part = self.get_fixed()
             loop = part.get_item()
             if not loop.is_empty:
@@ -73,7 +73,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             self._play_event.set()
             return
 
-        if pid != self.get_id:
+        if pid != self.get_id():
             self.set_id(pid)
             self._stop_never()
             if pid == self.fixed_id:
@@ -81,15 +81,15 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
 
         part = self.get_fixed()
         loop = part.get_item()
-        if part.get_id > 0 and self.get_is_rec() and loop.is_empty:
+        if part.get_id() > 0 and self.get_is_rec() and loop.is_empty:
             loop.finalize(self.idx, part.length)
 
-        if self.get_id == self.fixed_id:
+        if self.get_id() == self.fixed_id:
             if self.get_is_rec():
                 self.set_is_rec(False)
             else:
                 part.attach(LoopSimple(self, part.length))
-                part.set_id(part.item_count - 1)
+                part.set_id(part.item_count() - 1)
                 self.set_is_rec(True)
 
         self.__stop_quantized()
@@ -104,7 +104,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             else:
                 self.stop_at_bound(self.get_drum().get_length())
         else:
-            if self.get_id != self.fixed_id:
+            if self.get_id() != self.fixed_id:
                 if self.is_stop_len_set():
                     self.stop_at_bound(self.get_drum().get_length())
                 else:
