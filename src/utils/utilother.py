@@ -36,7 +36,6 @@ class CollectionOwner(Generic[T]):
         self.__items.append(first)
         self.__undo: List[T] = []
         self.__id: int = 0
-        self._collection_str: str = ""
 
     def item_count(self) -> int:
         return len(self.__items)
@@ -59,7 +58,6 @@ class CollectionOwner(Generic[T]):
         if self.item_count() <= 1:
             return None
         item = self.__items.pop(self.__id)
-        self._collection_str = ""
         self.__id = 0
         return item
 
@@ -69,7 +67,6 @@ class CollectionOwner(Generic[T]):
         item = self.__items.pop()
         self.__id = 0
         self.__undo.append(item)
-        self._collection_str = ""
         return True
 
     def redo(self) -> bool:
@@ -77,7 +74,6 @@ class CollectionOwner(Generic[T]):
             return False
         item = self.__undo.pop()
         self.__items.append(item)
-        self._collection_str = ""
         return True
 
     def get_first(self) -> T:
@@ -92,7 +88,6 @@ class CollectionOwner(Generic[T]):
         if item not in self.__items:
             self.__items.append(item)
         self.__undo.clear()
-        self._collection_str = ""
         self.__id = self.__items.index(item)
 
     def get_item(self) -> T:
