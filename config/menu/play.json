@@ -1,21 +1,21 @@
 {
   "default_config": {
     "description": "[menu] [song] [param] [next]",
-    "12:1": ["_change_drum"],
-    "12:2": ["_change_drum_intensity", -1],
-    "12:3": ["_change_drum_intensity", 1],
-    "12:6": ["_change_map", "", "next"],
-    "13:1": [["_undo_part"], ["_redraw"]],
-    "13:2": [["_redo_part"], ["_redraw"]],
-    "13:3": [["_redo_all"], ["_redraw"]],
-    "13:6": ["_change_map", "song", "0" ],
-    "13:7": [["_duplicate_part"], ["_redraw"]],
     "[prev]": ["_change_map", "", "prev"],
     "[next]": ["_change_map", "", "next"],
     "[song]": ["_change_map", "song", "0"],
     "[param]": ["_change_map", "param", "0"],
     "[play]": ["_change_map", "play", "0"],
-    "[menu]": ["_change_map", "menu", "0"]
+    "[menu]": ["_change_map", "menu", "0"],
+    "12:6": "[next]",
+    "13:6": "[song]",
+    "12:1": ["_change_drum"],
+    "12:2": ["_change_drum_intensity", -1],
+    "12:3": ["_change_drum_intensity", 1],
+    "13:1": [["_undo_part"], ["_redraw"]],
+    "13:2": [["_redo_part"], ["_redraw"]],
+    "13:3": [["_redo_all"], ["_redraw"]],
+    "13:7": [["_duplicate_part"], ["_redraw"]]
   },
   "0": {
     "description": "all parts: A/B/C/D-play/record",
@@ -34,19 +34,19 @@
     "65:6": [["_clear_part"], ["_redraw"]]
   },
   "1": {
-    "description": "one part: A1-[go_up] B1-[go_dn] D1-[silent] D2-[reverse] D3-[move] DH-delete",
+    "description": "one part: A1-[go_up] B1-[go_dn] C1-[vol_up] C2-[vol_dn] D1-[silent] D2-[reverse] D3-[move] DH-delete",
     "update_method": "_show_one_part",
-    "60:1": [["_change_loop", -1], ["_redraw"]],
-    "go_up": [["_change_loop", -1], ["_redraw"]],
-    "62:1": [["_change_loop", 1], ["_redraw"]],
-    "go_dn": [["_change_loop", 1], ["_redraw"]],
-    "64:1": [["_edit_loop", "reverse"], ["_redraw"]],
-    "[reverse]": [["_edit_loop", "reverse"], ["_redraw"]],
-    "65:1": [["_edit_loop", "silent"], ["_redraw"]],
+    "60:100": "[go_up]",
+    "62:100": "[go_dn]",
+    "65:100": "[silent]",
+    "65:2": "[reverse]",
+    "65:3": "[move]",
+    "65:6": "[delete]",
+    "[go_up]": [["_change_loop", -1], ["_redraw"]],
+    "[go_dn]": [["_change_loop", 1], ["_redraw"]],
     "[silent]": [["_edit_loop", "silent"], ["_redraw"]],
-    "65:2": [["_edit_loop", "move"], ["_redraw"]],
-    "move": [["_edit_loop", "move"], ["_redraw"]],
-    "65:6": [["_edit_loop", "delete"], ["_redraw"]],
-    "delete": [["_edit_loop", "delete"], ["_redraw"]]
+    "[reverse]": [["_edit_loop", "reverse"], ["_redraw"]],
+    "[move]": [["_edit_loop", "move"], ["_redraw"]],
+    "[delete]": [["_edit_loop", "delete"], ["_redraw"]]
   }
 }
