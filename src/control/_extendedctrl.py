@@ -114,16 +114,16 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     #  ============ All song parts view and related commands
 
     def _clear_part(self) -> None:
-        if self.get_id() == self.fixed_id:
+        if self.get_id() == self.fixed_id():
             return
         part = self.get_item()
         if part.is_empty:
             return
         self.set_item(SongPart(self))
-        self.set_id(self.fixed_id)
+        self.set_id(self.fixed_id())
 
     def _duplicate_part(self) -> None:
-        if self.get_id() != self.fixed_id:
+        if self.get_id() != self.fixed_id():
             return
         part = self.get_item()
         if part.is_empty:
@@ -150,7 +150,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         part.redo()
 
     def _redo_all(self) -> None:
-        if self.get_id() != self.fixed_id:
+        if self.get_id() != self.fixed_id():
             return
         self.set_is_rec(False)
         part = self.get_fixed()

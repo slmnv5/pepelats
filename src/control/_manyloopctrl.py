@@ -61,7 +61,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             self.stop_at_bound(0)
 
     def _record_part(self):
-        if self.get_id() == self.fixed_id and self.get_is_rec():
+        if self.get_id() == self.fixed_id() and self.get_is_rec():
             part = self.get_fixed()
             loop = part.get_item()
             if not loop.is_empty:
@@ -76,7 +76,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         if pid != self.get_id():
             self.set_id(pid)
             self._stop_never()
-            if pid == self.fixed_id:
+            if pid == self.fixed_id():
                 return
 
         part = self.get_fixed()
@@ -84,7 +84,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         if part.get_id() > 0 and self.get_is_rec() and loop.is_empty:
             loop.finalize(self.idx, part.length)
 
-        if self.get_id() == self.fixed_id:
+        if self.get_id() == self.fixed_id():
             if self.get_is_rec():
                 self.set_is_rec(False)
             else:
@@ -104,7 +104,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             else:
                 self.stop_at_bound(self.get_drum().get_length())
         else:
-            if self.get_id() != self.fixed_id:
+            if self.get_id() != self.fixed_id():
                 if self.is_stop_len_set():
                     self.stop_at_bound(self.get_drum().get_length())
                 else:

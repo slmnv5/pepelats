@@ -147,19 +147,6 @@ class CollectionOwnerExt(CollectionOwner[T]):
         self.attach(item)
         self.__fixed = item
 
-    def undo(self) -> bool:
-        assert False, "This method should not run"
-        return False
-
-    def redo(self) -> bool:
-        assert False, "This method should not run"
-        return False
-
-    def delete(self) -> T:
-        assert False, "This method should not run"
-        return False
-
-    @property
     def fixed_id(self) -> int:
         return self.find_item(self.__fixed)
 
