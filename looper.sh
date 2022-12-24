@@ -14,7 +14,7 @@ export SD_RATE=44100
 # Use this MIDI port as input
 export PEDAL_PORT_NAME='BlueBoard'
 # Use this MIDI port as clock output
-export CLOCK_PORT_NAME='Sshpadnew'
+export CLOCK_PORT_NAME='Play mk3' # 'Sshpadnew'
 # use this frame buffer if there are few, only Linux
 FRAME_BUFFER_ID=1
 
