@@ -13,7 +13,7 @@ class LoopSimple(Player):
     Or init drum of correct length if drum is empty"""
 
     def __init__(self, ctrl: OneLoopCtrl, length: int = MAX_LEN):
-        super().__init__(ctrl, length)
+        Player.__init__(self, ctrl, length)
 
     def _play_samples(self, out_data: np.ndarray, idx: int) -> None:
         self.get_drum().play_drums(out_data, idx)
@@ -43,11 +43,14 @@ class LoopSimple(Player):
         self._ctrl = None
 
     def __str__(self):
-        if not self.get_drum().get_length() or self.is_empty:
+        drum_len = self.get_drum().get_length()
+        if not drum_len or self.is_empty:
             return "---------"
-        if not self._buffer_str:
-            self._buffer_str = f"{self.length // self.get_drum().get_length():02} V:{self.volume:.2F} " \
-                        f"{self._show_properties()}"
+        if self._buffer_str:
+            return self._buffer_str
+
+        self._buffer_str = f"{self.length // drum_len:02} V:{self.volume:.2F} " \
+                           f"{self._show_properties()}"
         return self._buffer_str
 
 

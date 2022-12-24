@@ -103,8 +103,10 @@ class CollectionOwner(Generic[T]):
 
     def get_str(self, fixed: T = None) -> str:
         item_sub_list, id_sub_list = get_stable_list(self.__id, self.__items, 5)
+        assert len(item_sub_list) > 0 and len(id_sub_list) > 0
         fixed_id = -1
-        if fixed and fixed in self.__items:
+        if fixed:
+            assert fixed in self.__items
             fixed_id = self.__items.index(fixed)
 
         result: str = ""
