@@ -22,7 +22,6 @@
     "64:2": [["_drum_audio"], ["_change_map", "0", "play"]],
     "[drum_audio]": [["_drum_audio"], ["_change_map", "0", "play"]],
     "65:2": [["_drum_midi"], ["_change_map", "0", "play"]],
-    "[drum_midi]": [["_drum_midi"], ["_change_map", "0", "play"]],
-    "65:2": [["_load_drum_name"], ["_change_map", "0", "play"]]
+    "[drum_midi]": [["_drum_midi"], ["_change_map", "0", "play"]]
   }
 }

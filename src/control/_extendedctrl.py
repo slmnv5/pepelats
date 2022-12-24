@@ -160,22 +160,16 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     #  ================= One song part view and related commands
 
     def _change_loop(self, *params) -> None:
-        if self.get_is_rec():
-            self.set_is_rec(False)
+        self.get_fixed().iterate(params[0] > 0)
 
+    def _edit_loop(self, *params) -> None:
         part = self.get_fixed()
-        if params[0] == "prev":
-            part.iterate(False)
-        elif params[0] == "next":
-            part.iterate(True)
-        elif params[0] == "delete":
+        if params[0] == "delete":
             part.delete()
         elif params[0] == "silent":
-            loop = part.get_item()
-            loop.flip_silent()
+            part.get_item().flip_silent()
         elif params[0] == "reverse":
-            loop = part.get_item()
-            loop.flip_reverse()
+            part.get_item().flip_reverse()
         elif params[0] == "move" and part.get_id():
             deleted = part.delete()
             if deleted:
