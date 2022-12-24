@@ -42,8 +42,8 @@ class MenuLoader:
         except KeyError:
             return ""
 
-    def change_map(self, new_id: str, new_name: str) -> None:
-        logging.debug(f"{self.__class__.__name__} change_map: {new_id}, {new_name}")
+    def change_map(self, new_name: str, new_id: str) -> None:
+        logging.debug(f"{self.__class__.__name__} change_map: {new_name} {new_id}")
         if new_name and new_id not in ["prev", "next"]:
             self.__map_name = new_name
         if new_id in ["prev", "next"]:
