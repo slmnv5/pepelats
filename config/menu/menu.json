@@ -8,8 +8,8 @@
     "[menu]": ["_change_map", "menu", "0"],
     "[play]": ["_change_map", "play", "0"],
 
-    "12:1": ["prev"],
-    "13:1": ["next"],
+    "12:1": "[prev]",
+    "13:1": "[next]",
 
     "12:6": "[play]",
     "13:6": "[song]"

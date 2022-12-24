@@ -162,6 +162,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     def _loop_volume(self, chg_factor: float):
         loop = self.get_fixed().get_item()
         loop.multiply_buff(chg_factor)
+        loop._collection_str = ""
 
     def _change_loop(self, *params) -> None:
         self.get_fixed().iterate(params[0] > 0)
