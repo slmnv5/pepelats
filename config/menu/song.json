@@ -1,30 +1,30 @@
 {
   "default_config": {
     "description": "Parent for below",
-    "12:1": ["_change_map", "prev", ""],
-    "13:1": ["_change_map", "next", ""],
-    "12:6": ["_change_map", "0", "play"],
-    "13:6": ["_change_map", "0", "param"],
-    "[prev]": ["_change_map", "prev", ""],
-    "[next]": ["_change_map", "next", ""],
-    "[song]": ["_change_map", "0", "song"],
-    "[param]": ["_change_map", "0", "param"],
-    "[play]": ["_change_map", "0", "play"],
-    "[menu]": ["_change_map", "0", "menu"]
+    "12:1": ["_change_map", "", "prev"],
+    "13:1": ["_change_map", "", "next"],
+    "12:6": ["_change_map", "play", "0"],
+    "13:6": ["_change_map", "param", "0"],
+    "[prev]": ["_change_map", "", "prev"],
+    "[next]": ["_change_map", "", "next"],
+    "[song]": ["_change_map", "song", "0"],
+    "[param]": ["_change_map", "param", "0"],
+    "[play]": ["_change_map", "play", "0"],
+    "[menu]": ["_change_map", "menu", "0"]
   },
   "0": {
     "description": "[play] [menu] song: A1-[stop_now] B1-[stop_end] C2-[save_song] CH-[save_new] D2-[init]",
     "update_method": "",
-    "60:1": [["_stop_song", 0], ["_change_map", "0", "play"]],
-    "[stop_now]": [["_stop_song", 0], ["_change_map", "0", "play"]],
-    "62:1": [["_stop_song", 1], ["_change_map", "0", "play"]],
-    "[stop_end]": [["_stop_song", 1], ["_change_map", "0", "play"]],
-    "64:2": [["_save_song"], ["_change_map", "0", "play"]],
-    "save_song": [["_save_song"], ["_change_map", "0", "play"]],
-    "64:6": [["_save_new_song"], ["_change_map", "0", "play"]],
-    "[save_new]": [["_save_new_song"], ["_change_map", "0", "play"]],
-    "65:2": [["_init_song"], ["_change_map", "0", "play"]],
-    "[init]": [["_init_song"], ["_change_map", "0", "play"]]
+    "60:1": [["_stop_song", 0], ["_change_map", "play", "0"]],
+    "[stop_now]": [["_stop_song", 0], ["_change_map", "play", "0"]],
+    "62:1": [["_stop_song", 1], ["_change_map", "play", "0"]],
+    "[stop_end]": [["_stop_song", 1], ["_change_map", "play", "0"]],
+    "64:2": [["_save_song"], ["_change_map", "play", "0"]],
+    "save_song": [["_save_song"], ["_change_map", "play", "0"]],
+    "64:6": [["_save_new_song"], ["_change_map", "play", "0"]],
+    "[save_new]": [["_save_new_song"], ["_change_map", "play", "0"]],
+    "65:2": [["_init_song"], ["_change_map", "play", "0"]],
+    "[init]": [["_init_song"], ["_change_map", "play", "0"]]
   },
   "1": {
     "description": "[play] [menu] song: A1-[go_up] B1-[go_dn] D2-[load] DH-[delete]",
@@ -33,8 +33,8 @@
     "[go_up]": [["_change_song", -1], ["_redraw"]],
     "62:100": [["_change_song", 1], ["_redraw"]],
     "[go_dn]": [["_change_song", 1], ["_redraw"]],
-    "65:2": [["_load_song"], ["_change_map", "0", "play"]],
-    "[load]": [["_load_song"], ["_change_map", "0", "play"]],
+    "65:2": [["_load_song"], ["_change_map", "play", "0"]],
+    "[load]": [["_load_song"], ["_change_map", "play", "0"]],
     "65:6": [["_delete_song"], ["_redraw"]],
     "[delete]": [["_delete_song"], ["_redraw"]]
   }
