@@ -36,7 +36,7 @@
     "65:6": [["_clear_part"], ["_redraw"]]
   },
   "1": {
-    "description": "one part: A1-[go_up] B1-[go_dn] C1-[vol_up] C2-[vol_dn] D1-[silent] D2-[reverse] D3-[move] DH-delete",
+    "description": "one part: A1-[go_up] B1-[go_dn] C1-[vol_dn] C2-[vol_up] D1-[silent] D2-[reverse] D3-[move] DH-delete",
     "update_method": "_show_one_part",
     "60:100": "[go_up]",
     "62:100": "[go_dn]",
@@ -47,8 +47,8 @@
     "65:3": "[move]",
     "65:6": "[delete]",
 
-    "[vol_dn]": [["_loop_volume", 0.9], ["_redraw"]],
-    "[vol_up]": [["_loop_volume", 1.1], ["_redraw"]],
+    "[vol_dn]": [["_loop_volume", 0.88], ["_redraw"]],
+    "[vol_up]": [["_loop_volume", 1.12], ["_redraw"]],
 
     "[go_up]": [["_change_loop", -1], ["_redraw"]],
     "[go_dn]": [["_change_loop", 1], ["_redraw"]],

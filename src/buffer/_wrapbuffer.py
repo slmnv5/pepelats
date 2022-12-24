@@ -44,9 +44,11 @@ class WrapBuffer:
 
     def zero_buff(self) -> None:
         self.__buff[:] = 0
+        self._buffer_str = ""
 
     def multiply_buff(self, chg_factor: float) -> None:
         self.__buff = (self.__buff * chg_factor).astype(SD_TYPE)
+        self._buffer_str = ""
 
     def resize_buff(self, length: int) -> None:
         diff = length - len(self.__buff)
