@@ -4,7 +4,7 @@
 pkill looper.sh
 pkill conv_midi.sh
 pkill python
-pkill mimap5
+
 
 
 

@@ -19,7 +19,7 @@ def get_midi_in() -> Optional[rtmidi.MidiIn]:
         midi_in, _ = open_midiinput(port_name, interactive=False)  # may throw
         return midi_in
     except Exception:
-        logging.error(f"Cannot open port MIDI IN: {port_name}, using FakePort")
+        logging.error(f"Cannot open port MIDI IN: {port_name}")
         return None
 
 
@@ -30,7 +30,7 @@ def get_midi_out() -> Optional[rtmidi.MidiOut]:
         midi_out, _ = open_midioutput(port_name, interactive=False)
         return midi_out
     except Exception:
-        logging.error(f"Cannot open port MIDI OUT: {port_name}, using FakePort")
+        logging.error(f"Cannot open port MIDI OUT: {port_name}")
         return None
 
 
