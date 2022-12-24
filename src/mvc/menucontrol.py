@@ -82,10 +82,14 @@ class MenuControl:
 
     def _send(self, cmd: str) -> None:
         # map note to command in JSON menu files
-        cmd = self._menu_loader.get(cmd)
-        if cmd:
-            self.__process_list(cmd)
-            logging.info(f"{self.__class__.__name__} sent command: {cmd}")
+        cmd1 = self._menu_loader.get(cmd)
+        if cmd1 and isinstance(cmd1, str):
+            cmd1 = self._menu_loader.get(cmd1)
+        if isinstance(cmd1, list):
+            self.__process_list(cmd1)
+            logging.info(f"{self.__class__.__name__} sent command: {cmd1}")
+        else:
+            logging.error(f"{self.__class__.__name__} incorrect commands in munu: {cmd}, {cmd1}")
 
     def __process_list(self, cmd: list) -> None:
         if not cmd:

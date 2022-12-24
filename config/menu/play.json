@@ -7,8 +7,10 @@
     "[param]": ["_change_map", "param", "0"],
     "[play]": ["_change_map", "play", "0"],
     "[menu]": ["_change_map", "menu", "0"],
+
     "12:6": "[next]",
     "13:6": "[song]",
+
     "12:1": ["_change_drum"],
     "12:2": ["_change_drum_intensity", -1],
     "12:3": ["_change_drum_intensity", 1],
@@ -42,6 +44,7 @@
     "65:2": "[reverse]",
     "65:3": "[move]",
     "65:6": "[delete]",
+
     "[go_up]": [["_change_loop", -1], ["_redraw"]],
     "[go_dn]": [["_change_loop", 1], ["_redraw"]],
     "[silent]": [["_edit_loop", "silent"], ["_redraw"]],
