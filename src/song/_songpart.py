@@ -27,11 +27,11 @@ class SongPart(CollectionOwner[LoopSimple], Player):
 
     @property
     def is_empty(self) -> bool:
-        return self.get_id(0).is_empty
+        return self.get_first().is_empty
 
     @property
     def length(self) -> int:
-        return self.get_id(0).length
+        return self.get_first().length
 
     def _play_samples(self, out_data: np.ndarray, idx: int) -> None:
         self.get_drum().play_drums(out_data, idx)
@@ -45,7 +45,7 @@ class SongPart(CollectionOwner[LoopSimple], Player):
         if not self.get_drum().get_length() or self.is_empty:
             return "---------"
         if not self._collection_str:
-            first = self.get_id(0)
+            first = self.get_first()
             self._collection_str = f"L:{first.length // self.get_drum().get_length():02} " \
                                    f"V:{first.volume:.2F} {CollectionOwner.__str__(self)}"
         return self._collection_str

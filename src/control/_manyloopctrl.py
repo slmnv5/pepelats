@@ -36,7 +36,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             self.attach(SongPart(self))
 
         self._name = ""
-        self.set_fixed(self.get_id(0))
+        self.set_fixed(self.get_first())
         self.get_drum().clear_drum()
 
     def __playback(self) -> None:

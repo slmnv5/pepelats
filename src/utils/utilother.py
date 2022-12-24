@@ -85,8 +85,8 @@ class CollectionOwner(Generic[T]):
     def go_id(self, k: int) -> None:
         self.__id = k
 
-    def get_id(self, k: int) -> T:
-        return self.__items[k]
+    def get_first(self) -> T:
+        return self.__items[0]
 
     def find_item(self, item: T) -> int:
         return self.__items.index(item)
