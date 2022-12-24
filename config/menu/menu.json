@@ -15,8 +15,8 @@
   "0": {
     "description": "[play] [song] A2-[update] B2-[restart] C2-[drum_audio] D2-[drum_midi]",
     "update_method": "",
-    "60:2": ["_check_updates"],
-    "[update]": ["_check_updates"],
+    "60:2": [["_check_updates"],["_redraw"]],
+    "[update]": [["_check_updates"],["_redraw"]],
     "62:2": ["_restart_looper"],
     "[restart]": ["_restart_looper"],
     "64:2": [["_drum_audio"], ["_change_map", "play", "0"]],

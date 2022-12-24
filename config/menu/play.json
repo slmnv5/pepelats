@@ -3,7 +3,7 @@
     "12:1": ["_change_drum"],
     "12:2": ["_change_drum_intensity", -1],
     "12:3": ["_change_drum_intensity", 1],
-    "12:6": ["_change_map", "play", "0"],
+    "12:6": ["_change_map", "", "next"],
     "13:1": [["_undo_part"], ["_redraw"]],
     "13:2": [["_redo_part"], ["_redraw"]],
     "13:3": [["_redo_all"], ["_redraw"]],
