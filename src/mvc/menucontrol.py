@@ -26,13 +26,15 @@ class MenuLoader:
             logging.info(f"Loading control config from {file}")
             loader = JsonDict(file)
             default_dic = loader.get(ConfigName.default_config, dict())
-            dic1 = dict()
+            dic1: Dict[str, Dict] = dict()
 
             for key in [x for x in loader.dic() if x not in [ConfigName.default_config, ConfigName.comment]]:
-                value = loader.get(key, None)
-                assert type(value) == dict, f"Must be dictionary key={key} in file {item}"
-                assert len(value) > 0, f"Dictionary must be non empty key={key} in file {item}"
-                dic1[key] = dict(default_dic, **value)
+                dic2 = loader.get(key, None)
+                assert type(dic2) == dict, f"Must be dictionary key={key} in file {item}"
+                assert len(dic2) > 0, f"Dictionary must be non empty key={key} in file {item}"
+                description: str = default_dic.get("description", "") + " " + dic2.get("description", "")
+                dic1[key] = dict(default_dic, **dic2)
+                dic1[key]["description"] = description
 
             self.__items[item] = dic1
 

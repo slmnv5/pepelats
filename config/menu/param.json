@@ -1,6 +1,6 @@
 {
   "default_config": {
-    "description": "Parent for below",
+    "description": "[play] [menu]",
     "12:1": ["_change_map", "", "prev"],
     "13:1": ["_change_map", "", "next"],
     "12:6": ["_change_map", "play", "0"],
@@ -13,7 +13,7 @@
     "[menu]": ["_change_map", "menu", "0"]
   },
  "0": {
-    "description": "[play] [menu] drum: A1-[go_up] B1-[go_dn] D2-[load]",
+    "description": "drum: A1-[go_up] B1-[go_dn] D2-[load]",
     "update_method": "_show_drum_name",
     "60:1": [["_change_drum_name", -1], ["_redraw"]],
     "[go_dn]": [["_change_drum_name", -1], ["_redraw"]],
@@ -23,7 +23,7 @@
     "[load]": [["_load_drum_name"], ["_change_map", "play", "0"]]
  },
   "1": {
-    "description": "[play] [menu] drum: A1-[volume_dn] A2-[volume_up] B1-[swing_dn] B2-[swing_up]",
+    "description": "drum: A1-[volume_dn] A2-[volume_up] B1-[swing_dn] B2-[swing_up]",
     "update_method": "_show_drum_param",
     "60:1": [["_change_drum_volume", 0.8], ["_redraw"]],
     "[volume_dn]": [["_change_drum_volume", 0.8], ["_redraw"]],
