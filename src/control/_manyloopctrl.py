@@ -17,7 +17,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
         OneLoopCtrl.__init__(self, drum)
         Song.__init__(self, SongPart(self))
         Thread(target=self.__playback, name="playback", daemon=True).start()
-        self._file_finder.go_id(0)
+        self._file_finder.set_id(0)
         self._init_song()
 
     def get_play_event(self) -> Event:
@@ -61,7 +61,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             self.stop_at_bound(0)
 
     def _record_part(self):
-        if self.id == self.fixed_id and self.get_is_rec():
+        if self.get_id == self.fixed_id and self.get_is_rec():
             part = self.get_fixed()
             loop = part.get_item()
             if not loop.is_empty:
@@ -69,27 +69,27 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
 
     def _play_part(self, pid: int) -> None:
         if not self._play_event.is_set():
-            self.go_id(pid)
+            self.set_id(pid)
             self._play_event.set()
             return
 
-        if pid != self.id:
-            self.go_id(pid)
+        if pid != self.get_id:
+            self.set_id(pid)
             self._stop_never()
             if pid == self.fixed_id:
                 return
 
         part = self.get_fixed()
         loop = part.get_item()
-        if part.id > 0 and self.get_is_rec() and loop.is_empty:
+        if part.get_id > 0 and self.get_is_rec() and loop.is_empty:
             loop.finalize(self.idx, part.length)
 
-        if self.id == self.fixed_id:
+        if self.get_id == self.fixed_id:
             if self.get_is_rec():
                 self.set_is_rec(False)
             else:
                 part.attach(LoopSimple(self, part.length))
-                part.go_id(part.item_count - 1)
+                part.set_id(part.item_count - 1)
                 self.set_is_rec(True)
 
         self.__stop_quantized()
@@ -104,7 +104,7 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
             else:
                 self.stop_at_bound(self.get_drum().get_length())
         else:
-            if self.id != self.fixed_id:
+            if self.get_id != self.fixed_id:
                 if self.is_stop_len_set():
                     self.stop_at_bound(self.get_drum().get_length())
                 else:

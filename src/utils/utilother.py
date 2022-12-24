@@ -43,16 +43,16 @@ class CollectionOwner(Generic[T]):
         return len(self.__items)
 
     @property
-    def id(self) -> int:
+    def get_id(self) -> int:
         return self.__id
+
+    def set_id(self, k: int) -> None:
+        self.__id = k
 
     def apply_to_each(self, method, use_undo: bool = False) -> None:
         lst = self.__items + (self.__undo if use_undo else [])
         for x in lst:
             method(x)
-
-    def find_first_id(self, method) -> int:
-        return next((x for x in range(self.item_count) if method(x)), -1)
 
     def find_first(self, method) -> Optional[T]:
         return next((x for x in self.__items if method(x)), None)
@@ -81,9 +81,6 @@ class CollectionOwner(Generic[T]):
         self.__items.append(item)
         self._collection_str = ""
         return True
-
-    def go_id(self, k: int) -> None:
-        self.__id = k
 
     def get_first(self) -> T:
         return self.__items[0]
@@ -254,7 +251,7 @@ if __name__ == "__main__":
         assert 'F' in found_list
         find1 = found_list.index('F')
         assert find1 == 5
-        co.go_id(8)  # letter I
+        co.set_id(8)  # letter I
         assert "I" == co.get_item()
         list_str = co.get_str()
         print(list_str)

@@ -58,7 +58,7 @@ class Song(CollectionOwnerExt[SongPart]):
             part.set_ctrl(ctrl)
             self.attach(part)
 
-        self.go_id(0)
+        self.set_id(0)
         while self.item_count > 4:
             self.delete()
 
