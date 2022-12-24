@@ -84,9 +84,6 @@ def go() -> None:
         raise RuntimeError("Screen thread did exit already")
 
     pedal_control.monitor()
-    logging.error(f"============Wait==============")
-    pr1.join()
-    pr2.join()
 
 
 if __name__ == "__main__":
