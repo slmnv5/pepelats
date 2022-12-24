@@ -46,7 +46,7 @@ class SongPart(CollectionOwner[LoopSimple], Player):
             return "---------"
         if not self._collection_str:
             first = self.get_first()
-            self._collection_str = f"L:{first.length // self.get_drum().get_length():02} " \
+            self._collection_str = f"{first.length // self.get_drum().get_length():02} " \
                                    f"V:{first.volume:.2F} {CollectionOwner.__str__(self)}"
         return self._collection_str
 

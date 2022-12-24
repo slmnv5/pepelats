@@ -1,7 +1,8 @@
+import logging
+
 import numpy as np
 
 from utils.config import MAX_LEN, SD_MAX
-import logging
 from utils.utilalsa import make_zero_buffer, play_sound_buff, record_sound_buff
 
 
@@ -14,15 +15,15 @@ class WrapBuffer:
         self.__is_silent: bool = False
         self.__buff: np.ndarray = make_zero_buffer(length)
         self.__start: int = -1
-        self._str = None
+        self._buffer_str: str = ""
 
     def flip_reverse(self):
         self.__is_reverse = not self.__is_reverse
-        self._str = None
+        self._buffer_str = ""
 
     def flip_silent(self):
         self.__is_silent = not self.__is_silent
-        self._str = None
+        self._buffer_str = ""
 
     @property
     def length(self) -> int:
@@ -50,7 +51,7 @@ class WrapBuffer:
             self.__buff = np.concatenate((self.__buff, make_zero_buffer(diff)), axis=0)
         elif diff < 0:
             self.__buff = self.__buff[0, length]
-        self._str = None
+        self._buffer_str = ""
 
     def _record_samples(self, in_data: np.ndarray, idx: int) -> None:
         """Record and fix start for empty, recalculate volume for non empty"""
@@ -103,7 +104,7 @@ class WrapBuffer:
 
         logging.debug(f"after trim: len {len(self.__buff)} trim_len {trim_len} start {self.__start} idx {idx}")
         assert self.length % trim_len == 0 and self.length > 0, "incorrect buffer trim"
-        self._str = None
+        self._buffer_str = ""
 
 
 if __name__ == "__main__":

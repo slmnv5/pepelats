@@ -45,10 +45,10 @@ class LoopSimple(Player):
     def __str__(self):
         if not self.get_drum().get_length() or self.is_empty:
             return "---------"
-        if not self._str:
-            self._str = f"L:{self.length // self.get_drum().get_length():02} V:{self.volume:.2F} " \
+        if not self._buffer_str:
+            self._buffer_str = f"{self.length // self.get_drum().get_length():02} V:{self.volume:.2F} " \
                         f"{self._show_properties()}"
-        return self._str
+        return self._buffer_str
 
 
 if __name__ == "__main__":
