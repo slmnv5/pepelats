@@ -13,11 +13,16 @@
     "[play]": ["_change_map", "0", "play"]
    },
   "0": {
-    "description": "[play] global: A2-[update] D2-[restart]",
+    "description": "[play] [song] A2-[update] B2-[restart] C2-[drum_audio] D2-[drum_midi]",
     "update_method": "",
     "60:2": ["_check_updates"],
     "[update]": ["_check_updates"],
-    "65:2": ["_stop_looper"],
-    "[restart]": ["_stop_looper"]
+    "62:2": ["_restart_looper"],
+    "[restart]": ["_restart_looper"],
+    "64:2": [["_drum_audio"], ["_change_map", "0", "play"]],
+    "[drum_audio]": [["_drum_audio"], ["_change_map", "0", "play"]],
+    "65:2": [["_drum_midi"], ["_change_map", "0", "play"]],
+    "[drum_midi]": [["_drum_midi"], ["_change_map", "0", "play"]],
+    "65:2": [["_load_drum_name"], ["_change_map", "0", "play"]]
   }
 }

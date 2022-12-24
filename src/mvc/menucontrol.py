@@ -97,7 +97,7 @@ class MenuControl:
                 self._menu_loader.change_map(tail[0], tail[1])
                 self.__prepare_redraw()
                 self.__s_conn.send([ConfigName.send_redraw, self.__redraw])
-            elif head == ConfigName.stop_looper:
+            elif head == ConfigName.restart_looper:
                 raise RuntimeError("Stopped looper")
             else:
                 self.__s_conn.send(cmd)
