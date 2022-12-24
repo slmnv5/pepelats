@@ -32,14 +32,18 @@ class MyRtmidi:
         self._input.close_port()
 
 
-class FakePort:
+class FakeOutPort:
     """ When there is no MIDI OUT ports """
 
     def __init__(self):
         self.__count: int = 0
+        self.__closed: bool = False
 
-    def is_open(self) -> bool:
-        return self.__count > -1
+    def is_port_open(self) -> bool:
+        return not self.__closed
+
+    def close_port(self):
+        self.__closed = True
 
     def send_message(self, msg: List[int]) -> None:
         if self.__count % 100 == 0:

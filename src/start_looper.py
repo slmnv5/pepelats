@@ -4,15 +4,12 @@ import time
 import traceback
 from multiprocessing import Pipe, Process
 from multiprocessing import connection
-from typing import Union
-
-import rtmidi
 
 from control import ExtendedCtrl
 from mvc.controlfactory import ControlFactory
 from mvc.menucontrol import MenuLoader
 from utils.config import ROOT_DIR
-from utils.utilalsa import get_midi_in, get_midi_out
+from utils.utilalsa import get_midi_in
 from utils.utilport import KbdMidiPort, MyRtmidi
 
 root = logging.getLogger()
@@ -45,8 +42,8 @@ logging.critical("=============Starting log==============")
 
 
 # noinspection PyBroadException
-def do_looper(recv_looper: connection.Connection, send_view: connection.Connection, out_port: rtmidi.MidiOut) -> None:
-    looper = ExtendedCtrl(recv_looper, send_view, out_port)
+def do_looper(recv_looper: connection.Connection, send_view: connection.Connection) -> None:
+    looper = ExtendedCtrl(recv_looper, send_view)
     looper.process_messages()
 
 
@@ -61,19 +58,17 @@ def go() -> None:
     recv_view, send_view = Pipe(False)  # screen update messages
     recv_looper, send_looper = Pipe(False)  # looper control messages
 
-    midi_in: Union[MyRtmidi, KbdMidiPort]
-    out_port: rtmidi.MidiOut
-
     if "--kbd" in sys.argv:
         midi_in = KbdMidiPort()
     else:
-        midi_in = get_midi_in()  # may throw
-
-    out_port = get_midi_out()
+        midi_in = get_midi_in()
+        if not midi_in:
+            raise RuntimeError("Cannot open required MIDI IN port")
+        midi_in = MyRtmidi(midi_in)
 
     control_factory = ControlFactory(midi_in, recv_view, send_looper, menu_loader)
 
-    pr1 = Process(target=do_looper, args=(recv_looper, send_view, out_port), name="looper", daemon=True)
+    pr1 = Process(target=do_looper, args=(recv_looper, send_view), name="looper", daemon=True)
     pr1.start()
 
     pr2 = Process(target=do_screenview, args=(control_factory,), name="screen", daemon=True)
