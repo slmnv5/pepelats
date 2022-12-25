@@ -9,6 +9,9 @@ ROOT_DIR = str(Path(__file__).parent.parent.parent)
 DRUM_CHANNEL: int = int(os.getenv("DRUM_CHANNEL", "9"))
 KBD_NOTES: str = os.getenv("KBD_NOTES", '"q": 12, "w": 13, "1":60, "2": 62, "3": 64, "4": 65')
 FRAME_BUFFER_ID: str = os.getenv("FRAME_BUFFER_ID", "1")
+USB_AUDIO_NAMES: str = os.getenv("USB_AUDIO_NAMES", "USB Audio")
+PEDAL_PORT_NAME = os.getenv('PEDAL_PORT_NAME', "PedalCommands_out")
+CLOCK_PORT_NAME = os.getenv('CLOCK_PORT_NAME', "DrumClock_in")
 
 SD_RATE: int = int(os.getenv("SD_RATE", "44100"))
 sd.default.samplerate = SD_RATE
