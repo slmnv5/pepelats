@@ -151,10 +151,13 @@ class SimpleDrum(ProtoDrum, ABC):
         self._l1 = random.choice(self._snd_l1)
         self._bk = random.choice(self._snd_bk)
 
-    def __str__(self):
+    def get_info(self):
         return f"{self.__class__.__name__} " \
                f"patterns: {len(self._ptn_l1)}/{len(self._ptn_l2)}/{len(self._ptn_bk)}" \
                f", sounds: {len(self._snd_l1)}/{len(self._snd_l2)}/{len(self._snd_bk)}"
+
+    def __str__(self):
+        return f"{self.__class__.__name__}:{self._name}:{self._bpm:.2F}"
 
 
 if __name__ == "__main__":

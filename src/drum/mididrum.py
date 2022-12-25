@@ -4,22 +4,22 @@ from typing import Dict, Any
 from typing import List
 
 import numpy as np
-import rtmidi
 
 from drum._utildrum import load_midi, max_volume_midi
 from drum._utildrum import position_with_swing
 from drum.basedrum import ProtoDrum, SimpleDrum
+from utils.utilport import FakeOutPort
 
 
 class LoadDrumMidi(SimpleDrum, ABC):
     """ Load JSON config for MIDI commands """
 
-    def __init__(self, out_port: rtmidi.MidiOut):
+    def __init__(self, out_port):
         SimpleDrum.__init__(self)
         self._sounds: Dict[str, List[int]] = load_midi()
         self.max_volume = max_volume_midi(self._sounds)
         self._load_all()
-        self._out_port: rtmidi.MidiOut = out_port
+        self._out_port = out_port
 
     def close_port(self):
         self._out_port.close_port()
@@ -76,8 +76,10 @@ class MidiDrum(LoadDrumMidi):
         elif self._intensity == ProtoDrum._BREAK:
             self.__play_midi_pattern(self._bk, pos1, pos2)
 
-    def __str__(self):
-        return f"MIDI: {self._out_port.__class__.__name__} {self._name} {self._bpm:.2F}"
+
+class MidiDrumFake(MidiDrum):
+    def __init__(self):
+        LoadDrumMidi.__init__(self, FakeOutPort())
 
 
 if __name__ == "__main__":

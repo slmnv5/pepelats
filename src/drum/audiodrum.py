@@ -64,9 +64,6 @@ class AudioDrum(LoadDrumWave):
         elif self._intensity == ProtoDrum._LEVEL2:
             play_sound_buff(self._l2, out_data, idx)
 
-    def __str__(self):
-        return f"AUDIO: {self._name} {self._bpm:.2F}"
-
 
 if __name__ == "__main__":
     logging.getLogger().setLevel(logging.DEBUG)
