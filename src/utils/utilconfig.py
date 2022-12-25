@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -12,6 +13,7 @@ FRAME_BUFFER_ID: str = os.getenv("FRAME_BUFFER_ID", "1")
 USB_AUDIO_NAMES: str = os.getenv("USB_AUDIO_NAMES", "USB Audio")
 PEDAL_PORT_NAME = os.getenv('PEDAL_PORT_NAME', "PedalCommands_out")
 CLOCK_PORT_NAME = os.getenv('CLOCK_PORT_NAME', "DrumClock_in")
+SHOW_ERRORS = "--debug" in sys.argv or "--info" in sys.argv or os.name != "posix"
 
 SD_RATE: int = int(os.getenv("SD_RATE", "44100"))
 sd.default.samplerate = SD_RATE

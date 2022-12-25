@@ -1,5 +1,5 @@
+import logging
 import os
-import sys
 import time
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
@@ -8,8 +8,8 @@ from threading import Event, Thread
 from typing import Dict
 
 from mvc.menucontrol import MenuControl, MenuLoader
-import logging
 from utils.msgprocessor import MsgProcessor
+from utils.utilconfig import SHOW_ERRORS
 
 if os.name == "posix":
     UPDATES_PER_LOOP: float = 16
@@ -24,7 +24,6 @@ except OSError:
     COLS, ROWS = 30, 10
 
 logging.info(f"Text screen size: cols={COLS} rows={ROWS}")
-SHOW_ERRORS = "--debug" in sys.argv or "--info" in sys.argv or os.name != "posix"
 
 # foreground, background ends with '40m'
 ScrColors: Dict[str, str] = {

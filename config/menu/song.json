@@ -1,6 +1,6 @@
 {
   "default_config": {
-    "description": "[play] [menu]",
+    "description": "[play] [menu] [next]",
     "[prev]": ["_change_map", "", "prev"],
     "[next]": ["_change_map", "", "next"],
     "[song]": ["_change_map", "song", "0"],

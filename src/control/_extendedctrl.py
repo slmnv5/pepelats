@@ -9,9 +9,9 @@ from drum.audiodrum import AudioDrum
 from drum.basedrum import SimpleDrum
 from drum.mididrum import MidiDrum
 from song import SongPart
-from utils.utilconfig import SD_RATE
 from utils.msgprocessor import MsgProcessor
 from utils.utilalsa import get_midi_out
+from utils.utilconfig import SD_RATE, SHOW_ERRORS
 from utils.utilother import DrawInfo
 from utils.utilport import FakeOutPort
 
@@ -20,21 +20,19 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
     """Adds screen connection, Mixer, looper commands"""
 
     def __init__(self, recv_conn: Connection, send_conn: Connection):
-        self._dr_audi: SimpleDrum = AudioDrum()
-        ManyLoopCtrl.__init__(self, self._dr_audi)
         MsgProcessor.__init__(self, recv_conn, send_conn)
-
+        self._dr_audi: SimpleDrum = AudioDrum()
         self.__dr_midi: SimpleDrum = self._dr_audi
         midi_out = get_midi_out()
-        if not midi_out:
+        if not midi_out and SHOW_ERRORS:
             midi_out = FakeOutPort()
 
-        if midi_out.is_port_open():
+        if midi_out:
             self.__dr_midi = MidiDrum(midi_out)
-        else:
-            self.__dr_midi = self._dr_audi
 
-        self.__draw_info = DrawInfo()
+        ManyLoopCtrl.__init__(self, self.__dr_midi)
+
+        self.__draw_info: DrawInfo = DrawInfo()
 
     def _redraw(self) -> None:
         self._send_redraw(self.__draw_info)
