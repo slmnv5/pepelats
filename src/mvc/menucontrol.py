@@ -5,7 +5,7 @@ from abc import abstractmethod
 from multiprocessing.connection import Connection
 from typing import Dict, Union, List
 
-from utils.config import ConfigName
+from utils.utilconfig import ConfigName
 from utils.utilother import FileFinder, JsonDict, DrawInfo
 
 

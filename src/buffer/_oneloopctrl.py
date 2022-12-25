@@ -2,7 +2,7 @@ from abc import abstractmethod
 from threading import Event, Timer
 
 from drum.basedrum import SimpleDrum
-from utils.config import MAX_32_INT, SD_RATE
+from utils.utilconfig import MAX_32_INT, SD_RATE
 
 
 class OneLoopCtrl:

@@ -2,7 +2,7 @@ import logging
 
 import numpy as np
 
-from utils.config import MAX_LEN, SD_MAX, SD_TYPE
+from utils.utilconfig import MAX_LEN, SD_MAX, SD_TYPE
 from utils.utilalsa import make_zero_buffer, play_sound_buff, record_sound_buff
 
 

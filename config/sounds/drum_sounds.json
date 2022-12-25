@@ -53,8 +53,19 @@
     "midi": [176, 104, 127],
     "optional_long_name": "tap tempo MIDI CC 104 for thumbjam IOS app"
   },
-    "tp3": {
+    "FA": {
     "midi": [250],
     "optional_long_name": "MIDI start 0xFA"
+  },
+  "FB": {
+    "midi": [251],
+    "optional_long_name": "MIDI continue"
+  },
+  "FC": {"midi": [252],
+    "optional_long_name": "MIDI stop"
+  },
+  "F2": {
+    "midi": [242],
+    "optional_long_name": "MIDI clock 0xF2"
   }
 }

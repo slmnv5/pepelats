@@ -9,7 +9,7 @@ from typing import List
 import numpy as np
 
 from drum._utildrum import load_all_patterns, bpm_from_length
-from utils.config import SD_RATE
+from utils.utilconfig import SD_RATE
 from utils.utilother import FileFinder
 
 

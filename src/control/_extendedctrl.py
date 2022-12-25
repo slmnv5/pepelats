@@ -9,7 +9,7 @@ from drum.audiodrum import AudioDrum
 from drum.basedrum import SimpleDrum
 from drum.mididrum import MidiDrum
 from song import SongPart
-from utils.config import SD_RATE
+from utils.utilconfig import SD_RATE
 from utils.msgprocessor import MsgProcessor
 from utils.utilalsa import get_midi_out
 from utils.utilother import DrawInfo

@@ -8,7 +8,7 @@ from multiprocessing import connection
 from control import ExtendedCtrl
 from mvc.controlfactory import ControlFactory
 from mvc.menucontrol import MenuLoader
-from utils.config import ROOT_DIR
+from utils.utilconfig import ROOT_DIR
 from utils.utilalsa import get_midi_in
 from utils.utilport import KbdMidiPort, MyRtmidi
 

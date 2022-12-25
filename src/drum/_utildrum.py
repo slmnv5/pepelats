@@ -5,8 +5,12 @@ from typing import List, Dict, Union, Tuple
 import numpy as np
 import soundfile
 
-from utils.config import SD_RATE, SD_TYPE, ROOT_DIR, ConfigName, SD_MAX
+from utils.utilconfig import SD_RATE, SD_TYPE, ROOT_DIR, ConfigName, SD_MAX
 from utils.utilother import JsonDict
+
+
+def is_midi_note(msg: List[int]) -> bool:
+    return 0x80 <= msg[0] <= 0x9F
 
 
 def extend_list(some_list: Union[List, str], new_len: int) -> List:

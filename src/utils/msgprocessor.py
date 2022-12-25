@@ -4,7 +4,7 @@ from multiprocessing.connection import Connection
 from typing import Any
 from typing import List, Optional
 
-from utils.config import ConfigName
+from utils.utilconfig import ConfigName
 import logging
 
 

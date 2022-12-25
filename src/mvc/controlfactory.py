@@ -8,7 +8,7 @@ from mvc import CountMidiControl
 from mvc import MidiControl
 from mvc._pyscreen import PyScreen
 from mvc.menucontrol import MenuLoader, MenuControl
-from utils.config import ConfigName, ROOT_DIR
+from utils.utilconfig import ConfigName, ROOT_DIR, FRAME_BUFFER_ID
 
 
 class ControlFactory:
@@ -33,8 +33,7 @@ class ControlFactory:
         try:
             logging.info(f"Library {ConfigName.shared_lib} found, loading GUI")
             from mvc._ccscreen import CcScreen
-            fb_id: str = os.getenv("FRAME_BUFFER_ID", "1")
-            return CcScreen(self.recv_conn, self.send_conn, self.menu_loader, fb_id)
+            return CcScreen(self.recv_conn, self.send_conn, self.menu_loader, FRAME_BUFFER_ID)
         except Exception:
             logging.error(f"Library {ConfigName.shared_lib} load error, GUI not avalable, using text")
             return PyScreen(self.recv_conn, self.send_conn, self.menu_loader)

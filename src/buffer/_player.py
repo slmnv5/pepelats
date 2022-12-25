@@ -4,7 +4,7 @@ from buffer._wrapbuffer import WrapBuffer
 from buffer._oneloopctrl import OneLoopCtrl
 from drum.basedrum import SimpleDrum
 
-from utils.config import MAX_LEN
+from utils.utilconfig import MAX_LEN
 import logging
 
 

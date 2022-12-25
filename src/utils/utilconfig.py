@@ -6,6 +6,10 @@ import sounddevice as sd
 
 ROOT_DIR = str(Path(__file__).parent.parent.parent)
 
+DRUM_CHANNEL: int = int(os.getenv("DRUM_CHANNEL", "10"))
+KBD_NOTES: str = os.getenv("KBD_NOTES", '"q": 12, "w": 13, "1":60, "2": 62, "3": 64, "4": 65')
+FRAME_BUFFER_ID: str = os.getenv("FRAME_BUFFER_ID", "1")
+
 SD_RATE: int = int(os.getenv("SD_RATE", "44100"))
 sd.default.samplerate = SD_RATE
 SD_TYPE: str = 'int16'

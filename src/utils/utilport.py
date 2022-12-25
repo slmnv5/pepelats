@@ -8,6 +8,8 @@ from typing import Tuple, Dict, List
 import keyboard
 import rtmidi.midiutil
 
+from utilconfig import KBD_NOTES
+
 
 class MyRtmidi:
     def __init__(self, midi_input: rtmidi.MidiIn):
@@ -90,9 +92,9 @@ class KbdMidiPort:
     """Using keyboard keys instead of MIDI notes"""
 
     def __init__(self):
-        kbd_map_str: str = os.getenv("KBD_NOTES", '"q": 12, "w": 13, "1":60, "2": 62, "3": 64, "4": 65')
+        notes_str = "{" + KBD_NOTES + "}"
         try:
-            self.__kbd_notes: Dict[str, int] = json.loads("{" + kbd_map_str + "}")
+            self.__kbd_notes: Dict[str, int] = json.loads(notes_str)
         except Exception as err:
             msg = f"Failed to parse env. variable KBD_NOTES, error: {err}"
             raise RuntimeError(msg)

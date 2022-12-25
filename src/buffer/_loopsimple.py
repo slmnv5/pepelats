@@ -5,7 +5,7 @@ import numpy as np
 
 from buffer._oneloopctrl import OneLoopCtrl
 from buffer._player import Player
-from utils.config import MAX_LEN
+from utils.utilconfig import MAX_LEN
 
 
 class LoopSimple(Player):

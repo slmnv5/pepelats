@@ -9,7 +9,7 @@ import sounddevice as sd
 from rtmidi.midiutil import open_midiinput, open_midioutput
 
 from utils._utilnumpy import calc_slices
-from utils.config import SD_TYPE, MAX_LEN
+from utils.utilconfig import SD_TYPE, MAX_LEN
 
 
 def get_midi_in() -> Optional[rtmidi.MidiIn]:
@@ -57,6 +57,7 @@ def find_usb() -> None:
 
 
 find_usb()
+
 IN_CH = sd.query_devices(sd.default.device[0])["max_input_channels"]
 OUT_CH = sd.query_devices(sd.default.device[1])["max_output_channels"]
 if OUT_CH != 2:
