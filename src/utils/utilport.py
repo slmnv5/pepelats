@@ -1,5 +1,4 @@
 import json
-import logging
 import os
 import time
 from multiprocessing import Queue
@@ -32,28 +31,6 @@ class MyRtmidi:
 
     def __del__(self):
         self._input.close_port()
-
-
-class FakeOutPort:
-    """ When there is no MIDI OUT ports """
-
-    def __init__(self):
-        self.__count: int = 0
-        self.__closed: bool = False
-
-    def is_port_open(self) -> bool:
-        return not self.__closed
-
-    def close_port(self):
-        self.__closed = True
-
-    def send_message(self, msg: List[int]) -> None:
-        self.__count += 1
-        if self.__count % 2 == 100:
-            logging.debug(f"FakeOutPort: sent MIDI: {msg}")
-
-    def __str__(self):
-        return f"{self.__class__.__name__}"
 
 
 class ChargedMidiPort:

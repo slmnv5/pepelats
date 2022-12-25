@@ -8,7 +8,6 @@ import numpy as np
 from drum._utildrum import load_midi, max_volume_midi
 from drum._utildrum import position_with_swing
 from drum.basedrum import ProtoDrum, SimpleDrum
-from utils.utilport import FakeOutPort
 
 
 class LoadDrumMidi(SimpleDrum, ABC):
@@ -58,7 +57,11 @@ class MidiDrum(LoadDrumMidi):
     def __init__(self, out_port):
         LoadDrumMidi.__init__(self, out_port)
 
-    def __play_midi_pattern(self, pattern: Dict[int, List[List[int]]], pos1: int, pos2: int) -> None:
+    def _send_msg(self, msg_lst):
+        for msg in msg_lst:
+            self._out_port.send_message(msg)
+
+    def _play_midi_pattern(self, pattern: Dict[int, List[List[int]]], pos1: int, pos2: int) -> None:
         for msg_lst in [pattern[x] for x in pattern if pos1 <= x < pos2]:
             for msg in msg_lst:
                 self._out_port.send_message(msg)
@@ -70,21 +73,27 @@ class MidiDrum(LoadDrumMidi):
         pos1 = idx % self._length
         pos2 = pos1 + len(out_data)
         if self._intensity == ProtoDrum._LEVEL1:
-            self.__play_midi_pattern(self._l1, pos1, pos2)
+            self._play_midi_pattern(self._l1, pos1, pos2)
         elif self._intensity == ProtoDrum._LEVEL2:
-            self.__play_midi_pattern(self._l2, pos1, pos2)
+            self._play_midi_pattern(self._l2, pos1, pos2)
         elif self._intensity == ProtoDrum._BREAK:
-            self.__play_midi_pattern(self._bk, pos1, pos2)
+            self._play_midi_pattern(self._bk, pos1, pos2)
 
 
 class MidiDrumFake(MidiDrum):
-    def __init__(self):
-        LoadDrumMidi.__init__(self, FakeOutPort())
+    def __init__(self, out_port):
+        LoadDrumMidi.__init__(self, out_port)
+        self.__count: int = 0
+
+    def _send_msg(self, msg_lst):
+        for msg in msg_lst:
+            self.__count += 1
+            if self.__count % 100 == 0:
+                logging.debug(f"FakeOutPort: sent MIDI: {msg}")
 
 
 if __name__ == "__main__":
     def test():
-        from utils.utilport import FakeOutPort
 
         from buffer import LoopSimple
         from buffer._oneloopctrl import OneLoopCtrl
@@ -93,7 +102,7 @@ if __name__ == "__main__":
         from time import sleep
 
         logging.basicConfig(level=logging.DEBUG)
-        ctrl = OneLoopCtrl(MidiDrum(FakeOutPort()))
+        ctrl = OneLoopCtrl(MidiDrum(None))
         drum = ctrl.get_drum()
 
         drum.prepare_drum(100_000)
