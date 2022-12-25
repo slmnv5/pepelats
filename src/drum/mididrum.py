@@ -21,9 +21,6 @@ class LoadDrumMidi(SimpleDrum, ABC):
         self._load_all()
         self._out_port: rtmidi.MidiOut = out_port
 
-    def __del__(self):
-        self._out_port.close_port()
-
     def close_port(self):
         self._out_port.close_port()
 
@@ -58,7 +55,7 @@ class LoadDrumMidi(SimpleDrum, ABC):
 class MidiDrum(LoadDrumMidi):
     """ MIDI Drum version sending configurable MIDI messages and sysex """
 
-    def __init__(self, out_port: rtmidi.MidiOut):
+    def __init__(self, out_port):
         LoadDrumMidi.__init__(self, out_port)
 
     def __play_midi_pattern(self, pattern: Dict[int, List[List[int]]], pos1: int, pos2: int) -> None:
@@ -85,15 +82,16 @@ class MidiDrum(LoadDrumMidi):
 
 if __name__ == "__main__":
     def test():
+        from utils.utilport import FakeOutPort
+
         from buffer import LoopSimple
         from buffer._oneloopctrl import OneLoopCtrl
         from threading import Timer
         from utils.utilalsa import make_sin_sound
         from time import sleep
-        from drum.audiodrum import AudioDrum
 
         logging.basicConfig(level=logging.DEBUG)
-        ctrl = OneLoopCtrl(AudioDrum())
+        ctrl = OneLoopCtrl(MidiDrum(FakeOutPort()))
         drum = ctrl.get_drum()
 
         drum.prepare_drum(100_000)

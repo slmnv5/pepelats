@@ -131,8 +131,10 @@ def load_midi() -> Dict[str, List[int]]:
         if not msg:
             continue
         if is_midi_note(msg):
-            msg[0] = msg[0] & 0xF0 + DRUM_CHANNEL
-            result[name] = msg
+            msg[0] &= 0xF0
+            msg[0] += DRUM_CHANNEL
+
+        result[name] = msg
 
     return result
 

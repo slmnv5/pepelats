@@ -48,10 +48,9 @@ class FakeOutPort:
         self.__closed = True
 
     def send_message(self, msg: List[int]) -> None:
-        if self.__count % 100 == 0:
-            msg = f"MockMidiPort: sent MIDI: {msg}"
-            logging.debug(msg)
         self.__count += 1
+        if self.__count % 2 == 100:
+            logging.debug(f"FakeOutPort: sent MIDI: {msg}")
 
     def __str__(self):
         return f"{self.__class__.__name__}"
