@@ -5,12 +5,12 @@ from typing import List, Dict, Union, Tuple
 import numpy as np
 import soundfile
 
-from utils.utilconfig import SD_RATE, SD_TYPE, ROOT_DIR, ConfigName, SD_MAX
+from utils.utilconfig import SD_RATE, SD_TYPE, ROOT_DIR, ConfigName, SD_MAX, DRUM_CHANNEL
 from utils.utilother import JsonDict
 
 
 def is_midi_note(msg: List[int]) -> bool:
-    return 0x80 <= msg[0] <= 0x9F
+    return msg and len(msg) == 3 and 0x80 <= msg[0] <= 0x9F
 
 
 def extend_list(some_list: Union[List, str], new_len: int) -> List:
@@ -127,10 +127,12 @@ def load_midi() -> Dict[str, List[int]]:
         drum_sound = loader.get(name, None)
         assert len(drum_sound) > 0
         assert type(drum_sound) == dict
-        midi_bytes: List[int] = drum_sound.get("midi")
-        if not midi_bytes:
+        msg: List[int] = drum_sound.get("midi")
+        if not msg:
             continue
-        result[name] = midi_bytes
+        if is_midi_note(msg):
+            msg[0] = msg[0] & 0xF0 + DRUM_CHANNEL
+            result[name] = msg
 
     return result
 

@@ -8,7 +8,7 @@ from typing import Tuple, Dict, List
 import keyboard
 import rtmidi.midiutil
 
-from utilconfig import KBD_NOTES
+from utils.utilconfig import KBD_NOTES
 
 
 class MyRtmidi:
