@@ -108,12 +108,4 @@ class PyScreen(MsgProcessor, MenuControl):
 
 
 if __name__ == "__main__":
-
-    def test2():
-        text = "[AAAAAAA] BBB CCC DDD EEE [FFFFFF] GGG " * 5
-        lines = wrap(text, COLS)
-        for line in lines:
-            logging.debug(line)
-
-
-    test2()
+    pass

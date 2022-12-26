@@ -1,15 +1,8 @@
-from threading import Thread, Event
-
-from buffer import LoopSimple
-from buffer import OneLoopCtrl
-from drum.basedrum import SimpleDrum
-from song import Song
-from song import SongPart
-from utils.utilconfig import MAX_LEN
+# noinspection PyProtectedMember
+from control._manyloopctrl import ManyLoopCtrl
 
 
-def test():
-    from buffer._oneloopctrl import OneLoopCtrl
+def test_1():
     from threading import Timer
     from drum.audiodrum import AudioDrum
     import time
@@ -32,4 +25,4 @@ def test():
     time.sleep(duration)
 
 
-test()
+test_1()

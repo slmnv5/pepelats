@@ -1,11 +1,11 @@
+import logging
+
 import sounddevice as sd
 
-from buffer._wrapbuffer import WrapBuffer
 from buffer._oneloopctrl import OneLoopCtrl
+from buffer._wrapbuffer import WrapBuffer
 from drum.basedrum import SimpleDrum
-
 from utils.utilconfig import MAX_LEN
-import logging
 
 
 class Player(WrapBuffer):
@@ -57,3 +57,7 @@ class Player(WrapBuffer):
         # Don't pickle some fields
         del state["_ctrl"]
         return state
+
+
+if __name__ == "__main__":
+    pass

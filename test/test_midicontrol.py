@@ -1,9 +1,10 @@
 import logging
+
+from mvc import MidiControl
+from mvc.menucontrol import MenuLoader
+
+
 # noinspection PyProtectedMember
-from multiprocessing.connection import Connection
-
-from mvc.menucontrol import MenuControl, MenuLoader
-
 
 
 def test():

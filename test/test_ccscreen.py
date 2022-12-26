@@ -3,6 +3,7 @@ import time
 from multiprocessing.connection import Pipe
 from threading import Thread
 
+# noinspection PyProtectedMember
 from mvc._ccscreen import CcScreen
 from mvc.menucontrol import MenuLoader
 

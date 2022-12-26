@@ -1,5 +1,9 @@
 import logging
 
+from drum.audiodrum import AudioDrum
+
+logging.getLogger().setLevel(logging.DEBUG)
+
 
 def test():
     from buffer import LoopSimple
@@ -7,11 +11,9 @@ def test():
     from threading import Timer
     from utils.utilalsa import make_sin_sound
     from time import sleep
-
     logging.basicConfig(level=logging.DEBUG)
-    ctrl = OneLoopCtrl(MidiDrum(None))
+    ctrl = OneLoopCtrl(AudioDrum())
     drum = ctrl.get_drum()
-
     drum.prepare_drum(100_000)
     sound = make_sin_sound(440, 7.1)
     while not drum._length:

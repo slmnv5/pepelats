@@ -1,17 +1,19 @@
 import logging
 
-logging.getLogger().setLevel(logging.DEBUG)
+from drum.mididrum import MidiDrum
 
 
-def test():
+def test_1():
     from buffer import LoopSimple
     from buffer._oneloopctrl import OneLoopCtrl
     from threading import Timer
     from utils.utilalsa import make_sin_sound
     from time import sleep
+
     logging.basicConfig(level=logging.DEBUG)
-    ctrl = OneLoopCtrl(AudioDrum())
+    ctrl = OneLoopCtrl(MidiDrum(None))
     drum = ctrl.get_drum()
+
     drum.prepare_drum(100_000)
     sound = make_sin_sound(440, 7.1)
     while not drum._length:
@@ -29,4 +31,4 @@ def test():
     drum.clear_drum()
 
 
-test()
+test_1()

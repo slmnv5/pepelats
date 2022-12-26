@@ -2,6 +2,7 @@ import logging
 from threading import Timer
 
 from buffer import LoopSimple
+# noinspection PyProtectedMember
 from buffer._oneloopctrl import OneLoopCtrl
 
 

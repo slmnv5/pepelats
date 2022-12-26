@@ -1,6 +1,6 @@
 import os
 from math import ceil, log10
-from typing import List, Dict, Union, Tuple
+from typing import List, Dict, Union
 
 import numpy as np
 import soundfile
@@ -49,17 +49,6 @@ def load_all_patterns(directory: str, file_name: str, storage: List[Dict], sound
         value["name"] = key
         value["acc"] = extend_list(value["acc"], value["steps"])
         storage.append(value)
-
-
-def map_range_midi(target: float, initial: float, spread: float) -> Tuple[int, float]:
-    """ Convert target in a range given as initial and spread into MIDI byte from 0 to 127
-    As exact match not possible, returns MIDI byte and resulting target value.
-    Ex. map_range_midi(55.22, 0, 127) -> (55, 55.22)"""
-    if target < initial or target > initial + spread:
-        raise RuntimeError(f"map_range_midi: worng values passed: {target}/{initial}/{spread}")
-    val1 = round((target - initial) / spread * 127)
-    tar1 = val1 * spread / 127 + initial
-    return val1, tar1
 
 
 def sysex_list(value: float, count: int = 0) -> List[int]:
@@ -140,39 +129,5 @@ def load_midi() -> Dict[str, List[int]]:
 
 
 if __name__ == "__main__":
-    def test1():
-        import logging
+    pass
 
-        x = load_audio()
-        y = max_volume_audio(x)
-        logging.debug(y)
-
-        x = load_midi()
-        y = max_volume_midi(x)
-        logging.debug(y)
-
-
-    def test2():
-        n = 15148263
-        x = sysex_list(n)
-        assert x == [15, 14, 82, 63]
-
-        n = -151.87
-        x = sysex_list(n)
-        assert x == [1, 52]
-
-
-    def test3():
-        import logging
-
-        a, b = map_range_midi(55.22, 0, 127)
-        assert (a, b) == (55, 55.0)
-
-        target = 120
-        int_val1, try_bpm1 = map_range_midi(target, 20, 180)
-        logging.debug(int_val1, try_bpm1)
-        int_val2, try_bpm2 = map_range_midi(target - try_bpm1, -20, 40)
-        logging.debug(int_val2, try_bpm2)
-
-
-    test3()

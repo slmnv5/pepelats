@@ -130,20 +130,5 @@ class CountMidiControl(MenuControl):
 
 
 if __name__ == "__main__":
+    pass
 
-    def test():
-        from multiprocessing.dummy import Pipe
-
-        logging.getLogger().setLevel(logging.INFO)
-        recv_fake, send_fake = Pipe()
-        in_port = get_midi_in()
-
-        menu_loader = MenuLoader("config/menu", "play", "0")
-        m_ctrl = CountMidiControl(in_port, send_fake, menu_loader)
-        try:
-            m_ctrl.monitor()  # will throw EOF when all mesages processed
-        except EOFError:
-            pass
-
-
-    test()
