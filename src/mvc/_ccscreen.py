@@ -1,4 +1,4 @@
-import sys
+import logging
 import time
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
@@ -9,11 +9,9 @@ from typing import List
 
 from mvc._touchscreen import TouchScreen
 from mvc.menucontrol import MenuControl, MenuLoader
-import logging
 from utils.msgprocessor import MsgProcessor
+from utils.utilconfig import LEVEL_DEBUG
 from utils.utilother import DrawInfo
-
-LVL_DEBUG_LIB = "--debug" in sys.argv or "--info" in sys.argv
 
 
 class CcScreen(MsgProcessor, MenuControl, TouchScreen):
@@ -26,7 +24,7 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
         MsgProcessor.__init__(self, recv_conn, send_conn)
         Thread(target=self.process_messages, name="message_thread", daemon=True).start()
 
-        if LVL_DEBUG_LIB:
+        if LEVEL_DEBUG:
             result = self._set_log_level(0)
         else:
             result = self._set_log_level(4)

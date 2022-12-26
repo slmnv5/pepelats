@@ -9,7 +9,7 @@ from typing import Dict
 
 from mvc.menucontrol import MenuControl, MenuLoader
 from utils.msgprocessor import MsgProcessor
-from utils.utilconfig import SHOW_ERRORS
+from utils.utilconfig import LEVEL_DEBUG
 
 if os.name == "posix":
     UPDATES_PER_LOOP: float = 16
@@ -53,7 +53,7 @@ def get_with_color(line: str, is_rec: bool) -> str:
 
 
 def clr_screen() -> None:
-    if not SHOW_ERRORS:
+    if not LEVEL_DEBUG:
         print(f"\033[2;1H{' ' * COLS * (ROWS - 1)}", end='', flush=True)
 
 

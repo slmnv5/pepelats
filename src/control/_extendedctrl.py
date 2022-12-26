@@ -7,13 +7,12 @@ from multiprocessing.connection import Connection
 from control._manyloopctrl import ManyLoopCtrl
 from drum.audiodrum import AudioDrum
 from drum.basedrum import SimpleDrum
-from drum.mididrum import MidiDrum
+from drum.mididrum import MidiDrum, FakeMidiDrum
 from song import SongPart
 from utils.msgprocessor import MsgProcessor
 from utils.utilalsa import get_midi_out
-from utils.utilconfig import SD_RATE, SHOW_ERRORS
+from utils.utilconfig import SD_RATE
 from utils.utilother import DrawInfo
-from utils.utilport import FakeOutPort
 
 
 class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
@@ -24,10 +23,9 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         self._dr_audi: SimpleDrum = AudioDrum()
         self.__dr_midi: SimpleDrum = self._dr_audi
         midi_out = get_midi_out()
-        if not midi_out and SHOW_ERRORS:
-            midi_out = FakeOutPort()
-
-        if midi_out:
+        if not midi_out:
+            self.__dr_midi = FakeMidiDrum(midi_out)
+        elif midi_out:
             self.__dr_midi = MidiDrum(midi_out)
 
         ManyLoopCtrl.__init__(self, self.__dr_midi)

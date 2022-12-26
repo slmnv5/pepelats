@@ -80,7 +80,7 @@ class MidiDrum(LoadDrumMidi):
             self._play_midi_pattern(self._bk, pos1, pos2)
 
 
-class MidiDrumFake(MidiDrum):
+class FakeMidiDrum(MidiDrum):
     def __init__(self, out_port):
         LoadDrumMidi.__init__(self, out_port)
         self.__count: int = 0
@@ -89,7 +89,7 @@ class MidiDrumFake(MidiDrum):
         for msg in msg_lst:
             self.__count += 1
             if self.__count % 100 == 0:
-                logging.debug(f"FakeOutPort: sent MIDI: {msg}")
+                logging.debug(f"FakeMidiDrum: sent MIDI: {msg}")
 
 
 if __name__ == "__main__":
