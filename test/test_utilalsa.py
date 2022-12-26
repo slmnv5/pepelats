@@ -14,4 +14,3 @@ def test_1():
     logging.debug("=========================")
 
 
-test()

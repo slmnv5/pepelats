@@ -19,6 +19,7 @@ def test_1():
     while not drum._length:
         sleep(0.1)
 
+    assert drum.get_length() == 100_000
     logging.debug(f"==============>{drum}")
 
     loop = LoopSimple(ctrl)
@@ -29,5 +30,7 @@ def test_1():
     Timer(5, ctrl.stop_at_bound, [0]).start()
     loop.play_buffer()
     drum.clear_drum()
+    assert drum.get_length() == 0
+
 
 
