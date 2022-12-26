@@ -224,6 +224,8 @@ class JsonDict:
 
 if __name__ == "__main__":
     def test1():
+        import logging
+
         lst = [chr(k) for k in range(65, 80)]
         co = CollectionOwner(lst[0])
         for k in lst[1:]:
@@ -242,6 +244,8 @@ if __name__ == "__main__":
 
 
     def test2():
+        import logging
+
         ff = FileFinder(".", True, "")
         for k in range(ff.item_count()):
             logging.debug(ff.get_item())

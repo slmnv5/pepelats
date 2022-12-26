@@ -18,6 +18,8 @@ def generate_name() -> str:
 
 if __name__ == "__main__":
     def test():
+        import logging
+
         logging.debug(generate_name())
         logging.debug(generate_name())
         logging.debug(generate_name())

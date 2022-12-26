@@ -141,6 +141,8 @@ def load_midi() -> Dict[str, List[int]]:
 
 if __name__ == "__main__":
     def test1():
+        import logging
+
         x = load_audio()
         y = max_volume_audio(x)
         logging.debug(y)
@@ -161,6 +163,8 @@ if __name__ == "__main__":
 
 
     def test3():
+        import logging
+
         a, b = map_range_midi(55.22, 0, 127)
         assert (a, b) == (55, 55.0)
 
