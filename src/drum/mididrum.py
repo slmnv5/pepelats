@@ -57,10 +57,6 @@ class MidiDrum(LoadDrumMidi):
     def __init__(self, out_port):
         LoadDrumMidi.__init__(self, out_port)
 
-    def _send_msg(self, msg_lst):
-        for msg in msg_lst:
-            self._out_port.send_message(msg)
-
     def _play_midi_pattern(self, pattern: Dict[int, List[List[int]]], pos1: int, pos2: int) -> None:
         for msg_lst in [pattern[x] for x in pattern if pos1 <= x < pos2]:
             for msg in msg_lst:
@@ -85,11 +81,10 @@ class FakeMidiDrum(MidiDrum):
         LoadDrumMidi.__init__(self, out_port)
         self.__count: int = 0
 
-    def _send_msg(self, msg_lst):
-        for msg in msg_lst:
-            self.__count += 1
-            if self.__count % 100 == 0:
-                logging.debug(f"FakeMidiDrum: sent MIDI: {msg}")
+    def _play_midi_pattern(self, pattern: Dict[int, List[List[int]]], pos1: int, pos2: int) -> None:
+        for msg_lst in [pattern[x] for x in pattern if pos1 <= x < pos2]:
+            for msg in msg_lst:
+                logging.debug(f"FakeMidiDrum send: {msg}")
 
 
 if __name__ == "__main__":
