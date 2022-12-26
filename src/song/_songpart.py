@@ -1,5 +1,3 @@
-from threading import Timer
-
 import numpy as np
 
 from buffer import LoopSimple
@@ -52,4 +50,3 @@ class SongPart(CollectionOwner[LoopSimple], Player):
 
 if __name__ == "__main__":
     pass
-

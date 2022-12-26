@@ -31,4 +31,4 @@ def test_1():
     drum.clear_drum()
 
 
-test_1()
+

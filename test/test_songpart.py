@@ -4,7 +4,7 @@ from buffer import OneLoopCtrl
 from song import SongPart
 
 
-def test():
+def test_1():
     from drum.audiodrum import AudioDrum
 
     c1 = OneLoopCtrl(AudioDrum())
@@ -18,4 +18,4 @@ def test():
     l1.set_ctrl(c1)
 
 
-test()
+

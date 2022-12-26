@@ -3,7 +3,7 @@ import logging
 import sounddevice as sd
 
 
-def test():
+def test_1():
     logging.debug("=========================")
     logging.debug(sd.query_devices())
     logging.debug("=========================")

@@ -25,4 +25,3 @@ def test_1():
     time.sleep(duration)
 
 
-test_1()

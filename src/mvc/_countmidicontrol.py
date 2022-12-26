@@ -5,7 +5,6 @@ from threading import Timer
 from typing import List
 
 from mvc.menucontrol import MenuControl, MenuLoader
-from utils.utilalsa import get_midi_in
 
 
 def is_midi_cc(msg: List[int]) -> bool:
@@ -131,4 +130,3 @@ class CountMidiControl(MenuControl):
 
 if __name__ == "__main__":
     pass
-

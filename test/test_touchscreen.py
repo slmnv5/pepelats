@@ -5,7 +5,7 @@ import mvc._touchscreen
 
 
 # noinspection PyPep8
-def test1():
+def test_1():
     x = mvc._touchscreen.TouchScreen(1)
     text: str = "Menu: [button 1] is first\n new line [button 2]\n no buttons on this line\n [button 3] "
     x._set_row_text(0, text, 100, 100, 100)

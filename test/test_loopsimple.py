@@ -6,7 +6,7 @@ from buffer import LoopSimple
 from buffer._oneloopctrl import OneLoopCtrl
 
 
-def test1():
+def test_1():
     from drum.audiodrum import AudioDrum
 
     c1 = OneLoopCtrl(AudioDrum())
@@ -20,4 +20,4 @@ def test1():
     logging.debug(f"Volume: {l1}")
 
 
-test1()
+test_1()

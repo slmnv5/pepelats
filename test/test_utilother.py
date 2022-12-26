@@ -4,7 +4,7 @@ from utils.utilother import FileFinder, CollectionOwner
 # noinspection PyProtectedMember
 
 
-def test1():
+def test_1():
     import logging
 
     lst = [chr(k) for k in range(65, 80)]
@@ -24,7 +24,7 @@ def test1():
     assert "~8) I" in list_str
 
 
-def test2():
+def test_2():
     import logging
 
     ff = FileFinder(".", True, "")
@@ -38,12 +38,10 @@ def test2():
         logging.debug(item)
 
 
-def test3():
+def test_3():
     ff = FileFinder(".", True, ".lkjlkjhkj")
     assert "" == ff.get_item()
     assert 1 == ff.item_count()
 
 
-test1()
-test2()
-test3()
+

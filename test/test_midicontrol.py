@@ -7,7 +7,7 @@ from mvc.menucontrol import MenuLoader
 # noinspection PyProtectedMember
 
 
-def test():
+def test_1():
     from utils.utilport import ChargedMidiPort
     from multiprocessing.dummy.connection import Pipe
     recv_fake, send_fake = Pipe()
@@ -26,4 +26,4 @@ def test():
         logging.debug(msg)
 
 
-test()
+

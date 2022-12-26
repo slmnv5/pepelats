@@ -5,7 +5,7 @@ from drum.audiodrum import AudioDrum
 logging.getLogger().setLevel(logging.DEBUG)
 
 
-def test():
+def test_1():
     from buffer import LoopSimple
     from buffer._oneloopctrl import OneLoopCtrl
     from threading import Timer
@@ -31,4 +31,3 @@ def test():
     drum.clear_drum()
 
 
-test()

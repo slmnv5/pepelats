@@ -8,7 +8,7 @@ from utils.utilalsa import get_midi_in
 # noinspection PyProtectedMember
 
 
-def test():
+def test_1():
     from multiprocessing.dummy import Pipe
 
     logging.getLogger().setLevel(logging.INFO)
@@ -23,4 +23,4 @@ def test():
         pass
 
 
-test()
+

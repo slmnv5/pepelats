@@ -8,7 +8,7 @@ from mvc._ccscreen import CcScreen
 from mvc.menucontrol import MenuLoader
 
 
-def test1():
+def test_1():
     recv_view, send_view = Pipe(False)  # screen update messages
     menu_loader = MenuLoader("config/menu", "play", "0")
     scr_view = CcScreen(recv_view, send_view, menu_loader, "1")
