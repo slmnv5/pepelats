@@ -104,4 +104,4 @@ if __name__ == "__main__":
         while True:
             ss: str = x._get_click_event_word()
             assert ss.startswith('button')
-            print(f"Got click: {ss}")
+            logging.debug(f"Got click: {ss}")

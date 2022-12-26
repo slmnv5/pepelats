@@ -132,14 +132,14 @@ def make_changing_sound() -> np.ndarray:
 
 if __name__ == "__main__":
     def run():
-        print("=========================")
-        print(sd.query_devices())
-        print("=========================")
+        logging.debug("=========================")
+        logging.debug(sd.query_devices())
+        logging.debug("=========================")
 
-        print("=========================")
-        print(sd.query_devices(sd.default.device[0]))
-        print(sd.query_devices(sd.default.device[1]))
-        print("=========================")
+        logging.debug("=========================")
+        logging.debug(sd.query_devices(sd.default.device[0]))
+        logging.debug(sd.query_devices(sd.default.device[1]))
+        logging.debug("=========================")
 
 
     run()

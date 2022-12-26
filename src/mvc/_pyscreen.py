@@ -113,7 +113,7 @@ if __name__ == "__main__":
         text = "[AAAAAAA] BBB CCC DDD EEE [FFFFFF] GGG " * 5
         lines = wrap(text, COLS)
         for line in lines:
-            print(line)
+            logging.debug(line)
 
 
     test2()

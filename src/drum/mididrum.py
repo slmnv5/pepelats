@@ -74,6 +74,8 @@ class MidiDrum(LoadDrumMidi):
             self._play_midi_pattern(self._l2, pos1, pos2)
         elif self._intensity == ProtoDrum._BREAK:
             self._play_midi_pattern(self._bk, pos1, pos2)
+        else:
+            pass
 
 
 class FakeMidiDrum(MidiDrum):
@@ -82,6 +84,9 @@ class FakeMidiDrum(MidiDrum):
         self.__count: int = 0
 
     def _play_midi_pattern(self, pattern: Dict[int, List[List[int]]], pos1: int, pos2: int) -> None:
+        self.__count += 1
+        if self.__count % 100 > 0:
+            return
         for msg_lst in [pattern[x] for x in pattern if pos1 <= x < pos2]:
             for msg in msg_lst:
                 logging.debug(f"FakeMidiDrum send: {msg}")
@@ -105,12 +110,12 @@ if __name__ == "__main__":
         while not drum._length:
             sleep(0.1)
 
-        print(f"==============>{drum}")
+        logging.debug(f"==============>{drum}")
 
         loop = LoopSimple(ctrl)
         loop._record_samples(sound, 0)
         ctrl.idx = len(sound)
-        print("======== start =============")
+        logging.debug("======== start =============")
         loop.trim_buffer()
         Timer(5, ctrl.stop_at_bound, [0]).start()
         loop.play_buffer()

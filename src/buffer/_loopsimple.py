@@ -66,7 +66,7 @@ if __name__ == "__main__":
         c1.get_stop_event().clear()
         Timer(3, c1.stop_at_bound, args=[0]).start()
         l1.play_buffer()
-        print(f"Volume: {l1}")
+        logging.debug(f"Volume: {l1}")
 
 
     test1()

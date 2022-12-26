@@ -143,11 +143,11 @@ if __name__ == "__main__":
     def test1():
         x = load_audio()
         y = max_volume_audio(x)
-        print(y)
+        logging.debug(y)
 
         x = load_midi()
         y = max_volume_midi(x)
-        print(y)
+        logging.debug(y)
 
 
     def test2():
@@ -166,9 +166,9 @@ if __name__ == "__main__":
 
         target = 120
         int_val1, try_bpm1 = map_range_midi(target, 20, 180)
-        print(int_val1, try_bpm1)
+        logging.debug(int_val1, try_bpm1)
         int_val2, try_bpm2 = map_range_midi(target - try_bpm1, -20, 40)
-        print(int_val2, try_bpm2)
+        logging.debug(int_val2, try_bpm2)
 
 
     test3()

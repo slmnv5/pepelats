@@ -43,7 +43,7 @@ if __name__ == "__main__":
         send_fake.close()
         while recv_fake.poll():
             msg = recv_fake.recv(timeout=0.001)
-            print(msg)
+            logging.debug(msg)
 
 
     test()

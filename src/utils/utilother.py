@@ -236,7 +236,7 @@ if __name__ == "__main__":
         co.set_id(8)  # letter I
         assert "I" == co.get_item()
         list_str = co.get_str()
-        print(list_str)
+        logging.debug(list_str)
         assert ".7) H" in list_str
         assert "~8) I" in list_str
 
@@ -244,13 +244,13 @@ if __name__ == "__main__":
     def test2():
         ff = FileFinder(".", True, "")
         for k in range(ff.item_count()):
-            print(ff.get_item())
+            logging.debug(ff.get_item())
             ff.iterate(True)
-        print("================")
+        logging.debug("================")
         found_list = list()
         ff.apply_to_each(lambda x: found_list.append(x if 'lo' in x else None))
         for item in [x for x in found_list if x]:
-            print(item)
+            logging.debug(item)
 
 
     def test3():

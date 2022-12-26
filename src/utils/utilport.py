@@ -84,10 +84,10 @@ class KbdMidiPort:
         self.__queue.put_nowait(event)
 
     def on_press(self, kbd_event):
-        # print(type(kbd_event), str(kbd_event.__dict__))
+        # logging.debug(type(kbd_event), str(kbd_event.__dict__))
         if kbd_event.name == "esc":
             keyboard.unhook_all()
-            print("Done unhook_all and exit !")
+            logging.debug("Done unhook_all and exit !")
             # noinspection PyProtectedMember
             os._exit(1)
             return
@@ -113,7 +113,7 @@ class KbdMidiPort:
 if __name__ == "__main__":
     def test():
         inp = rtmidi.midiutil.open_midioutput()
-        print(str(inp))
+        logging.debug(str(inp))
 
 
     test()

@@ -83,12 +83,12 @@ if __name__ == "__main__":
         while not drum._length:
             sleep(0.1)
 
-        print(f"==============>{drum}")
+        logging.debug(f"==============>{drum}")
 
         loop = LoopSimple(ctrl)
         loop._record_samples(sound, 0)
         ctrl.idx = len(sound)
-        print("======== start =============")
+        logging.debug("======== start =============")
         loop.trim_buffer()
         Timer(5, ctrl.stop_at_bound, [0]).start()
         loop.play_buffer()
