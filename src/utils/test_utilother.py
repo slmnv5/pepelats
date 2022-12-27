@@ -1,12 +1,14 @@
+import logging
+
 from utils.utilother import FileFinder, CollectionOwner
+
+logging.getLogger().setLevel(logging.DEBUG)
 
 
 # noinspection PyProtectedMember
 
 
 def test_1():
-    import logging
-
     lst = [chr(k) for k in range(65, 80)]
     co = CollectionOwner(lst[0])
     for k in lst[1:]:
@@ -25,8 +27,6 @@ def test_1():
 
 
 def test_2():
-    import logging
-
     ff = FileFinder(".", True, "")
     for k in range(ff.item_count()):
         logging.debug(ff.get_item())
@@ -42,6 +42,3 @@ def test_3():
     ff = FileFinder(".", True, ".lkjlkjhkj")
     assert "" == ff.get_item()
     assert 1 == ff.item_count()
-
-
-
