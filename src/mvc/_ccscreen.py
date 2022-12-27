@@ -1,8 +1,6 @@
 import logging
-import time
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
-from multiprocessing.connection import Pipe
 from textwrap import wrap
 from threading import Thread
 from typing import List
@@ -61,4 +59,3 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
 
 if __name__ == "__main__":
     pass
-

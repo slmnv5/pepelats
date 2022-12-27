@@ -20,4 +20,3 @@ def test_1():
     logging.debug(f"Volume: {l1}")
 
 
-test_1()
