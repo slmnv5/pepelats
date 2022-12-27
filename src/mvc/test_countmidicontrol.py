@@ -8,7 +8,7 @@ from utils.utilalsa import get_midi_in
 # noinspection PyProtectedMember
 
 
-def test_1():
+def ntest_1():
     from multiprocessing.dummy import Pipe
 
     logging.getLogger().setLevel(logging.INFO)
@@ -21,6 +21,3 @@ def test_1():
         m_ctrl.monitor()  # will throw EOF when all mesages processed
     except EOFError:
         pass
-
-
-
