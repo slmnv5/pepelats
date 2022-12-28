@@ -6,7 +6,7 @@ from buffer import LoopSimple
 # noinspection PyProtectedMember
 from buffer._oneloopctrl import OneLoopCtrl
 from drum.audiodrum import AudioDrum
-from drum.mididrum import MidiDrum, FakeMidiDrum
+from drum.mididrum import FakeMidiDrum
 from utils.utilalsa import make_sin_sound
 
 logging.basicConfig(level=logging.DEBUG)

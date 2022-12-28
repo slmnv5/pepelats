@@ -1,4 +1,3 @@
-import logging
 import os
 from math import ceil, log10
 from typing import List, Dict, Union, Any
@@ -131,9 +130,8 @@ def load_all_patterns(directory: str, file_name: str, storage: List[Dict], sound
         storage.append(pattern)
 
 
-def prepare_drum_pattern(pattern: Dict[str, Any], sounds: List[np.ndarray], length: int, volume: float,
+def prepare_drum_pattern(pattern: Dict[str, Any], sounds: Dict[str, np.ndarray], length: int, volume: float,
                          swing: float) -> np.ndarray:
-    logging.debug(f"Preapring pattern: {pattern}")
     steps = pattern["steps"]
     accents = pattern["accents"]
     result: np.ndarray = make_zero_buffer(length)

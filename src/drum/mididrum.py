@@ -1,5 +1,4 @@
 import logging
-from abc import ABC
 from typing import Dict, Any
 from typing import List
 
@@ -10,8 +9,8 @@ from drum._utildrum import position_with_swing
 from drum.basedrum import ProtoDrum, SimpleDrum
 
 
-class LoadDrumMidi(SimpleDrum, ABC):
-    """ Load JSON config for MIDI commands """
+class MidiDrum(SimpleDrum):
+    """ MIDI Drum version sending configurable MIDI messages and sysex """
 
     def __init__(self, out_port):
         SimpleDrum.__init__(self)
@@ -19,9 +18,6 @@ class LoadDrumMidi(SimpleDrum, ABC):
         self.max_volume = max_volume_midi(self._sounds)
         self._load_all()
         self._out_port = out_port
-
-    def close_port(self):
-        self._out_port.close_port()
 
     def _prepare_one(self, pattern, length: int) -> Any:
         # logging.debug(f"Preapring pattern: {pattern}")
@@ -50,13 +46,6 @@ class LoadDrumMidi(SimpleDrum, ABC):
         logging.debug(f"Prepared pattern: {result}")
         return result
 
-
-class MidiDrum(LoadDrumMidi):
-    """ MIDI Drum version sending configurable MIDI messages and sysex """
-
-    def __init__(self, out_port):
-        LoadDrumMidi.__init__(self, out_port)
-
     def _play_midi_pattern(self, pattern: Dict[int, List[List[int]]], pos1: int, pos2: int) -> None:
         for msg_lst in [pattern[x] for x in pattern if pos1 <= x < pos2]:
             for msg in msg_lst:
@@ -80,7 +69,7 @@ class MidiDrum(LoadDrumMidi):
 
 class FakeMidiDrum(MidiDrum):
     def __init__(self, out_port):
-        LoadDrumMidi.__init__(self, out_port)
+        MidiDrum.__init__(self, out_port)
         self.__count: int = 0
 
     def _play_midi_pattern(self, pattern: Dict[int, List[List[int]]], pos1: int, pos2: int) -> None:

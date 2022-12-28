@@ -1,5 +1,4 @@
 import logging
-from abc import ABC
 from typing import Dict, Any
 
 import numpy as np
@@ -9,9 +8,8 @@ from drum.basedrum import ProtoDrum, SimpleDrum
 from utils.utilalsa import play_sound_buff
 
 
-class LoadDrumWave(SimpleDrum, ABC):
-    """ class to load drum patterns, drum sounds, generate audio bufferes with
-    drum tracks using volume and swing parameters """
+class AudioDrum(SimpleDrum):
+    """Play drums generated from patterns, change patterns and intensity """
 
     def __init__(self):
         SimpleDrum.__init__(self)
@@ -22,13 +20,6 @@ class LoadDrumWave(SimpleDrum, ABC):
     def _prepare_one(self, pattern, length: int) -> Any:
         logging.debug(f"Preapring pattern: {pattern}")
         return prepare_drum_pattern(pattern, self._sounds, length, self._volume, self._swing)
-
-
-class AudioDrum(LoadDrumWave):
-    """Play drums generated from patterns, change patterns and intencity """
-
-    def __init__(self):
-        LoadDrumWave.__init__(self)
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         if self._intensity == ProtoDrum._MUTE:
