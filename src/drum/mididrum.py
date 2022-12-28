@@ -25,7 +25,7 @@ class LoadDrumMidi(SimpleDrum, ABC):
 
     def _prepare_one(self, pattern, length: int) -> Any:
         # logging.debug(f"Preapring pattern: {pattern}")
-        accents = pattern["acc"]
+        accents = pattern["accents"]
         result: Dict[int, List[List[int]]] = dict()
         for sound_name in [x for x in self._sounds if x in pattern]:
             notes = pattern[sound_name]

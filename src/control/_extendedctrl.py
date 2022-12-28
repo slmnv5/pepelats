@@ -20,15 +20,15 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
     def __init__(self, recv_conn: Connection, send_conn: Connection):
         MsgProcessor.__init__(self, recv_conn, send_conn)
-        self._dr_audi: SimpleDrum = AudioDrum()
-        self.__dr_midi: SimpleDrum = self._dr_audi
+        self.__dr_audi: SimpleDrum = AudioDrum()
+        self.__dr_midi: SimpleDrum = self.__dr_audi
         midi_out = get_midi_out()
         if not midi_out:
             self.__dr_midi = FakeMidiDrum(midi_out)
         elif midi_out:
             self.__dr_midi = MidiDrum(midi_out)
 
-        ManyLoopCtrl.__init__(self, self.__dr_midi)
+        ManyLoopCtrl.__init__(self, self.__dr_audi)
 
         self.__draw_info: DrawInfo = DrawInfo()
 
@@ -101,11 +101,11 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
     def _drum_audio(self) -> None:
         drum = self.get_drum()
-        if self._dr_audi == drum:
+        if self.__dr_audi == drum:
             return
-        self._dr_audi.load_drum_name(drum.get_item())
-        self._dr_audi.prepare_drum(drum.get_length())
-        self._set_drum(self._dr_audi)
+        self.__dr_audi.load_drum_name(drum.get_item())
+        self.__dr_audi.prepare_drum(drum.get_length())
+        self._set_drum(self.__dr_audi)
 
     #  ============ All song parts view and related commands
 

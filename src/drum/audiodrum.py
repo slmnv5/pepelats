@@ -21,7 +21,7 @@ class LoadDrumWave(SimpleDrum, ABC):
 
     def _prepare_one(self, pattern, length: int) -> Any:
         logging.debug(f"Preapring pattern: {pattern}")
-        return prepare_drum_pattern(pattern, self._sounds, self._length, self._volume, self._swing)
+        return prepare_drum_pattern(pattern, self._sounds, length, self._volume, self._swing)
 
 
 class AudioDrum(LoadDrumWave):

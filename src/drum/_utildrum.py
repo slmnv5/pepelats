@@ -137,9 +137,9 @@ def prepare_drum_pattern(pattern: Dict[str, Any], sounds: List[np.ndarray], leng
     steps = pattern["steps"]
     accents = pattern["accents"]
     result: np.ndarray = make_zero_buffer(length)
-    for sound_name in [x for x in pattern if x not in ["accesnts", "steps"]]:
+    for sound_name in [x for x in sounds if x in pattern]:
         notes = pattern[sound_name]
-        assert notes.count("!") + notes.count(".") == len(notes)
+        assert notes.count("!") + notes.count(".") == len(notes), f"Pattern incorrect: {pattern['name']} {sound_name}"
         step_len = length // steps
         sound: np.ndarray = sounds[sound_name]
         sound = sound[:length]
