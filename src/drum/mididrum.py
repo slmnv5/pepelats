@@ -63,7 +63,7 @@ class MidiDrum(LoadDrumMidi):
                 self._out_port.send_message(msg)
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        if self._intensity == ProtoDrum._MUTE or not self._length:
+        if self._intensity == ProtoDrum._MUTE:
             return
 
         pos1 = idx % self._length

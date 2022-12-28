@@ -4,9 +4,8 @@ from typing import Dict, Any
 
 import numpy as np
 
-from drum._utildrum import load_audio, max_volume_audio, position_with_swing
+from drum._utildrum import load_audio, max_volume_audio, prepare_drum_pattern
 from drum.basedrum import ProtoDrum, SimpleDrum
-from utils.utilalsa import make_zero_buffer, record_sound_buff, SD_TYPE
 from utils.utilalsa import play_sound_buff
 
 
@@ -22,29 +21,7 @@ class LoadDrumWave(SimpleDrum, ABC):
 
     def _prepare_one(self, pattern, length: int) -> Any:
         logging.debug(f"Preapring pattern: {pattern}")
-        accents = pattern["acc"]
-        result: np.ndarray = make_zero_buffer(length)
-        for sound_name in [x for x in self._sounds if x in pattern]:
-            notes = pattern[sound_name]
-            steps = len(notes)
-            if notes.count("!") + notes.count(".") != steps:
-                logging.error(f"sound {sound_name} notes {notes} must contain only '.' and '!'")
-
-            step_len = length // steps
-            sound: np.ndarray = self._sounds[sound_name]
-            sound = sound[:length]
-            assert sound.ndim == 2 and sound.shape[1] == 2
-            assert 0 < sound.shape[0] <= length, f"Must be: 0 < {sound.shape[0]} <= {length}"
-
-            for step_number in range(steps):
-                if notes[step_number] != '.':
-                    step_accent = int(accents[step_number])
-                    step_volume = step_accent / 9 * self._volume
-                    pos = position_with_swing(step_number, step_len, self._swing)
-                    tmp = (sound * step_volume).astype(SD_TYPE)
-                    record_sound_buff(result, tmp, pos)
-
-        return result
+        return prepare_drum_pattern(pattern, self._sounds, self._length, self._volume, self._swing)
 
 
 class AudioDrum(LoadDrumWave):
@@ -54,7 +31,7 @@ class AudioDrum(LoadDrumWave):
         LoadDrumWave.__init__(self)
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        if self._intensity == ProtoDrum._MUTE or not self._length:
+        if self._intensity == ProtoDrum._MUTE:
             return
 
         if self._intensity == ProtoDrum._BREAK:
@@ -67,4 +44,3 @@ class AudioDrum(LoadDrumWave):
 
 if __name__ == "__main__":
     pass
-

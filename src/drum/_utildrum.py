@@ -1,10 +1,12 @@
+import logging
 import os
 from math import ceil, log10
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Any
 
 import numpy as np
 import soundfile
 
+from utils.utilalsa import record_sound_buff, make_zero_buffer
 from utils.utilconfig import SD_RATE, SD_TYPE, ROOT_DIR, ConfigName, SD_MAX, DRUM_CHANNEL
 from utils.utilother import JsonDict
 
@@ -27,28 +29,6 @@ def position_with_swing(step_number: int, step_len: int, swing: float) -> int:
     else:
         swing_delta: int = int(step_len * (swing - 0.5))
         return step_number * step_len + swing_delta
-
-
-def load_all_patterns(directory: str, file_name: str, storage: List[Dict], sound_names: List[str]) -> None:
-    storage.clear()
-    loader = JsonDict(os.path.join(directory, file_name + ".json"))
-    default: Dict = loader.get(ConfigName.default_config, None)
-    if default:
-        loader.dic().pop(ConfigName.default_config)
-    for key in loader.dic():
-        value = loader.get(key, None)
-        if not value:
-            continue
-        assert type(value) == dict, f"Must be dictionary {key}"
-        assert len(value) > 0, f"Dictionary must be non empty {key}"
-        if default:
-            value = dict(default, **value)
-        for sound_name in [x for x in sound_names if x in value]:
-            value[sound_name] = extend_list(value[sound_name], value["steps"])
-
-        value["name"] = key
-        value["acc"] = extend_list(value["acc"], value["steps"])
-        storage.append(value)
 
 
 def sysex_list(value: float, count: int = 0) -> List[int]:
@@ -128,6 +108,54 @@ def load_midi() -> Dict[str, List[int]]:
     return result
 
 
+def load_all_patterns(directory: str, file_name: str, storage: List[Dict], sounds: Dict[str, np.ndarray]) -> None:
+    storage.clear()
+    loader = JsonDict(os.path.join(directory, file_name + ".json"))
+    dic: Dict = loader.dic()
+    default: Dict = dic.get(ConfigName.default_config, dict())
+    for key in [x for x in dic if x not in [ConfigName.default_config, ConfigName.comment]]:
+        pattern = loader.get(key, None)
+        assert type(pattern) == dict, f"Must be dictionary {key}"
+        assert len(pattern) > 0, f"Dictionary must be non empty {key}"
+        pattern = dict(default, **pattern)
+        steps = pattern["steps"]
+        assert isinstance(steps, int) and steps > 0
+        accents = pattern["accents"]
+        assert accents and len(accents) > 0
+        accents = extend_list(accents, steps)
+        pattern["accents"] = accents
+        pattern["name"] = key
+        for sound_name in [x for x in sounds if x in pattern]:
+            pattern[sound_name] = extend_list(pattern[sound_name], steps)
+
+        storage.append(pattern)
+
+
+def prepare_drum_pattern(pattern: Dict[str, Any], sounds: List[np.ndarray], length: int, volume: float,
+                         swing: float) -> np.ndarray:
+    logging.debug(f"Preapring pattern: {pattern}")
+    steps = pattern["steps"]
+    accents = pattern["accents"]
+    result: np.ndarray = make_zero_buffer(length)
+    for sound_name in [x for x in pattern if x not in ["accesnts", "steps"]]:
+        notes = pattern[sound_name]
+        assert notes.count("!") + notes.count(".") == len(notes)
+        step_len = length // steps
+        sound: np.ndarray = sounds[sound_name]
+        sound = sound[:length]
+        assert sound.ndim == 2 and sound.shape[1] == 2
+        assert 0 < sound.shape[0] <= length, f"Must be: 0 < {sound.shape[0]} <= {length}"
+
+        for step_number in range(steps):
+            if notes[step_number] == '!':
+                step_accent = int(accents[step_number])
+                step_volume = step_accent / 9 * volume
+                pos = position_with_swing(step_number, step_len, swing)
+                tmp = (sound * step_volume).astype(SD_TYPE)
+                record_sound_buff(result, tmp, pos)
+
+    return result
+
+
 if __name__ == "__main__":
     pass
-

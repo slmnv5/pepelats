@@ -30,7 +30,7 @@ class ProtoDrum(FileFinder):
         self._ptn_l1: List[Dict[str, Any]] = []
         self._ptn_l2: List[Dict[str, Any]] = []
         self._ptn_bk: List[Dict[str, Any]] = []
-        self._intensity: int = ProtoDrum._LEVEL1
+        self._intensity: int = ProtoDrum._MUTE
         self._is_break_pending: bool = False
         self._name: str = self.get_item()
 
@@ -58,7 +58,7 @@ class ProtoDrum(FileFinder):
         lst2 = [self._ptn_l1, self._ptn_l2, self._ptn_bk]
         for k in range(3):
             logging.info(f"Loaded patterns from directory: {directory}, file: {lst1[k]}")
-            load_all_patterns(directory, lst1[k], lst2[k], [*self._sounds])
+            load_all_patterns(directory, lst1[k], lst2[k], self._sounds)
 
     def load_drum_name(self, drum_name: str) -> None:
         if self._name == drum_name:
@@ -68,12 +68,19 @@ class ProtoDrum(FileFinder):
         self._load_all()
 
     def change_intensity(self, change_by: int) -> None:
+        if not self._length:
+            self._intensity = ProtoDrum._MUTE
+            return
+
         i = self._intensity + change_by
         i = 0 if i > 3 else i
         i = 3 if i < 0 else i
         self._intensity = i
 
     def play_break_now(self) -> None:
+        if not self._length:
+            return
+
         if self._intensity == ProtoDrum._MUTE:
             self._intensity = ProtoDrum._LEVEL1
 
@@ -113,7 +120,9 @@ class SimpleDrum(ProtoDrum, ABC):
 
     def prepare_drum(self, length: int) -> None:
         if not length:
+            self._intensity = ProtoDrum._MUTE
             return
+
         self._length = 0  # keep it zero until sound load is done
         self._bpm = bpm_from_length(length)
         self._snd_l1 = [self._prepare_one(p, length) for p in self._ptn_l1]
