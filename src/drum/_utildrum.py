@@ -122,11 +122,14 @@ def load_all_patterns(directory: str, file_name: str, storage: List[Dict], sound
         accents = pattern["accents"]
         assert accents and len(accents) > 0
         accents = extend_list(accents, steps)
-        pattern["accents"] = accents
-        pattern["name"] = key
-        for sound_name in [x for x in sounds if x in pattern]:
+        for sound_name in [x for x in pattern if x not in sounds]:
+            pattern.pop(sound_name)
+        for sound_name in pattern:
             pattern[sound_name] = extend_list(pattern[sound_name], steps)
 
+        pattern["accents"] = accents
+        pattern["name"] = key
+        pattern["steps"] = steps
         storage.append(pattern)
 
 
