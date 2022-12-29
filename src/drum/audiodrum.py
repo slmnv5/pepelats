@@ -5,7 +5,7 @@ import numpy as np
 
 from drum._utildrum import load_audio, max_volume_audio, drum_from_pattern
 from drum.basedrum import ProtoDrum, SimpleDrum
-from utils.utilalsa import play_sound_buff
+from utils.utilnumpy import play_sound_buff
 
 
 class AudioDrum(SimpleDrum):

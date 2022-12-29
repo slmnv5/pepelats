@@ -5,7 +5,7 @@ from typing import Dict, Any
 from typing import List, Optional
 from typing import TypeVar, Generic
 
-from utils._utilnumpy import get_stable_list
+from utils.utilnumpy import get_stable_list
 from utils.utilconfig import ROOT_DIR
 
 T = TypeVar('T')

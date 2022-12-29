@@ -7,7 +7,6 @@ import rtmidi
 import sounddevice as sd
 from rtmidi.midiutil import open_midiinput, open_midioutput
 
-from utils._utilnumpy import play_sound_buff, record_sound_buff
 from utils.utilconfig import SD_TYPE, MAX_LEN, USB_AUDIO_NAMES, PEDAL_PORT_NAME, CLOCK_PORT_NAME
 
 
@@ -66,25 +65,6 @@ def make_zero_buffer(buff_len: int) -> np.ndarray:
     if buff_len < 0 or buff_len > MAX_LEN:
         raise ValueError(f"make_zero_buffer() incorrect parameter: {buff_len}")
     return np.zeros((buff_len, 2), SD_TYPE)
-
-
-def sound_test(buffer: np.ndarray, duration_sec: float, record: bool) -> None:
-    assert buffer.ndim == 2 and buffer.shape[1] == 2, "Buffer for playback must have 2 channels"
-    idx = 0
-
-    # noinspection PyUnusedLocal
-    def callback(in_data, out_data, frame_count, time_info, status):
-        nonlocal idx
-
-        out_data[:] = 0
-        assert len(out_data) == len(in_data) == frame_count
-        play_sound_buff(buffer, out_data, idx)
-        if record:
-            record_sound_buff(buffer, in_data, idx)
-        idx += frame_count
-
-    with sd.Stream(callback=callback, dtype=buffer.dtype):
-        sd.sleep(int(duration_sec * 1000))
 
 
 def make_sin_sound(sound_freq: int, duration_sec: float, amplitude: int = 3000) -> np.ndarray:

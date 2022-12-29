@@ -5,8 +5,9 @@ from typing import List, Dict, Union, Any
 import numpy as np
 import soundfile
 
-from utils.utilalsa import record_sound_buff, make_zero_buffer
+from utils.utilalsa import make_zero_buffer
 from utils.utilconfig import SD_RATE, SD_TYPE, ROOT_DIR, ConfigName, SD_MAX, DRUM_CHANNEL
+from utils.utilnumpy import record_sound_buff
 from utils.utilother import JsonDict
 
 
