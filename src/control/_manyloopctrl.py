@@ -121,11 +121,14 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
     def _change_drum_swing(self, change_by: float) -> None:
         self.get_drum().change_swing(change_by)
 
-    def _change_drum(self) -> None:
-        self.get_drum().play_break_now()
-
     def _change_drum_intensity(self, change_by: int) -> None:
         self.get_drum().change_intensity(change_by)
+
+    def _change_drum_index(self, change_by: int) -> None:
+        self.get_drum().change_index(change_by)
+
+    def _change_drum(self) -> None:
+        self.get_drum().play_break_now()
 
     def _show_drum_param(self) -> str:
         return self.get_drum().show_drum_param()

@@ -112,11 +112,9 @@ class SimpleDrum(ProtoDrum, ABC):
         self._volume: float = 1.0  # from 0 to 1
         self._max_volume: float = 1.0  # from 0 to 1
         self._swing: float = 0.75
-
+        self._snd_l1 = self._snd_l2 = self._snd_bk = []
         self._l1 = self._l2 = self._bk = []
-        self._snd_l1 = []
-        self._snd_l2 = []
-        self._snd_bk = []
+        self._il1 = self._il2 = self._ibk = 0
 
     def prepare_drum(self, length: int) -> None:
         if not length:
@@ -149,16 +147,38 @@ class SimpleDrum(ProtoDrum, ABC):
             self._swing = 0.75
         self.prepare_drum(self._length)
 
+    def change_intensity(self, change_by: int) -> None:
+        change_by = (1 if change_by > 0 else -1)
+        self._intensity += change_by
+        self._intensity = self._intensity % (ProtoDrum._BREAK + 1)
+
+    def change_index(self, change_by: int) -> None:
+        change_by = (1 if change_by > 0 else -1)
+        self._il1 += change_by
+        self._il2 += change_by
+        self._ibk += change_by
+        self._il1 %= (len(self._snd_l1))
+        self._il2 %= (len(self._snd_l2))
+        self._ibk %= (len(self._snd_bk))
+
     def show_drum_param(self) -> str:
-        return f"Drum parameters:\nvolume(0.0-1.0):{self._volume:.2F}\n" \
+        return f"Drum parameters:\n" \
+               f"Intensity: {self._intensity}, pattern idx: {self._il1}/{self._il2}/{self._ibk}" \
+               f"\nvolume(0.0-1.0):{self._volume:.2F}\n" \
                f"swing(0.5-0.75):{self._swing:.2F}"
 
     def _randomize(self):
         if not self._length:
             return
-        self._l2 = random.choice(self._snd_l2)
-        self._l1 = random.choice(self._snd_l1)
-        self._bk = random.choice(self._snd_bk)
+        self._il1 += random.randint(1, len(self._snd_l1) - 1)
+        self._il2 += random.randint(1, len(self._snd_l2) - 1)
+        self._ibk += random.randint(1, len(self._snd_bk) - 1)
+        self._il1 %= (len(self._snd_l1))
+        self._il2 %= (len(self._snd_l2))
+        self._ibk %= (len(self._snd_bk))
+        self._l2 = self._snd_l2[self._il1]
+        self._l1 = self._snd_l1[self._il2]
+        self._bk = self._snd_bk[self._ibk]
 
     def get_info(self):
         return f"{self.__class__.__name__} " \
