@@ -173,7 +173,7 @@ class FileFinder(CollectionOwner[str]):
         match2 = f.endswith(self.__end_with)
         return match1 and match2
 
-    def get_dir_name(self) -> str:
+    def get_dir(self) -> str:
         return self.__dir
 
     def get_full_name(self) -> str:

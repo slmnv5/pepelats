@@ -148,11 +148,15 @@ class SimpleDrum(ProtoDrum, ABC):
         self.prepare_drum(self._length)
 
     def change_intensity(self, change_by: int) -> None:
+        if not self._length:
+            return
         change_by = (1 if change_by > 0 else -1)
         self._intensity += change_by
-        self._intensity = self._intensity % (ProtoDrum._BREAK + 1)
+        self._intensity %= (ProtoDrum._BREAK + 1)
 
     def change_index(self, change_by: int) -> None:
+        if not self._length:
+            return
         change_by = (1 if change_by > 0 else -1)
         self._il1 += change_by
         self._il2 += change_by
@@ -160,10 +164,13 @@ class SimpleDrum(ProtoDrum, ABC):
         self._il1 %= (len(self._snd_l1))
         self._il2 %= (len(self._snd_l2))
         self._ibk %= (len(self._snd_bk))
+        self.__set_drums()
 
     def show_drum_param(self) -> str:
-        return f"Drum parameters:\n" \
-               f"Intensity: {self._intensity}, pattern idx: {self._il1}/{self._il2}/{self._ibk}" \
+        return f"{str(self)} int: {self._intensity}" \
+               f"\nindex: {self._il1}/{len(self._snd_l1)}  " \
+               f"{self._il2}/{len(self._snd_l2)}  " \
+               f"{self._ibk}/{len(self._snd_bk)}" \
                f"\nvolume(0.0-1.0):{self._volume:.2F}\n" \
                f"swing(0.5-0.75):{self._swing:.2F}"
 
@@ -176,8 +183,11 @@ class SimpleDrum(ProtoDrum, ABC):
         self._il1 %= (len(self._snd_l1))
         self._il2 %= (len(self._snd_l2))
         self._ibk %= (len(self._snd_bk))
-        self._l2 = self._snd_l2[self._il1]
-        self._l1 = self._snd_l1[self._il2]
+        self.__set_drums()
+
+    def __set_drums(self):
+        self._l1 = self._snd_l1[self._il1]
+        self._l2 = self._snd_l2[self._il2]
         self._bk = self._snd_bk[self._ibk]
 
     def get_info(self):
