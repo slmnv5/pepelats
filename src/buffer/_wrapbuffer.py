@@ -2,8 +2,8 @@ import logging
 
 import numpy as np
 
-from utils.utilconfig import MAX_LEN, SD_MAX, SD_TYPE
 from utils.utilalsa import make_zero_buffer, play_sound_buff, record_sound_buff
+from utils.utilconfig import MAX_LEN, SD_MAX, SD_TYPE
 
 
 class WrapBuffer:
@@ -75,15 +75,15 @@ class WrapBuffer:
 
     def finalize(self, idx: int, trim_len: int) -> None:
         """Trim is called once to fix buffer length. Buffer must be multiple of trim_len.
-         If this length is negative use only idx value"""
-
-        logging.debug(f"before trim: len {len(self.__buff)} trim_len {trim_len} start {self.__start} idx {idx}")
+         If trim_len == 0 make buffer == idx value"""
+        buff_len = len(self.__buff)
+        logging.debug(f"before trim: buff_len:{buff_len} trim_len:{trim_len} start:{self.__start} idx:{idx}")
         assert self.is_empty, "buffer must be empty"
-        assert self.__start >= 0, f"start must be non negative: {self.__start}"
+        assert self.__start >= 0, "start must be non negative"
 
         if trim_len <= 0:
             assert self.__start == 0, "start must be zero"
-            assert idx < len(self.__buff), "end of recording beyond buffer"
+            idx = max(idx, buff_len)
             self.__buff = self.__buff[:idx]
             return
 
@@ -95,16 +95,9 @@ class WrapBuffer:
         rec_len = round(rec_len / trim_len) * trim_len
         if rec_len == 0:
             rec_len += trim_len
+        # rec_len is multiple of trim_len: .. 1/8, 1/4, 1/2, 1, 2, 3, ...
 
-        # align start with main loop's trim_len
-        offset: int = self.__start % trim_len
-        if offset < trim_len // 2:
-            self.__start -= offset
-        else:
-            self.__start += (trim_len - offset)
-
-        assert self.__start >= 0
-
+        self.__start = idx - rec_len
         new_buff = make_zero_buffer(rec_len)
         play_sound_buff(self.__buff, new_buff, self.__start)
         self.__buff = new_buff

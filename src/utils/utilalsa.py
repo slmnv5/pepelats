@@ -62,32 +62,34 @@ if IN_CH not in [1, 2]:
     raise RuntimeError(f"ALSA audio device must have 1 or 2 input channels, got {IN_CH}")
 
 
-def record_sound_buff(buff: np.ndarray, np_data: np.ndarray, idx: int) -> None:
-    assert buff.ndim == np_data.ndim
-    data_len = len(np_data)
+def record_sound_buff(buff: np.ndarray, data: np.ndarray, idx: int) -> None:
+    """ insert data into buff starting with idx """
+    assert buff.ndim == data.ndim
+    data_len = len(data)
     if IN_CH == 1:
-        np_data = np.broadcast_to(np_data, (data_len, 2))
+        data = np.broadcast_to(data, (data_len, 2))
     slice1, slice2 = calc_slices(len(buff), data_len, idx)
     if slice2 is None:
-        buff[slice1] += np_data[:]
+        buff[slice1] += data[:]
     else:
         s1 = slice1.stop - slice1.start
         s2 = slice2.stop - slice2.start
-        buff[slice1] += np_data[0:s1]
-        buff[slice2] += np_data[s1:s1 + s2]
+        buff[slice1] += data[0:s1]
+        buff[slice2] += data[s1:s1 + s2]
 
 
-def play_sound_buff(buff: np.ndarray, np_data: np.ndarray, idx: int) -> None:
-    assert type(buff) == type(np_data), f"{type(buff)}, {type(np_data)}"
-    assert buff.ndim == np_data.ndim
-    data_len = len(np_data)
+def play_sound_buff(buff: np.ndarray, data: np.ndarray, idx: int) -> None:
+    """ insert buff into data starting with idx """
+    assert type(buff) == type(data), f"{type(buff)}, {type(data)}"
+    assert buff.ndim == data.ndim
+    data_len = len(data)
     slice1, slice2 = calc_slices(len(buff), data_len, idx)
     if slice2 is None:
-        np_data[:] += buff[slice1]
+        data[:] += buff[slice1]
     else:
         s1 = slice1.stop - slice1.start
-        np_data[:s1] += buff[slice1]
-        np_data[s1:] += buff[slice2]
+        data[:s1] += buff[slice1]
+        data[s1:] += buff[slice2]
 
 
 def make_zero_buffer(buff_len: int) -> np.ndarray:
