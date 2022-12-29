@@ -21,8 +21,8 @@
     "62:100": "[go_dn]",
     "65:2": "[load]",
 
-    "[go_up]": [["_change_drum_name", 1], ["_redraw"]],
-    "[go_dn]": [["_change_drum_name", -1], ["_redraw"]],
+    "[go_up]": [["_change_drum_name", -1], ["_redraw"]],
+    "[go_dn]": [["_change_drum_name", 1], ["_redraw"]],
     "[load]": [["_load_drum_name"], ["_change_map", "play", "0"]]
  },
   "1": {
