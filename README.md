@@ -12,7 +12,8 @@
 - Control by MIDI (Bluetooth / USB) configureable in a text file
 - Typing keyboard may be used as MIDI controller
 - Text console shows loop position, state, length, volume
-- Menu for looper parameters using foot controller
+- MIDI control supplemented by LCD touch screen menu
+- Drums sent to MIDI OUT port instead of playing internal samples
 
 ## Installation:
 
