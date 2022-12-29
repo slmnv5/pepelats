@@ -87,7 +87,11 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         os.system(f"sleep {sec}")
 
     @staticmethod
-    def _check_updates() -> None:
+    def _restart_looper() -> None:
+        os.system("killall -9 python")
+
+    @staticmethod
+    def _update_app() -> None:
         os.system("git reset --hard")
         os.system("git pull --ff-only")
 

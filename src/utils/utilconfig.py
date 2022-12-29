@@ -36,4 +36,3 @@ class ConfigName:
     # redraw related methods
     change_map: str = "_change_map"
     send_redraw: str = "_send_redraw"
-    restart_looper: str = "_restart_looper"

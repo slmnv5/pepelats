@@ -22,7 +22,7 @@
     "64:2": "[drum_audio]",
     "65:2": "[drum_midi]",
 
-    "[update]": [["_check_updates"],["_redraw"]],
+    "[update]": [["_update_app"],["_redraw"]],
     "[restart]": ["_restart_looper"],
     "[drum_audio]": [["_drum_audio"], ["_change_map", "play", "0"]],
     "[drum_midi]": [["_drum_midi"], ["_change_map", "play", "0"]]
