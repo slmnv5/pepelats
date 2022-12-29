@@ -8,7 +8,7 @@
 - Loops, parts may be added/deleted on the run
 - Drum machine with random patterns/breaks configureable in a text file
 - Quantization - time of changing parts, recording is adjusted to keep the rhythm
-- Songs may be saved and loaded from SD card
+- Songs saved and loaded from SD card
 - Control by MIDI (Bluetooth / USB) configureable in a text file
 - Typing keyboard may be used as MIDI controller
 - Text console shows loop position, state, length, volume
