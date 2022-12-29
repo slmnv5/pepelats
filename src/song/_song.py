@@ -1,7 +1,6 @@
 import logging
 import pickle
 from abc import abstractmethod
-from time import sleep
 
 from buffer import OneLoopCtrl
 from drum.basedrum import SimpleDrum
@@ -62,9 +61,7 @@ class Song(CollectionOwnerExt[SongPart]):
         while self.item_count() > 4:
             self.delete()
 
-        while not self.get_drum().get_length():
-            sleep(0.1)
-
+        self.set_fixed(self.get_first())
         logging.info(f"Loaded song file: {full_name}")
 
     def _save_song(self) -> None:
