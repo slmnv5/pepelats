@@ -97,6 +97,9 @@ class WrapBuffer:
             rec_len += trim_len
         # rec_len is multiple of trim_len: .. 1/8, 1/4, 1/2, 1, 2, 3, ...
 
+        new_buff1 = make_zero_buffer(idx - self.__start)
+        play_sound_buff(self.__buff, new_buff1, self.__start)
+
         self.__start = idx - rec_len
         new_buff = make_zero_buffer(rec_len)
         play_sound_buff(self.__buff, new_buff, self.__start)
