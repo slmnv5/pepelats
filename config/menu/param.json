@@ -30,8 +30,8 @@
     "update_method": "_show_drum_param",
     "60:1": "[volume_dn]",
     "60:2": "[volume_up]",
-    "62:1": "[volume_dn]",
-    "62:2": "[volume_up]",
+    "62:1": "[swing_dn]",
+    "62:2": "[swing_up]",
 
     "[volume_dn]": [["_change_drum_volume", 0.8], ["_redraw"]],
     "[volume_up]": [["_change_drum_volume", 1.2], ["_redraw"]],
