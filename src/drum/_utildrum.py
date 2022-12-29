@@ -117,15 +117,12 @@ def load_all_patterns(directory: str, file_name: str, storage: List[Dict], sound
         assert type(pattern) == dict, f"Must be dictionary {key}"
         assert len(pattern) > 0, f"Dictionary must be non empty {key}"
         pattern = dict(default, **pattern)
-        steps = pattern["steps"]
-        assert isinstance(steps, int) and steps > 0
-        accents = pattern["accents"]
-        assert accents and len(accents) > 0
-        accents = extend_list(accents, steps)
+        steps = pattern.get("steps", 0)
+        assert isinstance(steps, int) and steps >= 0
+        accents = pattern.get("accents", "5")
+        assert isinstance(accents, str) and len(accents) > 0
         for sound_name in [x for x in pattern if x not in sounds]:
             pattern.pop(sound_name)
-        for sound_name in pattern:
-            pattern[sound_name] = extend_list(pattern[sound_name], steps)
 
         pattern["accents"] = accents
         pattern["name"] = key
@@ -133,29 +130,54 @@ def load_all_patterns(directory: str, file_name: str, storage: List[Dict], sound
         storage.append(pattern)
 
 
-def prepare_drum_pattern(pattern: Dict[str, Any], sounds: Dict[str, np.ndarray], length: int, volume: float,
-                         swing: float) -> np.ndarray:
+def drum_from_pattern(pattern: Dict[str, Any], sounds: Dict[str, np.ndarray], length: int, volume: float,
+                      swing: float) -> np.ndarray:
     steps = pattern["steps"]
     accents = pattern["accents"]
     result: np.ndarray = make_zero_buffer(length)
     for sound_name in [x for x in sounds if x in pattern]:
         notes = pattern[sound_name]
-        assert notes.count("!") + notes.count(".") == len(notes), f"Pattern incorrect: {pattern['name']} {sound_name}"
-        step_len = length // steps
-        sound: np.ndarray = sounds[sound_name]
-        sound = sound[:length]
-        assert sound.ndim == 2 and sound.shape[1] == 2
-        assert 0 < sound.shape[0] <= length, f"Must be: 0 < {sound.shape[0]} <= {length}"
-
-        for step_number in range(steps):
-            if notes[step_number] == '!':
-                step_accent = int(accents[step_number])
-                step_volume = step_accent / 9 * volume
-                pos = position_with_swing(step_number, step_len, swing)
-                tmp = (sound * step_volume).astype(SD_TYPE)
-                record_sound_buff(result, tmp, pos)
+        sound = sounds[sound_name][0:length]
+        if isinstance(notes, str):
+            notes = extend_list(notes, steps) if steps else notes
+            drum_from_string(result, sound, notes, accents, volume, swing)
+        elif isinstance(notes, list) and len(list) == 3:
+            drum_from_list(result, sound, notes, accents, volume, swing)
+        else:
+            raise RuntimeError(f"Wrong pattern: {sound_name}")
 
     return result
+
+
+def drum_from_list(result: np.ndarray, sound: np.ndarray, notes: List[int], accents: str,
+                   volume: float, swing: float) -> None:
+    onsets = notes[0]
+    steps = notes[1]
+    shift = notes[2]
+    notes = "." * steps
+    for k in range(onsets):
+        distance: float = round(onsets * k / steps)
+        notes[distance:distance + 1] = '!'
+    notes = notes[-shift:0] + notes[0:-shift]
+
+    return drum_from_string(result, sound, notes, accents, volume, swing)
+
+
+def drum_from_string(result: np.ndarray, sound: np.ndarray, notes: str, accents: str,
+                     volume: float, swing: float) -> None:
+    assert notes.count("!") + notes.count(".") == len(notes), f"Pattern symbol must be '.' or '!'"
+    steps = len(notes)
+    accents = extend_list(accents, steps)
+    step_len = len(result) // steps
+    assert sound.ndim == 2 and sound.shape[1] == 2
+
+    for step_number in range(steps):
+        if notes[step_number] == '!':
+            step_accent = int(accents[step_number])
+            step_volume = step_accent / 9 * volume
+            pos = position_with_swing(step_number, step_len, swing)
+            tmp = (sound * step_volume).astype(SD_TYPE)
+            record_sound_buff(result, tmp, pos)
 
 
 if __name__ == "__main__":

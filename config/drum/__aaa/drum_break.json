@@ -1,0 +1,9 @@
+{
+  "default_config": {
+    "accents": "87"
+  },
+  "end_0": {
+    "hho": [3, 8, 0],
+    "tom": [5, 7, 2]
+  }
+}

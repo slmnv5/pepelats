@@ -3,7 +3,7 @@ from typing import Dict, Any
 
 import numpy as np
 
-from drum._utildrum import load_audio, max_volume_audio, prepare_drum_pattern
+from drum._utildrum import load_audio, max_volume_audio, drum_from_pattern
 from drum.basedrum import ProtoDrum, SimpleDrum
 from utils.utilalsa import play_sound_buff
 
@@ -19,7 +19,7 @@ class AudioDrum(SimpleDrum):
 
     def _prepare_one(self, pattern, length: int) -> Any:
         logging.debug(f"Preapring pattern: {pattern}")
-        return prepare_drum_pattern(pattern, self._sounds, length, self._volume, self._swing)
+        return drum_from_pattern(pattern, self._sounds, length, self._volume, self._swing)
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         if self._intensity == ProtoDrum._MUTE:
