@@ -6,6 +6,7 @@ from multiprocessing.connection import Connection
 
 from mvc import CountMidiControl
 from mvc import MidiControl
+from mvc._ccscreen import CcScreen
 from mvc._pyscreen import PyScreen
 from mvc.menucontrol import MenuLoader, MenuControl
 from utils.utilconfig import ConfigName, ROOT_DIR, FRAME_BUFFER_ID
@@ -28,12 +29,6 @@ class ControlFactory:
         if not os.path.isfile(ROOT_DIR + "/" + ConfigName.shared_lib):
             logging.warning(f"Libarry {ConfigName.shared_lib} not found, GUI not avalable, using text")
             return PyScreen(self.recv_conn, self.send_conn, self.menu_loader)
-
-        # noinspection PyBroadException
-        try:
+        else:
             logging.info(f"Library {ConfigName.shared_lib} found, loading GUI")
-            from mvc._ccscreen import CcScreen
             return CcScreen(self.recv_conn, self.send_conn, self.menu_loader, FRAME_BUFFER_ID)
-        except Exception:
-            logging.error(f"Library {ConfigName.shared_lib} load error, GUI not avalable, using text")
-            return PyScreen(self.recv_conn, self.send_conn, self.menu_loader)
