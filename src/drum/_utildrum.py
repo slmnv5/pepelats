@@ -141,7 +141,7 @@ def drum_from_pattern(pattern: Dict[str, Any], sounds: Dict[str, np.ndarray], le
         if isinstance(notes, str):
             notes = extend_list(notes, steps) if steps else notes
             drum_from_string(result, sound, notes, accents, volume, swing)
-        elif isinstance(notes, list) and len(list) == 3:
+        elif isinstance(notes, list) and len(notes) == 3:
             drum_from_list(result, sound, notes, accents, volume, swing)
         else:
             raise RuntimeError(f"Wrong pattern: {sound_name}")
@@ -154,11 +154,14 @@ def drum_from_list(result: np.ndarray, sound: np.ndarray, notes: List[int], acce
     onsets = notes[0]
     steps = notes[1]
     shift = notes[2]
+    distance: float = steps / onsets
+    print(2222222222222, notes, distance)
     notes = "." * steps
     for k in range(onsets):
-        distance: float = round(onsets * k / steps)
-        notes[distance:distance + 1] = '!'
-    notes = notes[-shift:0] + notes[0:-shift]
+        pos: int = round(distance * k)
+        notes = notes[:pos] + '!' + notes[pos + 1:]
+    print(11111111111, notes)
+    notes = notes[-shift:] + notes[:-shift]
 
     return drum_from_string(result, sound, notes, accents, volume, swing)
 
