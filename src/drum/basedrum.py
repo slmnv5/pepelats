@@ -37,6 +37,7 @@ class ProtoDrum(FileFinder):
     def clear_drum(self) -> None:
         self._length = 0
         self._bpm = 0
+        self._intensity = ProtoDrum._MUTE
 
     def get_length(self) -> int:
         return self._length
