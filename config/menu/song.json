@@ -25,7 +25,7 @@
 
     "[stop_now]": [["_stop_song", 0], ["_change_map", "play", "0"]],
     "[stop_end]": [["_stop_song", 1], ["_change_map", "play", "0"]],
-    "save_song": [["_save_song"], ["_change_map", "play", "0"]],
+    "[save_song]": [["_save_song"], ["_change_map", "play", "0"]],
     "[save_new]": [["_save_new_song"], ["_change_map", "play", "0"]],
     "[init]": [["_init_song"], ["_change_map", "play", "0"]]
   },
