@@ -159,7 +159,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
     #  ================= One song part view and related commands
 
-    def _loop_volume(self, chg_factor: float):
+    def _change_loop_volume(self, chg_factor: float):
         loop = self.get_fixed().get_item()
         loop.multiply_buff(chg_factor)
         loop._collection_str = ""
