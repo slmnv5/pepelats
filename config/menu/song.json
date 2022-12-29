@@ -30,7 +30,7 @@
     "[init]": [["_init_song"], ["_change_map", "play", "0"]]
   },
   "1": {
-    "description": "song: A1-[go_up] B1-[go_dn] D2-[load] DH-[delete]",
+    "description": "song: A/B-scroll D2-[load] DH-[delete]",
     "update_method": "_show_song",
     "60:100": "[go_up]",
     "62:100": "[go_dn]",

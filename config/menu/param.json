@@ -15,7 +15,7 @@
     "13:6": "[menu]"
   },
  "0": {
-    "description": "drum: A1-[go_up] B1-[go_dn] D2-[load]",
+    "description": "drum: A/B-scroll D2-[load]",
     "update_method": "_show_drum_name",
     "60:100": "[go_up]",
     "62:100": "[go_dn]",
