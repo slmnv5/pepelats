@@ -5,7 +5,6 @@ import numpy as np
 
 from drum._utildrum import load_audio, drum_from_pattern
 from drum.basedrum import ProtoDrum, SimpleDrum
-from utils.utilalsa import make_zero_buffer
 from utils.utilconfig import SD_MAX
 from utils.utilnumpy import play_sound_buff
 
@@ -17,17 +16,17 @@ class AudioDrum(SimpleDrum):
         SimpleDrum.__init__(self)
         self._sounds: Dict[str, np.ndarray] = load_audio()
         self._load_all()
-        self.__most_loud: np.ndarray = make_zero_buffer(0)
 
     def _prepare_one(self, pattern, length: int) -> Any:
         logging.debug(f"Preapring pattern: {pattern}")
         buff = drum_from_pattern(pattern, self._sounds, length, self._volume, self._swing)
-        if buff.max(initial=0) > self.__most_loud.max(initial=0):
-            self.__most_loud = buff
+        buff_vol = buff.max(initial=0)
+        if buff_vol > self._max_volume:
+            self._max_volume = buff_vol
         return buff
 
     def _get_volume(self) -> float:
-        return self.__most_loud.max(initial=0) / SD_MAX
+        return self._max_volume / SD_MAX
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         if self._intensity == ProtoDrum._MUTE:

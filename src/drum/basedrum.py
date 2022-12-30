@@ -120,7 +120,7 @@ class SimpleDrum(ProtoDrum, ABC):
     def prepare_drum(self, length: int) -> None:
         if not length:
             return
-
+        self._max_volume = 0
         self._intensity = ProtoDrum._MUTE  # keep it until sound load is done
         self._bpm = bpm_from_length(length)
         self._snd_l1 = [self._prepare_one(p, length) for p in self._ptn_l1]
