@@ -77,14 +77,13 @@ class WrapBuffer:
     def finalize(self, idx: int, trim_len: int) -> None:
         """Trim is called once to fix buffer length. Buffer must be multiple of trim_len.
          If trim_len == 0 make buffer == idx value"""
-        buff_len = len(self.__buff)
-        logging.debug(f"before trim: buff_len:{buff_len} trim_len:{trim_len} start:{self.__start} idx:{idx}")
-        assert self.is_empty, "buffer must be empty"
-        assert self.__start >= 0, "start must be non negative"
+        if not self.is_empty:
+            raise RuntimeError("finalize: buffer must be empty")
+        if self.__start < 0:
+            raise RuntimeError("finalize: start is negative, recording did not start")
 
         if trim_len <= 0:
             assert self.__start == 0, "start must be zero"
-            idx = min(idx, buff_len)
             self.__buff = self.__buff[:idx]
             return
 
@@ -98,7 +97,7 @@ class WrapBuffer:
             rec_len += trim_len
         # rec_len is multiple of trim_len: .. 1/8, 1/4, 1/2, 1, 2, 3, ...
         # align start with main loop's trim_len
-        offset: int = self.__start % trim_len
+        offset: int = idx % trim_len
         if offset < trim_len // 2:
             self.__start -= offset
         else:
