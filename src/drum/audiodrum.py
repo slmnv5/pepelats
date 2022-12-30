@@ -17,9 +17,9 @@ class AudioDrum(SimpleDrum):
         self._sounds: Dict[str, np.ndarray] = load_audio()
         self._load_all()
 
-    def _prepare_one(self, pattern, length: int) -> Any:
+    def _prepare_one(self, pattern) -> Any:
         logging.debug(f"Preapring pattern: {pattern}")
-        result = audio_drum_from_pattern(pattern, self._sounds, length, self._volume, self._swing)
+        result = audio_drum_from_pattern(pattern, self._sounds, self._length, self._volume, self._swing)
         vol = result.max(initial=0)
         if vol > self._max_volume:
             self._max_volume = vol
