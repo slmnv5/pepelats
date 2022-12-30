@@ -122,7 +122,7 @@ class SimpleDrum(ProtoDrum, ABC):
     def save(self) -> None:
         # noinspection PyBroadException
         try:
-            full_name = ROOT_DIR + "/" + self.__class__.__name__
+            full_name = ROOT_DIR + "/etc/" + self.__class__.__name__ + ".saved"
             with open(full_name, 'wb') as f:
                 pickle.dump((self._volume, self._swing, self._name), f)
         except Exception:
@@ -131,7 +131,7 @@ class SimpleDrum(ProtoDrum, ABC):
     def __load(self) -> None:
         # noinspection PyBroadException
         try:
-            full_name = ROOT_DIR + "/" + self.__class__.__name__
+            full_name = ROOT_DIR + "/etc/" + self.__class__.__name__ + ".saved"
             with open(full_name, 'rb') as f:
                 self._volume, self._swing, name = pickle.load(f)
 
