@@ -63,7 +63,7 @@ if IN_CH not in [1, 2]:
 
 def make_zero_buffer(buff_len: int) -> np.ndarray:
     if buff_len < 0 or buff_len > MAX_LEN:
-        raise ValueError(f"make_zero_buffer() incorrect parameter: {buff_len}")
+        raise RuntimeError(f"make_zero_buffer: incorrect buffer size: {buff_len}")
     return np.zeros((buff_len, 2), SD_TYPE)
 
 

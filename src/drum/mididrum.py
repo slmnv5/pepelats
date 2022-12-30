@@ -18,6 +18,9 @@ class MidiDrum(SimpleDrum):
         self._load_all()
         self._out_port = out_port
 
+    def _get_volume(self) -> float:
+        return 1.0
+
     def _prepare_one(self, pattern, length: int) -> Any:
         # logging.debug(f"Preapring pattern: {pattern}")
         accents = pattern["accents"]
