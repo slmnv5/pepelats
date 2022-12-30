@@ -117,8 +117,8 @@ def load_all_patterns(directory: str, file_name: str, storage: List[Dict], sound
         storage.append(pattern)
 
 
-def audio_drum_from_pattern(pattern: Dict[str, Any], sounds: Dict[str, np.ndarray], length: int, volume: float,
-                            swing: float) -> np.ndarray:
+def audio_drum_from_pattern(pattern: Dict[str, Any], sounds: Dict[str, np.ndarray],
+                            length: int, volume: float, swing: float) -> np.ndarray:
     steps = pattern["steps"]
     accents = pattern["accents"]
     result: np.ndarray = make_zero_buffer(length)
@@ -127,7 +127,7 @@ def audio_drum_from_pattern(pattern: Dict[str, Any], sounds: Dict[str, np.ndarra
         sound = sounds[sound_name][0:length]
         if isinstance(notes, str):
             notes = extend_list(notes, steps) if steps else notes
-            audio_drum_from_string(result, sound, notes, accents, volume, swing)
+            audio_drum_from_string(result, sound, notes, accents, length, volume, swing)
         else:
             logging.error(f"Drum pattern must be a string: {sound_name}")
 
@@ -135,11 +135,11 @@ def audio_drum_from_pattern(pattern: Dict[str, Any], sounds: Dict[str, np.ndarra
 
 
 def audio_drum_from_string(result: np.ndarray, sound: np.ndarray, notes: str, accents: str,
-                           volume: float, swing: float) -> None:
+                           length: int, volume: float, swing: float) -> None:
     assert notes.count("!") + notes.count(".") == len(notes), f"Pattern symbol must be '.' or '!'"
     steps = len(notes)
     accents = extend_list(accents, steps)
-    step_len = len(result) // steps
+    step_len = length // steps
     assert sound.ndim == 2 and sound.shape[1] == 2
 
     for step_number in range(steps):
@@ -151,8 +151,8 @@ def audio_drum_from_string(result: np.ndarray, sound: np.ndarray, notes: str, ac
             record_sound_buff(result, tmp, pos)
 
 
-def midi_drum_from_pattern(pattern: Dict[str, Any], sounds: Dict[str, np.ndarray], length: int, volume: float,
-                           swing: float) -> Dict[int, List[List[int]]]:
+def midi_drum_from_pattern(pattern: Dict[str, Any], sounds: Dict[str, List[int]],
+                           length: int, volume: float, swing: float) -> Dict[int, List[List[int]]]:
     steps = pattern["steps"]
     accents = pattern["accents"]
     result: Dict[int, List[List[int]]] = dict()
@@ -161,36 +161,29 @@ def midi_drum_from_pattern(pattern: Dict[str, Any], sounds: Dict[str, np.ndarray
         sound = sounds[sound_name]
         if isinstance(notes, str):
             notes = extend_list(notes, steps) if steps else notes
-            midi_drum_from_string(result, sound, notes, accents, volume, swing)
+            midi_drum_from_string(result, sound, notes, accents, length, volume, swing)
         else:
             raise RuntimeError(f"Drum pattern must be a string: {sound_name}")
 
     return result
 
 
-def midi_drum_from_string(result: Dict, sound: np.ndarray, notes: str, accents: str,
-                          volume: float, swing: float) -> None:
+def midi_drum_from_string(result: Dict, sound: List[int], notes: str, accents: str,
+                          length, volume: float, swing: float) -> None:
     assert notes.count("!") + notes.count(".") == len(notes), f"Pattern symbol must be '.' or '!'"
     steps = len(notes)
     accents = extend_list(accents, steps)
-    step_len = len(result) // steps
-    assert sound.ndim == 2 and sound.shape[1] == 2
-
+    step_len = length // steps
     for step_number in range(steps):
         if notes[step_number] == '!':
-            sound: List[int] = self._sounds[sound_name]
-            assert type(sound) == list
-            assert len(sound) == 3
-            for step_number in range(steps):
-                if notes[step_number] != '.':
-                    step_accent = int(accents[step_number])
-                    step_volume = int(step_accent / 9 * self._volume * 127)
-                    assert step_volume <= 127
-                    pos = position_with_swing(step_number, step_len, self._swing)
-                    sound[2] = step_volume
-                    lst = result.get(pos, list())
-                    lst.append(sound)
-                    result[pos] = lst
+            step_accent = int(accents[step_number])
+            step_volume = int(step_accent / 9 * volume * 127)
+            assert step_volume <= 127
+            pos = position_with_swing(step_number, step_len, swing)
+            sound[2] = step_volume
+            lst = result.get(pos, list())
+            lst.append(sound)
+            result[pos] = lst
 
 
 if __name__ == "__main__":
