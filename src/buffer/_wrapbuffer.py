@@ -84,7 +84,7 @@ class WrapBuffer:
 
         if trim_len <= 0:
             assert self.__start == 0, "start must be zero"
-            idx = max(idx, buff_len)
+            idx = min(idx, buff_len)
             self.__buff = self.__buff[:idx]
             return
 
