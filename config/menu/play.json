@@ -1,12 +1,10 @@
 {
   "default_config": {
-    "description": "[menu] [song] [param] [next]",
+    "description": "[song] [param] [next]",
     "[prev]": ["_change_map", "", "prev"],
     "[next]": ["_change_map", "", "next"],
-    "[song]": ["_change_map", "song", "0"],
     "[param]": ["_change_map", "param", "0"],
     "[play]": ["_change_map", "play", "0"],
-    "[menu]": ["_change_map", "menu", "0"],
 
     "12:6": "[next]",
     "13:6": "[song]",
@@ -47,8 +45,8 @@
     "65:3": "[move]",
     "65:6": "[delete]",
 
-    "[volume_dn]": [["_change_loop_volume", 0.88], ["_redraw"]],
-    "[volume_up]": [["_change_loop_volume", 1.12], ["_redraw"]],
+    "[volume_dn]": [["_change_loop_volume", 0.8], ["_redraw"]],
+    "[volume_up]": [["_change_loop_volume", 1.2], ["_redraw"]],
     "[go_up]": [["_change_loop", -1], ["_redraw"]],
     "[go_dn]": [["_change_loop", 1], ["_redraw"]],
     "[silent]": [["_edit_loop", "silent"], ["_redraw"]],
