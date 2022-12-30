@@ -4,8 +4,8 @@
     "[prev]": ["_change_map", "", "prev"],
     "[next]": ["_change_map", "", "next"],
     "[param]": ["_change_map", "param", "0"],
+    "[song]": ["_change_map", "song", "0"],
     "[play]": ["_change_map", "play", "0"],
-
     "12:1": "[prev]",
     "13:1": "[next]",
 
