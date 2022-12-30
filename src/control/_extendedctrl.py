@@ -20,16 +20,12 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
     def __init__(self, recv_conn: Connection, send_conn: Connection):
         MsgProcessor.__init__(self, recv_conn, send_conn)
-        self.__dr_audi: SimpleDrum = AudioDrum()
-        self.__dr_midi: SimpleDrum = self.__dr_audi
+        self.__drum_audi: SimpleDrum
+        self.__drum_midi: SimpleDrum
         midi_out = get_midi_out()
-        if not midi_out:
-            self.__dr_midi = FakeMidiDrum(midi_out)
-        elif midi_out:
-            self.__dr_midi = MidiDrum(midi_out)
-
-        ManyLoopCtrl.__init__(self, self.__dr_audi)
-
+        self.__drum_midi = MidiDrum(midi_out) if midi_out else FakeMidiDrum(midi_out)
+        self.__drum_audi: SimpleDrum = AudioDrum()
+        ManyLoopCtrl.__init__(self, self.__drum_audi)
         self.__draw_info: DrawInfo = DrawInfo()
 
     def _redraw(self) -> None:
@@ -86,8 +82,9 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         os.system(f"timeout {sec}")
         os.system(f"sleep {sec}")
 
-    @staticmethod
-    def _restart_looper() -> None:
+    def _restart_looper(self) -> None:
+        self.__drum_audi.save()
+        self.__drum_midi.save()
         os.system("killall -9 python")
 
     @staticmethod
@@ -97,19 +94,19 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
     def _drum_midi(self) -> None:
         drum = self.get_drum()
-        if self.__dr_midi == drum:
+        if self.__drum_midi == drum:
             return
-        self.__dr_midi.load_drum_name(drum.get_item())
-        self.__dr_midi.prepare_drum(drum.get_length())
-        self._set_drum(self.__dr_midi)
+        self.__drum_midi.load_drum_name(drum.get_item())
+        self.__drum_midi.prepare_drum(drum.get_length())
+        self._set_drum(self.__drum_midi)
 
     def _drum_audio(self) -> None:
         drum = self.get_drum()
-        if self.__dr_audi == drum:
+        if self.__drum_audi == drum:
             return
-        self.__dr_audi.load_drum_name(drum.get_item())
-        self.__dr_audi.prepare_drum(drum.get_length())
-        self._set_drum(self.__dr_audi)
+        self.__drum_audi.load_drum_name(drum.get_item())
+        self.__drum_audi.prepare_drum(drum.get_length())
+        self._set_drum(self.__drum_audi)
 
     #  ============ All song parts view and related commands
 

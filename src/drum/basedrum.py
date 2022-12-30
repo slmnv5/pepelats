@@ -1,4 +1,5 @@
 import logging
+import pickle
 import random
 from abc import ABC
 from abc import abstractmethod
@@ -9,7 +10,7 @@ from typing import List
 import numpy as np
 
 from drum._utildrum import load_all_patterns, bpm_from_length
-from utils.utilconfig import SD_RATE
+from utils.utilconfig import SD_RATE, ROOT_DIR
 from utils.utilother import FileFinder
 
 
@@ -116,6 +117,27 @@ class SimpleDrum(ProtoDrum, ABC):
         self._snd_l1 = self._snd_l2 = self._snd_bk = []
         self._l1 = self._l2 = self._bk = []
         self._il1 = self._il2 = self._ibk = 0
+        self.__load()
+
+    def save(self) -> None:
+        # noinspection PyBroadException
+        try:
+            full_name = ROOT_DIR + "/" + self.__class__.__name__
+            with open(full_name, 'wb') as f:
+                pickle.dump((self._volume, self._swing, self._name), f)
+        except Exception:
+            pass
+
+    def __load(self) -> None:
+        # noinspection PyBroadException
+        try:
+            full_name = ROOT_DIR + "/" + self.__class__.__name__
+            with open(full_name, 'rb') as f:
+                self._volume, self._swing, name = pickle.load(f)
+
+            self.load_drum_name(name)
+        except Exception:
+            pass
 
     def prepare_drum(self, length: int) -> None:
         if not length:
