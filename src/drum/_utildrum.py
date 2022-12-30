@@ -6,7 +6,7 @@ import numpy as np
 import soundfile
 
 from utils.utilalsa import make_zero_buffer
-from utils.utilconfig import SD_RATE, SD_TYPE, ROOT_DIR, ConfigName, SD_MAX, DRUM_CHANNEL
+from utils.utilconfig import SD_RATE, SD_TYPE, ROOT_DIR, ConfigName, DRUM_CHANNEL
 from utils.utilnumpy import record_sound_buff
 from utils.utilother import JsonDict
 
@@ -48,21 +48,6 @@ def sysex_list(value: float, count: int = 0) -> List[int]:
 def bpm_from_length(length: int) -> float:
     bar_seconds: float = length / SD_RATE
     return 60 / (bar_seconds / 4)
-
-
-def max_volume_audio(sounds: Dict[str, np.ndarray]) -> float:
-    max_found: float = 0
-    for name, sound in sounds.items():
-        assert isinstance(sound, np.ndarray), f"Incorrect audio type for sound: {name}"
-        max_found = max(max_found, np.max(sound))
-    return max_found / SD_MAX
-
-
-def max_volume_midi(sounds: Dict[str, List[int]]) -> float:
-    max_found: float = 0
-    for sound in [x for x in sounds.values() if x[0] & 0xF0 == 0x90]:
-        max_found = max(max_found, sound[2])
-    return max_found / 127.0
 
 
 def load_audio() -> Dict[str, np.ndarray]:

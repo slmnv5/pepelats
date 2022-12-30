@@ -1,17 +1,15 @@
 import logging
 
 # noinspection PyProtectedMember
-from drum._utildrum import load_audio, max_volume_audio, load_midi, max_volume_midi, sysex_list
+from drum._utildrum import load_audio, load_midi, sysex_list
 
 
 def test_1():
     x = load_audio()
-    y = max_volume_audio(x)
-    logging.debug(y)
+    logging.debug(x)
 
     x = load_midi()
-    y = max_volume_midi(x)
-    logging.debug(y)
+    logging.debug(x)
 
 
 def test_2():

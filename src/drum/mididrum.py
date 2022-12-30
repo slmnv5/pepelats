@@ -4,7 +4,7 @@ from typing import List
 
 import numpy as np
 
-from drum._utildrum import load_midi, max_volume_midi
+from drum._utildrum import load_midi
 from drum._utildrum import position_with_swing
 from drum.basedrum import ProtoDrum, SimpleDrum
 
@@ -15,7 +15,6 @@ class MidiDrum(SimpleDrum):
     def __init__(self, out_port):
         SimpleDrum.__init__(self)
         self._sounds: Dict[str, List[int]] = load_midi()
-        self.max_volume = max_volume_midi(self._sounds)
         self._load_all()
         self._out_port = out_port
 

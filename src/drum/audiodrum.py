@@ -3,7 +3,7 @@ from typing import Dict, Any
 
 import numpy as np
 
-from drum._utildrum import load_audio, max_volume_audio, drum_from_pattern
+from drum._utildrum import load_audio, drum_from_pattern
 from drum.basedrum import ProtoDrum, SimpleDrum
 from utils.utilnumpy import play_sound_buff
 
@@ -14,7 +14,6 @@ class AudioDrum(SimpleDrum):
     def __init__(self):
         SimpleDrum.__init__(self)
         self._sounds: Dict[str, np.ndarray] = load_audio()
-        self.max_volume: float = max_volume_audio(self._sounds)
         self._load_all()
 
     def _prepare_one(self, pattern, length: int) -> Any:
