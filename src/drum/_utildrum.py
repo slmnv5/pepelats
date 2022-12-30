@@ -143,7 +143,7 @@ def drum_from_pattern(pattern: Dict[str, Any], sounds: Dict[str, np.ndarray], le
             notes = extend_list(notes, steps) if steps else notes
             drum_from_string(result, sound, notes, accents, volume, swing)
         else:
-            raise RuntimeError(f"Wrong pattern: {sound_name}")
+            raise RuntimeError(f"Drum pattern must be a string: {sound_name}")
 
     return result
 
