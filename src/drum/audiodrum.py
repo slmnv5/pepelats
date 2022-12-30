@@ -19,11 +19,11 @@ class AudioDrum(SimpleDrum):
 
     def _prepare_one(self, pattern, length: int) -> Any:
         logging.debug(f"Preapring pattern: {pattern}")
-        buff = audio_drum_from_pattern(pattern, self._sounds, length, self._volume, self._swing)
-        buff_vol = buff.max(initial=0)
-        if buff_vol > self._max_volume:
-            self._max_volume = buff_vol
-        return buff
+        result = audio_drum_from_pattern(pattern, self._sounds, length, self._volume, self._swing)
+        vol = result.max(initial=0)
+        if vol > self._max_volume:
+            self._max_volume = vol
+        return result
 
     def _get_volume(self) -> float:
         return self._max_volume / SD_MAX

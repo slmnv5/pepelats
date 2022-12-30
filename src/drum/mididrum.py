@@ -4,8 +4,7 @@ from typing import List
 
 import numpy as np
 
-from drum._utildrum import load_midi
-from drum._utildrum import position_with_swing
+from drum._utildrum import load_midi, midi_drum_from_pattern
 from drum.basedrum import ProtoDrum, SimpleDrum
 
 
@@ -22,30 +21,14 @@ class MidiDrum(SimpleDrum):
         return 1.0
 
     def _prepare_one(self, pattern, length: int) -> Any:
-        # logging.debug(f"Preapring pattern: {pattern}")
-        accents = pattern["accents"]
-        result: Dict[int, List[List[int]]] = dict()
-        for sound_name in [x for x in self._sounds if x in pattern]:
-            notes = pattern[sound_name]
-            steps = len(notes)
-            if notes.count("!") + notes.count(".") != steps:
-                logging.error(f"sound {sound_name} notes {notes} must contain only '.' and '!'")
-
-            step_len = length // steps
-            sound: List[int] = self._sounds[sound_name]
-            assert type(sound) == list
-            assert len(sound) == 3
-            for step_number in range(steps):
-                if notes[step_number] != '.':
-                    step_accent = int(accents[step_number])
-                    step_volume = int(step_accent / 9 * self._volume * 127)
-                    assert step_volume <= 127
-                    pos = position_with_swing(step_number, step_len, self._swing)
-                    sound[2] = step_volume
-                    lst = result.get(pos, list())
-                    lst.append(sound)
-                    result[pos] = lst
-        logging.debug(f"Prepared pattern: {result}")
+        logging.debug(f"Preapring pattern: {pattern}")
+        result = midi_drum_from_pattern(pattern, self._sounds, length, self._volume, self._swing)
+        vol = 0
+        for lst in result.values():
+            for note in lst:
+                vol = note[2]
+        if vol > self._max_volume:
+            self._max_volume = vol
         return result
 
     def _play_midi_pattern(self, pattern: Dict[int, List[List[int]]], pos1: int, pos2: int) -> None:
