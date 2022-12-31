@@ -47,7 +47,7 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
             if not len(line):
                 continue
             if line[0] == '*':
-                color = ([127, 127, 70] if redraw.is_rec else [70, 127, 70])
+                color = ([127, 70, 70] if redraw.is_rec else [70, 127, 70])
             elif line[0] == '~':
                 color = [127, 127, 70]
             self._set_row_text(k, line, *color)
