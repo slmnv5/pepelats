@@ -182,7 +182,7 @@ class SimpleDrum(ProtoDrum, ABC):
         pass
 
     def get_swing(self) -> float:
-        return self.get_swing()
+        return self._swing
 
     def _randomize(self):
         if not self._length:
