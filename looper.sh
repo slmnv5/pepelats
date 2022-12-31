@@ -44,13 +44,16 @@ done
 PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py  $*"
 echo "$PYTHON_CMD"
 
+CONFIG_FILE="$THIS_DIR/.saved_env.sh"
+touch "$CONFIG_FILE"
+
 # disable under voltage error on screen and disable typing echo
 sudo dmesg -D
 stty -echo
 
 while true; do
   killall -s 9 -w -v python
-  . "$THIS_DIR/.saved_env.sh"
+  . "$CONFIG_FILE"
   sleep 10
   $PYTHON_CMD
 done
