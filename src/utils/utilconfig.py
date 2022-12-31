@@ -5,24 +5,25 @@ from pathlib import Path
 import numpy as np
 import sounddevice as sd
 
+ENV_DRUM_CHANNEL: int = int(os.getenv("DRUM_CHANNEL", "9"))
+ENV_KBD_NOTES: str = os.getenv("KBD_NOTES", '"q": 12, "w": 13, "1":60, "2": 62, "3": 64, "4": 65')
+ENV_LEN_SECONDS = os.getenv("MAX_LEN_SECONDS", "60")
+ENV_SD_RATE: int = int(os.getenv("SD_RATE", "44100"))
+ENV_FRAME_BUFFER_ID: str = os.getenv("FRAME_BUFFER_ID", "1")
+ENV_USB_AUDIO_NAMES: str = os.getenv("USB_AUDIO_NAMES", "USB Audio")
+ENV_MIDI_IN_PORT = os.getenv('MIDI_IN_PORT_NAME', "MidiPedal_out")
+ENV_MIDI_OUT_PORT = os.getenv('MIDI_OUT_PORT_NAME', "MidiDrum_in")
+
 ROOT_DIR = str(Path(__file__).parent.parent.parent)
-
-DRUM_CHANNEL: int = int(os.getenv("DRUM_CHANNEL", "9"))
-KBD_NOTES: str = os.getenv("KBD_NOTES", '"q": 12, "w": 13, "1":60, "2": 62, "3": 64, "4": 65')
-FRAME_BUFFER_ID: str = os.getenv("FRAME_BUFFER_ID", "1")
-USB_AUDIO_NAMES: str = os.getenv("USB_AUDIO_NAMES", "USB Audio")
-PEDAL_PORT_NAME = os.getenv('PEDAL_PORT_NAME', "PedalCommands_out")
-CLOCK_PORT_NAME = os.getenv('CLOCK_PORT_NAME', "DrumClock_in")
 LEVEL_DEBUG = "--debug" in sys.argv or "--info" in sys.argv or os.name != "posix"
-
-SD_RATE: int = int(os.getenv("SD_RATE", "44100"))
-sd.default.samplerate = SD_RATE
 SD_TYPE: str = 'int16'
-sd.default.dtype = [SD_TYPE, SD_TYPE]
-sd.default.latency = ('low', 'low')
-MAX_LEN: int = int(os.getenv("MAX_LEN_SECONDS", "60")) * SD_RATE
+MAX_LEN: int = int(ENV_LEN_SECONDS) * ENV_SD_RATE
 MAX_32_INT = 2 ** 32 - 1
 SD_MAX: int = np.iinfo(SD_TYPE).max
+
+sd.default.samplerate = ENV_SD_RATE
+sd.default.dtype = [SD_TYPE, SD_TYPE]
+sd.default.latency = ('low', 'low')
 
 
 class ConfigName:
@@ -36,3 +37,18 @@ class ConfigName:
     # redraw related methods
     change_map: str = "_change_map"
     send_redraw: str = "_send_redraw"
+
+
+def save_config() -> None:
+    file_name = ROOT_DIR + "/.saved_env.sh"
+    with open(file_name, 'w') as f:
+        f.write(f"export ENV_DRUM_CHANNEL='{ENV_DRUM_CHANNEL}'\n")
+        f.write(f"export ENV_KBD_NOTES='{ENV_KBD_NOTES}'\n")
+        f.write(f"export ENV_LEN_SECONDS='{ENV_LEN_SECONDS}'\n")
+        f.write(f"export ENV_SD_RATE='{ENV_SD_RATE}'\n")
+        f.write(f"export ENV_FRAME_BUFFER_ID='{ENV_FRAME_BUFFER_ID}'\n")
+        f.write(f"export ENV_USB_AUDIO_NAMES='{ENV_USB_AUDIO_NAMES}'\n")
+        f.write(f"export ENV_MIDI_IN_PORT='{ENV_MIDI_IN_PORT}'\n")
+        f.write(f"export ENV_MIDI_OUT_PORT='{ENV_MIDI_OUT_PORT}'\n")
+
+    f.close()

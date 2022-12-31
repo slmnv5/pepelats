@@ -8,7 +8,7 @@ from mvc import CountMidiControl
 from mvc import MidiControl
 from mvc._pyscreen import PyScreen
 from mvc.menucontrol import MenuLoader, MenuControl
-from utils.utilconfig import ConfigName, ROOT_DIR, FRAME_BUFFER_ID
+from utils.utilconfig import ConfigName, ROOT_DIR, ENV_FRAME_BUFFER_ID
 
 
 class ControlFactory:
@@ -31,4 +31,4 @@ class ControlFactory:
         else:
             from mvc._ccscreen import CcScreen
             logging.info(f"Library {ConfigName.shared_lib} found, loading GUI")
-            return CcScreen(self.recv_conn, self.send_conn, self.menu_loader, FRAME_BUFFER_ID)
+            return CcScreen(self.recv_conn, self.send_conn, self.menu_loader, ENV_FRAME_BUFFER_ID)

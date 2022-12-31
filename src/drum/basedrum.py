@@ -10,7 +10,7 @@ from typing import List
 import numpy as np
 
 from drum._utildrum import load_all_patterns, bpm_from_length
-from utils.utilconfig import SD_RATE, ROOT_DIR
+from utils.utilconfig import ENV_SD_RATE, ROOT_DIR
 from utils.utilother import FileFinder
 
 
@@ -92,7 +92,7 @@ class ProtoDrum(FileFinder):
 
         self._randomize()
         self._intensity = ProtoDrum._BREAK
-        Timer((self._length // 2) / SD_RATE, revert).start()
+        Timer((self._length // 2) / ENV_SD_RATE, revert).start()
 
     def play_break_later(self, part_len: int, idx: int) -> None:
         if self._is_break_pending:
@@ -102,7 +102,7 @@ class ProtoDrum(FileFinder):
         start_at = (part_len - idx) - samples
         if start_at > 0:
             self._is_break_pending = True
-            Timer(start_at / SD_RATE, self.play_break_now).start()
+            Timer(start_at / ENV_SD_RATE, self.play_break_now).start()
 
 
 class SimpleDrum(ProtoDrum, ABC):

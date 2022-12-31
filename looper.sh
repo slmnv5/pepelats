@@ -5,21 +5,21 @@
 # --kbd - use keyboard for MIDI input (see KBD_NOTES)
 # --count - count notes
 
-export KBD_NOTES='"q": 12, "w": 13, "1":60, "2": 62, "3": 64, "4": 65'
+export ENV_KBD_NOTES='"q": 12, "w": 13, "1":60, "2": 62, "3": 64, "4": 65'
 
 # Looper parameters passed via environment
-export MAX_LEN_SECONDS=60
-export SD_RATE=44100
+export ENV_MAX_LEN_SECONDS=60
+export ENV_SD_RATE=44100
 
 # Use this MIDI port as input
-export PEDAL_PORT_NAME='BlueBoard'
+export ENV_MIDI_IN_PORT='BlueBoard'
 # Use this MIDI port as clock output
-export CLOCK_PORT_NAME='Play mk3' # 'Sshpadnew'
+export ENV_MIDI_OUT_PORT='Play mk3' # 'Sshpadnew'
 # use this frame buffer if there are few, only Linux
-FRAME_BUFFER_ID=1
+ENV_FRAME_BUFFER_ID=1
 
 #check ALSA devices and use first one found
-export USB_AUDIO_NAMES='VALETON GP,USB Audio'
+export ENV_USB_AUDIO_NAMES='VALETON GP,USB Audio'
 
 THIS_DIR=$(dirname "$0")
 cd "$THIS_DIR/src" || exit 1
@@ -50,6 +50,7 @@ stty -echo
 
 while true; do
   killall -s 9 -w -v python
+  . "$THIS_DIR/.saved_env.sh"
   sleep 10
   $PYTHON_CMD
 done

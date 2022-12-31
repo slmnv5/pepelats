@@ -7,7 +7,7 @@ import numpy as np
 import soundfile
 
 from utils.utilalsa import make_zero_buffer
-from utils.utilconfig import SD_RATE, SD_TYPE, ROOT_DIR, ConfigName, DRUM_CHANNEL
+from utils.utilconfig import ENV_SD_RATE, SD_TYPE, ROOT_DIR, ConfigName, ENV_DRUM_CHANNEL
 from utils.utilnumpy import record_sound_buff
 from utils.utilother import JsonDict
 
@@ -47,7 +47,7 @@ def sysex_list(value: float, count: int = 0) -> List[int]:
 
 
 def bpm_from_length(length: int) -> float:
-    bar_seconds: float = length / SD_RATE
+    bar_seconds: float = length / ENV_SD_RATE
     return 60 / (bar_seconds / 4)
 
 
@@ -87,7 +87,7 @@ def load_midi() -> Dict[str, List[int]]:
             continue
         if is_midi_note(msg):
             msg[0] &= 0xF0
-            msg[0] += DRUM_CHANNEL
+            msg[0] += ENV_DRUM_CHANNEL
 
         result[name] = msg
 

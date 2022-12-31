@@ -11,7 +11,7 @@ from drum.mididrum import MidiDrum, FakeMidiDrum
 from song import SongPart
 from utils.msgprocessor import MsgProcessor
 from utils.utilalsa import get_midi_out
-from utils.utilconfig import SD_RATE
+from utils.utilconfig import ENV_SD_RATE
 from utils.utilother import DrawInfo
 
 
@@ -44,7 +44,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
                 logging.error(f"ExtendedCtrl method: {self.__draw_info.update_method}, error: {traceback.format_exc()}")
 
         length = self.get_fixed().length
-        self.__draw_info.loop_seconds = length / SD_RATE
+        self.__draw_info.loop_seconds = length / ENV_SD_RATE
         self.__draw_info.loop_position = (self.idx % length) / length
         self.__draw_info.is_stop = self.get_stop_event().is_set()
         self.__draw_info.is_rec = self.get_is_rec()

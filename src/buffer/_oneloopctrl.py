@@ -2,7 +2,7 @@ from abc import abstractmethod
 from threading import Event, Timer
 
 from drum.basedrum import SimpleDrum
-from utils.utilconfig import MAX_32_INT, SD_RATE
+from utils.utilconfig import MAX_32_INT, ENV_SD_RATE
 
 
 class OneLoopCtrl:
@@ -10,7 +10,7 @@ class OneLoopCtrl:
 
     __late_sec = 0.1
     __delay_redraw = 0.15
-    __late_samples: int = round(__late_sec * SD_RATE)
+    __late_samples: int = round(__late_sec * ENV_SD_RATE)
 
     def __init__(self, drum: SimpleDrum):
         self.__drum: SimpleDrum = drum
@@ -54,7 +54,7 @@ class OneLoopCtrl:
             delay = OneLoopCtrl.__delay_redraw
         else:
             self.__stop_len = self.idx - over + bound_value
-            delay = self.__stop_len / SD_RATE + OneLoopCtrl.__delay_redraw
+            delay = self.__stop_len / ENV_SD_RATE + OneLoopCtrl.__delay_redraw
         Timer(delay, self._redraw).start()
 
     def __str__(self):

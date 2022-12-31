@@ -12,9 +12,9 @@ export MAX_LEN_SECONDS=60
 export SD_RATE=44100
 
 # Use this MIDI port as input
-export PEDAL_PORT_NAME='BlueBoard'
+export MIDI_IN_PORT_NAME='BlueBoard'
 # Use this MIDI port as clock output
-export CLOCK_PORT_NAME='Sshpadnew'
+export MIDI_OUT_PORT_NAME='Sshpadnew'
 
 #check ALSA devices and use first one found
 export USB_AUDIO_NAMES='VALETON GP,USB Audio'

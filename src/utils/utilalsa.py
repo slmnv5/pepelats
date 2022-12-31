@@ -7,26 +7,26 @@ import rtmidi
 import sounddevice as sd
 from rtmidi.midiutil import open_midiinput, open_midioutput
 
-from utils.utilconfig import SD_TYPE, MAX_LEN, USB_AUDIO_NAMES, PEDAL_PORT_NAME, CLOCK_PORT_NAME
+from utils.utilconfig import SD_TYPE, MAX_LEN, ENV_USB_AUDIO_NAMES, ENV_MIDI_IN_PORT, ENV_MIDI_OUT_PORT
 
 
 def get_midi_in() -> Optional[rtmidi.MidiIn]:
     # noinspection PyBroadException
     try:
-        midi_in, _ = open_midiinput(PEDAL_PORT_NAME, interactive=False)  # may throw
+        midi_in, _ = open_midiinput(ENV_MIDI_IN_PORT, interactive=False)  # may throw
         return midi_in
     except Exception:
-        logging.error(f"Cannot open port MIDI IN: {PEDAL_PORT_NAME}")
+        logging.error(f"Cannot open port MIDI IN: {ENV_MIDI_IN_PORT}")
         return None
 
 
 def get_midi_out() -> Optional[rtmidi.MidiOut]:
     # noinspection PyBroadException
     try:
-        midi_out, _ = open_midioutput(CLOCK_PORT_NAME, interactive=False)
+        midi_out, _ = open_midioutput(ENV_MIDI_OUT_PORT, interactive=False)
         return midi_out
     except Exception:
-        logging.error(f"Cannot open port MIDI OUT: {CLOCK_PORT_NAME}")
+        logging.error(f"Cannot open port MIDI OUT: {ENV_MIDI_OUT_PORT}")
         return None
 
 
@@ -34,7 +34,7 @@ def find_usb() -> None:
     """Look for USB Audio device and set it default"""
 
     try:
-        new_str = USB_AUDIO_NAMES.strip(' ,').replace("'", "").replace('"', '').replace(',', '","')
+        new_str = ENV_USB_AUDIO_NAMES.strip(' ,').replace("'", "").replace('"', '').replace(',', '","')
         usb_audio = json.loads(f'["{new_str}"]')
     except Exception as err:
         msg = f"Failed to parse env. variable USB_AUDIO_NAMES, error: {err}"

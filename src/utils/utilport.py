@@ -7,7 +7,7 @@ from typing import Tuple, Dict, List
 import keyboard
 import rtmidi.midiutil
 
-from utils.utilconfig import KBD_NOTES
+from utils.utilconfig import ENV_KBD_NOTES
 
 
 class MyRtmidi:
@@ -68,7 +68,7 @@ class KbdMidiPort:
     """Using keyboard keys instead of MIDI notes"""
 
     def __init__(self):
-        notes_str = "{" + KBD_NOTES + "}"
+        notes_str = "{" + ENV_KBD_NOTES + "}"
         try:
             self.__kbd_notes: Dict[str, int] = json.loads(notes_str)
         except Exception as err:
