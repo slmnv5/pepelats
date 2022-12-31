@@ -4,10 +4,10 @@ TMP=$(dirname "$0")
 cd "$TMP"
 export ENV_ROOT_DIR="$(pwd -P)"
 cd "$ENV_ROOT_DIR/src" || exit 1
+
 CONFIG_FILE="$ENV_ROOT_DIR/.saved_env.sh"
 touch "$CONFIG_FILE"
 . "$CONFIG_FILE"
-env
 
 
 found=$(pgrep --full start_looper.py)
