@@ -5,6 +5,7 @@ import numpy as np
 import sounddevice as sd
 
 ENV_ROOT_DIR = os.getenv("ENV_ROOT_DIR", "aaaaaaaaaaaaaaaaa/qqqqqqqqqqq")
+print(11111111111111, "$ENV_ROOT_DIR")
 ENV_DRUM_CHANNEL: int = int(os.getenv("ENV_DRUM_CHANNEL", "9"))
 ENV_KBD_NOTES: str = os.getenv("ENV_KBD_NOTES", '"q": 12, "w": 13, "1":60, "2": 62, "3": 64, "4": 65')
 ENV_LEN_SECONDS = os.getenv("ENVLEN_SECONDS", "60")
