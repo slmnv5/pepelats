@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 import time
 import traceback
@@ -9,8 +10,8 @@ from threading import Thread
 from control import ExtendedCtrl
 from mvc.controlfactory import ControlFactory
 from mvc.menucontrol import MenuLoader
-from utils.utilconfig import ENV_ROOT_DIR
 from utils.utilalsa import get_midi_in
+from utils.utilconfig import ENV_ROOT_DIR
 from utils.utilport import KbdMidiPort, MyRtmidi
 
 root = logging.getLogger()
@@ -37,9 +38,13 @@ if handler:
 
 logging.critical("=============Starting log==============")
 
-
 # c_handler = logging.StreamHandler()
 # logging.getLogger().addHandler(c_handler)
+
+assert os.getenv("MIDI_IN_PORT_NAME", None)
+print(os.getenv("MIDI_IN_PORT_NAME", None), 222222222222333333, 3333)
+os.system('env')
+print(222222222222222222, 9999999)
 
 
 # noinspection PyBroadException
