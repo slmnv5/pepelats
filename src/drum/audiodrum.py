@@ -24,8 +24,7 @@ class AudioDrum(SimpleDrum):
         logging.debug(f"Preapring pattern: {pattern}")
         result = audio_drum_from_pattern(pattern, self._sounds, self._length, self._volume, self._swing)
         vol = result.max(initial=0)
-        if vol > self._max_volume:
-            self._max_volume = vol
+        self._max_volume = max(vol, self._max_volume)
         return result
 
     def get_volume(self) -> float:

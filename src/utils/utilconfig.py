@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import Dict
+from typing import Dict, Any
 
 import numpy as np
 import sounddevice as sd
@@ -44,7 +44,7 @@ class ConfigName:
     midi_drum_volume: str = "MIDI_DRUM_VOLUME"
 
 
-def save_config(var_dict: Dict[str, str] = None) -> None:
+def save_config(var_dict: Dict[str, Any] = None) -> None:
     file_name = ENV_ROOT_DIR + "/.saved_env.sh"
     with open(file_name, 'w') as f:
         f.write(f"export ENV_DRUM_CHANNEL='{ENV_DRUM_CHANNEL}'\n")

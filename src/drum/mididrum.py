@@ -27,12 +27,10 @@ class MidiDrum(SimpleDrum):
     def _prepare_one(self, pattern) -> Any:
         logging.debug(f"Preapring pattern: {pattern}")
         result = midi_drum_from_pattern(pattern, self._sounds, self._length, self._volume, self._swing)
-        vol = 0
         for lst in result.values():
             for note in lst:
-                vol = note[2]
-        if vol > self._max_volume:
-            self._max_volume = vol
+                self._max_volume = max(note[2], self._max_volume)
+
         return result
 
     def _play_midi_pattern(self, pattern: Dict[int, List[List[int]]], pos1: int, pos2: int) -> None:

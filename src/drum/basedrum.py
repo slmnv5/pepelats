@@ -59,7 +59,7 @@ class ProtoDrum(FileFinder):
         lst1 = ["drum_level1", "drum_level2", "drum_break"]
         lst2 = [self._ptn_l1, self._ptn_l2, self._ptn_bk]
         for k in range(3):
-            logging.info(f"Loaded patterns from directory: {directory}, file: {lst1[k]}")
+            logging.info(f"Loaded patterns from directory: {directory}/{lst1[k]}")
             load_all_patterns(directory, lst1[k], lst2[k], self._sounds)
 
     def load_drum_name(self, drum_name: str) -> None:
