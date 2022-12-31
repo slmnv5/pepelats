@@ -22,7 +22,7 @@ class MidiDrum(SimpleDrum):
         self._out_port = out_port
 
     def get_volume(self) -> float:
-        return self._max_volume / 127
+        return round(self._max_volume / 127, 2)
 
     def _prepare_one(self, pattern) -> Any:
         logging.debug(f"Preapring pattern: {pattern}")
