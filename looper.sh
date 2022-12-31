@@ -21,9 +21,9 @@ export ENV_KBD_NOTES='"q": 12, "w": 13, "1":60, "2": 62, "3": 64, "4": 65'
 #check ALSA devices and use first one found
 #export ENV_USB_AUDIO_NAMES='VALETON GP,USB Audio'
 
-ENV_ROOT_DIR=$(dirname "$0")
-cd "$ENV_ROOT_DIR"
-export ENV_ROOT_DIR= "$(pwd -P)"
+TMP=$(dirname "$0")
+cd "$TMP"
+export ENV_ROOT_DIR="$(pwd -P)"
 cd "$ENV_ROOT_DIR/src" || exit 1
 
 found=$(pgrep --full start_looper.py)
