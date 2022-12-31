@@ -11,8 +11,8 @@ ENV_LEN_SECONDS = os.getenv("MAX_LEN_SECONDS", "60")
 ENV_SD_RATE: int = int(os.getenv("SD_RATE", "44100"))
 ENV_FRAME_BUFFER_ID: str = os.getenv("FRAME_BUFFER_ID", "1")
 ENV_USB_AUDIO_NAMES: str = os.getenv("USB_AUDIO_NAMES", "USB Audio")
-ENV_MIDI_IN_PORT = os.getenv('MIDI_IN_PORT_NAME', None)
-ENV_MIDI_OUT_PORT = os.getenv('MIDI_OUT_PORT_NAME', None)
+ENV_MIDI_IN_PORT = os.getenv('MIDI_IN_PORT_NAME', "MidiPedal_out")
+ENV_MIDI_OUT_PORT = os.getenv('MIDI_OUT_PORT_NAME', "MidiDrum_in")
 
 ROOT_DIR = str(Path(__file__).parent.parent.parent)
 LEVEL_DEBUG = "--debug" in sys.argv or "--info" in sys.argv or os.name != "posix"
