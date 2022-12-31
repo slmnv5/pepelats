@@ -14,4 +14,4 @@ touchscreen4py*
 rules.txt
 kbdmap.txt
 log.txt
-saved_env.sh
+.saved_env.sh
