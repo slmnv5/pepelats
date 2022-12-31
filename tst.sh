@@ -5,11 +5,17 @@
 # --kbd - use keyboard for MIDI input (see KBD_NOTES)
 # --count - count notes
 
-export KBD_NOTES='"q": 12, "w": 13, "1":60, "2": 62, "3": 64, "4": 65'
 
-# Looper parameters passed via environment
-export MAX_LEN_SECONDS=60
-export SD_RATE=44100
+TMP=$(dirname "$0")
+cd "$TMP"
+export ENV_ROOT_DIR="$(pwd -P)"
+cd "$ENV_ROOT_DIR/src" || exit 1
+CONFIG_FILE="$ENV_ROOT_DIR/.saved_env.sh"
+touch "$CONFIG_FILE"
+. "$CONFIG_FILE"
+env
+
+
 
 #killall -9 python
 export PYTHONPATH="${PYTHONPATH}:$HOME/mypi_music/src:$HOME/mypi_music"

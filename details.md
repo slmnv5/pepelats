@@ -1,3 +1,32 @@
+## Command line parameters
+
+- --info - set verbose logging
+- --debug - set more verbose logging
+- --kbd - use keyboard for MIDI input (see KBD_NOTES env. variable below)
+- --count - count notes (see Extending MIDI foot controller commands below)
+
+## Environment variables and default values:
+### Use typing keyboard to sent note ON/OFF when press/release
+export ENV_KBD_NOTES=' "q": 12, "w": 13, "1":60, "2": 62, "3": 64, "4": 65 '
+
+### Loop audio properties 
+export ENV_MAX_LEN_SECONDS='60'
+
+export ENV_SD_RATE='44100'
+
+### Use this MIDI port (part of the name) as control input
+export ENV_MIDI_IN_PORT='BlueBoard'
+
+### Use this MIDI port (part of the name) as drum's output
+export ENV_MIDI_OUT_PORT='Play mk3'
+
+### Use this frame buffer if there are few, only Linux
+export ENV_FRAME_BUFFER_ID='1'
+
+### Use ALSA devices (found first)
+export ENV_USB_AUDIO_NAMES='VALETON GP,USB Audio'
+
+
 ## Drums configuration
 
 Drums are configured in a text files (in [config/drum/_pop](config/drum/_pop)) using JSON format. Several popular drum
