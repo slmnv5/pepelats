@@ -21,8 +21,8 @@ export ENV_KBD_NOTES='"q": 12, "w": 13, "1":60, "2": 62, "3": 64, "4": 65'
 #check ALSA devices and use first one found
 #export ENV_USB_AUDIO_NAMES='VALETON GP,USB Audio'
 
-THIS_DIR=$(dirname "$0")
-cd "$THIS_DIR/src" || exit 1
+export ROOT_DIR=$(dirname "$0")
+cd "$ROOT_DIR/src" || exit 1
 
 found=$(pgrep --full start_looper.py)
 if [ -n "$found" ]; then
@@ -44,7 +44,7 @@ done
 PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py  $*"
 echo "$PYTHON_CMD"
 
-CONFIG_FILE="$THIS_DIR/.saved_env.sh"
+CONFIG_FILE="$ROOT_DIR/.saved_env.sh"
 touch "$CONFIG_FILE"
 
 # disable under voltage error on screen and disable typing echo

@@ -4,8 +4,8 @@
 # Part of hardware MIDI port name - source of messages
 HARDWARE_NAME="BlueBoard"
 
-THIS_DIR=$(dirname "$0")
-cd "$THIS_DIR" || exit 1
+ROOT_DIR=$(dirname "$0")
+cd "$ROOT_DIR" || exit 1
 
 check_running() {
   found=$(pgrep mimap5)

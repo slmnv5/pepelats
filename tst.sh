@@ -19,8 +19,8 @@ export MIDI_OUT_PORT_NAME='Sshpadnew'
 #check ALSA devices and use first one found
 export USB_AUDIO_NAMES='VALETON GP,USB Audio'
 
-THIS_DIR=$(dirname "$0")
-cd "$THIS_DIR/src" || exit 1
+ROOT_DIR=$(dirname "$0")
+cd "$ROOT_DIR/src" || exit 1
 
 #killall -9 python
 export PYTHONPATH="${PYTHONPATH}:$HOME/mypi_music/src:$HOME/mypi_music"
