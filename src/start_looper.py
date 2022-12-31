@@ -41,8 +41,8 @@ logging.critical("=============Starting log==============")
 # c_handler = logging.StreamHandler()
 # logging.getLogger().addHandler(c_handler)
 
-assert os.getenv("MIDI_IN_PORT_NAME", None)
-print(os.getenv("MIDI_IN_PORT_NAME", None), 222222222222333333, 3333)
+assert os.getenv("ENV_MIDI_IN_PORT", None)
+print(os.getenv("ENV_MIDI_IN_PORT", None), 222222222222333333, 3333)
 os.system('env')
 print(222222222222222222, 9999999)
 

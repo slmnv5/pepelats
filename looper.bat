@@ -11,9 +11,9 @@ set MAX_LEN_SECONDS=60
 set SD_RATE=44100
 
 ::Use this MIDI port as input
-set MIDI_IN_PORT_NAME='BlueBoard'
+set ENV_MIDI_IN_PORT='BlueBoard'
 ::Use this MIDI port as clock output
-set MIDI_OUT_PORT_NAME='Sshpadnew'
+set ENV_MIDI_OUT_PORT='Sshpadnew'
 
 ::Check ALSA devices and use first one found
 set USB_AUDIO_NAMES='VALETON GP,USB Audio'
