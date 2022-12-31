@@ -6,7 +6,7 @@ from typing import List, Optional
 from typing import TypeVar, Generic
 
 from utils.utilnumpy import get_stable_list
-from utils.utilconfig import ROOT_DIR
+from utils.utilconfig import ENV_ROOT_DIR
 
 T = TypeVar('T')
 
@@ -155,7 +155,7 @@ class FileFinder(CollectionOwner[str]):
 
     def __init__(self, directory: str, is_file: bool, end_with: str):
         self.__end_with: str = end_with
-        self.__dir: str = ROOT_DIR + "/" + directory
+        self.__dir: str = ENV_ROOT_DIR + "/" + directory
 
         found_items: List[str] = [x for x in os.listdir(str(self.__dir))
                                   if self.__chk_match(self.__dir, x, is_file)]

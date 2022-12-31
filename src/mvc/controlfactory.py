@@ -8,7 +8,7 @@ from mvc import CountMidiControl
 from mvc import MidiControl
 from mvc._pyscreen import PyScreen
 from mvc.menucontrol import MenuLoader, MenuControl
-from utils.utilconfig import ConfigName, ROOT_DIR, ENV_FRAME_BUFFER_ID
+from utils.utilconfig import ConfigName, ENV_ROOT_DIR, ENV_FRAME_BUFFER_ID
 
 
 class ControlFactory:
@@ -25,7 +25,7 @@ class ControlFactory:
             return MidiControl(self.in_port, self.send_conn, self.menu_loader)
 
     def get_screen_control(self) -> MenuControl:
-        if not os.path.isfile(ROOT_DIR + "/" + ConfigName.shared_lib):
+        if not os.path.isfile(ENV_ROOT_DIR + "/" + ConfigName.shared_lib):
             logging.warning(f"Libarry {ConfigName.shared_lib} not found, GUI not avalable, using text")
             return PyScreen(self.recv_conn, self.send_conn, self.menu_loader)
         else:

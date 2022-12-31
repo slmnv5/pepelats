@@ -7,7 +7,7 @@ import numpy as np
 import soundfile
 
 from utils.utilalsa import make_zero_buffer
-from utils.utilconfig import ENV_SD_RATE, SD_TYPE, ROOT_DIR, ConfigName, ENV_DRUM_CHANNEL
+from utils.utilconfig import ENV_SD_RATE, SD_TYPE, ENV_ROOT_DIR, ConfigName, ENV_DRUM_CHANNEL
 from utils.utilnumpy import record_sound_buff
 from utils.utilother import JsonDict
 
@@ -53,7 +53,7 @@ def bpm_from_length(length: int) -> float:
 
 def load_audio() -> Dict[str, np.ndarray]:
     """Loads WAV sounds, change volume to given value"""
-    path = ROOT_DIR + "/config/sounds/drum_sounds.json"
+    path = ENV_ROOT_DIR + "/config/sounds/drum_sounds.json"
     loader = JsonDict(path)
     result = dict()
     for name in loader.dic():
@@ -75,7 +75,7 @@ def load_audio() -> Dict[str, np.ndarray]:
 
 def load_midi() -> Dict[str, List[int]]:
     """Loads WAV sounds, change volume to given value"""
-    path = ROOT_DIR + "/config/sounds/drum_sounds.json"
+    path = ENV_ROOT_DIR + "/config/sounds/drum_sounds.json"
     loader = JsonDict(path)
     result = dict()
     for name in loader.dic():

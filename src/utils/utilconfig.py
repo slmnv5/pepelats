@@ -14,7 +14,7 @@ ENV_USB_AUDIO_NAMES: str = os.getenv("ENV_USB_AUDIO_NAMES", "USB Audio")
 ENV_MIDI_IN_PORT = os.getenv('ENV_MIDI_IN_PORT', None)
 ENV_MIDI_OUT_PORT = os.getenv('ENV_MIDI_OUT_PORT', None)
 
-ROOT_DIR = str(Path(__file__).parent.parent.parent)
+ENV_ROOT_DIR = str(Path(__file__).parent.parent.parent)
 LEVEL_DEBUG = "--debug" in sys.argv or "--info" in sys.argv or os.name != "posix"
 SD_TYPE: str = 'int16'
 MAX_LEN: int = int(ENV_LEN_SECONDS) * ENV_SD_RATE
@@ -40,7 +40,7 @@ class ConfigName:
 
 
 def save_config() -> None:
-    file_name = ROOT_DIR + "/.saved_env.sh"
+    file_name = ENV_ROOT_DIR + "/.saved_env.sh"
     with open(file_name, 'w') as f:
         f.write(f"export ENV_DRUM_CHANNEL='{ENV_DRUM_CHANNEL}'\n")
         f.write(f"export ENV_KBD_NOTES='{ENV_KBD_NOTES}'\n")

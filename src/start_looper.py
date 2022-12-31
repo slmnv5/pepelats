@@ -9,7 +9,7 @@ from threading import Thread
 from control import ExtendedCtrl
 from mvc.controlfactory import ControlFactory
 from mvc.menucontrol import MenuLoader
-from utils.utilconfig import ROOT_DIR
+from utils.utilconfig import ENV_ROOT_DIR
 from utils.utilalsa import get_midi_in
 from utils.utilport import KbdMidiPort, MyRtmidi
 
@@ -18,7 +18,7 @@ for handler in logging.root.handlers:
     logging.root.removeHandler(handler)
 
 handler = None
-file = ROOT_DIR + "/log.txt"
+file = ENV_ROOT_DIR + "/log.txt"
 tmp = logging.WARN
 if "--debug" in sys.argv:
     tmp = logging.DEBUG
