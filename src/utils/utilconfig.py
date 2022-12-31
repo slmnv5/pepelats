@@ -1,10 +1,10 @@
 import os
 import sys
-from pathlib import Path
 
 import numpy as np
 import sounddevice as sd
 
+ENV_ROOT_DIR = os.getenv("ENV_ROOT_DIR", "aaaaaaaaaaaaaaaaa/qqqqqqqqqqq")
 ENV_DRUM_CHANNEL: int = int(os.getenv("ENV_DRUM_CHANNEL", "9"))
 ENV_KBD_NOTES: str = os.getenv("ENV_KBD_NOTES", '"q": 12, "w": 13, "1":60, "2": 62, "3": 64, "4": 65')
 ENV_LEN_SECONDS = os.getenv("ENVLEN_SECONDS", "60")
@@ -14,7 +14,6 @@ ENV_USB_AUDIO_NAMES: str = os.getenv("ENV_USB_AUDIO_NAMES", "USB Audio")
 ENV_MIDI_IN_PORT = os.getenv('ENV_MIDI_IN_PORT', None)
 ENV_MIDI_OUT_PORT = os.getenv('ENV_MIDI_OUT_PORT', None)
 
-ENV_ROOT_DIR = str(Path(__file__).parent.parent.parent)
 LEVEL_DEBUG = "--debug" in sys.argv or "--info" in sys.argv or os.name != "posix"
 SD_TYPE: str = 'int16'
 MAX_LEN: int = int(ENV_LEN_SECONDS) * ENV_SD_RATE
