@@ -48,6 +48,8 @@ echo "$PYTHON_CMD"
 
 CONFIG_FILE="$ENV_ROOT_DIR/.saved_env.sh"
 touch "$CONFIG_FILE"
+. "$CONFIG_FILE"
+env
 
 # disable under voltage error on screen and disable typing echo
 sudo dmesg -D
