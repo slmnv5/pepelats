@@ -27,7 +27,7 @@ elif "--info" in sys.argv:
     tmp = logging.INFO
     handler = logging.StreamHandler(sys.stdout)
 
-fmt_str = '%(filename)s %(levelname)s - %(message)s'
+fmt_str = '%(levelname)s >>> %(message)s'
 
 logging.basicConfig(force=True, level=tmp, filename=file, filemode='a', format=fmt_str)
 if handler:
