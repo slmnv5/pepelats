@@ -5,14 +5,14 @@ from pathlib import Path
 import numpy as np
 import sounddevice as sd
 
-ENV_DRUM_CHANNEL: int = int(os.getenv("DRUM_CHANNEL", "9"))
-ENV_KBD_NOTES: str = os.getenv("KBD_NOTES", '"q": 12, "w": 13, "1":60, "2": 62, "3": 64, "4": 65')
-ENV_LEN_SECONDS = os.getenv("MAX_LEN_SECONDS", "60")
-ENV_SD_RATE: int = int(os.getenv("SD_RATE", "44100"))
-ENV_FRAME_BUFFER_ID: str = os.getenv("FRAME_BUFFER_ID", "1")
-ENV_USB_AUDIO_NAMES: str = os.getenv("USB_AUDIO_NAMES", "USB Audio")
-ENV_MIDI_IN_PORT = os.getenv('MIDI_IN_PORT_NAME', "MidiPedal_out")
-ENV_MIDI_OUT_PORT = os.getenv('MIDI_OUT_PORT_NAME', "MidiDrum_in")
+ENV_DRUM_CHANNEL: int = int(os.getenv("ENV_DRUM_CHANNEL", "9"))
+ENV_KBD_NOTES: str = os.getenv("ENV_KBD_NOTES", '"q": 12, "w": 13, "1":60, "2": 62, "3": 64, "4": 65')
+ENV_LEN_SECONDS = os.getenv("ENVLEN_SECONDS", "60")
+ENV_SD_RATE: int = int(os.getenv("ENV_SD_RATE", "44100"))
+ENV_FRAME_BUFFER_ID: str = os.getenv("ENV_FRAME_BUFFER_ID", "1")
+ENV_USB_AUDIO_NAMES: str = os.getenv("ENV_USB_AUDIO_NAMES", "USB Audio")
+ENV_MIDI_IN_PORT = os.getenv('ENV_MIDI_IN_PORT', "MidiPedal_out")
+ENV_MIDI_OUT_PORT = os.getenv('ENV_MIDI_OUT_PORT', "MidiDrum_in")
 
 ROOT_DIR = str(Path(__file__).parent.parent.parent)
 LEVEL_DEBUG = "--debug" in sys.argv or "--info" in sys.argv or os.name != "posix"
