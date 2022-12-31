@@ -11,7 +11,7 @@ from drum.mididrum import MidiDrum, FakeMidiDrum
 from song import SongPart
 from utils.msgprocessor import MsgProcessor
 from utils.utilalsa import get_midi_out
-from utils.utilconfig import ENV_SD_RATE
+from utils.utilconfig import ENV_SD_RATE, save_config
 from utils.utilother import DrawInfo
 
 
@@ -82,9 +82,9 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         os.system(f"timeout {sec}")
         os.system(f"sleep {sec}")
 
-    def _restart_looper(self) -> None:
-        self.__drum_audi.save()
-        self.__drum_midi.save()
+    @staticmethod
+    def _restart_looper() -> None:
+        save_config()
         os.system("killall -9 python")
 
     @staticmethod

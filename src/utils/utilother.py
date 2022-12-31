@@ -191,20 +191,20 @@ class FileFinder(CollectionOwner[str]):
 
 class JsonDict:
     def __init__(self, filename: str):
-        self.__dic: Dict[str, Any] = dict()
+        self.__dict: Dict[str, Any] = dict()
         self.__filename: str = filename
         with open(self.__filename) as f:
-            self.__dic = load(f)
-        if not isinstance(self.__dic, dict):
+            self.__dict = load(f)
+        if not isinstance(self.__dict, dict):
             raise RuntimeError("JSON file must have dictionary {self.__filename}")
 
-    def dic(self) -> Dict:
-        return self.__dic
+    def dict(self) -> Dict:
+        return self.__dict
 
     def save(self) -> None:
         if self.__filename:
             with open(self.__filename, "w") as f:
-                dump(self.__dic, f, indent=2)
+                dump(self.__dict, f, indent=2)
 
     def get_filename(self) -> str:
         return self.__filename
@@ -213,13 +213,13 @@ class JsonDict:
         return os.path.dirname(self.__filename)
 
     def get(self, k, default) -> Any:
-        return self.__dic.get(k, default)
+        return self.__dict.get(k, default)
 
     def set(self, k, v) -> None:
-        self.__dic[k] = v
+        self.__dict[k] = v
 
     def set_defaults(self, default_dic: Dict) -> None:
-        self.__dic = dict(default_dic, **self.__dic)
+        self.__dict = dict(default_dic, **self.__dict)
 
 
 if __name__ == "__main__":

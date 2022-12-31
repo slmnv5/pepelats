@@ -1,4 +1,5 @@
 import logging
+import os
 import random
 from abc import ABC
 from abc import abstractmethod
@@ -9,7 +10,7 @@ from typing import List
 import numpy as np
 
 from drum._utildrum import load_all_patterns, bpm_from_length
-from utils.utilconfig import ENV_SD_RATE
+from utils.utilconfig import ENV_SD_RATE, ConfigName
 from utils.utilother import FileFinder
 
 
@@ -110,9 +111,9 @@ class SimpleDrum(ProtoDrum, ABC):
 
     def __init__(self):
         ProtoDrum.__init__(self)
+        self._swing: float = float(os.getenv(ConfigName.drum_swing, "0.75"))
         self._volume: float = 1.0  # from 0 to 1
         self._max_volume: float = 1.0  # from 0 to 1
-        self._swing: float = 0.75
         self._snd_l1 = self._snd_l2 = self._snd_bk = []
         self._l1 = self._l2 = self._bk = []
         self._il1 = self._il2 = self._ibk = 0

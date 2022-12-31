@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Dict, Any
 from typing import List
 
@@ -6,6 +7,7 @@ import numpy as np
 
 from drum._utildrum import load_midi, midi_drum_from_pattern
 from drum.basedrum import ProtoDrum, SimpleDrum
+from utils.utilconfig import ConfigName
 
 
 class MidiDrum(SimpleDrum):
@@ -13,6 +15,8 @@ class MidiDrum(SimpleDrum):
 
     def __init__(self, out_port):
         SimpleDrum.__init__(self)
+        self._volume = float(os.getenv(ConfigName.midi_drum_volume, "0.75"))
+
         self._sounds: Dict[str, List[int]] = load_midi()
         self._load_all()
         self._out_port = out_port

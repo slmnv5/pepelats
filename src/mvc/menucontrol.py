@@ -28,7 +28,7 @@ class MenuLoader:
             default_dic = loader.get(ConfigName.default_config, dict())
             dic1: Dict[str, Dict] = dict()
 
-            for key in [x for x in loader.dic() if x not in [ConfigName.default_config, ConfigName.comment]]:
+            for key in [x for x in loader.dict() if x not in [ConfigName.default_config, ConfigName.comment]]:
                 dic2 = loader.get(key, None)
                 assert type(dic2) == dict, f"Must be dictionary key={key} in file {item}"
                 assert len(dic2) > 0, f"Dictionary must be non empty key={key} in file {item}"

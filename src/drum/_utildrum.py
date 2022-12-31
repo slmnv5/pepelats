@@ -56,7 +56,7 @@ def load_audio() -> Dict[str, np.ndarray]:
     path = ENV_ROOT_DIR + "/config/sounds/drum_sounds.json"
     loader = JsonDict(path)
     result = dict()
-    for name in loader.dic():
+    for name in loader.dict():
         drum_sound = loader.get(name, None)
         assert len(drum_sound) > 0
         assert type(drum_sound) == dict
@@ -78,7 +78,7 @@ def load_midi() -> Dict[str, List[int]]:
     path = ENV_ROOT_DIR + "/config/sounds/drum_sounds.json"
     loader = JsonDict(path)
     result = dict()
-    for name in loader.dic():
+    for name in loader.dict():
         drum_sound = loader.get(name, None)
         assert len(drum_sound) > 0
         assert type(drum_sound) == dict
@@ -97,7 +97,7 @@ def load_midi() -> Dict[str, List[int]]:
 def load_all_patterns(directory: str, file_name: str, storage: List[Dict], sounds: Dict[str, np.ndarray]) -> None:
     storage.clear()
     loader = JsonDict(os.path.join(directory, file_name + ".json"))
-    dic: Dict = loader.dic()
+    dic: Dict = loader.dict()
     default: Dict = dic.get(ConfigName.default_config, dict())
     for key in [x for x in dic if x not in [ConfigName.default_config, ConfigName.comment]]:
         pattern = loader.get(key, None)

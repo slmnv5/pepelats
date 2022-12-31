@@ -1,5 +1,6 @@
 import os
 import sys
+from typing import Dict
 
 import numpy as np
 import sounddevice as sd
@@ -37,8 +38,13 @@ class ConfigName:
     change_map: str = "_change_map"
     send_redraw: str = "_send_redraw"
 
+    # drum
+    drum_swing: str = "DRUM_SWING"
+    audio_drum_volume: str = "AUDIO_DRUM_SWING"
+    midi_drum_volume: str = "MIDI_DRUM_SWING"
 
-def save_config() -> None:
+
+def save_config(var_dict: Dict[str, str] = None) -> None:
     file_name = ENV_ROOT_DIR + "/.saved_env.sh"
     with open(file_name, 'w') as f:
         f.write(f"export ENV_DRUM_CHANNEL='{ENV_DRUM_CHANNEL}'\n")
@@ -50,4 +56,9 @@ def save_config() -> None:
         f.write(f"export ENV_MIDI_IN_PORT='{ENV_MIDI_IN_PORT}'\n")
         f.write(f"export ENV_MIDI_OUT_PORT='{ENV_MIDI_OUT_PORT}'\n")
 
-    f.close()
+    if not var_dict:
+        return
+
+    with open(file_name, 'a') as f:
+        for key, value in var_dict.items():
+            f.write(f"export {key}='{value}'\n")
