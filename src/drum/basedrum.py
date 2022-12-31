@@ -112,7 +112,7 @@ class SimpleDrum(ProtoDrum, ABC):
     def __init__(self):
         ProtoDrum.__init__(self)
         self._swing: float = float(os.getenv(ConfigName.drum_swing, "0.75"))
-        self._volume: float = 1.0  # from 0 to 1
+        self._volume: float = 0.75  # from 0 to 1
         self._max_volume: float = 1.0  # from 0 to 1
         self._snd_l1 = self._snd_l2 = self._snd_bk = []
         self._l1 = self._l2 = self._bk = []
@@ -139,7 +139,7 @@ class SimpleDrum(ProtoDrum, ABC):
     def change_volume(self, change_factor: float) -> None:
         self._volume = round(self._volume * change_factor, 2)
         self._volume = min(1.0, self._volume)
-        self._volume = max(0.03, self._volume)
+        self._volume = max(0.05, self._volume)
         self.prepare_drum(self._length)
 
     def change_swing(self, change_by: float) -> None:

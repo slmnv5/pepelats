@@ -40,8 +40,8 @@ class ConfigName:
 
     # drum
     drum_swing: str = "DRUM_SWING"
-    audio_drum_volume: str = "AUDIO_DRUM_SWING"
-    midi_drum_volume: str = "MIDI_DRUM_SWING"
+    audio_drum_volume: str = "AUDIO_DRUM_VOLUME"
+    midi_drum_volume: str = "MIDI_DRUM_VOLUME"
 
 
 def save_config(var_dict: Dict[str, str] = None) -> None:
