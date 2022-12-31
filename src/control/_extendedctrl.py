@@ -11,7 +11,7 @@ from drum.mididrum import MidiDrum, FakeMidiDrum
 from song import SongPart
 from utils.msgprocessor import MsgProcessor
 from utils.utilalsa import get_midi_out
-from utils.utilconfig import ENV_SD_RATE, save_config
+from utils.utilconfig import ENV_SD_RATE, save_config, ConfigName
 from utils.utilother import DrawInfo
 
 
@@ -20,12 +20,12 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
     def __init__(self, recv_conn: Connection, send_conn: Connection):
         MsgProcessor.__init__(self, recv_conn, send_conn)
-        self.__drum_audi: SimpleDrum
-        self.__drum_midi: SimpleDrum
+        self.__audio_drum: SimpleDrum
+        self.__midi_drum: SimpleDrum
         midi_out = get_midi_out()
-        self.__drum_midi = MidiDrum(midi_out) if midi_out else FakeMidiDrum(midi_out)
-        self.__drum_audi: SimpleDrum = AudioDrum()
-        ManyLoopCtrl.__init__(self, self.__drum_audi)
+        self.__midi_drum = MidiDrum(midi_out) if midi_out else FakeMidiDrum(midi_out)
+        self.__audio_drum: SimpleDrum = AudioDrum()
+        ManyLoopCtrl.__init__(self, self.__audio_drum)
         self.__draw_info: DrawInfo = DrawInfo()
 
     def _redraw(self) -> None:
@@ -82,8 +82,11 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         os.system(f"timeout {sec}")
         os.system(f"sleep {sec}")
 
-    @staticmethod
-    def _restart_looper() -> None:
+    def _restart_looper(self) -> None:
+        var_dict = dict()
+        var_dict[ConfigName.drum_swing] = self.__audio_drum.get_swing()
+        var_dict[ConfigName.audio_drum_volume] = self.__audio_drum.get_volume()
+        var_dict[ConfigName.midi_drum_volume] = self.__midi_drum.get_volume()
         save_config()
         os.system("killall -9 python")
 
@@ -94,19 +97,19 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
 
     def _drum_midi(self) -> None:
         drum = self.get_drum()
-        if self.__drum_midi == drum:
+        if self.__midi_drum == drum:
             return
-        self.__drum_midi.load_drum_name(drum.get_item())
-        self.__drum_midi.prepare_drum(drum.get_length())
-        self._set_drum(self.__drum_midi)
+        self.__midi_drum.load_drum_name(drum.get_item())
+        self.__midi_drum.prepare_drum(drum.get_length())
+        self._set_drum(self.__midi_drum)
 
     def _drum_audio(self) -> None:
         drum = self.get_drum()
-        if self.__drum_audi == drum:
+        if self.__audio_drum == drum:
             return
-        self.__drum_audi.load_drum_name(drum.get_item())
-        self.__drum_audi.prepare_drum(drum.get_length())
-        self._set_drum(self.__drum_audi)
+        self.__audio_drum.load_drum_name(drum.get_item())
+        self.__audio_drum.prepare_drum(drum.get_length())
+        self._set_drum(self.__audio_drum)
 
     #  ============ All song parts view and related commands
 

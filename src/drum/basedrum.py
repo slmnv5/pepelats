@@ -174,12 +174,15 @@ class SimpleDrum(ProtoDrum, ABC):
                f"\nindex: {self._il1}/{len(self._snd_l1)}  " \
                f"{self._il2}/{len(self._snd_l2)}  " \
                f"{self._ibk}/{len(self._snd_bk)}" \
-               f"\nvolume(0.0-1.0):{self._get_volume():.2F}\n" \
+               f"\nvolume(0.0-1.0):{self.get_volume():.2F}\n" \
                f"swing(0.5-0.75):{self._swing:.2F}"
 
     @abstractmethod
-    def _get_volume(self) -> float:
+    def get_volume(self) -> float:
         pass
+
+    def get_swing(self) -> float:
+        return self.get_swing()
 
     def _randomize(self):
         if not self._length:

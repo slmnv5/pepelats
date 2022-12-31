@@ -28,7 +28,7 @@ class AudioDrum(SimpleDrum):
             self._max_volume = vol
         return result
 
-    def _get_volume(self) -> float:
+    def get_volume(self) -> float:
         return self._max_volume / SD_MAX
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
