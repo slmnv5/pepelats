@@ -19,7 +19,7 @@ export MIDI_OUT_PORT_NAME='Sshpadnew'
 #check ALSA devices and use first one found
 export USB_AUDIO_NAMES='VALETON GP,USB Audio'
 
-ROOT_DIR=$(dirname "$0")
+export ROOT_DIR=$(dirname "$0")
 cd "$ROOT_DIR/src" || exit 1
 
 #killall -9 python
