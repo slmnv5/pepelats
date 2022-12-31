@@ -87,7 +87,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         var_dict[ConfigName.drum_swing] = self.__audio_drum.get_swing()
         var_dict[ConfigName.audio_drum_volume] = self.__audio_drum.get_volume()
         var_dict[ConfigName.midi_drum_volume] = self.__midi_drum.get_volume()
-        save_config()
+        save_config(var_dict)
         os.system("killall -9 python")
 
     @staticmethod
