@@ -91,7 +91,7 @@ class MenuControl:
             self.__process_list(cmd1)
             logging.info(f"{self.__class__.__name__} sent command: {cmd1}")
         else:
-            logging.error(f"{self._menu_loader} incorrect menu: {cmd} and {cmd1}")
+            logging.error(f"{self._menu_loader} menu command is NOT a list: {cmd} and {cmd1}")
 
     def __process_list(self, cmd: list) -> None:
         if not cmd:

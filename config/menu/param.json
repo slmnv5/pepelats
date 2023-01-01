@@ -55,6 +55,7 @@
     "[update]": [["_update_app"],["_redraw"]],
     "[restart]": ["_restart_looper"],
     "[drum_audio]": [["_drum_audio"], ["_change_map", "play", "0"]],
-    "[drum_midi]": [["_drum_midi"], ["_change_map", "play", "0"]]
-  }
+    "[drum_midi]": [["_drum_midi"], ["_change_map", "play", "0"]],
+    "[gui_demo]":  [["_gui_demo"],["_redraw"]]
+   }
 }

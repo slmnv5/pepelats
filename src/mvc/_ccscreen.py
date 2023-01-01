@@ -1,6 +1,7 @@
 import logging
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
+from random import randint
 from textwrap import wrap
 from threading import Thread
 from typing import List
@@ -9,6 +10,7 @@ from mvc._touchscreen import TouchScreen
 from mvc.menucontrol import MenuControl, MenuLoader
 from utils.msgprocessor import MsgProcessor
 from utils.utilconfig import LEVEL_DEBUG
+from utils.utilname import generate_name
 from utils.utilother import DrawInfo
 
 
@@ -57,6 +59,22 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
         while True:
             cmd: str = self._get_click_event_word()
             self._send(cmd)
+
+    def _gui_demo(self):
+        for i in range(110):
+            x = randint(0, 480)
+            y = randint(0, 320)
+            width = randint(10, 480 // 2)
+            height = randint(10, 320 // 2)
+            color = [randint(0, 255), randint(0, 255), randint(0, 255)]
+            if i < 50:
+                self._put_square(x, y, width, height, *color)
+            elif i < 100:
+                self._put_square_inv(x, y, width, height)
+            else:
+                row = y // 32
+                name = generate_name()
+                self._set_row_text(row, name, *color)
 
 
 if __name__ == "__main__":

@@ -23,6 +23,12 @@ lib.getRows.restype = c_int
 lib.setRowText.argtypes = [c_void_p, c_int, c_char_p, c_int, c_int, c_int]
 lib.setRowText.restype = c_int
 
+lib.putSquare.argtypes = [c_void_p, c_int, c_int, c_int, c_int, c_int, c_int, c_int]
+lib.putSquare.restype = c_int
+
+lib.putSquareInv.argtypes = [c_void_p, c_int, c_char_p, c_int, c_int]
+lib.putSquareInv.restype = c_int
+
 lib.setLoop.argtypes = [c_void_p, c_double, c_double, c_bool, c_bool]
 lib.setLoop.restype = c_int
 
@@ -73,6 +79,20 @@ class TouchScreen:
         result = lib.setRowText(self.tch_scr, row, text.encode('utf-8'), r, g, b)
         if result < 0:
             logging.error("TouchScreen: error _set_row_text")
+        return result
+
+    def _put_square(self, x: int, y: int, width: int, height: int, r: int, g: int, b: int) -> int:
+        """colored square on screen"""
+        result = lib.putSquare(self.tch_scr, x, y, width, height, r, g, b)
+        if result < 0:
+            logging.error("TouchScreen: error _put_square")
+        return result
+
+    def _put_square_inv(self, x: int, y: int, width: int, height: int) -> int:
+        """invert all pixels in a square"""
+        result = lib.putSquareInv(self.tch_scr, x, y, width, height)
+        if result < 0:
+            logging.error("TouchScreen: error _put_square_inv")
         return result
 
     def _set_loop(self, loop_sec: float, loop_pos: float, is_rec: bool, is_stop: bool) -> int:
