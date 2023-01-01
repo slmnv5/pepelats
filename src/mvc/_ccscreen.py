@@ -60,7 +60,7 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
             cmd: str = self._get_click_event_word()
             self._send(cmd)
 
-    def _gui_demo(self):
+    def _gui_test(self):
         for i in range(110):
             x = randint(0, 480)
             y = randint(0, 320)
