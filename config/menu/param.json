@@ -1,11 +1,11 @@
 {
   "default_config": {
     "description": "[play] [song] [next]",
-    "[prev]": ["_change_map", "", "prev"],
-    "[next]": ["_change_map", "", "next"],
-    "[param]": ["_change_map", "param", "0"],
-    "[song]": ["_change_map", "song", "0"],
-    "[play]": ["_change_map", "play", "0"],
+    "[prev]": ["_prepare_redraw", "", "prev"],
+    "[next]": ["_prepare_redraw", "", "next"],
+    "[param]": ["_prepare_redraw", "param", "0"],
+    "[song]": ["_prepare_redraw", "song", "0"],
+    "[play]": ["_prepare_redraw", "play", "0"],
     "12:1": "[prev]",
     "13:1": "[next]",
 
@@ -21,7 +21,7 @@
 
     "[go_up]": [["_change_drum_name", -1], ["_redraw"]],
     "[go_dn]": [["_change_drum_name", 1], ["_redraw"]],
-    "[load]": [["_load_drum_name"], ["_change_map", "play", "0"]]
+    "[load]": [["_load_drum_name"], ["_prepare_redraw", "play", "0"]]
  },
   "1": {
     "description": "drum: A1/A2-volume B1/B2-swing C1/C2-intensity D1/D2-index",
@@ -54,8 +54,8 @@
 
     "[update]": [["_update_app"],["_redraw"]],
     "[restart]": ["_restart_looper"],
-    "[drum_audio]": [["_drum_audio"], ["_change_map", "play", "0"]],
-    "[drum_midi]": [["_drum_midi"], ["_change_map", "play", "0"]],
+    "[drum_audio]": [["_drum_audio"], ["_prepare_redraw", "play", "0"]],
+    "[drum_midi]": [["_drum_midi"], ["_prepare_redraw", "play", "0"]],
     "[gui_demo]":  [["_gui_demo"],["_redraw"]]
    }
 }

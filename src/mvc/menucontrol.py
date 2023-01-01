@@ -1,4 +1,5 @@
 import logging
+import traceback
 from abc import abstractmethod
 # noinspection PyProtectedMember
 # noinspection PyProtectedMember
@@ -73,12 +74,12 @@ class MenuControl:
         self._menu_loader = menu_loader
         self.__s_conn = send_conn
         self.__redraw = DrawInfo()
-        self.__prepare_redraw()
-        self.__s_conn.send([ConfigName.send_redraw, self.__redraw])
+        self._prepare_redraw()
 
-    def __prepare_redraw(self):
+    def _prepare_redraw(self):
         self.__redraw.text = self._menu_loader.get(ConfigName.text)
         self.__redraw.update_method = self._menu_loader.get(ConfigName.update_method)
+        self.__s_conn.send([ConfigName.send_redraw, self.__redraw])
 
     def _send(self, cmd: str) -> None:
         # map note to command in JSON menu files
@@ -97,16 +98,24 @@ class MenuControl:
         if not cmd:
             return
         head, *tail = cmd
-        if isinstance(head, list):
+        head_type = type(head)
+        if head_type not in [list, str]:
+            logging.error(f"{self._menu_loader} menu command is NOT a list or string: {cmd}")
+
+        if head_type == list:
             self.__process_list(head)
             self.__process_list(tail)
+        elif hasattr(self, head):
+            method_name = head
+            params = tail
+            # noinspection PyBroadException
+            try:
+                method = getattr(self, method_name)
+                method(*params)
+            except Exception:
+                logging.error(f"{self.__class__.__name__} in: {method_name} error: {traceback.format_exc()}")
         else:
-            if head == ConfigName.change_map:
-                self._menu_loader.change_map(tail[0], tail[1])
-                self.__prepare_redraw()
-                self.__s_conn.send([ConfigName.send_redraw, self.__redraw])
-            else:
-                self.__s_conn.send(cmd)
+            self.__s_conn.send(cmd)
 
     @abstractmethod
     def monitor(self):

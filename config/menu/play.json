@@ -1,11 +1,11 @@
 {
   "default_config": {
     "description": "[song] [param] [next]",
-    "[prev]": ["_change_map", "", "prev"],
-    "[next]": ["_change_map", "", "next"],
-    "[param]": ["_change_map", "param", "0"],
-    "[song]": ["_change_map", "song", "0"],
-    "[play]": ["_change_map", "play", "0"],
+    "[prev]": ["_prepare_redraw", "", "prev"],
+    "[next]": ["_prepare_redraw", "", "next"],
+    "[param]": ["_prepare_redraw", "param", "0"],
+    "[song]": ["_prepare_redraw", "song", "0"],
+    "[play]": ["_prepare_redraw", "play", "0"],
 
     "12:6": "[next]",
     "13:6": "[song]",

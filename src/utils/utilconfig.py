@@ -35,7 +35,6 @@ class ConfigName:
     shared_lib: str = "touchscreen4py.so"
 
     # redraw related methods
-    change_map: str = "_change_map"
     send_redraw: str = "_send_redraw"
 
     # drum

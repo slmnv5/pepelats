@@ -1,11 +1,11 @@
 {
   "default_config": {
     "description": "[play] [param] [next]",
-    "[prev]": ["_change_map", "", "prev"],
-    "[next]": ["_change_map", "", "next"],
-    "[param]": ["_change_map", "param", "0"],
-    "[song]": ["_change_map", "song", "0"],
-    "[play]": ["_change_map", "play", "0"],
+    "[prev]": ["_prepare_redraw", "", "prev"],
+    "[next]": ["_prepare_redraw", "", "next"],
+    "[param]": ["_prepare_redraw", "param", "0"],
+    "[song]": ["_prepare_redraw", "song", "0"],
+    "[play]": ["_prepare_redraw", "play", "0"],
     "12:1": "[prev]",
     "13:1": "[next]",
 
@@ -21,11 +21,11 @@
     "64:6": "[save_new]",
     "65:2": "[init]",
 
-    "[stop_now]": [["_stop_song", 0], ["_change_map", "play", "0"]],
-    "[stop_end]": [["_stop_song", 1], ["_change_map", "play", "0"]],
-    "[save_song]": [["_save_song"], ["_change_map", "play", "0"]],
-    "[save_new]": [["_save_new_song"], ["_change_map", "play", "0"]],
-    "[init]": [["_init_song"], ["_change_map", "play", "0"]]
+    "[stop_now]": [["_stop_song", 0], ["_prepare_redraw", "play", "0"]],
+    "[stop_end]": [["_stop_song", 1], ["_prepare_redraw", "play", "0"]],
+    "[save_song]": [["_save_song"], ["_prepare_redraw", "play", "0"]],
+    "[save_new]": [["_save_new_song"], ["_prepare_redraw", "play", "0"]],
+    "[init]": [["_init_song"], ["_prepare_redraw", "play", "0"]]
   },
   "1": {
     "description": "song: A/B-scroll D2-[load] DH-[delete]",
@@ -37,7 +37,7 @@
 
     "[go_up]": [["_change_song", -1], ["_redraw"]],
     "[go_dn]": [["_change_song", 1], ["_redraw"]],
-    "[load]": [["_load_song"], ["_change_map", "play", "0"]],
+    "[load]": [["_load_song"], ["_prepare_redraw", "play", "0"]],
     "[delete]": [["_delete_song"], ["_redraw"]]
   }
 }
