@@ -62,8 +62,8 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
             self._send(cmd)
 
     def _gui_test(self):
-        for i in range(110):
-            sleep(0.1)
+        for i in range(150):
+            sleep(0.2)
             x = randint(0, 480)
             y = randint(0, 320)
             width = randint(10, 480 // 2)
