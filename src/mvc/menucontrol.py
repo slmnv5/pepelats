@@ -74,9 +74,11 @@ class MenuControl:
         self._menu_loader = menu_loader
         self.__s_conn = send_conn
         self.__redraw = DrawInfo()
-        self._prepare_redraw()
+        self._prepare_redraw("", "")
 
-    def _prepare_redraw(self):
+    def _prepare_redraw(self, new_name: str, new_id: str):
+        if new_id or new_id:
+            self._menu_loader.change_map(new_name, new_id)
         self.__redraw.text = self._menu_loader.get(ConfigName.text)
         self.__redraw.update_method = self._menu_loader.get(ConfigName.update_method)
         self.__s_conn.send([ConfigName.send_redraw, self.__redraw])
