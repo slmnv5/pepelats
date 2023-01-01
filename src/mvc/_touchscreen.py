@@ -26,7 +26,7 @@ lib.setRowText.restype = c_int
 lib.putSquare.argtypes = [c_void_p, c_int, c_int, c_int, c_int, c_int, c_int, c_int]
 lib.putSquare.restype = c_int
 
-lib.putSquareInv.argtypes = [c_void_p, c_int, c_char_p, c_int, c_int]
+lib.putSquareInv.argtypes = [c_void_p, c_int, c_int, c_int, c_int]
 lib.putSquareInv.restype = c_int
 
 lib.setLoop.argtypes = [c_void_p, c_double, c_double, c_bool, c_bool]
