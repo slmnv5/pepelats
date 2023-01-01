@@ -4,6 +4,7 @@ from multiprocessing.connection import Connection
 from random import randint
 from textwrap import wrap
 from threading import Thread
+from time import sleep
 from typing import List
 
 from mvc._touchscreen import TouchScreen
@@ -62,6 +63,7 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
 
     def _gui_test(self):
         for i in range(110):
+            sleep(0.1)
             x = randint(0, 480)
             y = randint(0, 320)
             width = randint(10, 480 // 2)
