@@ -102,7 +102,7 @@ class WrapBuffer:
         # align start with main loop if not started from zero
         offset: int = self.__start % trim_len
         if offset:
-            self.__buff = np.concatenate((new_buff[offset:], new_buff[:offset]), axis=0)
+            self.__buff = np.concatenate((new_buff[:offset], new_buff[offset:]), axis=0)
         else:
             self.__buff = new_buff
 
