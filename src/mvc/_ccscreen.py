@@ -14,6 +14,12 @@ from utils.utilconfig import LEVEL_DEBUG
 from utils.utilname import generate_name
 from utils.utilother import DrawInfo
 
+GREY_COLOR: List[int] = [150, 150, 150]
+WHITE_COLOR: List[int] = [250, 250, 250]
+YELLOW_COLOR: List[int] = [210, 210, 0]
+GREEN_COLOR: List[int] = [0, 255, 0]
+RED_COLOR: List[int] = [255, 0, 0]
+
 
 class CcScreen(MsgProcessor, MenuControl, TouchScreen):
     """ C++ shared library used for graphics and touch input via TouchScreen"""
@@ -32,27 +38,27 @@ class CcScreen(MsgProcessor, MenuControl, TouchScreen):
         logging.info(f"Set debug level for shared library, result: {result}")
 
     def _send_redraw(self, redraw: DrawInfo) -> None:
-        grey_color: List = [110, 110, 110]
-        white_color: List = [127, 127, 127]
 
         logging.debug(f"Get redraw: {redraw}")
         self._set_loop(redraw.loop_seconds, redraw.loop_position, redraw.is_rec, redraw.is_stop)
         self._clear_screen()
-        self._set_row_text(0, redraw.header, *white_color)  # x, y, red, green, blue
+        self._set_row_text(0, redraw.header, *WHITE_COLOR)  # x, y, red, green, blue
         k: int = 1
         lines = wrap(redraw.text, self._get_cols())
         for line in [x for x in lines if x]:
-            self._set_row_text(k, line, *grey_color)  # x, y, red, green, blue
+            self._set_row_text(k, line, *GREY_COLOR)  # x, y, red, green, blue
             k += 1
 
         for line in redraw.content.split(sep='\n'):
-            color: List = grey_color
-            if not len(line):
+            if not line:
                 continue
             if line[0] == '*':
-                color = ([127, 70, 70] if redraw.is_rec else [70, 127, 70])
+                color = (RED_COLOR if redraw.is_rec else GREEN_COLOR)
             elif line[0] == '~':
-                color = [127, 127, 70]
+                color = YELLOW_COLOR
+            else:
+                color = GREY_COLOR
+
             self._set_row_text(k, line, *color)
             k += 1
 
