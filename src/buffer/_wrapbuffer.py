@@ -106,8 +106,8 @@ class WrapBuffer:
         else:
             self.__buff = new_buff
 
-        print(f"after trim: len {len(self.__buff)} trim_len {trim_len} start {self.__start} idx {idx}")
-        logging.info(f"after trim: len {len(self.__buff)} trim_len {trim_len} start {self.__start} idx {idx}")
+        logging.info(f"after trim: len. ratio: {len(self.__buff)}/{trim_len} "
+                     f"offset: {offset} rec_len: {rec_len}")
         assert self.length % trim_len == 0 and self.length > 0, "incorrect buffer trim"
         self._buffer_str = ""
 
