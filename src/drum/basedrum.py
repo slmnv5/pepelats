@@ -170,15 +170,18 @@ class SimpleDrum(ProtoDrum, ABC):
         self.__set_drums()
 
     def show_drum_param(self) -> str:
-        return f"\nvolume(0.0-1.0):{self.get_volume():.2F}" \
+        return f"\nmax_volume(0.0-1.0):{self.get_max_volume():.2F}" \
                f"\nswing(0.5-0.75):{self._swing:.2F}" \
                f"\n{str(self)} int: {self._intensity}" \
                f"\nindex: {self._il1}/{len(self._snd_l1)}  " \
                f"{self._il2}/{len(self._snd_l2)}  " \
                f"{self._ibk}/{len(self._snd_bk)}"
 
-    @abstractmethod
     def get_volume(self) -> float:
+        return self._volume
+
+    @abstractmethod
+    def get_max_volume(self) -> float:
         pass
 
     def get_swing(self) -> float:
