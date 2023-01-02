@@ -100,12 +100,9 @@ class WrapBuffer:
         new_buff = make_zero_buffer(rec_len)
         play_sound_buff(self.__buff, new_buff, self.__start)
         # align start with main loop if not started from zero
-        if self.__start:
-            offset: int = self.__start % trim_len
-            self.__buff = np.concatenate((new_buff[offset:], new_buff[:offset]), axis=0)
-        else:
-            self.__buff = new_buff
-
+        offset: int = self.__start % trim_len
+        self.__buff = np.concatenate((new_buff[offset:], new_buff[:offset]), axis=0)
+    
         logging.info(f"after trim: len {len(self.__buff)} trim_len {trim_len} start {self.__start} idx {idx}")
         assert self.length % trim_len == 0 and self.length > 0, "incorrect buffer trim"
         self._buffer_str = ""
