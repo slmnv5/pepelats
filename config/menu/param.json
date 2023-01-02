@@ -45,15 +45,17 @@
     "[index_up]": [["_change_drum_index", 1], ["_redraw"]]
   },
    "2": {
-    "description": "menu: A2-[update] B2-[restart] C2-[drum_audio] D2-[drum_midi] [gui_test]",
+    "description": "menu: A2-[update] B2-[restart] BH-[use_text] C2-[drum_audio] D2-[drum_midi] [gui_test]",
     "update_method": "",
     "60:2": "[update]",
     "62:2": "[restart]",
+    "62:6": "[use_text]",
     "64:2": "[drum_audio]",
     "65:2": "[drum_midi]",
 
     "[update]": [["_update_app"],["_redraw"]],
     "[restart]": ["_restart_looper"],
+    "[use_text]": ["_use_text"],
     "[drum_audio]": [["_drum_audio"], ["_prepare_redraw", "play", "0"]],
     "[drum_midi]": [["_drum_midi"], ["_prepare_redraw", "play", "0"]],
     "[gui_test]":  [["_gui_test"],["_redraw"]]

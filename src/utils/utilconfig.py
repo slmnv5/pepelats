@@ -14,6 +14,7 @@ ENV_FRAME_BUFFER_ID: str = os.getenv("ENV_FRAME_BUFFER_ID", "1")
 ENV_USB_AUDIO_NAMES: str = os.getenv("ENV_USB_AUDIO_NAMES", "USB Audio")
 ENV_MIDI_IN_PORT = os.getenv('ENV_MIDI_IN_PORT', None)
 ENV_MIDI_OUT_PORT = os.getenv('ENV_MIDI_OUT_PORT', None)
+ENV_USE_TEXT = os.getenv('ENV_USE_TEXT', "")
 
 LEVEL_DEBUG = "--debug" in sys.argv or "--info" in sys.argv or os.name != "posix"
 SD_TYPE: str = 'int16'
@@ -54,6 +55,7 @@ def save_config(var_dict: Dict[str, Any] = None) -> None:
         f.write(f"export ENV_USB_AUDIO_NAMES='{ENV_USB_AUDIO_NAMES}'\n")
         f.write(f"export ENV_MIDI_IN_PORT='{ENV_MIDI_IN_PORT}'\n")
         f.write(f"export ENV_MIDI_OUT_PORT='{ENV_MIDI_OUT_PORT}'\n")
+        f.write(f"export ENV_USE_TEXT='{ENV_USE_TEXT}'\n")
 
     if not var_dict:
         return

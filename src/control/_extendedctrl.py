@@ -5,6 +5,7 @@ import traceback
 from multiprocessing.connection import Connection
 from typing import Dict, Any
 
+import utils.utilconfig
 from control._manyloopctrl import ManyLoopCtrl
 from drum.audiodrum import AudioDrum
 from drum.basedrum import SimpleDrum
@@ -111,6 +112,10 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         self.__audio_drum.load_drum_name(drum.get_item())
         self.__audio_drum.prepare_drum(drum.get_length())
         self._set_drum(self.__audio_drum)
+
+    def _use_text(self) -> None:
+        utils.utilconfig.ENV_USE_TEXT = "" if utils.utilconfig.ENV_USE_TEXT else "1"
+        self._restart_looper()
 
     #  ============ All song parts view and related commands
 
