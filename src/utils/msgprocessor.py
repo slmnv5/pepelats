@@ -14,13 +14,13 @@ class MsgProcessor:
         self.__send_conn: Connection = send_conn
 
     @staticmethod
-    def msg_string(msg: List[Any]) -> List[str]:
-        return [str(part) for part in msg]
+    def msg_string(cmd: List[Any]) -> List[str]:
+        return [str(part) for part in cmd]
 
-    def __process_message(self, msg: List[Any]) -> None:
-        logging.debug(f"{self.__class__.__name__} got message {MsgProcessor.msg_string(msg)}")
-        assert type(msg) == list and len(msg) > 0
-        method_name, *params = msg
+    def __process_message(self, cmd: List[Any]) -> None:
+        logging.debug(f"{self.__class__.__name__} got message {MsgProcessor.msg_string(cmd)}")
+        assert type(cmd) == list and len(cmd) > 0
+        method_name, *params = cmd
         # noinspection PyBroadException
         try:
             method = getattr(self, method_name)
@@ -30,8 +30,8 @@ class MsgProcessor:
 
     def process_messages(self):
         while True:
-            msg = self.__recv_conn.recv()
-            self.__process_message(msg)
+            cmd = self.__recv_conn.recv()
+            self.__process_message(cmd)
 
     def _send_redraw(self, param) -> None:
         self.__send_conn.send([ConfigName.send_redraw, param])
