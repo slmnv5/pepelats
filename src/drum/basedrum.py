@@ -112,14 +112,15 @@ class SimpleDrum(ProtoDrum, ABC):
         ProtoDrum.__init__(self)
         self._swing: float = ENV_DRUM_SWING
         self._volume: float = ENV_DRUM_VOLUME
-        self._snd_l1 = self._snd_l2 = self._snd_bk = []
-        self._l1 = self._l2 = self._bk = []
+        self._snd_l1: List[Dict[Tuple[int, int], Any]] = list()
+        self._snd_l2: List[Dict[Tuple[int, int], Any]] = list()
+        self._snd_bk: List[Dict[Tuple[int, int], Any]] = list()
         self._il1: int = 0
         self._il2: int = 0
         self._ibk: int = 0
 
     @abstractmethod
-    def drum_from_pattern(self, pattern) -> Dict[Tuple[int, int], Tuple[str, float]]:
+    def drum_from_pattern(self, pattern) -> Dict[Tuple[int, int], Any]:
         """ return dict: sample number -> drum_name, pattern_step_volume """
         pass
 
@@ -132,22 +133,10 @@ class SimpleDrum(ProtoDrum, ABC):
         self._snd_l1 = [self.drum_from_pattern(p) for p in self._ptn_l1]
         self._snd_l2 = [self.drum_from_pattern(p) for p in self._ptn_l2]
         self._snd_bk = [self.drum_from_pattern(p) for p in self._ptn_bk]
-        self._l1 = self._l2 = self._bk = self._snd_l1[0]
+        self._il1 = self._il2 = self._ibk = 0
         self._length = length
         self._intensity = ProtoDrum._LEVEL1
         self._bpm = bpm_from_length(length)
-
-    def _get_sound(self, pos1: int, pos2: int) -> Tuple[str, float]:
-        if self._intensity == ProtoDrum._LEVEL1:
-            sound_list = self._snd_l1[self._il1]
-        elif self._intensity == ProtoDrum._LEVEL2:
-            sound_list = self._snd_l2[self._il2]
-        elif self._intensity == ProtoDrum._BREAK:
-            sound_list = self._snd_bk[self._ibk]
-        else:
-            return "", 0
-
-        return [sound_list[x] for x in sound_list if pos1 <= x < pos2]
 
     def change_volume(self, change_factor: float) -> None:
         self._volume = round(self._volume * change_factor, 2)
@@ -182,7 +171,6 @@ class SimpleDrum(ProtoDrum, ABC):
         self._il1 %= (len(self._snd_l1))
         self._il2 %= (len(self._snd_l2))
         self._ibk %= (len(self._snd_bk))
-        self.__set_drums()
 
     def show_drum_param(self) -> str:
         return f"\nmax_volume(0.0-1.0):{self.get_volume():.2F}" \
@@ -207,12 +195,6 @@ class SimpleDrum(ProtoDrum, ABC):
         self._il1 %= (len(self._snd_l1))
         self._il2 %= (len(self._snd_l2))
         self._ibk %= (len(self._snd_bk))
-        self.__set_drums()
-
-    def __set_drums(self):
-        self._l1 = self._snd_l1[self._il1]
-        self._l2 = self._snd_l2[self._il2]
-        self._bk = self._snd_bk[self._ibk]
 
     def get_info(self):
         return f"{self.__class__.__name__} " \

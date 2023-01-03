@@ -24,14 +24,6 @@ class MidiDrum(SimpleDrum):
         if self._intensity == ProtoDrum._MUTE:
             return
 
-        pos1 = idx % self._length
-        pos2 = pos1 + len(out_data)
-        snd_list: Tuple[str, float] = self._get_sound(pos1, pos2)
-        for sound_name, volume in snd_list:
-            sound, max_volume, length = self._sounds[sound_name]
-            sound[2] = int(max_volume * volume * self._volume)
-            self._out_port.send_message(sound)
-
 
 class FakeMidiDrum(MidiDrum):
     def __init__(self, out_port):
