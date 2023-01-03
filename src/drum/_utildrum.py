@@ -1,13 +1,14 @@
 import logging
 import os
+import sys
+import wave
 from math import ceil, log10
-from typing import List, Dict, Union, Any
+from typing import List, Dict, Union, Any, Tuple
 
 import numpy as np
-import soundfile
 
 from utils.utilalsa import make_zero_buffer
-from utils.utilconfig import ENV_SD_RATE, SD_TYPE, ENV_ROOT_DIR, ConfigName, ENV_DRUM_CHANNEL
+from utils.utilconfig import ENV_SD_RATE, SD_TYPE, ENV_ROOT_DIR, ConfigName, ENV_DRUM_CHANNEL, SD_MAX
 from utils.utilnumpy import record_sound_buff
 from utils.utilother import JsonDict
 
@@ -65,9 +66,9 @@ def load_audio() -> Dict[str, np.ndarray]:
             continue
         file_name: str = os.path.join(loader.get_dir(), file_name)
         sound_volume: float = drum_sound.get("volume", 1.0)
-        (sound, _) = soundfile.read(file_name, dtype=SD_TYPE, always_2d=True)
+        (sound, _) = read_wav(file_name)
         assert sound.ndim == 2 and sound.shape[1] == 2
-        sound = (sound * sound_volume).astype(SD_TYPE)
+        sound = (sound * SD_MAX * sound_volume).astype(SD_TYPE)
         result[name] = sound
 
     return result
@@ -184,6 +185,26 @@ def midi_drum_from_string(result: Dict, sound: List[int], notes: str, accents: s
             lst = result.get(pos, list())
             lst.append(sound)
             result[pos] = lst
+
+
+def read_wav(file_name) -> Tuple[np.ndarray, int]:
+    with wave.open(file_name, "rb") as f:
+        nchannels, sampwidth, framerate, nframes, _, _ = f.getparams()
+        signed = sampwidth > 1  # 8 bit wavs are unsigned
+        byteorder = sys.byteorder  # wave module uses sys.byteorder for bytes
+
+        values = []  # e.g. for stereo, values[i] = [left_val, right_val]
+        for _ in range(nframes):
+            frame = f.readframes(1)  # read next frame
+            channel_vals = []  # mono has 1 channel, stereo 2, etc.
+            for channel in range(nchannels):
+                as_bytes = frame[channel * sampwidth: (channel + 1) * sampwidth]
+                as_int = int.from_bytes(as_bytes, byteorder, signed=signed)
+                channel_vals.append(as_int)
+            values.append(channel_vals)
+    nparray = np.array(values)
+    factor: float = 1 / (2 ** (sampwidth * 8 - 1))
+    return nparray * factor, framerate
 
 
 if __name__ == "__main__":
