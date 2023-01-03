@@ -5,7 +5,7 @@ import numpy as np
 
 from drum._utildrum import load_audio, extend_list, position_with_swing
 from drum.basedrum import SimpleDrum, ProtoDrum
-from utils.utilconfig import SD_TYPE
+from utils.utilconfig import SD_TYPE, SD_MAX
 from utils.utilnumpy import play_sound_buff
 
 
@@ -14,7 +14,7 @@ class AudioDrum(SimpleDrum):
 
     def __init__(self):
         SimpleDrum.__init__(self)
-        self._sounds = load_audio()
+        self._sounds: np.ndarray = load_audio()
         self._load_all()
 
     def drum_from_pattern(self, pattern) -> Dict[Tuple[int, int], Any]:
@@ -34,13 +34,13 @@ class AudioDrum(SimpleDrum):
         steps = len(notes)
         accents = extend_list(accents, steps)
         step_len = self._length // steps
-        sound, _, sound_len = self._sounds[sound_name]
+        sound = self._sounds[sound_name]
         for step_number in range(steps):
             if notes[step_number] == '!':
                 step_accent = int(accents[step_number])
                 pos = position_with_swing(step_number, step_len, self._swing)
-                sound = (sound * (step_accent / 9 * self._volume)).astype(SD_TYPE)
-                result[pos, pos + sound_len] = sound
+                sound2 = (sound * (step_accent / 9 * self._volume * SD_MAX)).astype(SD_TYPE)
+                result[pos, pos + len(sound2)] = sound2
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         if self._intensity == ProtoDrum._LEVEL1:

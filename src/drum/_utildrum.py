@@ -92,7 +92,7 @@ def load_midi() -> Dict[str, List[int]]:
 
 
 def load_all_patterns(directory: str, file_name: str, storage: List[Dict],
-                      sounds: Dict[str, Tuple[Any, int, int]]) -> None:
+                      sounds: Dict[str, Any]) -> None:
     storage.clear()
     loader = JsonDict(os.path.join(directory, file_name + ".json"))
     dic: Dict = loader.dict()
