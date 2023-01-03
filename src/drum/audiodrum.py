@@ -3,11 +3,10 @@ from typing import Dict, Tuple, Any
 
 import numpy as np
 
-from drum._utildrum import load_audio, extend_list, position_with_swing
 from drum._basedrum import BaseDrum
+from drum._utildrum import load_audio, extend_list, position_with_swing
 from drum.simpledrum import SimpleDrum
 from utils.utilconfig import SD_TYPE, SD_MAX
-from utils.utilnumpy import play_sound_buff
 
 
 class AudioDrum(SimpleDrum):
@@ -44,7 +43,9 @@ class AudioDrum(SimpleDrum):
                 result[pos, pos + len(sound2)] = sound2
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        if self._intensity == BaseDrum._LEVEL1:
+        if self._intensity == BaseDrum._MUTE:
+            return
+        elif self._intensity == BaseDrum._LEVEL1:
             sound_dict = self._snd_l1[self._il1]
         elif self._intensity == BaseDrum._LEVEL2:
             sound_dict = self._snd_l2[self._il2]
@@ -55,9 +56,11 @@ class AudioDrum(SimpleDrum):
 
         pos1 = idx % self._length
         pos2 = pos1 + len(out_data)
-        for x, y in [(x, y) for (x, y) in sound_dict if pos1 <= x and y > pos2]:
+        for x, y in [(x, y) for (x, y) in sound_dict if pos1 < y and pos2 > x]:
             sound = sound_dict[x, y]
-            play_sound_buff(sound, out_data, pos1 - x)
+            start = max(pos1, x)
+            stop = min(pos2, y)
+            out_data[0:stop - start] += sound[start - x:stop - x]
 
 
 if __name__ == "__main__":
