@@ -4,7 +4,7 @@ from typing import Dict, Tuple
 import numpy as np
 
 from drum._utildrum import load_midi
-from drum.basedrum import BaseDrum
+from drum._basedrum import BaseDrum
 from drum.simpledrum import SimpleDrum
 
 

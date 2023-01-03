@@ -6,7 +6,7 @@ from typing import List
 
 import utils
 from drum._utildrum import bpm_from_length
-from drum.basedrum import BaseDrum
+from drum._basedrum import BaseDrum
 from utils.utilconfig import ENV_SD_RATE, ENV_DRUM_SWING, ENV_DRUM_VOLUME
 
 

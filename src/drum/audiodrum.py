@@ -4,7 +4,7 @@ from typing import Dict, Tuple, Any
 import numpy as np
 
 from drum._utildrum import load_audio, extend_list, position_with_swing
-from drum.basedrum import BaseDrum
+from drum._basedrum import BaseDrum
 from drum.simpledrum import SimpleDrum
 from utils.utilconfig import SD_TYPE, SD_MAX
 from utils.utilnumpy import play_sound_buff
