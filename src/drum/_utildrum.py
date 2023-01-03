@@ -6,7 +6,7 @@ from typing import List, Dict, Union, Any, Tuple
 
 import numpy as np
 
-from utils.utilconfig import ENV_SD_RATE, SD_TYPE, ENV_ROOT_DIR, ConfigName, ENV_DRUM_CHANNEL, SD_MAX
+from utils.utilconfig import ENV_SD_RATE, ENV_ROOT_DIR, ConfigName, ENV_DRUM_CHANNEL
 from utils.utilother import JsonDict
 
 
@@ -49,8 +49,8 @@ def bpm_from_length(length: int) -> float:
     return 60 / (bar_seconds / 4)
 
 
-def load_audio() -> Dict[str, Tuple[np.ndarray, int, int]]:
-    """Loads WAV sounds, change volume to given value"""
+def load_audio() -> Dict[str, np.ndarray]:
+    """Loads WAV sounds, return float samples from -1 to 1"""
     path = ENV_ROOT_DIR + "/config/sounds/drum_sounds.json"
     loader = JsonDict(path)
     result = dict()
@@ -65,15 +65,13 @@ def load_audio() -> Dict[str, Tuple[np.ndarray, int, int]]:
         sound_volume: float = drum_sound.get("volume", 1.0)
         (sound, _) = read_wav(file_name)
         assert sound.ndim == 2 and sound.shape[1] == 2
-        sound = (sound * SD_MAX * sound_volume).astype(SD_TYPE)
-        max_volume: int = np.max(sound)
-        length: int = len(sound)
-        result[name] = (sound, max_volume, length)
+        sound = sound * sound_volume
+        result[name] = sound
 
     return result
 
 
-def load_midi() -> Dict[str, Tuple[List[int], int, int]]:
+def load_midi() -> Dict[str, List[int]]:
     """Loads WAV sounds, change volume to given value"""
     path = ENV_ROOT_DIR + "/config/sounds/drum_sounds.json"
     loader = JsonDict(path)
@@ -85,14 +83,10 @@ def load_midi() -> Dict[str, Tuple[List[int], int, int]]:
         msg: List[int] = drum_sound.get("midi")
         if not msg:
             continue
-        max_volume: int = 0
-        length: int = 0
         if is_midi_note(msg):
             msg[0] &= 0xF0
             msg[0] += ENV_DRUM_CHANNEL
-            max_volume = msg[2]
-
-        result[name] = (msg, max_volume, length)
+        result[name] = msg
 
     return result
 

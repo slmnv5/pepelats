@@ -27,7 +27,7 @@ class ProtoDrum(FileFinder):
         FileFinder.__init__(self, "config/drum", False, "")
         self._length: int = 0
         self._bpm: float = 0
-        self._sounds: Dict[str, Tuple[Any, int, int]] = dict()
+        self._sounds: Dict[str, Any] = dict()
         self._ptn_l1: List[Dict[str, Any]] = []
         self._ptn_l2: List[Dict[str, Any]] = []
         self._ptn_bk: List[Dict[str, Any]] = []
