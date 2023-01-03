@@ -4,7 +4,7 @@ import sounddevice as sd
 
 from buffer._oneloopctrl import OneLoopCtrl
 from buffer._wrapbuffer import WrapBuffer
-from drum.basedrum import SimpleDrum
+from drum.simpledrum import SimpleDrum
 from utils.utilconfig import MAX_LEN
 
 

@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from threading import Event, Timer
 
-from drum.basedrum import SimpleDrum
+from drum.simpledrum import SimpleDrum
 from utils.utilconfig import MAX_32_INT, ENV_SD_RATE
 
 

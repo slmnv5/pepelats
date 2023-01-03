@@ -4,7 +4,8 @@ from typing import Dict, Tuple
 import numpy as np
 
 from drum._utildrum import load_midi
-from drum.basedrum import SimpleDrum, ProtoDrum
+from drum.basedrum import BaseDrum
+from drum.simpledrum import SimpleDrum
 
 
 class MidiDrum(SimpleDrum):
@@ -21,7 +22,7 @@ class MidiDrum(SimpleDrum):
         return dict()
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        if self._intensity == ProtoDrum._MUTE:
+        if self._intensity == BaseDrum._MUTE:
             return
 
 

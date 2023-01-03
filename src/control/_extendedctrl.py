@@ -7,8 +7,8 @@ from multiprocessing.connection import Connection
 import utils.utilconfig
 from control._manyloopctrl import ManyLoopCtrl
 from drum.audiodrum import AudioDrum
-from drum.basedrum import SimpleDrum
 from drum.mididrum import MidiDrum, FakeMidiDrum
+from drum.simpledrum import SimpleDrum
 from song import SongPart
 from utils.msgprocessor import MsgProcessor
 from utils.utilalsa import get_midi_out

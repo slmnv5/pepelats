@@ -4,7 +4,8 @@ from typing import Dict, Tuple, Any
 import numpy as np
 
 from drum._utildrum import load_audio, extend_list, position_with_swing
-from drum.basedrum import SimpleDrum, ProtoDrum
+from drum.basedrum import BaseDrum
+from drum.simpledrum import SimpleDrum
 from utils.utilconfig import SD_TYPE, SD_MAX
 from utils.utilnumpy import play_sound_buff
 
@@ -14,7 +15,7 @@ class AudioDrum(SimpleDrum):
 
     def __init__(self):
         SimpleDrum.__init__(self)
-        self._sounds: np.ndarray = load_audio()
+        self._sounds: Dict[str, np.ndarray] = load_audio()
         self._load_all()
 
     def drum_from_pattern(self, pattern) -> Dict[Tuple[int, int], Any]:
@@ -43,11 +44,11 @@ class AudioDrum(SimpleDrum):
                 result[pos, pos + len(sound2)] = sound2
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        if self._intensity == ProtoDrum._LEVEL1:
+        if self._intensity == BaseDrum._LEVEL1:
             sound_dict = self._snd_l1[self._il1]
-        elif self._intensity == ProtoDrum._LEVEL2:
+        elif self._intensity == BaseDrum._LEVEL2:
             sound_dict = self._snd_l2[self._il2]
-        elif self._intensity == ProtoDrum._BREAK:
+        elif self._intensity == BaseDrum._BREAK:
             sound_dict = self._snd_bk[self._ibk]
         else:
             return

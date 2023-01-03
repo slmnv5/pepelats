@@ -2,7 +2,7 @@ import os
 import sys
 import wave
 from math import ceil, log10
-from typing import List, Dict, Union, Any, Tuple
+from typing import List, Dict, Union, Tuple
 
 import numpy as np
 
@@ -91,8 +91,7 @@ def load_midi() -> Dict[str, List[int]]:
     return result
 
 
-def load_all_patterns(directory: str, file_name: str, storage: List[Dict],
-                      sounds: Dict[str, Any]) -> None:
+def load_all_patterns(directory: str, file_name: str, storage: List[Dict]) -> None:
     storage.clear()
     loader = JsonDict(os.path.join(directory, file_name + ".json"))
     dic: Dict = loader.dict()
@@ -106,9 +105,6 @@ def load_all_patterns(directory: str, file_name: str, storage: List[Dict],
         assert isinstance(steps, int) and steps >= 0
         accents = pattern.get("accents", "5")
         assert isinstance(accents, str) and len(accents) > 0
-        for sound_name in [x for x in pattern if x not in sounds]:
-            pattern.pop(sound_name)
-
         pattern["accents"] = accents
         pattern["name"] = key
         pattern["steps"] = steps

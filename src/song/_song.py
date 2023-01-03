@@ -3,7 +3,7 @@ import pickle
 from abc import abstractmethod
 
 from buffer import OneLoopCtrl
-from drum.basedrum import SimpleDrum
+from drum.simpledrum import SimpleDrum
 from song._songpart import SongPart
 from utils.utilname import generate_name
 from utils.utilother import FileFinder, CollectionOwnerExt

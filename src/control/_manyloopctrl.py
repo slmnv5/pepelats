@@ -2,7 +2,7 @@ from threading import Thread, Event
 
 from buffer import LoopSimple
 from buffer import OneLoopCtrl
-from drum.basedrum import SimpleDrum
+from drum.simpledrum import SimpleDrum
 from song import Song
 from song import SongPart
 from utils.utilconfig import MAX_LEN
