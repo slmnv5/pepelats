@@ -3,7 +3,7 @@ import random
 from abc import ABC
 from abc import abstractmethod
 from threading import Timer
-from typing import Dict, Any
+from typing import Dict, Any, Tuple
 from typing import List
 
 import numpy as np
@@ -43,7 +43,6 @@ class ProtoDrum(FileFinder):
     def get_length(self) -> int:
         return self._length
 
-    @abstractmethod
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         pass
 
@@ -116,7 +115,9 @@ class SimpleDrum(ProtoDrum, ABC):
         self._max_volume: float = 0.0  # from 0 to 1
         self._snd_l1 = self._snd_l2 = self._snd_bk = []
         self._l1 = self._l2 = self._bk = []
-        self._il1 = self._il2 = self._ibk = 0
+        self._il1: int = 0
+        self._il2: int = 0
+        self._ibk: int = 0
 
     def prepare_drum(self, length: int) -> None:
         if not length:
@@ -133,8 +134,20 @@ class SimpleDrum(ProtoDrum, ABC):
         self._intensity = ProtoDrum._LEVEL1
         self._bpm = bpm_from_length(length)
 
-    def _prepare_one(self, pattern) -> Any:
+    def _prepare_one(self, pattern) -> Dict[int, List[Tuple[str, float]]]:
         pass
+
+    def _get_sound(self, pos1: int, pos2: int) -> List[Tuple[str, float]]:
+        if self._intensity == ProtoDrum._LEVEL1:
+            snd = self._snd_l1[self._il1]
+        elif self._intensity == ProtoDrum._LEVEL2:
+            snd = self._snd_l2[self._il2]
+        elif self._intensity == ProtoDrum._BREAK:
+            snd = self._snd_bk[self._ibk]
+        else:
+            return []
+
+        return [snd[x] for x in snd if pos1 <= x < pos2]
 
     def change_volume(self, change_factor: float) -> None:
         self._volume = round(self._volume * change_factor, 2)
