@@ -4,7 +4,7 @@ from typing import List
 
 import numpy as np
 
-from drum._utildrum import load_midi, drum_from_pattern
+from drum._utildrum import load_midi
 from drum.basedrum import SimpleDrum, ProtoDrum
 
 
@@ -13,21 +13,16 @@ class MidiDrum(SimpleDrum):
 
     def __init__(self, out_port):
         SimpleDrum.__init__(self)
-        self._sounds: Dict[str, List[int]] = load_midi()
+        self._sounds = load_midi()
         self._load_all()
         self._out_port = out_port
 
-    def get_max_volume(self) -> float:
-        return round(self._max_volume / 127, 2)
+    def get_volume(self) -> float:
+        return 0.111111111111
 
-    def _prepare_one(self, pattern) -> Dict[int, List[Tuple[str, float]]]:
+    def drum_from_pattern(self, pattern) -> Dict[int, List[Tuple[str, float]]]:
         logging.debug(f"Preapring pattern: {pattern}")
-        result = drum_from_pattern(pattern, self._sounds, self._length, self._swing)
-        for lst in result.values():
-            for note in lst:
-                self._max_volume = max(note[2], self._max_volume)
-
-        return result
+        return dict()
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         if self._intensity == ProtoDrum._MUTE:
@@ -37,8 +32,8 @@ class MidiDrum(SimpleDrum):
         pos2 = pos1 + len(out_data)
         snd_list: List[Tuple[str, float]] = self._get_sound(pos1, pos2)
         for sound_name, volume in snd_list:
-            sound = self._sounds[sound_name]
-            sound[2] = int(127 * volume * self._volume)
+            sound, max_volume, length = self._sounds[sound_name]
+            sound[2] = int(max_volume * volume * self._volume)
             self._out_port.send_message(sound)
 
 

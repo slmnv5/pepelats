@@ -49,7 +49,7 @@ def bpm_from_length(length: int) -> float:
     return 60 / (bar_seconds / 4)
 
 
-def load_audio() -> Dict[str, np.ndarray]:
+def load_audio() -> Dict[str, Tuple[np.ndarray, int, int]]:
     """Loads WAV sounds, change volume to given value"""
     path = ENV_ROOT_DIR + "/config/sounds/drum_sounds.json"
     loader = JsonDict(path)
@@ -66,12 +66,14 @@ def load_audio() -> Dict[str, np.ndarray]:
         (sound, _) = read_wav(file_name)
         assert sound.ndim == 2 and sound.shape[1] == 2
         sound = (sound * SD_MAX * sound_volume).astype(SD_TYPE)
-        result[name] = sound
+        max_volume: int = np.max(sound)
+        length: int = len(sound)
+        result[name] = (sound, max_volume, length)
 
     return result
 
 
-def load_midi() -> Dict[str, List[int]]:
+def load_midi() -> Dict[str, Tuple[List[int], int, int]]:
     """Loads WAV sounds, change volume to given value"""
     path = ENV_ROOT_DIR + "/config/sounds/drum_sounds.json"
     loader = JsonDict(path)
@@ -83,16 +85,20 @@ def load_midi() -> Dict[str, List[int]]:
         msg: List[int] = drum_sound.get("midi")
         if not msg:
             continue
+        max_volume: int = 0
+        length: int = 0
         if is_midi_note(msg):
             msg[0] &= 0xF0
             msg[0] += ENV_DRUM_CHANNEL
+            max_volume = msg[2]
 
-        result[name] = msg
+        result[name] = (msg, max_volume, length)
 
     return result
 
 
-def load_all_patterns(directory: str, file_name: str, storage: List[Dict], sounds: Dict[str, np.ndarray]) -> None:
+def load_all_patterns(directory: str, file_name: str, storage: List[Dict],
+                      sounds: Dict[str, Tuple[Any, int, int]]) -> None:
     storage.clear()
     loader = JsonDict(os.path.join(directory, file_name + ".json"))
     dic: Dict = loader.dict()
@@ -113,19 +119,6 @@ def load_all_patterns(directory: str, file_name: str, storage: List[Dict], sound
         pattern["name"] = key
         pattern["steps"] = steps
         storage.append(pattern)
-
-
-def drum_from_pattern(pattern: Dict[str, Any], sounds: Dict[str, Any],
-                      length: int, swing: float) -> Dict[int, List[Tuple[str, float]]]:
-    steps = pattern["steps"]
-    accents = pattern["accents"]
-    result: Dict[int, List[Tuple[str, float]]] = dict()
-    for sound_name in [x for x in sounds if x in pattern]:
-        notes = pattern[sound_name]
-        notes = extend_list(notes, steps) if steps else notes
-        drum_from_string(result, sound_name, notes, accents, length, swing)
-
-    return result
 
 
 def drum_from_string(result: Dict, sound_name: str, notes: str, accents: str,

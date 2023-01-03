@@ -27,7 +27,7 @@ class ProtoDrum(FileFinder):
         FileFinder.__init__(self, "config/drum", False, "")
         self._length: int = 0
         self._bpm: float = 0
-        self._sounds: Dict = dict()
+        self._sounds: Dict[str, Tuple[Any, int, int]] = dict()
         self._ptn_l1: List[Dict[str, Any]] = []
         self._ptn_l2: List[Dict[str, Any]] = []
         self._ptn_bk: List[Dict[str, Any]] = []
@@ -112,42 +112,42 @@ class SimpleDrum(ProtoDrum, ABC):
         ProtoDrum.__init__(self)
         self._swing: float = ENV_DRUM_SWING
         self._volume: float = ENV_DRUM_VOLUME
-        self._max_volume: float = 0.0  # from 0 to 1
         self._snd_l1 = self._snd_l2 = self._snd_bk = []
         self._l1 = self._l2 = self._bk = []
         self._il1: int = 0
         self._il2: int = 0
         self._ibk: int = 0
 
+    @abstractmethod
+    def drum_from_pattern(self, pattern) -> Dict[int, List[Tuple[str, float]]]:
+        """ return dict: sample number -> drum_name, pattern_step_volume """
+        pass
+
     def prepare_drum(self, length: int) -> None:
         if not length:
             return
-        self._max_volume = 0
         self._length = length
         self._intensity = ProtoDrum._MUTE  # keep it until sound load is done
         self._bpm = bpm_from_length(length)
-        self._snd_l1 = [self._prepare_one(p) for p in self._ptn_l1]
-        self._snd_l2 = [self._prepare_one(p) for p in self._ptn_l2]
-        self._snd_bk = [self._prepare_one(p) for p in self._ptn_bk]
+        self._snd_l1 = [self.drum_from_pattern(p) for p in self._ptn_l1]
+        self._snd_l2 = [self.drum_from_pattern(p) for p in self._ptn_l2]
+        self._snd_bk = [self.drum_from_pattern(p) for p in self._ptn_bk]
         self._l1 = self._l2 = self._bk = self._snd_l1[0]
         self._length = length
         self._intensity = ProtoDrum._LEVEL1
         self._bpm = bpm_from_length(length)
 
-    def _prepare_one(self, pattern) -> Dict[int, List[Tuple[str, float]]]:
-        pass
-
     def _get_sound(self, pos1: int, pos2: int) -> List[Tuple[str, float]]:
         if self._intensity == ProtoDrum._LEVEL1:
-            snd = self._snd_l1[self._il1]
+            sound_list = self._snd_l1[self._il1]
         elif self._intensity == ProtoDrum._LEVEL2:
-            snd = self._snd_l2[self._il2]
+            sound_list = self._snd_l2[self._il2]
         elif self._intensity == ProtoDrum._BREAK:
-            snd = self._snd_bk[self._ibk]
+            sound_list = self._snd_bk[self._ibk]
         else:
             return []
 
-        return [snd[x] for x in snd if pos1 <= x < pos2]
+        return [sound_list[x] for x in sound_list if pos1 <= x < pos2]
 
     def change_volume(self, change_factor: float) -> None:
         self._volume = round(self._volume * change_factor, 2)
@@ -185,7 +185,7 @@ class SimpleDrum(ProtoDrum, ABC):
         self.__set_drums()
 
     def show_drum_param(self) -> str:
-        return f"\nmax_volume(0.0-1.0):{self.get_max_volume():.2F}" \
+        return f"\nmax_volume(0.0-1.0):{self.get_volume():.2F}" \
                f"\nswing(0.5-0.75):{self._swing:.2F}" \
                f"\n{str(self)} int: {self._intensity}" \
                f"\nindex: {self._il1}/{len(self._snd_l1)}  " \
@@ -194,10 +194,6 @@ class SimpleDrum(ProtoDrum, ABC):
 
     def get_volume(self) -> float:
         return self._volume
-
-    @abstractmethod
-    def get_max_volume(self) -> float:
-        pass
 
     def get_swing(self) -> float:
         return self._swing
