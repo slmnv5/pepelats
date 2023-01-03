@@ -10,7 +10,7 @@ import numpy as np
 
 import utils
 from drum._utildrum import load_all_patterns, bpm_from_length
-from utils.utilconfig import ENV_SD_RATE, ENV_DRUM_VOLUME, ENV_DRUM_SWING
+from utils.utilconfig import ENV_SD_RATE, ENV_DRUM_SWING, ENV_DRUM_VOLUME
 from utils.utilother import FileFinder
 
 
