@@ -4,7 +4,7 @@ from typing import Dict, List, Tuple
 import numpy as np
 
 from drum._utildrum import load_audio, drum_from_pattern
-from drum.basedrum import SimpleDrum
+from drum.basedrum import SimpleDrum, ProtoDrum
 from utils.utilconfig import SD_MAX
 from utils.utilnumpy import play_sound_buff
 
@@ -27,9 +27,12 @@ class AudioDrum(SimpleDrum):
         return round(self._max_volume / SD_MAX, 2)
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
+        if self._intensity == ProtoDrum._MUTE:
+            return
+
         pos1 = idx % self._length
         pos2 = pos1 + len(out_data)
-        snd_list = self._get_sound(pos1, pos2)
+        snd_list: List[Tuple[str, float]] = self._get_sound(pos1, pos2)
         for sound_name, volume in snd_list:
             sound = self._sounds[sound_name]
             play_sound_buff(sound, out_data, pos1)
