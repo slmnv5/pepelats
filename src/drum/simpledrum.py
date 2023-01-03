@@ -4,9 +4,11 @@ from abc import abstractmethod
 from typing import Dict, Any, Tuple
 from typing import List
 
+import numpy as np
+
 import utils
-from drum._utildrum import bpm_from_length
 from drum._basedrum import BaseDrum
+from drum._utildrum import bpm_from_length
 from utils.utilconfig import ENV_SD_RATE, ENV_DRUM_SWING, ENV_DRUM_VOLUME
 
 
@@ -24,6 +26,20 @@ class SimpleDrum(BaseDrum, ABC):
         self._il1: int = 0
         self._il2: int = 0
         self._ibk: int = 0
+
+    @abstractmethod
+    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
+        pass
+
+    def get_sound_dict(self) -> Dict[Tuple[int, int], Any]:
+        if self._intensity == BaseDrum._LEVEL1:
+            return self._snd_l1[self._il1]
+        elif self._intensity == BaseDrum._LEVEL2:
+            return self._snd_l2[self._il2]
+        elif self._intensity == BaseDrum._BREAK:
+            return self._snd_bk[self._ibk]
+        else:
+            return dict()
 
     @abstractmethod
     def drum_from_pattern(self, pattern) -> Dict[Tuple[int, int], Any]:

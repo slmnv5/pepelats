@@ -1,10 +1,7 @@
 import logging
-from abc import abstractmethod
 from threading import Timer
 from typing import Dict, Any
 from typing import List
-
-import numpy as np
 
 from drum._utildrum import load_all_patterns
 from utils.utilconfig import ENV_SD_RATE
@@ -38,13 +35,6 @@ class BaseDrum(FileFinder):
 
     def get_length(self) -> int:
         return self._length
-
-    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        pass
-
-    @abstractmethod
-    def prepare_drum(self, length: int) -> None:
-        pass
 
     def _randomize(self):
         pass
