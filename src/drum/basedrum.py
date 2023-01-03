@@ -119,7 +119,7 @@ class SimpleDrum(ProtoDrum, ABC):
         self._ibk: int = 0
 
     @abstractmethod
-    def drum_from_pattern(self, pattern) -> Dict[int, List[Tuple[str, float]]]:
+    def drum_from_pattern(self, pattern) -> Dict[Tuple[int, int], Tuple[str, float]]:
         """ return dict: sample number -> drum_name, pattern_step_volume """
         pass
 
@@ -137,7 +137,7 @@ class SimpleDrum(ProtoDrum, ABC):
         self._intensity = ProtoDrum._LEVEL1
         self._bpm = bpm_from_length(length)
 
-    def _get_sound(self, pos1: int, pos2: int) -> List[Tuple[str, float]]:
+    def _get_sound(self, pos1: int, pos2: int) -> Tuple[str, float]:
         if self._intensity == ProtoDrum._LEVEL1:
             sound_list = self._snd_l1[self._il1]
         elif self._intensity == ProtoDrum._LEVEL2:
@@ -145,7 +145,7 @@ class SimpleDrum(ProtoDrum, ABC):
         elif self._intensity == ProtoDrum._BREAK:
             sound_list = self._snd_bk[self._ibk]
         else:
-            return []
+            return "", 0
 
         return [sound_list[x] for x in sound_list if pos1 <= x < pos2]
 

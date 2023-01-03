@@ -1,6 +1,5 @@
 import logging
 from typing import Dict, Tuple
-from typing import List
 
 import numpy as np
 
@@ -17,10 +16,7 @@ class MidiDrum(SimpleDrum):
         self._load_all()
         self._out_port = out_port
 
-    def get_volume(self) -> float:
-        return 0.111111111111
-
-    def drum_from_pattern(self, pattern) -> Dict[int, List[Tuple[str, float]]]:
+    def drum_from_pattern(self, pattern) -> Dict[int, Tuple[str, float]]:
         logging.debug(f"Preapring pattern: {pattern}")
         return dict()
 
@@ -30,7 +26,7 @@ class MidiDrum(SimpleDrum):
 
         pos1 = idx % self._length
         pos2 = pos1 + len(out_data)
-        snd_list: List[Tuple[str, float]] = self._get_sound(pos1, pos2)
+        snd_list: Tuple[str, float] = self._get_sound(pos1, pos2)
         for sound_name, volume in snd_list:
             sound, max_volume, length = self._sounds[sound_name]
             sound[2] = int(max_volume * volume * self._volume)

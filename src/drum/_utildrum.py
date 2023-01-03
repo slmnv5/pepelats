@@ -121,22 +121,6 @@ def load_all_patterns(directory: str, file_name: str, storage: List[Dict],
         storage.append(pattern)
 
 
-def drum_from_string(result: Dict, sound_name: str, notes: str, accents: str,
-                     length, swing: float) -> None:
-    assert notes.count("!") + notes.count(".") == len(notes), f"Pattern symbol must be '.' or '!'"
-    steps = len(notes)
-    accents = extend_list(accents, steps)
-    step_len = length // steps
-    for step_number in range(steps):
-        if notes[step_number] == '!':
-            step_accent = int(accents[step_number])
-            step_volume = step_accent / 9
-            pos = position_with_swing(step_number, step_len, swing)
-            lst = result.get(pos, list())
-            lst.append((sound_name, step_volume))
-            result[pos] = lst
-
-
 def read_wav(file_name) -> Tuple[np.ndarray, int]:
     with wave.open(file_name, "rb") as f:
         nchannels, sampwidth, framerate, nframes, _, _ = f.getparams()
