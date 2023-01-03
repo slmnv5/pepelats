@@ -3,7 +3,6 @@ import os
 import traceback
 # noinspection PyProtectedMember
 from multiprocessing.connection import Connection
-from typing import Dict, Any
 
 import utils.utilconfig
 from control._manyloopctrl import ManyLoopCtrl
@@ -13,7 +12,7 @@ from drum.mididrum import MidiDrum, FakeMidiDrum
 from song import SongPart
 from utils.msgprocessor import MsgProcessor
 from utils.utilalsa import get_midi_out
-from utils.utilconfig import ENV_SD_RATE, save_config, ConfigName
+from utils.utilconfig import ENV_SD_RATE, save_config
 from utils.utilother import DrawInfo
 
 
@@ -84,12 +83,9 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         os.system(f"timeout {sec}")
         os.system(f"sleep {sec}")
 
-    def _restart_looper(self) -> None:
-        var_dict: Dict[str, Any] = dict()
-        var_dict[ConfigName.drum_swing] = self.__audio_drum.get_swing()
-        var_dict[ConfigName.audio_drum_volume] = self.__audio_drum.get_volume()
-        var_dict[ConfigName.midi_drum_volume] = self.__midi_drum.get_volume()
-        save_config(var_dict)
+    @staticmethod
+    def _restart_looper() -> None:
+        save_config()
         os.system("killall -9 python")
 
     @staticmethod

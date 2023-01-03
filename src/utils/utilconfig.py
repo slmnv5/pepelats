@@ -15,6 +15,8 @@ ENV_USB_AUDIO_NAMES: str = os.getenv("ENV_USB_AUDIO_NAMES", "USB Audio")
 ENV_MIDI_IN_PORT = os.getenv('ENV_MIDI_IN_PORT', None)
 ENV_MIDI_OUT_PORT = os.getenv('ENV_MIDI_OUT_PORT', None)
 ENV_USE_TEXT = os.getenv('ENV_USE_TEXT', "")
+ENV_DRUM_SWING = float(os.getenv('ENV_DRUM_SWING', "0.75"))
+ENV_DRUM_VOLUME = float(os.getenv('ENV_DRUM_VOLUME', "0.7"))
 
 LEVEL_DEBUG = "--debug" in sys.argv or "--info" in sys.argv or os.name != "posix"
 SD_TYPE: str = 'int16'
@@ -37,11 +39,6 @@ class ConfigName:
 
     # redraw related methods
     send_redraw: str = "_send_redraw"
-
-    # drum
-    drum_swing: str = "DRUM_SWING"
-    audio_drum_volume: str = "AUDIO_DRUM_VOLUME"
-    midi_drum_volume: str = "MIDI_DRUM_VOLUME"
 
 
 def save_config(var_dict: Dict[str, Any] = None) -> None:

@@ -1,5 +1,4 @@
 import logging
-import os
 import random
 from abc import ABC
 from abc import abstractmethod
@@ -9,8 +8,9 @@ from typing import List
 
 import numpy as np
 
+import utils
 from drum._utildrum import load_all_patterns, bpm_from_length
-from utils.utilconfig import ENV_SD_RATE, ConfigName
+from utils.utilconfig import ENV_SD_RATE, ENV_DRUM_VOLUME, ENV_DRUM_SWING
 from utils.utilother import FileFinder
 
 
@@ -111,8 +111,8 @@ class SimpleDrum(ProtoDrum, ABC):
 
     def __init__(self):
         ProtoDrum.__init__(self)
-        self._swing: float = float(os.getenv(ConfigName.drum_swing, "0.75"))
-        self._volume: float = 0.75  # from 0 to 1
+        self._swing: float = ENV_DRUM_SWING
+        self._volume: float = ENV_DRUM_VOLUME
         self._max_volume: float = 0.0  # from 0 to 1
         self._snd_l1 = self._snd_l2 = self._snd_bk = []
         self._l1 = self._l2 = self._bk = []
@@ -140,6 +140,7 @@ class SimpleDrum(ProtoDrum, ABC):
         self._volume = round(self._volume * change_factor, 2)
         self._volume = min(1.0, self._volume)
         self._volume = max(0.05, self._volume)
+        utils.utilconfig.ENV_DRUM_VOLUME = self._volume
         self.prepare_drum(self._length)
 
     def change_swing(self, change_by: float) -> None:
@@ -148,6 +149,7 @@ class SimpleDrum(ProtoDrum, ABC):
             self._swing = 0.5
         elif self._swing < 0.5:
             self._swing = 0.75
+        utils.utilconfig.ENV_DRUM_SWING = self._swing
         self.prepare_drum(self._length)
 
     def change_intensity(self, change_by: int) -> None:

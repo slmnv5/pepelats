@@ -1,12 +1,11 @@
 import logging
-import os
 from typing import Dict, Any
 
 import numpy as np
 
 from drum._utildrum import load_audio, audio_drum_from_pattern
 from drum.basedrum import ProtoDrum, SimpleDrum
-from utils.utilconfig import SD_MAX, ConfigName
+from utils.utilconfig import SD_MAX
 from utils.utilnumpy import play_sound_buff
 
 
@@ -15,8 +14,6 @@ class AudioDrum(SimpleDrum):
 
     def __init__(self):
         SimpleDrum.__init__(self)
-        self._volume = float(os.getenv(ConfigName.audio_drum_volume, "0.75"))
-
         self._sounds: Dict[str, np.ndarray] = load_audio()
         self._load_all()
 
