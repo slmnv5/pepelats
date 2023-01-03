@@ -65,7 +65,7 @@ def load_audio() -> Dict[str, np.ndarray]:
             continue
         file_name: str = os.path.join(loader.get_dir(), file_name)
         sound_volume: float = drum_sound.get("volume", 1.0)
-        (sound, _) = soundfile.read(file_name, dtype="int16", always_2d=True)
+        (sound, _) = soundfile.read(file_name, always_2d=True)
         assert sound.ndim == 2 and sound.shape[1] == 2
         sound = (sound * sound_volume).astype(SD_TYPE)
         result[name] = sound
