@@ -100,8 +100,8 @@ class WrapBuffer:
         new_buff = make_zero_buffer(rec_len)
         play_sound_buff(self.__buff, new_buff, self.__start)
         # align start with main loop if not started from zero
-        offset: int = self.__start % trim_len
-        if offset:
+        if self.__start:
+            offset: int = self.__start % trim_len
             offset = trim_len - offset
             self.__buff = np.concatenate((new_buff[offset:], new_buff[:offset]), axis=0)
         else:
