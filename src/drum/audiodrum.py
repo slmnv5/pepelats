@@ -43,6 +43,8 @@ class AudioDrum(SimpleDrum):
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         sound_dict = self.get_sound_dict()
+        if not sound_dict:
+            return
         pos1 = idx % self._length
         pos2 = pos1 + len(out_data)
         for x, y in [(x, y) for (x, y) in sound_dict if pos1 < y and pos2 >= x]:
