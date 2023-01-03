@@ -53,6 +53,8 @@ def save_config(var_dict: Dict[str, Any] = None) -> None:
         f.write(f"export ENV_MIDI_IN_PORT='{ENV_MIDI_IN_PORT}'\n")
         f.write(f"export ENV_MIDI_OUT_PORT='{ENV_MIDI_OUT_PORT}'\n")
         f.write(f"export ENV_USE_TEXT='{ENV_USE_TEXT}'\n")
+        f.write(f"export ENV_DRUM_VOLUME='{ENV_DRUM_VOLUME}'\n")
+        f.write(f"export ENV_DRUM_SWING='{ENV_DRUM_SWING}'\n")
 
     if not var_dict:
         return
