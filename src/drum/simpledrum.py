@@ -111,9 +111,9 @@ class SimpleDrum(BaseDrum, ABC):
     def _randomize(self):
         if not self._length:
             return
-        self._il1 += random.randint(1, len(self._snd_l1) - 1)
-        self._il2 += random.randint(1, len(self._snd_l2) - 1)
-        self._ibk += random.randint(1, len(self._snd_bk) - 1)
+        self._il1 += random.randrange(len(self._snd_l1))
+        self._il2 += random.randrange(len(self._snd_l2))
+        self._ibk += random.randrange(len(self._snd_bk))
         self._il1 %= (len(self._snd_l1))
         self._il2 %= (len(self._snd_l2))
         self._ibk %= (len(self._snd_bk))

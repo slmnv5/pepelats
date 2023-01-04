@@ -46,11 +46,16 @@ class AudioDrum(SimpleDrum):
         if not sound_dict:
             return
         pos1 = idx % self._length
-        pos2 = pos1 + len(out_data)
+        len_data = len(out_data)
+        pos2 = pos1 + len_data
         for x, y in [(x, y) for (x, y) in sound_dict if pos1 < y and pos2 >= x]:
             sound = sound_dict[x, y]
             start = max(pos1, x)
             stop = min(pos2, y)
+            assert stop - start <= len_data, f"{len_data}  {stop - start}"
+            assert start - x >= 0, f"{start - x}"
+            assert stop - x <= len(sound), f"{stop - x} {len(sound)}"
+
             out_data[0:stop - start] += sound[start - x:stop - x]
 
 
