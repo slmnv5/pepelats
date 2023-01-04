@@ -37,7 +37,7 @@ stty -echo
 while true; do
   killall -s 9 -w -v python
   . "$CONFIG_FILE"
-  sleep 10
+  sleep 2
   $PYTHON_CMD
 done
 
