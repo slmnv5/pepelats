@@ -39,6 +39,13 @@ class BaseDrum(FileFinder):
     def _randomize(self):
         pass
 
+    def _char2float(self, char: str) -> float:
+        try:
+            ch = "9" if char[0] == "!" else char[0]
+            return int(ch) / 9.0
+        except (ValueError, IndexError):
+            return 0.0
+
     def _load_all(self) -> None:
         directory: str = self.get_full_name()
         lst1 = ["drum_level1", "drum_level2", "drum_break"]
