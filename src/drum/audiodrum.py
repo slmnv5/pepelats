@@ -1,5 +1,4 @@
 import logging
-from random import random
 from typing import Dict, Any, Tuple, List
 
 import numpy as np
@@ -53,19 +52,10 @@ class AudioDrum(SimpleDrum):
                 if step_prob:
                     result.append((pos, step_prob, sound2))
 
-    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        sound_dict = self.get_sound_dict()
-        if not sound_dict:
-            return
-
-        position = idx % self._length
-        data_len = len(out_data)
-        for x, prob, sound in [tuple3 for tuple3 in sound_dict if position <= tuple3[0] < position + data_len]:
-            if random() < prob:
-                record_sound_buff(self.__buff, sound, position)
-
+    def _play_sample(self, sound: Any, position: int, out_data: np.ndarray) -> None:
+        record_sound_buff(self.__buff, sound, position)
         play_sound_buff(self.__buff, out_data, position)
-        zero_sound_buff(self.__buff, data_len, position)
+        zero_sound_buff(self.__buff, len(out_data), position)
 
 
 if __name__ == "__main__":

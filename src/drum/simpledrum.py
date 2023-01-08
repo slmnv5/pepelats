@@ -1,7 +1,7 @@
 import logging
-import random
 from abc import ABC
 from abc import abstractmethod
+from random import random, randrange
 from typing import Any, Tuple
 from typing import List
 
@@ -19,6 +19,7 @@ class SimpleDrum(BaseDrum, ABC):
 
     def __init__(self):
         BaseDrum.__init__(self)
+        self.__step: int = 0
         self._swing: float = ENV_DRUM_SWING
         self._volume: float = ENV_DRUM_VOLUME
         self._snd_l1: List[List[Tuple[int, float, Any]]] = list()
@@ -28,8 +29,24 @@ class SimpleDrum(BaseDrum, ABC):
         self._il2: int = 0
         self._ibk: int = 0
 
-    @abstractmethod
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
+        sound_dict = self.get_sound_dict()
+        if not sound_dict:
+            return
+
+        position = idx % self._length
+        if not position:
+            self.__step = 0
+
+        position2 = position + len(out_data)
+        for x, prob, sound in [tuple3 for tuple3 in sound_dict[self.__step:]
+                               if position <= tuple3[0] < position2]:
+            self.__step += 1
+            if random() > prob:
+                self._play_sample(sound, position, out_data)
+
+    @abstractmethod
+    def _play_sample(self, sound: Any, position: int, out_data: np.ndarray) -> None:
         pass
 
     def get_sound_dict(self) -> List[Tuple[int, float, Any]]:
@@ -113,9 +130,9 @@ class SimpleDrum(BaseDrum, ABC):
     def _randomize(self):
         if not self._length:
             return
-        self._il1 += random.randrange(len(self._snd_l1))
-        self._il2 += random.randrange(len(self._snd_l2))
-        self._ibk += random.randrange(len(self._snd_bk))
+        self._il1 += randrange(len(self._snd_l1))
+        self._il2 += randrange(len(self._snd_l2))
+        self._ibk += randrange(len(self._snd_bk))
         self._il1 %= (len(self._snd_l1))
         self._il2 %= (len(self._snd_l2))
         self._ibk %= (len(self._snd_bk))
