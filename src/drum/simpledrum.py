@@ -1,7 +1,7 @@
 import logging
+import random
 from abc import ABC
 from abc import abstractmethod
-from random import randrange
 from typing import Any, Tuple
 from typing import List
 
@@ -19,7 +19,6 @@ class SimpleDrum(BaseDrum, ABC):
 
     def __init__(self):
         BaseDrum.__init__(self)
-        self.__step: int = 0
         self._swing: float = ENV_DRUM_SWING
         self._volume: float = ENV_DRUM_VOLUME
         self._snd_l1: List[List[Tuple[int, float, Any]]] = list()
@@ -29,22 +28,8 @@ class SimpleDrum(BaseDrum, ABC):
         self._il2: int = 0
         self._ibk: int = 0
 
-    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        sound_dict = self.get_sound_dict()
-        if not sound_dict:
-            return
-
-        position = idx % self._length
-        if not position:
-            self.__step = 0
-
-        position2 = position + len(out_data)
-        for _, step_prob, sound in [tuple3 for tuple3 in sound_dict if position <= tuple3[0] < position2]:
-            self.__step += 1
-            self._play_sample(step_prob, sound, out_data, position)
-
     @abstractmethod
-    def _play_sample(self, step_prob: float, sound: Any, out_data: np.ndarray, position: int) -> None:
+    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         pass
 
     def get_sound_dict(self) -> List[Tuple[int, float, Any]]:
@@ -55,7 +40,7 @@ class SimpleDrum(BaseDrum, ABC):
         elif self._intensity == BaseDrum._BREAK:
             return self._snd_bk[self._ibk]
         else:
-            return BaseDrum._EMPTY_DRUMS
+            return []
 
     @abstractmethod
     def drum_from_pattern(self, pattern) -> List[Tuple[int, float, Any]]:
@@ -100,17 +85,6 @@ class SimpleDrum(BaseDrum, ABC):
         self._intensity += change_by
         self._intensity %= (BaseDrum._BREAK + 1)
 
-    def change_index(self, change_by: int) -> None:
-        if not self._length:
-            return
-        change_by = (1 if change_by > 0 else -1)
-        self._il1 += change_by
-        self._il2 += change_by
-        self._ibk += change_by
-        self._il1 %= (len(self._snd_l1))
-        self._il2 %= (len(self._snd_l2))
-        self._ibk %= (len(self._snd_bk))
-
     def show_drum_param(self) -> str:
         return f"\nmax_volume(0.0-1.0):{self.get_volume():.2F}" \
                f"\nswing(0.5-0.75):{self._swing:.2F}" \
@@ -125,15 +99,12 @@ class SimpleDrum(BaseDrum, ABC):
     def get_swing(self) -> float:
         return self._swing
 
-    def _randomize(self):
+    def randomize(self):
         if not self._length:
             return
-        self._il1 += randrange(len(self._snd_l1))
-        self._il2 += randrange(len(self._snd_l2))
-        self._ibk += randrange(len(self._snd_bk))
-        self._il1 %= (len(self._snd_l1))
-        self._il2 %= (len(self._snd_l2))
-        self._ibk %= (len(self._snd_bk))
+        self._il1 = random.randrange(len(self._snd_l1))
+        self._il2 = random.randrange(len(self._snd_l2))
+        self._ibk = random.randrange(len(self._snd_bk))
 
     def get_info(self):
         return f"{self.__class__.__name__} " \

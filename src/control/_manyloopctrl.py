@@ -124,8 +124,8 @@ class ManyLoopCtrl(OneLoopCtrl, Song):
     def _change_drum_intensity(self, change_by: int) -> None:
         self.get_drum().change_intensity(change_by)
 
-    def _change_drum_index(self, change_by: int) -> None:
-        self.get_drum().change_index(change_by)
+    def _change_drum_index(self) -> None:
+        self.get_drum().randomize()
 
     def _change_drum(self) -> None:
         self.get_drum().play_break_now()

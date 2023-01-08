@@ -1,6 +1,7 @@
 import logging
 from random import random
-from typing import Any, List, Tuple
+from typing import Any, Tuple
+from typing import List
 
 import numpy as np
 
@@ -45,9 +46,16 @@ class MidiDrum(SimpleDrum):
                 if step_prob:
                     result.append((pos, step_prob, sound))
 
-    def _play_sample(self, step_prob: float, sound: Any, out_data: np.ndarray, position: int) -> None:
-        if random() < step_prob:
-            self._out_port.send(sound)
+    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
+        sound_dict = self.get_sound_dict()
+        if not sound_dict:
+            return
+
+        position = idx % self._length
+        data_len = len(out_data)
+        for _, prob, sound in [tpl for tpl in sound_dict if position <= tpl[0] < position + data_len]:
+            if random() < prob:
+                self._out_port.send(sound)
 
 
 class FakeMidiDrum(MidiDrum):
@@ -55,11 +63,8 @@ class FakeMidiDrum(MidiDrum):
         MidiDrum.__init__(self, out_port)
         self.__count: int = 0
 
-    def _play_sample(self, step_prob: float, sound: Any, out_data: np.ndarray, position: int) -> None:
-        if random() < step_prob:
-            self.__count += 1
-            if self.__count % 10 == 0:
-                logging.info(f"FakeOutPort MIDI: {sound}")
+    def _play_pattern(self, pos1: int, pos2: int) -> None:
+        pass
 
 
 if __name__ == "__main__":

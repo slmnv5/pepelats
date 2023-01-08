@@ -41,8 +41,8 @@
     "[swing_up]": [["_change_drum_swing", 0.05], ["_redraw"]],
     "[intensity_dn]": [["_change_drum_intensity", -1], ["_redraw"]],
     "[intensity_up]": [["_change_drum_intensity", 1], ["_redraw"]],
-    "[index_dn]": [["_change_drum_index", -1], ["_redraw"]],
-    "[index_up]": [["_change_drum_index", 1], ["_redraw"]]
+    "[index_dn]": [["_change_drum_index"], ["_redraw"]],
+    "[index_up]": [["_change_drum_index"], ["_redraw"]]
   },
    "2": {
     "description": "menu: A2-[update] B2-[restart] BH-[use_text] C2-[drum_audio] D2-[drum_midi] [gui_test]",

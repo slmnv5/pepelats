@@ -1,6 +1,8 @@
 import logging
 from random import random
-from typing import Dict, Any, Tuple, List
+from typing import Any, Tuple
+from typing import Dict
+from typing import List
 
 import numpy as np
 
@@ -8,7 +10,7 @@ from drum._utildrum import load_audio, extend_list, position_with_swing
 from drum.simpledrum import SimpleDrum
 from utils.utilalsa import make_zero_buffer
 from utils.utilconfig import SD_TYPE, SD_MAX
-from utils.utilnumpy import record_sound_buff, play_sound_buff, zero_sound_buff
+from utils.utilnumpy import play_sound_buff, record_sound_buff, zero_sound_buff
 
 
 class AudioDrum(SimpleDrum):
@@ -23,8 +25,8 @@ class AudioDrum(SimpleDrum):
     def prepare_drum(self, length: int) -> None:
         if not length:
             return
-        super().prepare_drum(length)
         self.__buff = make_zero_buffer(length)
+        super().prepare_drum(length)
 
     def drum_from_pattern(self, pattern) -> List[Tuple[int, float, Any]]:
         logging.debug(f"Preapring pattern: {pattern}")
@@ -49,15 +51,23 @@ class AudioDrum(SimpleDrum):
                 step_prob = self._char2float(notes[step_number])
                 step_accent = self._char2float(accents[step_number])
                 pos = position_with_swing(step_number, step_len, self._swing)
-                sound2 = (sound * (step_accent * self._volume * SD_MAX)).astype(SD_TYPE)[:self._length]
+                sound2 = (sound * (step_accent * self._volume * SD_MAX)).astype(SD_TYPE)
                 if step_prob:
                     result.append((pos, step_prob, sound2))
 
-    def _play_sample(self, step_prob: float, sound: Any, out_data: np.ndarray, position: int) -> None:
-        if random() < step_prob:
-            record_sound_buff(self.__buff, sound, position)
+    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
+        sound_dict = self.get_sound_dict()
+        if not sound_dict:
+            return
+
+        position = idx % self._length
+        data_len = len(out_data)
+        for _, prob, sound in [tpl for tpl in sound_dict if position <= tpl[0] < position + data_len]:
+            if random() < prob:
+                record_sound_buff(self.__buff, sound, position)
+
         play_sound_buff(self.__buff, out_data, position)
-        zero_sound_buff(self.__buff, len(out_data), position)
+        zero_sound_buff(self.__buff, data_len, position)
 
 
 if __name__ == "__main__":
