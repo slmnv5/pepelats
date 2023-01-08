@@ -1,3 +1,4 @@
+import logging
 import random
 from abc import ABC
 from abc import abstractmethod
@@ -59,6 +60,7 @@ class SimpleDrum(BaseDrum, ABC):
         self._length = length
         self._intensity = BaseDrum._LEVEL1
         self._bpm = bpm_from_length(length)
+        logging.info(f"Prepared drum: {self}, sample length: {self._length}")
 
     def change_volume(self, change_factor: float) -> None:
         self._volume = round(self._volume * change_factor, 2)
