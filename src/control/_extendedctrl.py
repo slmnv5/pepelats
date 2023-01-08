@@ -28,6 +28,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         self.__audio_drum: SimpleDrum = AudioDrum()
         ManyLoopCtrl.__init__(self, self.__audio_drum)
         self.__draw_info: DrawInfo = DrawInfo()
+        logging.info(f"Prepared drums, audio: {self.__audio_drum} midi: {self.__midi_drum}")
 
     def _redraw(self) -> None:
         self._send_redraw(self.__draw_info)

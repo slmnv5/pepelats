@@ -1,6 +1,6 @@
 import logging
 from random import random
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 import numpy as np
 
@@ -58,13 +58,21 @@ class MidiDrum(SimpleDrum):
                 self._out_port.send(sound)
 
 
+class FakeOutPort:
+    def __init__(self):
+        self.__count = 0
+
+    def send(self, msg: List[int]) -> None:
+        self.__count += 1
+        if self.__count % 10 == 0:
+            logging.info(f"FakeOutPort MIDI: {msg}")
+
+
 class FakeMidiDrum(MidiDrum):
     def __init__(self, out_port):
         MidiDrum.__init__(self, out_port)
         self.__count: int = 0
-
-    def _play_pattern(self, pos1: int, pos2: int) -> None:
-        pass
+        self._out_port = FakeOutPort()
 
 
 if __name__ == "__main__":
