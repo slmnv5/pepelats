@@ -75,15 +75,13 @@ class BaseDrum(FileFinder):
         if self._intensity == BaseDrum._MUTE:
             self._intensity = BaseDrum._LEVEL1
 
-        save_int = self._intensity
-
-        def revert():
-            self._intensity = save_int
+        def revert(intensity: int):
+            self._intensity = intensity
             self._is_break_pending = False
 
+        Timer((self._length // 2) / ENV_SD_RATE, revert, [self._intensity]).start()
         self.randomize()
         self._intensity = BaseDrum._BREAK
-        Timer((self._length // 2) / ENV_SD_RATE, revert).start()
 
     def play_break_later(self, part_len: int, idx: int) -> None:
         if self._is_break_pending:
