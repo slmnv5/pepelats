@@ -29,9 +29,9 @@ class ControlFactory:
             return PyScreen(self.recv_conn, self.send_conn, self.menu_loader)
 
         if not os.path.isfile(ENV_ROOT_DIR + "/" + ConfigName.shared_lib):
-            logging.error(f"Libarry {ConfigName.shared_lib} not found, using text GUI")
+            logging.error(f"Libarry {ConfigName.shared_lib} not found, using text mode")
             return PyScreen(self.recv_conn, self.send_conn, self.menu_loader)
 
         from mvc._ccscreen import CcScreen
-        logging.info(f"Library {ConfigName.shared_lib} found, loading GUI")
+        logging.info(f"Library {ConfigName.shared_lib} found, loading graphics mode")
         return CcScreen(self.recv_conn, self.send_conn, self.menu_loader, ENV_FRAME_BUFFER_ID)

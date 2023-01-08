@@ -3,17 +3,17 @@
 ## Features
 
 - Any number of song parts (verse/chorus/bridge) each made of parallel loops
-- Parallel loops in part may have different length, multiple of a bar
+- Parallel loops in one part with different length: 0.25, 0.5, 1, 2, ... of a bar.
 - Full history for "undo/redo", not only the latest change
 - Loops, parts may be added/deleted on the run
 - Drum machine with random patterns/breaks configureable in a text file
+- Drums sent to MIDI OUT port or played with internal sample sounds
 - Quantization - time of changing parts, recording is adjusted to keep the rhythm
 - Songs saved and loaded from SD card
 - Control by MIDI (Bluetooth / USB) configureable in a text file
 - Typing keyboard may be used as MIDI controller
-- Text console shows loop position, state, length, volume
-- MIDI control supplemented by LCD touch screen menu
-- Drums sent to MIDI OUT port instead of playing internal samples
+- Text console shows loop position, state, length, volume and menu
+- Optional LCD touch screen menu in addition to MIDI controller
 
 ## Installation:
 
