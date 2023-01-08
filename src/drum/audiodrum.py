@@ -50,6 +50,8 @@ class AudioDrum(SimpleDrum):
                 pos = position_with_swing(step_number, step_len, self._swing)
                 sound2 = (sound * (step_accent * self._volume * SD_MAX)).astype(SD_TYPE)
                 if step_prob:
+                    if len(sound2) > self._length:
+                        sound2 = sound2[:self._length]
                     result[pos] = sound2, step_prob
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
