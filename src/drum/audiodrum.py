@@ -1,4 +1,5 @@
 import logging
+from random import random
 from typing import Dict, Any, Tuple, List
 
 import numpy as np
@@ -7,7 +8,7 @@ from drum._utildrum import load_audio, extend_list, position_with_swing
 from drum.simpledrum import SimpleDrum
 from utils.utilalsa import make_zero_buffer
 from utils.utilconfig import SD_TYPE, SD_MAX
-from utils.utilnumpy import record_sound_buff
+from utils.utilnumpy import record_sound_buff, play_sound_buff, zero_sound_buff
 
 
 class AudioDrum(SimpleDrum):
@@ -15,14 +16,15 @@ class AudioDrum(SimpleDrum):
 
     def __init__(self):
         SimpleDrum.__init__(self)
+        self.__buff = None
         self._sounds: Dict[str, np.ndarray] = load_audio()
         self._load_all()
 
     def prepare_drum(self, length: int) -> None:
         if not length:
             return
-        self.__buff = make_zero_buffer(length)
         super().prepare_drum(length)
+        self.__buff = make_zero_buffer(length)
 
     def drum_from_pattern(self, pattern) -> List[Tuple[int, float, Any]]:
         logging.debug(f"Preapring pattern: {pattern}")
@@ -51,8 +53,11 @@ class AudioDrum(SimpleDrum):
                 if step_prob:
                     result.append((pos, step_prob, sound2))
 
-    def _play_sample(self, sound: Any, position: int) -> None:
-        record_sound_buff(self.__buff, sound, position)
+    def _play_sample(self, step_prob: float, sound: Any, out_data: np.ndarray, position: int) -> None:
+        if random() < step_prob:
+            record_sound_buff(self.__buff, sound, position)
+        play_sound_buff(self.__buff, out_data, position)
+        zero_sound_buff(self.__buff, len(out_data), position)
 
 
 if __name__ == "__main__":

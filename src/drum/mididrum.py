@@ -1,5 +1,8 @@
 import logging
+from random import random
 from typing import Any, List, Tuple
+
+import numpy as np
 
 from drum._utildrum import load_midi, extend_list, position_with_swing, is_midi_note
 from drum.simpledrum import SimpleDrum
@@ -42,8 +45,9 @@ class MidiDrum(SimpleDrum):
                 if step_prob:
                     result.append((pos, step_prob, sound))
 
-    def _play_sample(self, sound: Any, position: int) -> None:
-        self._out_port.send(sound)
+    def _play_sample(self, step_prob: float, sound: Any, out_data: np.ndarray, position: int) -> None:
+        if random() < step_prob:
+            self._out_port.send(sound)
 
 
 class FakeMidiDrum(MidiDrum):
@@ -51,10 +55,11 @@ class FakeMidiDrum(MidiDrum):
         MidiDrum.__init__(self, out_port)
         self.__count: int = 0
 
-    def _play_sample(self, sound: Any, position: int) -> None:
-        self.__count += 1
-        if self.__count % 10 == 0:
-            logging.info(f"FakeOutPort MIDI: {sound}")
+    def _play_sample(self, step_prob: float, sound: Any, out_data: np.ndarray, position: int) -> None:
+        if random() < step_prob:
+            self.__count += 1
+            if self.__count % 10 == 0:
+                logging.info(f"FakeOutPort MIDI: {sound}")
 
 
 if __name__ == "__main__":

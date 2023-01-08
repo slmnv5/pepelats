@@ -1,7 +1,7 @@
 import logging
 from abc import ABC
 from abc import abstractmethod
-from random import randrange, random
+from random import randrange
 from typing import Any, Tuple
 from typing import List
 
@@ -11,7 +11,6 @@ import utils
 from drum._basedrum import BaseDrum
 from drum._utildrum import bpm_from_length
 from utils.utilconfig import ENV_SD_RATE, ENV_DRUM_SWING, ENV_DRUM_VOLUME
-from utils.utilnumpy import play_sound_buff, zero_sound_buff, record_sound_buff
 
 
 class SimpleDrum(BaseDrum, ABC):
@@ -21,7 +20,6 @@ class SimpleDrum(BaseDrum, ABC):
     def __init__(self):
         BaseDrum.__init__(self)
         self.__step: int = 0
-        self.__buff = None
         self._swing: float = ENV_DRUM_SWING
         self._volume: float = ENV_DRUM_VOLUME
         self._snd_l1: List[List[Tuple[int, float, Any]]] = list()
@@ -41,17 +39,12 @@ class SimpleDrum(BaseDrum, ABC):
             self.__step = 0
 
         position2 = position + len(out_data)
-        for tuple3 in [tuple3 for tuple3 in sound_dict if position <= tuple3[0] < position2]:
+        for _, step_prob, sound in [tuple3 for tuple3 in sound_dict if position <= tuple3[0] < position2]:
             self.__step += 1
-            _, step_prob, sound = tuple3
-            if random() < step_prob:
-                record_sound_buff(self.__buff, sound, position)
-            if self.__buff:
-                play_sound_buff(self.__buff, out_data, position)
-                zero_sound_buff(self.__buff, len(out_data), position)
+            self._play_sample(step_prob, sound, out_data, position)
 
     @abstractmethod
-    def _play_sample(self, sound: Any, position: int) -> None:
+    def _play_sample(self, step_prob: float, sound: Any, out_data: np.ndarray, position: int) -> None:
         pass
 
     def get_sound_dict(self) -> List[Tuple[int, float, Any]]:
