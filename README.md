@@ -17,7 +17,7 @@
 
 ## Installation:
 
-Install Raspberry Pi OS Lite, LCD screen and drivers. To make text readable on 3.5 inch LCD select font Terminus 16x32
+Install Raspberry Pi OS Lite, install LCD screen driver. To make text readable on 3.5 inch LCD select font Terminus 16x32
 using command: sudo dpkg-reconfigure console-setup
 
 Install dependencies running script [install_dependencies.sh](etc/scripts/install_dependencies.sh)
