@@ -1,7 +1,5 @@
-import logging
 from random import random
 from typing import Any, Tuple
-from typing import Dict
 from typing import List
 
 import numpy as np
@@ -19,7 +17,7 @@ class AudioDrum(SimpleDrum):
     def __init__(self):
         SimpleDrum.__init__(self)
         self.__buff = None
-        self._sounds: Dict[str, np.ndarray] = load_audio()
+        self._sounds = load_audio()
         self._load_all()
 
     def prepare_drum(self, length: int) -> None:
@@ -28,20 +26,8 @@ class AudioDrum(SimpleDrum):
         self.__buff = make_zero_buffer(length)
         super().prepare_drum(length)
 
-    def _drum_from_pattern(self, pattern) -> List[Tuple[int, float, Any]]:
-        logging.debug(f"Preapring pattern: {pattern}")
-        steps = pattern["steps"]
-        accents = pattern["accents"]
-        result: List[Tuple[int, float, Any]] = list()
-        for sound_name in [x for x in self._sounds if x in pattern]:
-            notes = pattern[sound_name]
-            notes = extend_list(notes, steps) if steps else notes
-            self.__drum_from_string(result, sound_name, notes, accents)
-
-        return result
-
-    def __drum_from_string(self, result: List[Tuple[int, float, Any]], sound_name: str, notes: str,
-                           accents: str) -> None:
+    def _drum_from_string(self, result: List[Tuple[int, float, Any]], sound_name: str, notes: str,
+                          accents: str) -> None:
         steps = len(notes)
         accents = extend_list(accents, steps)
         step_len = self._length // steps

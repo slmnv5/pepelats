@@ -18,20 +18,8 @@ class MidiDrum(SimpleDrum):
         self._load_all()
         self._out_port = out_port
 
-    def _drum_from_pattern(self, pattern) -> List[Tuple[int, float, Any]]:
-        logging.debug(f"Preapring pattern: {pattern}")
-        steps = pattern["steps"]
-        accents = pattern["accents"]
-        result: List[Tuple[int, float, Any]] = list()
-        for sound_name in [x for x in self._sounds if x in pattern]:
-            notes = pattern[sound_name]
-            notes = extend_list(notes, steps) if steps else notes
-            self.__drum_from_string(result, sound_name, notes, accents)
-
-        return result
-
-    def __drum_from_string(self, result: List[Tuple[int, float, Any]],
-                           sound_name: str, notes: str, accents: str) -> None:
+    def _drum_from_string(self, result: List[Tuple[int, float, Any]],
+                          sound_name: str, notes: str, accents: str) -> None:
         steps = len(notes)
         accents = extend_list(accents, steps)
         step_len = self._length // steps

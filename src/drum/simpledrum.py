@@ -9,7 +9,7 @@ import numpy as np
 
 import utils
 from drum._basedrum import BaseDrum
-from drum._utildrum import bpm_from_length
+from drum._utildrum import bpm_from_length, extend_list
 from utils.utilconfig import ENV_SD_RATE, ENV_DRUM_SWING, ENV_DRUM_VOLUME
 
 
@@ -21,6 +21,7 @@ class SimpleDrum(BaseDrum, ABC):
         BaseDrum.__init__(self)
         self._swing: float = ENV_DRUM_SWING
         self._volume: float = ENV_DRUM_VOLUME
+        self._sounds = None
         self._snd_l1: List[List[Tuple[int, float, Any]]] = list()
         self._snd_l2: List[List[Tuple[int, float, Any]]] = list()
         self._snd_bk: List[List[Tuple[int, float, Any]]] = list()
@@ -42,9 +43,23 @@ class SimpleDrum(BaseDrum, ABC):
         else:
             return []
 
-    @abstractmethod
     def _drum_from_pattern(self, pattern) -> List[Tuple[int, float, Any]]:
-        """ return dict: sample number -> drum_name, pattern_step_volume """
+        logging.debug(f"Make pattern: {pattern}")
+        steps = pattern["steps"]
+        accents = pattern["accents"]
+        result: List[Tuple[int, float, Any]] = list()
+        for sound_name in [x for x in self._sounds if x in pattern]:
+            notes = pattern[sound_name]
+            if not notes:
+                continue
+            notes = extend_list(notes, steps) if steps else notes
+            self._drum_from_string(result, sound_name, notes, accents)
+
+        return result
+
+    @abstractmethod
+    def _drum_from_string(self, result: List[Tuple[int, float, Any]], sound_name: str, notes: str,
+                          accents: str) -> None:
         pass
 
     def prepare_drum(self, length: int) -> None:
