@@ -36,7 +36,7 @@ class BaseDrum(FileFinder):
     def get_length(self) -> int:
         return self._length
 
-    def _randomize(self):
+    def randomize(self):
         pass
 
     def _char2float(self, char: str) -> float:
@@ -82,7 +82,7 @@ class BaseDrum(FileFinder):
             self._intensity = BaseDrum._LEVEL1
             self._is_break_pending = False
 
-        self._randomize()
+        self.randomize()
         self._intensity = BaseDrum._BREAK
         Timer((self._length // 2) / ENV_SD_RATE, revert).start()
 

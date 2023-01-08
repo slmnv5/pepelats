@@ -29,7 +29,7 @@ export ENV_USB_AUDIO_NAMES='VALETON GP,USB Audio'
 
 ## Drums configuration
 
-Drums are configured in a text files (in [config/drum/_pop](config/drum/_pop)) using JSON format. Several popular drum
+Drums are configured in a text files (in [config/drum](config/drum)) using JSON format. Several popular drum
 patterns are pre-configured. Looper uses randomness to make it less repetitive. Drums accompaniment is created after the first loop is
 recorded and BPM is defined by length of this loop. Drum volume and swing may be changed on the run. Swing settings is
 same as Linn's LM-1, from 0.5 to 0.75.

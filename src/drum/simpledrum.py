@@ -85,17 +85,6 @@ class SimpleDrum(BaseDrum, ABC):
         self._intensity += change_by
         self._intensity %= (BaseDrum._BREAK + 1)
 
-    def change_index(self, change_by: int) -> None:
-        if not self._length:
-            return
-        change_by = (1 if change_by > 0 else -1)
-        self._il1 += change_by
-        self._il2 += change_by
-        self._ibk += change_by
-        self._il1 %= (len(self._snd_l1))
-        self._il2 %= (len(self._snd_l2))
-        self._ibk %= (len(self._snd_bk))
-
     def show_drum_param(self) -> str:
         return f"\nmax_volume(0.0-1.0):{self.get_volume():.2F}" \
                f"\nswing(0.5-0.75):{self._swing:.2F}" \
@@ -110,12 +99,12 @@ class SimpleDrum(BaseDrum, ABC):
     def get_swing(self) -> float:
         return self._swing
 
-    def _randomize(self):
+    def randomize(self):
         if not self._length:
             return
-        self._il1 += random.randrange(len(self._snd_l1))
-        self._il2 += random.randrange(len(self._snd_l2))
-        self._ibk += random.randrange(len(self._snd_bk))
+        self._il1 = random.randrange(len(self._snd_l1))
+        self._il2 = random.randrange(len(self._snd_l2))
+        self._ibk = random.randrange(len(self._snd_bk))
 
     def get_info(self):
         return f"{self.__class__.__name__} " \
