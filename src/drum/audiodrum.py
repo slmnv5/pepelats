@@ -7,7 +7,7 @@ from drum._utildrum import load_audio, extend_list, position_with_swing
 from drum.simpledrum import SimpleDrum
 from utils.utilalsa import make_zero_buffer
 from utils.utilconfig import SD_TYPE, SD_MAX
-from utils.utilnumpy import play_sound_buff, record_sound_buff, zero_sound_buff
+from utils.utilnumpy import record_sound_buff
 
 
 class AudioDrum(SimpleDrum):
@@ -15,7 +15,6 @@ class AudioDrum(SimpleDrum):
 
     def __init__(self):
         SimpleDrum.__init__(self)
-        self.__buff = None
         self._sounds: Dict[str, np.ndarray] = load_audio()
         self._load_all()
 
@@ -52,12 +51,8 @@ class AudioDrum(SimpleDrum):
                 if step_prob:
                     result.append((pos, step_prob, sound2))
 
-    def _play_sample(self, sound: Any, position: int, out_data: np.ndarray) -> None:
+    def _play_sample(self, sound: Any, position: int) -> None:
         record_sound_buff(self.__buff, sound, position)
-
-    def _finalize_play(self, out_data: np.ndarray, position: int) -> None:
-        play_sound_buff(self.__buff, out_data, position)
-        zero_sound_buff(self.__buff, len(out_data), position)
 
 
 if __name__ == "__main__":
