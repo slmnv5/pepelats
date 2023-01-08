@@ -43,7 +43,7 @@ class SimpleDrum(BaseDrum, ABC):
         else:
             return []
 
-    def _drum_from_pattern(self, pattern) -> List[Tuple[int, float, Any]]:
+    def __drum_from_pattern(self, pattern) -> List[Tuple[int, float, Any]]:
         logging.debug(f"Make pattern: {pattern}")
         steps = pattern["steps"]
         accents = pattern["accents"]
@@ -68,9 +68,9 @@ class SimpleDrum(BaseDrum, ABC):
         self._length = length
         self._intensity = BaseDrum._MUTE  # keep it until sound load is done
         self._bpm = bpm_from_length(length)
-        self._snd_l1 = [self._drum_from_pattern(p) for p in self._ptn_l1]
-        self._snd_l2 = [self._drum_from_pattern(p) for p in self._ptn_l2]
-        self._snd_bk = [self._drum_from_pattern(p) for p in self._ptn_bk]
+        self._snd_l1 = [self.__drum_from_pattern(p) for p in self._ptn_l1]
+        self._snd_l2 = [self.__drum_from_pattern(p) for p in self._ptn_l2]
+        self._snd_bk = [self.__drum_from_pattern(p) for p in self._ptn_bk]
         self._il1 = self._il2 = self._ibk = 0
         self._length = length
         self._intensity = BaseDrum._LEVEL1
