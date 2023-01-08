@@ -75,8 +75,10 @@ class BaseDrum(FileFinder):
         if self._intensity == BaseDrum._MUTE:
             self._intensity = BaseDrum._LEVEL1
 
+        save_int = self._intensity
+
         def revert():
-            self._intensity = BaseDrum._LEVEL1
+            self._intensity = save_int
             self._is_break_pending = False
 
         self.randomize()
