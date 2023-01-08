@@ -1,7 +1,6 @@
 # noinspection PyProtectedMember
 from typing import Any
 from typing import List
-
 from typing import Tuple, Union
 
 import numpy as np
@@ -17,6 +16,16 @@ def calc_slices(buff_len: int, data_len: int, idx: int) -> Tuple[slice, Union[sl
         return slice(idx1, idx2), None
     else:
         return slice(idx1, buff_len), slice(0, idx2)
+
+
+def zero_sound_buff(buff: np.ndarray, data_len: int, idx: int) -> None:
+    """ zero buff starting with idx """
+    slice1, slice2 = calc_slices(len(buff), data_len, idx)
+    if slice2 is None:
+        buff[slice1] = 0
+    else:
+        buff[slice1] = 0
+        buff[slice2] = 0
 
 
 def record_sound_buff(buff: np.ndarray, data: np.ndarray, idx: int) -> None:
