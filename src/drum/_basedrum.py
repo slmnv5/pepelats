@@ -63,13 +63,10 @@ class BaseDrum(FileFinder):
 
     def change_intensity(self, change_by: int) -> None:
         if not self._length:
-            self._intensity = BaseDrum._MUTE
             return
-
-        i = self._intensity + change_by
-        i = 0 if i > 3 else i
-        i = 3 if i < 0 else i
-        self._intensity = i
+        change_by = (1 if change_by > 0 else -1)
+        self._intensity += change_by
+        self._intensity %= (BaseDrum._BREAK + 1)
 
     def play_break_now(self) -> None:
         if not self._length:

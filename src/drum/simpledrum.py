@@ -93,13 +93,6 @@ class SimpleDrum(BaseDrum, ABC):
         utils.utilconfig.ENV_DRUM_SWING = self._swing
         self.prepare_drum(self._length)
 
-    def change_intensity(self, change_by: int) -> None:
-        if not self._length:
-            return
-        change_by = (1 if change_by > 0 else -1)
-        self._intensity += change_by
-        self._intensity %= (BaseDrum._BREAK + 1)
-
     def show_drum_param(self) -> str:
         return f"\nmax_volume(0.0-1.0):{self.get_volume():.2F}" \
                f"\nswing(0.5-0.75):{self._swing:.2F}" \
