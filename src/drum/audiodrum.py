@@ -28,7 +28,7 @@ class AudioDrum(SimpleDrum):
         self.__buff = make_zero_buffer(length)
         super().prepare_drum(length)
 
-    def drum_from_pattern(self, pattern) -> List[Tuple[int, float, Any]]:
+    def _drum_from_pattern(self, pattern) -> List[Tuple[int, float, Any]]:
         logging.debug(f"Preapring pattern: {pattern}")
         steps = pattern["steps"]
         accents = pattern["accents"]
@@ -56,18 +56,18 @@ class AudioDrum(SimpleDrum):
                     result.append((pos, step_prob, sound2))
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        sound_dict = self.get_sound_dict()
+        sound_dict = self._get_sound_dict()
         if not sound_dict:
             return
 
         position = idx % self._length
-        data_len = len(out_data)
-        for _, prob, sound in [tpl for tpl in sound_dict if position <= tpl[0] < position + data_len]:
+        position2 = position + len(out_data)
+        for _, prob, sound in [tpl for tpl in sound_dict if position <= tpl[0] < position2]:
             if random() < prob:
                 record_sound_buff(self.__buff, sound, position)
 
         play_sound_buff(self.__buff, out_data, position)
-        zero_sound_buff(self.__buff, data_len, position)
+        zero_sound_buff(self.__buff, len(out_data), position)
 
 
 if __name__ == "__main__":

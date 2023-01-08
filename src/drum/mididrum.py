@@ -18,7 +18,7 @@ class MidiDrum(SimpleDrum):
         self._load_all()
         self._out_port = out_port
 
-    def drum_from_pattern(self, pattern) -> List[Tuple[int, float, Any]]:
+    def _drum_from_pattern(self, pattern) -> List[Tuple[int, float, Any]]:
         logging.debug(f"Preapring pattern: {pattern}")
         steps = pattern["steps"]
         accents = pattern["accents"]
@@ -47,7 +47,7 @@ class MidiDrum(SimpleDrum):
                     result.append((pos, step_prob, sound))
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        sound_dict = self.get_sound_dict()
+        sound_dict = self._get_sound_dict()
         if not sound_dict:
             return
 

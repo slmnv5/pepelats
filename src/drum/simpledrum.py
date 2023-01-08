@@ -32,7 +32,7 @@ class SimpleDrum(BaseDrum, ABC):
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         pass
 
-    def get_sound_dict(self) -> List[Tuple[int, float, Any]]:
+    def _get_sound_dict(self) -> List[Tuple[int, float, Any]]:
         if self._intensity == BaseDrum._LEVEL1:
             return self._snd_l1[self._il1]
         elif self._intensity == BaseDrum._LEVEL2:
@@ -43,7 +43,7 @@ class SimpleDrum(BaseDrum, ABC):
             return []
 
     @abstractmethod
-    def drum_from_pattern(self, pattern) -> List[Tuple[int, float, Any]]:
+    def _drum_from_pattern(self, pattern) -> List[Tuple[int, float, Any]]:
         """ return dict: sample number -> drum_name, pattern_step_volume """
         pass
 
@@ -53,9 +53,9 @@ class SimpleDrum(BaseDrum, ABC):
         self._length = length
         self._intensity = BaseDrum._MUTE  # keep it until sound load is done
         self._bpm = bpm_from_length(length)
-        self._snd_l1 = [self.drum_from_pattern(p) for p in self._ptn_l1]
-        self._snd_l2 = [self.drum_from_pattern(p) for p in self._ptn_l2]
-        self._snd_bk = [self.drum_from_pattern(p) for p in self._ptn_bk]
+        self._snd_l1 = [self._drum_from_pattern(p) for p in self._ptn_l1]
+        self._snd_l2 = [self._drum_from_pattern(p) for p in self._ptn_l2]
+        self._snd_bk = [self._drum_from_pattern(p) for p in self._ptn_bk]
         self._il1 = self._il2 = self._ibk = 0
         self._length = length
         self._intensity = BaseDrum._LEVEL1
