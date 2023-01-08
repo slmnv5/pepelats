@@ -55,7 +55,10 @@ class MidiDrum(SimpleDrum):
         data_len = len(out_data)
         for _, prob, sound in [tpl for tpl in sound_dict if position <= tpl[0] < position + data_len]:
             if random() < prob:
-                self._out_port.send(sound)
+                self._play_sound(sound)
+
+    def _play_sound(self, sound) -> None:
+        self._out_port.send(sound)
 
 
 class FakeMidiDrum(MidiDrum):
@@ -63,8 +66,10 @@ class FakeMidiDrum(MidiDrum):
         MidiDrum.__init__(self, out_port)
         self.__count: int = 0
 
-    def _play_pattern(self, pos1: int, pos2: int) -> None:
-        pass
+    def _play_sound(self, sound) -> None:
+        self.__count += 1
+        if self.__count % 10 == 0:
+            logging.info(f"FakeMidiDrum send: {sound}")
 
 
 if __name__ == "__main__":

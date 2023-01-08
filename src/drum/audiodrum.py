@@ -51,7 +51,7 @@ class AudioDrum(SimpleDrum):
                 step_prob = self._char2float(notes[step_number])
                 step_accent = self._char2float(accents[step_number])
                 pos = position_with_swing(step_number, step_len, self._swing)
-                sound2 = (sound * (step_accent * self._volume * SD_MAX)).astype(SD_TYPE)
+                sound2 = (sound * (step_accent * self._volume * SD_MAX)).astype(SD_TYPE)[:self._length]
                 if step_prob:
                     result.append((pos, step_prob, sound2))
 
