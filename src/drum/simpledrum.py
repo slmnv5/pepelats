@@ -1,7 +1,7 @@
 import logging
 from abc import ABC
 from abc import abstractmethod
-from random import random, randrange
+from random import randrange, random
 from typing import Any, Tuple
 from typing import List
 
@@ -39,11 +39,16 @@ class SimpleDrum(BaseDrum, ABC):
             self.__step = 0
 
         position2 = position + len(out_data)
-        for x, prob, sound in [tuple3 for tuple3 in sound_dict[self.__step:]
-                               if position <= tuple3[0] < position2]:
+        for tuple3 in [tuple3 for tuple3 in sound_dict if position <= tuple3[0] < position2]:
             self.__step += 1
-            if random() > prob:
+            _, step_prob, sound = tuple3
+            if random() < step_prob:
                 self._play_sample(sound, position, out_data)
+            self._finalize_play(out_data, position)
+
+    @abstractmethod
+    def _finalize_play(self, out_data: np.ndarray, position: int) -> None:
+        pass
 
     @abstractmethod
     def _play_sample(self, sound: Any, position: int, out_data: np.ndarray) -> None:

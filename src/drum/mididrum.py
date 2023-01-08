@@ -47,6 +47,9 @@ class MidiDrum(SimpleDrum):
     def _play_sample(self, sound: Any, position: int, out_data: np.ndarray) -> None:
         self._out_port.send(sound)
 
+    def _finalize_play(self, out_data: np.ndarray, position: int) -> None:
+        pass
+
 
 class FakeMidiDrum(MidiDrum):
     def __init__(self, out_port):

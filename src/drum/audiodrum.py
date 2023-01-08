@@ -54,6 +54,8 @@ class AudioDrum(SimpleDrum):
 
     def _play_sample(self, sound: Any, position: int, out_data: np.ndarray) -> None:
         record_sound_buff(self.__buff, sound, position)
+
+    def _finalize_play(self, out_data: np.ndarray, position: int) -> None:
         play_sound_buff(self.__buff, out_data, position)
         zero_sound_buff(self.__buff, len(out_data), position)
 
