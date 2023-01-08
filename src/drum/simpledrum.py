@@ -32,7 +32,7 @@ class SimpleDrum(BaseDrum, ABC):
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         pass
 
-    def _get_sound_dict(self) -> List[Tuple[int, float, Any]]:
+    def _get_sound_list(self) -> List[Tuple[int, float, Any]]:
         if self._intensity == BaseDrum._LEVEL1:
             return self._snd_l1[self._il1]
         elif self._intensity == BaseDrum._LEVEL2:

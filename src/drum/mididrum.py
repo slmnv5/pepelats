@@ -47,14 +47,14 @@ class MidiDrum(SimpleDrum):
                     result.append((pos, step_prob, sound))
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        sound_dict = self._get_sound_dict()
-        if not sound_dict:
+        sound_list = self._get_sound_list()
+        if not sound_list:
             return
 
         position = idx % self._length
         data_len = len(out_data)
-        for _, prob, sound in [tpl for tpl in sound_dict if position <= tpl[0] < position + data_len]:
-            if random() < prob:
+        for _, step_prob, sound in [tpl for tpl in sound_list if position <= tpl[0] < position + data_len]:
+            if random() < step_prob:
                 self._play_sound(sound)
 
     def _play_sound(self, sound) -> None:

@@ -56,14 +56,14 @@ class AudioDrum(SimpleDrum):
                     result.append((pos, step_prob, sound2))
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        sound_dict = self._get_sound_dict()
-        if not sound_dict:
+        sound_list = self._get_sound_list()
+        if not sound_list:
             return
 
         position = idx % self._length
         position2 = position + len(out_data)
-        for _, prob, sound in [tpl for tpl in sound_dict if position <= tpl[0] < position2]:
-            if random() < prob:
+        for _, step_prob, sound in [tpl for tpl in sound_list if position <= tpl[0] < position2]:
+            if random() < step_prob:
                 record_sound_buff(self.__buff, sound, position)
 
         play_sound_buff(self.__buff, out_data, position)
