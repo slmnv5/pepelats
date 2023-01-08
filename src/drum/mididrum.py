@@ -52,8 +52,8 @@ class MidiDrum(SimpleDrum):
             return
 
         position = idx % self._length
-        data_len = len(out_data)
-        for _, step_prob, sound in [tpl for tpl in sound_list if position <= tpl[0] < position + data_len]:
+        position2 = position + len(out_data)
+        for _, step_prob, sound in [tpl for tpl in sound_list if position <= tpl[0] < position2]:
             if random() < step_prob:
                 self._play_sound(sound)
 
