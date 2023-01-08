@@ -1,3 +1,4 @@
+import logging
 import random
 from abc import ABC
 from abc import abstractmethod
@@ -39,7 +40,7 @@ class SimpleDrum(BaseDrum, ABC):
         elif self._intensity == BaseDrum._BREAK:
             return self._snd_bk[self._ibk]
         else:
-            return BaseDrum._EMPTY_DICT
+            return {}
 
     @abstractmethod
     def drum_from_pattern(self, pattern) -> Dict[int, Any]:
@@ -59,6 +60,7 @@ class SimpleDrum(BaseDrum, ABC):
         self._length = length
         self._intensity = BaseDrum._LEVEL1
         self._bpm = bpm_from_length(length)
+        logging.info(f"Prepared drum: {self}, sample length: {self._length}")
 
     def change_volume(self, change_factor: float) -> None:
         self._volume = round(self._volume * change_factor, 2)
@@ -114,9 +116,6 @@ class SimpleDrum(BaseDrum, ABC):
         self._il1 += random.randrange(len(self._snd_l1))
         self._il2 += random.randrange(len(self._snd_l2))
         self._ibk += random.randrange(len(self._snd_bk))
-        self._il1 %= (len(self._snd_l1))
-        self._il2 %= (len(self._snd_l2))
-        self._ibk %= (len(self._snd_bk))
 
     def get_info(self):
         return f"{self.__class__.__name__} " \
