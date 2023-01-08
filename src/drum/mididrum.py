@@ -1,6 +1,6 @@
 import logging
 from random import random
-from typing import Dict, Tuple, Any
+from typing import Dict, Any
 
 import numpy as np
 
@@ -17,11 +17,11 @@ class MidiDrum(SimpleDrum):
         self._load_all()
         self._out_port = out_port
 
-    def drum_from_pattern(self, pattern) -> Dict[Tuple[int, int], Any]:
+    def drum_from_pattern(self, pattern) -> Dict[int, Any]:
         logging.debug(f"Preapring pattern: {pattern}")
         steps = pattern["steps"]
         accents = pattern["accents"]
-        result: Dict[Tuple[int, int], Any] = dict()
+        result: Dict[int, Any] = dict()
         for sound_name in [x for x in self._sounds if x in pattern]:
             notes = pattern[sound_name]
             notes = extend_list(notes, steps) if steps else notes
@@ -29,7 +29,7 @@ class MidiDrum(SimpleDrum):
 
         return result
 
-    def __drum_from_string(self, result: Dict[Tuple[int, int], Any],
+    def __drum_from_string(self, result: Dict[int, Any],
                            sound_name: str, notes: str, accents: str) -> None:
         steps = len(notes)
         accents = extend_list(accents, steps)
@@ -43,16 +43,17 @@ class MidiDrum(SimpleDrum):
                 if is_midi_note(sound):
                     sound[2] = int(step_accent * self._volume * 127)
                 if step_prob:
-                    result[pos, pos] = sound, step_prob
+                    result[pos] = sound, step_prob
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         sound_dict = self.get_sound_dict()
         if not sound_dict:
             return
-        pos1 = idx % self._length
-        pos2 = pos1 + len(out_data)
-        for x, y in [(x, y) for (x, y) in sound_dict if pos1 < y and pos2 >= x]:
-            sound, prob = sound_dict[x, y]
+
+        position = idx % self._length
+        data_len = len(out_data)
+        for x in [x for x in sound_dict if position <= x < position + data_len]:
+            sound, prob = sound_dict[x]
             if random() < prob:
                 self._out_port.send(sound)
 

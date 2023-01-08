@@ -1,7 +1,7 @@
 import random
 from abc import ABC
 from abc import abstractmethod
-from typing import Dict, Any, Tuple
+from typing import Dict, Any
 from typing import List
 
 import numpy as np
@@ -20,9 +20,9 @@ class SimpleDrum(BaseDrum, ABC):
         BaseDrum.__init__(self)
         self._swing: float = ENV_DRUM_SWING
         self._volume: float = ENV_DRUM_VOLUME
-        self._snd_l1: List[Dict[Tuple[int, int], Any]] = list()
-        self._snd_l2: List[Dict[Tuple[int, int], Any]] = list()
-        self._snd_bk: List[Dict[Tuple[int, int], Any]] = list()
+        self._snd_l1: List[Dict[int, Any]] = list()
+        self._snd_l2: List[Dict[int, Any]] = list()
+        self._snd_bk: List[Dict[int, Any]] = list()
         self._il1: int = 0
         self._il2: int = 0
         self._ibk: int = 0
@@ -31,7 +31,7 @@ class SimpleDrum(BaseDrum, ABC):
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         pass
 
-    def get_sound_dict(self) -> Dict[Tuple[int, int], Any]:
+    def get_sound_dict(self) -> Dict[int, Any]:
         if self._intensity == BaseDrum._LEVEL1:
             return self._snd_l1[self._il1]
         elif self._intensity == BaseDrum._LEVEL2:
@@ -42,7 +42,7 @@ class SimpleDrum(BaseDrum, ABC):
             return BaseDrum._EMPTY_DICT
 
     @abstractmethod
-    def drum_from_pattern(self, pattern) -> Dict[Tuple[int, int], Any]:
+    def drum_from_pattern(self, pattern) -> Dict[int, Any]:
         """ return dict: sample number -> drum_name, pattern_step_volume """
         pass
 
