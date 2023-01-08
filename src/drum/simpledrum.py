@@ -39,7 +39,7 @@ class SimpleDrum(BaseDrum, ABC):
         elif self._intensity == BaseDrum._BREAK:
             return self._snd_bk[self._ibk]
         else:
-            return dict()
+            return BaseDrum._EMPTY_DICT
 
     @abstractmethod
     def drum_from_pattern(self, pattern) -> Dict[Tuple[int, int], Any]:

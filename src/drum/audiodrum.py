@@ -1,12 +1,14 @@
 import logging
 from random import random
-from typing import Dict, Tuple, Any, List
+from typing import Dict, Tuple, Any
 
 import numpy as np
 
 from drum._utildrum import load_audio, extend_list, position_with_swing
 from drum.simpledrum import SimpleDrum
+from utils.utilalsa import make_zero_buffer
 from utils.utilconfig import SD_TYPE, SD_MAX
+from utils.utilnumpy import play_sound_buff, record_sound_buff, zero_sound_buff
 
 
 class AudioDrum(SimpleDrum):
@@ -14,9 +16,15 @@ class AudioDrum(SimpleDrum):
 
     def __init__(self):
         SimpleDrum.__init__(self)
+        self.__buff = None
         self._sounds: Dict[str, np.ndarray] = load_audio()
         self._load_all()
-        self._skip_list: List[Tuple[int, int]] = list()  # skip some drums with prob < 1
+
+    def prepare_drum(self, length: int) -> None:
+        if not length:
+            return
+        self.__buff = make_zero_buffer(length)
+        super().prepare_drum(length)
 
     def drum_from_pattern(self, pattern) -> Dict[Tuple[int, int], Any]:
         logging.debug(f"Preapring pattern: {pattern}")
@@ -48,22 +56,16 @@ class AudioDrum(SimpleDrum):
         sound_dict = self.get_sound_dict()
         if not sound_dict:
             return
-        pos1 = idx % self._length
-        if not pos1:
-            self._skip_list.clear()
-        len_data = len(out_data)
-        pos2 = pos1 + len_data
-        for x, y in [(x, y) for (x, y) in sound_dict if pos1 < y and pos2 >= x and (x, y) not in self._skip_list]:
+
+        position = idx % self._length
+        data_len = len(out_data)
+        for x, y in [(x, y) for (x, y) in sound_dict if position <= x < position + data_len]:
             sound, prob = sound_dict[x, y]
-            if pos1 <= x < pos2 and random() >= prob:
-                self._skip_list.append((x, y))
-                continue
-            start = max(pos1, x)
-            stop = min(pos2, y)
-            assert stop - start <= len_data, f"{len_data}  {stop - start}"
-            assert start - x >= 0, f"{start - x}"
-            assert stop - x <= len(sound), f"{stop - x} {len(sound)}"
-            out_data[0:stop - start] += sound[start - x:stop - x]
+            if random() < prob:
+                record_sound_buff(self.__buff, sound, position)
+
+        play_sound_buff(self.__buff, out_data, position)
+        zero_sound_buff(self.__buff, data_len, position)
 
 
 if __name__ == "__main__":
