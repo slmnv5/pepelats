@@ -25,7 +25,7 @@ class ExtendedCtrl(ManyLoopCtrl, MsgProcessor):
         self.__midi_drum: SimpleDrum
         midi_out = get_midi_out()
         self.__midi_drum = MidiDrum(midi_out) if midi_out else FakeMidiDrum(midi_out)
-        self.__audio_drum: SimpleDrum = AudioDrum()
+        self.__audio_drum = AudioDrum()
         ManyLoopCtrl.__init__(self, self.__audio_drum)
         self.__draw_info: DrawInfo = DrawInfo()
         logging.info(f"Prepared drums, audio: {self.__audio_drum} midi: {self.__midi_drum}")
