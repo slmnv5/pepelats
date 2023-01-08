@@ -17,7 +17,6 @@ class BaseDrum(FileFinder):
     _LEVEL2 = 2
     _BREAK = 3
 
-
     def __init__(self):
         FileFinder.__init__(self, "config/drum", False, "")
         self._length: int = 0

@@ -1,6 +1,7 @@
 import logging
 from random import random
-from typing import Dict, Any
+from typing import Any, Tuple
+from typing import List
 
 import numpy as np
 
@@ -17,11 +18,11 @@ class MidiDrum(SimpleDrum):
         self._load_all()
         self._out_port = out_port
 
-    def drum_from_pattern(self, pattern) -> Dict[int, Any]:
+    def drum_from_pattern(self, pattern) -> List[Tuple[int, float, Any]]:
         logging.debug(f"Preapring pattern: {pattern}")
         steps = pattern["steps"]
         accents = pattern["accents"]
-        result: Dict[int, Any] = dict()
+        result: List[Tuple[int, float, Any]] = list()
         for sound_name in [x for x in self._sounds if x in pattern]:
             notes = pattern[sound_name]
             notes = extend_list(notes, steps) if steps else notes
@@ -29,7 +30,7 @@ class MidiDrum(SimpleDrum):
 
         return result
 
-    def __drum_from_string(self, result: Dict[int, Any],
+    def __drum_from_string(self, result: List[Tuple[int, float, Any]],
                            sound_name: str, notes: str, accents: str) -> None:
         steps = len(notes)
         accents = extend_list(accents, steps)
@@ -43,7 +44,7 @@ class MidiDrum(SimpleDrum):
                 if is_midi_note(sound):
                     sound[2] = int(step_accent * self._volume * 127)
                 if step_prob:
-                    result[pos] = sound, step_prob
+                    result.append((pos, step_prob, sound))
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         sound_dict = self.get_sound_dict()
@@ -52,8 +53,7 @@ class MidiDrum(SimpleDrum):
 
         position = idx % self._length
         data_len = len(out_data)
-        for x in [x for x in sound_dict if position <= x < position + data_len]:
-            sound, prob = sound_dict[x]
+        for _, prob, sound in [tpl for tpl in sound_dict if position <= tpl[0] < position + data_len]:
             if random() < prob:
                 self._out_port.send(sound)
 
