@@ -1,0 +1,23 @@
+
+# Messages below control external MIDI drum:
+# _bar_msg, stop_msg, _bpm_msg, _volume_msg, _prog_msg
+# They look like: [0xB0, 11, 127] or [0xFA] and may contain variables (VOLUME, BPM)
+# If there are variables messages are evaluated just before sending
+
+# Variable used in MIDI messages:
+# BPM - beats per minute (ex. 123.39572), quarter note duration in seconds = 60 / BPM
+# COUNT - bar count since the start
+# VOLUME - external MIDI device volume
+# PATTERN - MIDI patch or program from the pattern_list
+
+# Methods used in messages:
+# TAP_TEMPO([90, 120, 127], BPM / 60, 5) - send tap tempo note #120 on quarter notes 5 times
+# FILL_BYTES(round(BMP * 100, 2), 3) - convert integer into list of three MIDI bytes for sys-ex messages
+# ex. BPM = 123.39572 the lets will be: 01 23 39
+
+
+# This tells which pattern number (aka program) to use
+# For any number from 0 to 127 -- pattern_list : list(range(128))
+
+
+[MESSAGES]

@@ -1,71 +1,66 @@
-# noinspection PyProtectedMember
-from typing import Any
-from typing import List
-from typing import Tuple, Union
+from __future__ import annotations
+
+from math import log10
 
 import numpy as np
 
-from utils.utilalsa import IN_CH
+from utils.utilconfig import MAX_SD_TYPE
 
 
-def calc_slices(buff_len: int, data_len: int, idx: int) -> Tuple[slice, Union[slice, None]]:
-    assert 0 < data_len <= buff_len, f"Must be: 0 < data_len {data_len} <= buff_len {buff_len}"
+def _calc_slices_lst(buff_len: int, data_len: int, idx: int) -> list[slice]:
+    """Slices that wraps over the end of buffer making it a ring buffer. idx is where we start getting data"""
+    if not buff_len or not data_len:
+        return [slice(0, 0), slice(0, 0)]
     idx1 = idx % buff_len
-    idx2 = (idx + data_len) % buff_len
+    wrap_len = min(data_len, buff_len)
+    idx2 = (idx + wrap_len) % buff_len
     if idx2 > idx1:
-        return slice(idx1, idx2), None
+        return [slice(idx1, idx2), slice(0, idx2 - idx1)]
     else:
-        return slice(idx1, buff_len), slice(0, idx2)
+        to_buff_end: int = buff_len - idx1
+        return [slice(idx1, buff_len), slice(0, idx2), slice(0, to_buff_end), slice(to_buff_end, to_buff_end + idx2)]
 
 
-def zero_sound_buff(buff: np.ndarray, data_len: int, idx: int) -> None:
-    """ zero buff starting with idx """
-    slice1, slice2 = calc_slices(len(buff), data_len, idx)
-    if slice2 is None:
-        buff[slice1] = 0
-    else:
-        buff[slice1] = 0
-        buff[slice2] = 0
-
-
-def record_sound_buff(buff: np.ndarray, data: np.ndarray, idx: int) -> None:
-    """ insert data into buff starting with idx """
-    assert buff.ndim == data.ndim
+def copy_to_left(buff: np.ndarray, data: np.ndarray, idx: int) -> None:
+    """ insert from data into buff starting with idx """
+    buff_len = len(buff)
     data_len = len(data)
-    if IN_CH == 1:
-        data = np.broadcast_to(data, (data_len, 2))
-    slice1, slice2 = calc_slices(len(buff), data_len, idx)
-    if slice2 is None:
-        buff[slice1] += data[:]
+    slice_lst = _calc_slices_lst(buff_len, data_len, idx)
+    if len(slice_lst) == 2:
+        buff[slice_lst[0]] += data[slice_lst[1]]
     else:
-        s1 = slice1.stop - slice1.start
-        s2 = slice2.stop - slice2.start
-        buff[slice1] += data[0:s1]
-        buff[slice2] += data[s1:s1 + s2]
+        buff[slice_lst[0]] += data[slice_lst[2]]
+        buff[slice_lst[1]] += data[slice_lst[3]]
 
 
-def play_sound_buff(buff: np.ndarray, data: np.ndarray, idx: int) -> None:
-    """ insert buff into data starting with idx """
-    assert type(buff) == type(data), f"{type(buff)}, {type(data)}"
-    assert buff.ndim == data.ndim
+def copy_to_right(buff: np.ndarray, data: np.ndarray, idx: int, zero_buff: bool = False) -> None:
+    """ insert from buff into data starting with idx.
+    If zero_buff=True empty buff after playing, this is needed for cyclical play of changing buffer """
+    buff_len = len(buff)
     data_len = len(data)
-    slice1, slice2 = calc_slices(len(buff), data_len, idx)
-    if slice2 is None:
-        data[:] += buff[slice1]
+    slice_lst = _calc_slices_lst(buff_len, data_len, idx)
+    if len(slice_lst) == 2:
+        data[slice_lst[1]] += buff[slice_lst[0]]
+        if zero_buff:
+            buff[slice_lst[0]] = 0
     else:
-        s1 = slice1.stop - slice1.start
-        data[:s1] += buff[slice1]
-        data[s1:] += buff[slice2]
+        data[slice_lst[2]] += buff[slice_lst[0]]
+        data[slice_lst[3]] += buff[slice_lst[1]]
+        if zero_buff:
+            buff[slice_lst[0]] = 0
+            buff[slice_lst[1]] = 0
 
 
-def get_stable_list(item: int, items: List[Any], max_size: int) -> Tuple[List[Any], List[int]]:
-    """ Sub list of items around item, if item changes list stay the same if item is still included
-     otherwise recalculated. List of item indexes is also returned """
-    idxs = list(range(0, len(items)))
-    lst_size = min(max_size, len(items))
-    start_id = (item // lst_size) * lst_size
-    stop_id = start_id + lst_size
-    if stop_id > lst_size:
-        return items[start_id:] + items[: stop_id % lst_size], idxs[start_id:] + idxs[: stop_id % lst_size]
+def trim_buffer(buff: np.ndarray, new_len: int, new_start: int) -> np.ndarray:
+    """ Trim ring buffer with wrap over the end """
+    buff_len = len(buff)
+    slice_lst = _calc_slices_lst(buff_len, new_len, new_start)
+    if len(slice_lst) == 2:
+        return buff[slice_lst[0]]
     else:
-        return items[start_id:stop_id], idxs[start_id:stop_id]
+        return np.concatenate((buff[slice_lst[0]], buff[slice_lst[1]]), axis=0)
+
+
+def vol_db(arr: np.ndarray) -> any:
+    ratio = max(0.0001, np.max(arr, initial=0) / MAX_SD_TYPE)
+    return round(20 * log10(ratio))

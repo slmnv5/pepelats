@@ -1,27 +1,26 @@
-# Pepelats - Software looper on Raspberry Pi.
+# Pepelats - Audio looper
 
 ## Features
 
-- Any number of song parts (verse/chorus/bridge) each made of parallel loops
-- Parallel loops in one part with different length: 0.25, 0.5, 1, 2, 3, 4, 5 ... of a bar.
+- Multiple song parts (verse/chorus/bridge)
+- Parallel loops of variable length: 0.25, 0.5, 1, 2, 3 ... of initial loop
 - Full history for "undo/redo", not only the latest change
-- Loops, parts may be added/deleted on the run
-- Drum machine with random patterns/breaks configureable in a text file
-- Drums sent to MIDI OUT port or played with internal sample sounds
-- Quantization - time of changing parts, recording is adjusted to keep the rhythm
+- Loops and parts added/deleted on the run
+- Quantization - time of changing parts, recording is adjusted
+- Drum machine with 3 drum types: Pattern drum, MIDI drum and Loop drum. MIDI drum can sync and control external MIDI
+  drum machine, Pattern drum supports randomization and Loop drum is just an audio loop always playing
 - Songs saved and loaded from SD card
-- Control by MIDI (via Bluetooth or USB) configureable in a text file
-- Typing keyboard may be used as MIDI controller
-- Text console shows loop position, state, length, volume and menu (optional)
+- Control of looper by MIDI (Bluetooth or USB) or by computer keyboard
 - Optional graphics mode with LCD touch screen menu
 
 ## Installation:
 
-Install Raspberry Pi OS Lite, install LCD screen driver. To make text readable on 3.5 inch LCD select font Terminus 16x32
+Install Raspberry Pi OS Lite, LCD screen with driver.
+To make text readable on 3.5 inch LCD select font Terminus 16x32
 using command: sudo dpkg-reconfigure console-setup
 
-Install dependencies running script [install_dependencies.sh](etc/scripts/install_dependencies.sh)
-Clone this repository:
+Install dependencies running script [install_dependencies.sh](config/etc/scripts/install_dependencies.sh)
+Clone repository:
 
 - cd ~/; git clone https://github.com/slmnv5/pepelats
 

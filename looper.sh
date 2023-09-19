@@ -1,14 +1,10 @@
 #!/bin/sh
 
 TMP=$(dirname "$0")
-cd "$TMP"
-export ENV_ROOT_DIR="$(pwd -P)"
-cd "$ENV_ROOT_DIR/src" || exit 1
-
-CONFIG_FILE="$ENV_ROOT_DIR/.saved_env.sh"
-touch "$CONFIG_FILE"
-. "$CONFIG_FILE"
-
+cd "$TMP" || exit 1
+RDIR="$(pwd -P)"
+mkdir "$RDIR/save_song"
+cd "$RDIR/src" || exit 1
 
 found=$(pgrep --full start_looper.py)
 if [ -n "$found" ]; then
@@ -16,7 +12,14 @@ if [ -n "$found" ]; then
   exit 1
 fi
 
+sleep 5
+
+cat "$RDIR/log.txt" >> "$RDIR/log.bak"
+date > "$RDIR/log.txt"
+
+# disable assert
 CODE_OPTIMIZE="-O"
+# use sudo and computer keyboard
 SUDO=""
 for var in "$@"; do
   if [ "$var" = "--debug" ] || [ "$var" = "--info" ]; then
@@ -27,6 +30,7 @@ for var in "$@"; do
   fi
 done
 
+
 PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py  $*"
 echo "$PYTHON_CMD"
 
@@ -36,9 +40,9 @@ stty -echo
 
 while true; do
   killall -s 9 -w -v python
-  . "$CONFIG_FILE"
-  sleep 2
+  if [ -f $RDIR/connect_bt.sh ]; then $RDIR/connect_bt.sh; fi
   $PYTHON_CMD
+  sleep 5
 done
 
 sudo dmesg -E

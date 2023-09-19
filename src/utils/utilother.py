@@ -1,175 +1,127 @@
-import os
-from json import dump, load
-# noinspection PyProtectedMember
-from typing import Dict, Any
-from typing import List, Optional
-from typing import TypeVar, Generic
+from __future__ import annotations
 
-from utils.utilnumpy import get_stable_list
-from utils.utilconfig import ENV_ROOT_DIR
+import os
+from typing import TypeVar, Generic, Callable
 
 T = TypeVar('T')
+
+
+def _stable_sub_list(item: int, items: list[any], sub_list_size: int) -> list[any]:
+    """ Sub list of elements surrounding item. If item changes sub list stays the same if
+     item is still included in the sub list. Otherwise, all is recalculated."""
+    lst_size = min(sub_list_size, len(items))
+    start_id = (item // lst_size) * lst_size
+    stop_id = start_id + lst_size
+    if stop_id > lst_size:
+        return items[start_id:] + items[: stop_id % lst_size]
+    else:
+        return items[start_id:stop_id]
 
 
 class DrawInfo:
     def __init__(self):
         self.update_method: str = ""
         self.header: str = ""
-        self.text: str = ""
+        self.description: str = ""
         self.content: str = ""
         self.loop_seconds: float = 0
         self.loop_position: float = 0
-        self.is_stop: bool = True
         self.is_rec: bool = False
 
     def __str__(self):
-        return f"{self.update_method}|{self.loop_seconds:2F}|" \
-               f"{self.loop_position:2F}|{self.is_stop}|{self.is_rec}"
+        return f"CALL:{self.update_method}|L:{self.loop_seconds:05.2F}|" \
+               f"P:{self.loop_position:.3F}|REC:{self.is_rec}"
 
 
 class CollectionOwner(Generic[T]):
-    """Class for list of items with one index.
-    It is parent for SongPart, Filefinder"""
+    """Class for list of items with index.
+    It is a parent for SongPart, FileFinder
+    It always has at least one element - never empty. """
 
-    def __init__(self, first: T):
-        self.__items: List[T] = []
-        self.__items.append(first)
-        self.__undo: List[T] = []
-        self.__id: int = 0
+    def __init__(self, first: T | list[T]):
+        self.__items: list[T] = list()
+        if type(first) == list:
+            self.__items.extend(first)
+        else:
+            self.__items.append(first)
+        if not self.__items:
+            raise RuntimeError(f'Error: CollectionOwner init with empty collection')
+        self.__idx: int = 0
+
+    def selected_idx(self) -> int:
+        return self.__idx
+
+    def add_item(self, i: T) -> None:
+        if i not in self.__items:
+            self.__items.append(i)
+        self.__idx = self.__items.index(i)
+
+    def find_item_idx(self, i: T) -> int:
+        if i in self.__items:
+            return self.__items.index(i)
+        return -1
+
+    def select_idx(self, i: int) -> T:
+        self.__idx = i % len(self.__items)
+        return self.__items[self.__idx]
 
     def item_count(self) -> int:
         return len(self.__items)
 
-    def get_id(self) -> int:
-        return self.__id
+    def selected_item(self) -> T:
+        return self.__items[self.__idx]
 
-    def set_id(self, k: int) -> None:
-        self.__id = k
-
-    def apply_to_each(self, method, use_undo: bool = False) -> None:
-        lst = self.__items + (self.__undo if use_undo else [])
-        for x in lst:
+    def apply_to_each(self, method) -> None:
+        for x in self.__items:
             method(x)
 
-    def find_first(self, method) -> Optional[T]:
-        return next((x for x in self.__items if method(x)), None)
-
-    def delete(self) -> T:
+    def delete_selected(self) -> T | None:
         if self.item_count() <= 1:
             return None
-        item = self.__items.pop(self.__id)
-        self.__id = 0
+        item = self.__items.pop(self.__idx)
+        self.__idx = 0
         return item
 
-    def undo(self) -> bool:
-        if self.item_count() <= 1:
-            return False
-        item = self.__items.pop()
-        self.__id = 0
-        self.__undo.append(item)
-        return True
-
-    def redo(self) -> bool:
-        if not self.__undo:
-            return False
-        item = self.__undo.pop()
-        self.__items.append(item)
-        return True
-
-    def get_first(self) -> T:
-        return self.__items[0]
-
-    def find_item(self, item: T) -> int:
-        return self.__items.index(item)
-
-    def attach(self, item: T) -> None:
-        """ add item only if not there, set id to added item"""
-        assert isinstance(item, type(self.__items[0]))
-        if item not in self.__items:
-            self.__items.append(item)
-        self.__undo.clear()
-        self.__id = self.__items.index(item)
-
-    def get_item(self) -> T:
-        return self.__items[self.__id]
-
-    def set_item(self, item: T) -> None:
-        self.__items[self.__id] = item
-
-    def get_str(self, fixed: T = None) -> str:
-        item_sub_list, id_sub_list = get_stable_list(self.__id, self.__items, 5)
-        assert len(item_sub_list) > 0 and len(id_sub_list) > 0
-        fixed_id = -1
-        if fixed:
-            assert fixed in self.__items
-            fixed_id = self.__items.index(fixed)
-
+    def get_str(self, next_id: int = -1, method: Callable = None) -> str:
+        next_item = None
+        if 0 <= next_id < len(self.__items):
+            next_item = self.__items[next_id]
+        item_sub_list = _stable_sub_list(self.__idx, self.__items, 5)
+        curr_item = self.__items[self.__idx]
         result: str = ""
-        for k in range(len(item_sub_list)):
-            item: Any = item_sub_list[k]
-            index: int = id_sub_list[k]
-            item_str = str(index) + ") " + str(item)
-            if index == fixed_id:
-                prefix = "*"
-            elif index == self.__id:
-                prefix = "~"
+        for item in item_sub_list:
+            item_str = str(item) if method is None else method(item)
+            if item == curr_item:
+                result += f"*{item_str}\n"
+            elif item == next_item:
+                result += f"~{item_str}\n"
             else:
-                prefix = "."
-            result += prefix + item_str + '\n'
+                result += f"-{item_str}\n"
 
         return result[:-1]
 
-    def iterate(self, go_fwd: bool) -> None:
-        self.__id += 1 if go_fwd else -1
-        if self.__id >= self.item_count():
-            self.__id = 0
-        if self.__id < 0:
-            self.__id = self.item_count() - 1
-
-    def __str__(self):
-        return f"{len(self.__items):02}/{len(self.__undo):02}"
-
-
-# noinspection PyUnreachableCode
-class CollectionOwnerExt(CollectionOwner[T]):
-
-    def __init__(self, first: T):
-        CollectionOwner.__init__(self, first)
-        self.__fixed: T = first
-
-    def get_fixed(self) -> T:
-        return self.__fixed
-
-    def set_fixed(self, item: T) -> None:
-        self.attach(item)
-        self.__fixed = item
-
-    def fixed_id(self) -> int:
-        return self.find_item(self.__fixed)
-
-    def get_str(self, fixed: T = None) -> str:
-        return super().get_str(self.__fixed)
+    def iterate(self, steps: int = 1) -> None:
+        self.__idx += steps
+        self.__idx %= self.item_count()
 
 
 class FileFinder(CollectionOwner[str]):
-
-    def __init__(self, directory: str, is_file: bool, end_with: str):
+    def __init__(self, dname: str, is_file: bool, end_with: str):
+        assert os.path.isdir(dname)
         self.__end_with: str = end_with
-        self.__dir: str = ENV_ROOT_DIR + "/" + directory
+        self.__dir: str = dname
+        self.__is_file = is_file
 
-        found_items: List[str] = [x for x in os.listdir(str(self.__dir))
-                                  if self.__chk_match(self.__dir, x, is_file)]
+        lst: list[str] = [x for x in filter(self.__match, os.listdir(self.__dir))]
+        lst.sort(key=lambda x: os.path.getmtime(self.__dir + os.sep + x))
 
-        found_items.sort()
-        if not found_items:
-            found_items.append("")
+        if not lst:
+            lst.append("")
 
-        CollectionOwner.__init__(self, found_items[0])
-        for item in found_items[1:]:
-            self.attach(item)
+        CollectionOwner.__init__(self, lst)
 
-    def __chk_match(self, d: str, f: str, is_file: bool) -> bool:
-        match1 = is_file == os.path.isfile(os.path.join(d, f))
+    def __match(self, f: str) -> bool:
+        match1 = self.__is_file == os.path.isfile(self.__dir + os.sep + f)
         match2 = f.endswith(self.__end_with)
         return match1 and match2
 
@@ -177,50 +129,52 @@ class FileFinder(CollectionOwner[str]):
         return self.__dir
 
     def get_full_name(self) -> str:
-        return os.path.join(self.__dir, self.get_item())
+        return os.path.join(self.__dir, self.selected_item())
 
     def get_end_with(self) -> str:
         return self.__end_with
 
-    def delete(self, save_undo: bool = False) -> None:
+    def delete_selected(self) -> T | None:
         path = self.get_full_name()
-        deleted = CollectionOwner.delete(self)
+        deleted = super().delete_selected()
         if deleted and os.path.isfile(path):
             os.remove(path)
+        return deleted
 
 
-class JsonDict:
-    def __init__(self, filename: str):
-        self.__dict: Dict[str, Any] = dict()
-        self.__filename: str = filename
-        with open(self.__filename) as f:
-            self.__dict = load(f)
-        if not isinstance(self.__dict, dict):
-            raise RuntimeError("JSON file must have dictionary {self.__filename}")
-
-    def dict(self) -> Dict:
-        return self.__dict
-
-    def save(self) -> None:
-        if self.__filename:
-            with open(self.__filename, "w") as f:
-                dump(self.__dict, f, indent=2)
-
-    def get_filename(self) -> str:
-        return self.__filename
-
-    def get_dir(self) -> str:
-        return os.path.dirname(self.__filename)
-
-    def get(self, k, default) -> Any:
-        return self.__dict.get(k, default)
-
-    def set(self, k, v) -> None:
-        self.__dict[k] = v
-
-    def set_defaults(self, default_dic: Dict) -> None:
-        self.__dict = dict(default_dic, **self.__dict)
+def euclid_spacing(steps: int, beats: int, shift: int) -> list[int]:
+    """ Spaces beats in steps in most even way. Used in Euclid drum patterns """
+    assert steps and beats
+    beats = min(beats, steps)
+    dist: float = steps / beats  # exact distance between beats
+    beat_steps = [round(k * dist) for k in range(beats)]
+    beat_steps = [(-shift + k) % steps for k in beat_steps]
+    return beat_steps
 
 
-if __name__ == "__main__":
-    pass
+def euclid_pattern_str(steps: int, beats: int, shift: int, accents: int) -> str:
+    beat_steps = euclid_spacing(steps, beats, shift)
+    lst = ['.'] * steps
+    for k in beat_steps:
+        lst[k] = '*' if accents > 0 and k % accents == 0 else '!'
+    return "".join(lst)
+
+
+def lst_for_slice(slc: int, length: int, slices: int) -> list[int]:
+    """ Ex. slc = 1 for 3 slices in range(9) will be [3, 4, 5], Slices may have different sizes """
+    lst = euclid_spacing(length, slices, 0)
+    if slc > len(lst) - 1:
+        slc = len(lst) - 1
+    lst.append(length)
+    return list(range(lst[slc], lst[slc + 1]))
+
+
+def slice_for_elm(elm: int, length: int, slices: int) -> int:
+    """ Ex. elm = 1 for 3 slices in range(9), it will be 0 as slice #0 is  [0, 1, 2] """
+    elm = min(length - 1, elm)
+    elm = max(0, elm)
+    lst = euclid_spacing(length, slices, 0)
+    for i in range(slices - 1):
+        if lst[i] <= elm < lst[i + 1]:
+            return i
+    return slices - 1

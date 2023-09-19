@@ -1,20 +1,25 @@
 import random
 
-words1 = ['we', 'go', 'to', 'how', 'in', 'pit', 'can', 'get', 'us', 'use', 'fat', 'of', 'us', 'are', 'any', 'one', 'of',
-          'but', 'try', 'sad', 'old', 'new', 'hot', 'all', 'be', 'use', 'art', 'do', 'off', 'put', 'cat', 'in', 'pit',
-          'man', 'he', 'she', 'see', 'out', 'up']
+words1 = ["brave", "slim", "wise", "smart", "good", "new", "first", "last", "long", "great", "little", "own", "other",
+          "old", "right", "big", "high", "his", "small", "large", "next", "early", "young", "fast", "her",
+          "fit", "same", "able", "happy", "nice", "deep", "black", "blue", "green"]
 
-words2 = ['here', 'learn', 'about', 'moon', 'random', 'sent', 'like', 'secret', 'mode', 'slim', 'fart', 'many', 'only',
-          'fame', 'fake', 'price', 'soon', 'rock', 'with', 'mood', 'happy', 'warm', 'cold', 'happy', 'happy', 'happy',
-          'heavy', 'learn', 'post', 'ways', 'that', 'will', 'this', 'cover', 'milk', 'news', 'when', 'ways', 'lost',
-          'love', 'must', 'sing', 'song', 'mine', 'this', 'them', ]
+words2 = ["year", "people", "way", "day", "man", "thing", "woman", "life", "child", "world", "school",
+          "state", "family", "student", "group", "country", "chair", "hand", "part", "place", "case",
+          "week", "company", "system", "program", "question", "work", "wife", "number", "night",
+          "point", "home", "water", "room", "mother", "area", "money", "story", "fact", "month", "lot",
+          "right", "study", "book", "eye", "job", "word", "line", "issue", "side", "kind", "head",
+          "house", "service", "friend", "father", "power", "hour", "game", "line", "end", "member", "law",
+          "car", "city", "link", "name", "president", "team", "minute", "idea", "kid", "body",
+          "case", "back", "parent", "face", "others", "level", "office", "door", "health", "person",
+          "art", "war", "history", "party", "result", "change", "morning", "reason", "smile", "girl",
+          "guy", "moment", "air", "teacher", "force", "run", "smile", "moon", "pen", "ring", "square"]
 
 
 def generate_name() -> str:
-    lst = random.choices(words1, k=1) + random.choices(words2, k=1) + \
-          random.choices(words1, k=2)
-    return "_".join(lst)
-
-
-if __name__ == "__main__":
-    pass
+    while True:
+        wrd1 = random.choice(words1)
+        wrd2 = random.choice(words2)
+        if len(wrd1) + len(wrd2) < 18:
+            break
+    return f"{wrd1}_{wrd2}"

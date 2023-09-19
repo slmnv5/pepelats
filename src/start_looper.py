@@ -1,96 +1,57 @@
-import logging
-import sys
-import time
+import os
 import traceback
-from multiprocessing import Pipe, Process
-from multiprocessing import connection
-from threading import Thread
+from multiprocessing import Process, Queue
 
-from control import ExtendedCtrl
-from mvc.controlfactory import ControlFactory
-from mvc.menucontrol import MenuLoader
-from utils.utilalsa import get_midi_in
-from utils.utilconfig import ENV_ROOT_DIR
-from utils.utilport import KbdMidiPort, MyRtmidi
+from control.looper import Looper
+from mvc.menuclient import MenuClient
+from utils.utilfactory import get_screen
+from utils.utillog import get_my_log
+from utils.utilportin import get_pedal_control
 
-root = logging.getLogger()
-for handler in logging.root.handlers:
-    logging.root.removeHandler(handler)
-
-handler = None
-file = ENV_ROOT_DIR + "/log.txt"
-tmp = logging.WARN
-if "--debug" in sys.argv:
-    tmp = logging.DEBUG
-    handler = logging.StreamHandler(sys.stdout)
-elif "--info" in sys.argv:
-    tmp = logging.INFO
-    handler = logging.StreamHandler(sys.stdout)
-
-fmt_str = '%(levelname)s > %(message)s'
-
-logging.basicConfig(force=True, level=tmp, filename=file, filemode='a', format=fmt_str)
-if handler:
-    handler.setLevel(tmp)
-    handler.setFormatter(logging.Formatter(fmt=fmt_str))
-    root.addHandler(handler)
-
-logging.critical("=============Starting log==============")
-
-
-# c_handler = logging.StreamHandler()
-# logging.getLogger().addHandler(c_handler)
+my_log = get_my_log(__name__)
 
 
 # noinspection PyBroadException
-def do_looper(recv_looper: connection.Connection, send_view: connection.Connection) -> None:
-    looper = ExtendedCtrl(recv_looper, send_view)
-    looper.process_messages()
+def do_looper(q_looper: Queue, q_screen: Queue) -> None:
+    # noinspection PyBroadException
+    try:
+        looper = Looper(q_looper, q_screen)
+        looper.start()
+    except Exception:
+        my_log.error(f"============Error: {traceback.format_exc()}")
+        os.system("killall -9 python")
 
 
 # noinspection PyBroadException
-def do_screenview(control_factory: ControlFactory) -> None:
-    scr_view = control_factory.get_screen_control()
-    scr_view.monitor()
+def do_screen(q_looper: Queue, q_screen: Queue) -> None:
+    # noinspection PyBroadException
+    try:
+        scr_view: MenuClient = get_screen(q_screen, q_looper)
+        scr_view.start()
+    except Exception:
+        my_log.error(f"============Error: {traceback.format_exc()}")
+        os.system("killall -9 python")
 
 
 def go() -> None:
-    menu_loader = MenuLoader("config/menu", "play", "0")
-    recv_view, send_view = Pipe(False)  # screen update messages
-    recv_looper, send_looper = Pipe(False)  # looper control messages
+    q_screen = Queue()  # screen update messages
+    q_looper = Queue()  # looper control messages
 
-    if "--kbd" in sys.argv:
-        midi_in = KbdMidiPort()
-    else:
-        midi_in = get_midi_in()
-        if not midi_in:
-            raise RuntimeError("Cannot open required MIDI IN port")
-        midi_in = MyRtmidi(midi_in)
+    p1 = Process(target=do_looper, args=(q_looper, q_screen), name="looper", daemon=True)
+    p1.start()
+    p2 = Process(target=do_screen, args=(q_looper, q_screen), name="screen", daemon=True)
+    p2.start()
 
-    control_factory = ControlFactory(midi_in, recv_view, send_looper, menu_loader)
-
-    pr1 = Process(target=do_looper, args=(recv_looper, send_view), name="looper", daemon=True)
-    pr1.start()
-
-    pr2 = Thread(target=do_screenview, args=(control_factory,), name="screen", daemon=True)
-    pr2.start()
-
-    time.sleep(2)  # wait other objects to start
-
-    pedal_control = control_factory.get_pedal_control()
-
-    if not pr1.is_alive():
-        raise RuntimeError("Looper process did exit already")
-    if not pr2.is_alive():
-        raise RuntimeError("Screen thread did exit already")
-
-    pedal_control.monitor()
+    # noinspection PyBroadException
+    try:
+        get_pedal_control(q_looper).start()
+    except Exception as ex:
+        my_log.error(f"Error: {ex}\n{traceback.format_exc()}")
+        os.system("killall -9 python")
+    finally:
+        os.kill(p1.pid, 9)
+        os.kill(p2.pid, 9)
 
 
 if __name__ == "__main__":
-    # noinspection PyBroadException
-    try:
-        go()
-    except Exception:
-        logging.error(f"============Error: {traceback.format_exc()}")
-        sys.exit(2)
+    go()

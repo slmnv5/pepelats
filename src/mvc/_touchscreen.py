@@ -1,11 +1,10 @@
-import logging
 from ctypes import cdll, c_int, c_void_p, c_char_p, c_double, c_bool
 
-from utils.utilconfig import ENV_ROOT_DIR, ConfigName
+from utils.utilconfig import find_path, ConfigName
+from utils.utillog import get_my_log
 
-LIB_FILE = ENV_ROOT_DIR + f"/{ConfigName.shared_lib}"
-
-lib = cdll.LoadLibrary(LIB_FILE)
+my_log = get_my_log(__name__)
+lib = cdll.LoadLibrary(find_path(ConfigName.shared_lib))
 
 # Each one of the below calls is a C function call contained
 lib.createTouchScreen.argtypes = [c_int]
@@ -44,13 +43,13 @@ lib.deleteTouchScreen.argtypes = [c_void_p]
 
 
 class TouchScreen:
-    """Load shared library to read touch screan clicks and show looper state and menu.
+    """Load shared library to read touch screen clicks and show looper state and menu.
     Buttons made enclosing text [in brackets]. When click on this button
-    get_click_event() returns text in brakets
+    get_click_event() returns text in brackets
     """
 
     def __init__(self, fb_id: int):
-        self.tch_scr = lib.createTouchScreen(fb_id)
+        self.tch_scr: c_void_p = lib.createTouchScreen(fb_id)
         if not self.tch_scr:
             raise RuntimeError("Shared library error, cannot crate screen")
 
@@ -60,50 +59,50 @@ class TouchScreen:
     def _clear_screen(self) -> int:
         result = lib.clearScreen(self.tch_scr)
         if result < 0:
-            logging.error("TouchScreen: error _clear_screen")
+            my_log.error("TouchScreen: error _clear_screen")
         return result
 
     def _get_cols(self) -> int:
         result = lib.getCols(self.tch_scr)
         if result < 0:
-            logging.error("TouchScreen: error _get_cols")
+            my_log.error("TouchScreen: error _get_cols")
         return result
 
     def _get_rows(self) -> int:
         result = lib.getRows(self.tch_scr)
         if result < 0:
-            logging.error("TouchScreen: error _get_rows")
+            my_log.error("TouchScreen: error _get_rows")
         return result
 
     def _set_row_text(self, row: int, text: str, r: int, g: int, b: int) -> int:
         result = lib.setRowText(self.tch_scr, row, text.encode('utf-8'), r, g, b)
         if result < 0:
-            logging.error("TouchScreen: error _set_row_text")
+            my_log.error("TouchScreen: error _set_row_text")
         return result
 
     def _put_square(self, x: int, y: int, width: int, height: int, r: int, g: int, b: int) -> int:
         """colored square on screen"""
         result = lib.putSquare(self.tch_scr, x, y, width, height, r, g, b)
         if result < 0:
-            logging.error("TouchScreen: error _put_square")
+            my_log.error("TouchScreen: error _put_square")
         return result
 
     def _put_square_inv(self, x: int, y: int, width: int, height: int) -> int:
         """invert all pixels in a square"""
         result = lib.putSquareInv(self.tch_scr, x, y, width, height)
         if result < 0:
-            logging.error("TouchScreen: error _put_square_inv")
+            my_log.error("TouchScreen: error _put_square_inv")
         return result
 
-    def _set_loop(self, loop_sec: float, loop_pos: float, is_rec: bool, is_stop: bool) -> int:
-        result = lib.setLoop(self.tch_scr, loop_sec, loop_pos, is_rec, is_stop)
+    def _set_loop(self, loop_sec: float, loop_pos: float, is_rec: bool) -> int:
+        result = lib.setLoop(self.tch_scr, loop_sec, loop_pos, is_rec, False)
         if result < 0:
-            logging.error("TouchScreen: error _set_loop")
+            my_log.error("TouchScreen: error _set_loop")
         return result
 
     def _get_click_event_word(self) -> str:
         bytes_arr = lib.getClickEventWord(self.tch_scr)
-        return bytes_arr.decode('utf-8')
+        return bytes_arr.decode(encoding='utf-8', errors='backslashreplace')
 
     def _delete_screen(self) -> None:
         lib.deleteTouchScreen(self.tch_scr)
@@ -112,9 +111,5 @@ class TouchScreen:
     def _set_log_level(lvl: int) -> int:
         result = lib.setLogLevel(lvl)
         if result < 0:
-            logging.error("TouchScreen: error _set_log_level")
+            my_log.error("TouchScreen: error _set_log_level")
         return result
-
-
-if __name__ == "__main__":
-    pass

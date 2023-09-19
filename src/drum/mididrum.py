@@ -1,64 +1,180 @@
-import logging
-from random import random
-from typing import Any, Tuple
-from typing import List
+from __future__ import annotations
+
+from multiprocessing import Queue
+from threading import Thread
 
 import numpy as np
 
-from drum._utildrum import load_midi, extend_list, position_with_swing, is_midi_note
-from drum.simpledrum import SimpleDrum
+from drum.basedrum import BaseDrum
+from utils.utilalsa import int_to_bytes
+from utils.utilconfig import find_path, load_ini_section
+from utils.utillog import get_my_log
+from utils.utilother import FileFinder
+from utils.utilportout import MidiOutWrap
+
+my_log = get_my_log(__name__)
 
 
-class MidiDrum(SimpleDrum):
-    """ MIDI Drum version sending configurable MIDI messages and sysex """
+class MidiDrum(BaseDrum):
+    """Sends MIDI messages as configured in midi.ini
+    Sys-ex message may be sent (_bpm_msg) to set up and start drum machine.
+    For later sync at start of each bar a message (_bar_msg) is sent.
+    List of all control messages in INI file.
+    """
+    _MSG_LIST = ['_bar_msg', '_bpm_msg', '_volume_msg', '_prog_msg', '_progs_param', '_stop_msg']
+    _KEY_LIST = ["BPM", "COUNT", "VOLUME", "PROG", "FILL_BYTES"]
 
-    def __init__(self, out_port):
-        SimpleDrum.__init__(self)
-        self._sounds = load_midi()
-        self._load_all()
-        self._out_port = out_port
+    def __init__(self):
+        BaseDrum.__init__(self)
+        self._dname = find_path("config/drum/midi")
+        self._ff = FileFinder(self._dname, True, ".ini")
+        assert self._ff.selected_item()
+        # ======== MIDI specific ===============
+        self._stopped: bool = True
+        self._midi_out = MidiOutWrap()
+        self._volume: float = 0.7  # volume sent to MIDI out port
+        self._count: int = 0  # counter of bars since start
+        self._simple_msg_dic: dict[str, list[list[int] | int]] = dict()  # list of plain MID messages
+        self._param_msg_dic: dict[str, any] = dict()  # list of messages to be evaluated
+        self._queue = Queue()
+        Thread(target=self._send_msg, daemon=True).start()
 
-    def _drum_from_string(self, result: List[Tuple[int, float, Any]],
-                          sound_name: str, notes: str, accents: str) -> None:
-        steps = len(notes)
-        accents = extend_list(accents, steps)
-        step_len = self._length // steps
-        sound = self._sounds[sound_name]
-        for step_number in range(steps):
-            if notes[step_number] != '.':
-                step_prob = self._char2float(notes[step_number])
-                step_accent = self._char2float(accents[step_number])
-                pos = position_with_swing(step_number, step_len, self._swing)
-                if is_midi_note(sound):
-                    sound[2] = int(step_accent * self._volume * 127)
-                if step_prob:
-                    result.append((pos, step_prob, sound))
+    def _send_msg(self) -> None:
+        while True:
+            msg = self._queue.get()
+            if msg in self._simple_msg_dic:
+                my_log.debug(f"Simple message: {msg}")
+                self._send_midi(self._simple_msg_dic[msg])
+            elif msg in self._param_msg_dic:
+                local_vars = {"BPM": self._bpm, "COUNT": self._count, "VOLUME": self._volume,
+                              "PROG": self._get_prog(), "FILL_BYTES": self._fill_bytes}
+                evaluated_msg = self._eval(self._param_msg_dic[msg], local_vars)
+                my_log.debug(f"Evaluated message: {evaluated_msg}")
+                if evaluated_msg:
+                    self._send_midi(evaluated_msg)
+            else:
+                my_log.info(f"Not found MIDI message: {msg}")
+
+    @staticmethod
+    def _eval(expr: str, local_vars: dict[str, any]) -> list[any]:
+        if not expr:
+            return list()
+        # noinspection PyBroadException
+        try:
+            return eval(expr, None, local_vars)
+        except Exception as ex:
+            my_log.error(f"Evaluation error: {ex} in expression: {expr}")
+            return list()
+
+    def _get_prog(self) -> int:
+        if 0 <= self._ptn_idx < len(self._ptn_lst):
+            return self._ptn_lst[self._ptn_idx]
+        else:
+            return 0
+
+    def get_config(self) -> str:
+        return self._ff.selected_item()
+
+    def _set_bar_len(self, bar_len: int) -> None:
+        super()._set_bar_len(bar_len)
+        self._queue.put("_bpm_msg")
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        sound_list = self._get_sound_list()
-        if not sound_list:
+        if not self._bar_len or self._stopped:
             return
+        if idx % self._bar_len == 0:
+            self._queue.put("_bar_msg")
+            self._count += 1
 
-        position = idx % self._length
-        position2 = position + len(out_data)
-        for _, step_prob, sound in [tpl for tpl in sound_list if position <= tpl[0] < position2]:
-            if random() < step_prob:
-                self._play_sound(sound)
+    def random_drum(self) -> None:
+        super().random_drum()
+        self._queue.put("_prog_msg")
 
-    def _play_sound(self, sound) -> None:
-        self._out_port.send(sound)
+    def change_drum_level(self, chg: int) -> None:
+        super().change_drum_level(chg)
+        self._queue.put("_prog_msg")
 
+    def change_volume(self, chg: float) -> None:
+        tmp = self._volume * chg
+        tmp = min(1., tmp)
+        tmp = max(0.05, tmp)
+        if tmp != self._volume:
+            self._volume = tmp
+            self._queue.put("_volume_msg")
 
-class FakeMidiDrum(MidiDrum):
-    def __init__(self, out_port):
-        MidiDrum.__init__(self, out_port)
-        self.__count: int = 0
+    def get_volume(self) -> float:
+        return self._volume
 
-    def _play_sound(self, sound) -> None:
-        self.__count += 1
-        if self.__count % 10 == 0:
-            logging.info(f"FakeMidiDrum send: {sound}")
+    def _send_midi(self, msg: list[list[int] | int]) -> None:
+        assert type(msg) == list and all(type(x) in [list, int] for x in msg), f"Message: {msg}"
+        if msg and isinstance(msg[0], int):
+            self._midi_out.port.send_message(msg)
+        else:
+            for m in [x for x in msg if x and isinstance(x[0], int)]:
+                self._midi_out.port.send_message(m)
 
+    @staticmethod
+    def _fill_bytes(param: float, byte_count: int) -> list[int]:
+        param = round(param)
+        lst = int_to_bytes(param, byte_count)
+        return lst
 
-if __name__ == "__main__":
-    pass
+    def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
+        self.stop_drum()
+        if config:
+            k = self._ff.find_item_idx(config)
+            self._ff.select_idx(k)
+
+        fname = self._ff.get_full_name()
+        dic = load_ini_section(fname, "MIDI")
+        pname = dic.get("midi_out")
+        self._midi_out.get_port(pname)
+        self._make_evals(bar_len)
+
+    def _make_evals(self, bar_len: int):
+        fname = self._ff.get_full_name()
+        dic: dict[str, str] = load_ini_section(fname, "MESSAGES")
+        self._param_msg_dic.clear()
+        self._simple_msg_dic.clear()
+
+        for k, v in [(x, y) for (x, y) in dic.items() if x in self._MSG_LIST and y and "__" not in y]:
+            has_params = any(x in v for x in self._KEY_LIST)
+            if has_params:
+                try:
+                    compiled_msg = compile(v, '<string>', 'eval')
+                    self._param_msg_dic[k] = compiled_msg
+                except Exception as ex:
+                    my_log.error(f"Error: {ex} in param. evaluation of: {k}:{v}")
+            else:
+                evaluated_msg = self._eval(v, dict())
+                if not evaluated_msg:
+                    my_log.error(f"Failed simple evaluation of: {k}:{v}")
+                else:
+                    self._simple_msg_dic[k] = evaluated_msg
+        bar_len = self._bar_len if bar_len is None else bar_len
+        self._set_bar_len(bar_len)
+        self._ptn_lst = self._simple_msg_dic.get("_progs_param", [list(range(128))])
+        my_log.info(f"Loaded MIDI drum, simple messages: {self._simple_msg_dic}")
+        my_log.info(f"Loaded MIDI drum, param. messages: {self._param_msg_dic.keys()}")
+
+    def stop_drum(self) -> None:
+        self._queue.put("_stop_msg")
+        self._stopped = True
+
+    def start_drum(self) -> None:
+        """ To start drums in time we put them in _bar_msg_list """
+        self._stopped = False
+        self._count = -1
+
+    def show_drum_config(self) -> str:
+        return self._ff.get_str()
+
+    def iterate_drum_config(self, steps: int) -> None:
+        self._ff.iterate(steps)
+
+    def show_drum_param(self) -> str:
+        base_info = super().show_drum_param()
+        port = f"{self._midi_out.name}"
+        is_ok = f"{self._midi_out.port.is_port_open()}"
+        config = self.get_config()
+        return f"{base_info}\nport OK: {is_ok}/{port}\nconfig: {config}"

@@ -1,86 +1,65 @@
-import json
-import logging
-from typing import Optional
+from math import ceil, log10
 
 import numpy as np
-import rtmidi
-import sounddevice as sd
-from rtmidi.midiutil import open_midiinput, open_midioutput
+import sounddevice
 
-from utils.utilconfig import SD_TYPE, MAX_LEN, ENV_USB_AUDIO_NAMES, ENV_MIDI_IN_PORT, ENV_MIDI_OUT_PORT
-
-
-def get_midi_in() -> Optional[rtmidi.MidiIn]:
-    # noinspection PyBroadException
-    try:
-        midi_in, _ = open_midiinput(ENV_MIDI_IN_PORT, interactive=False)  # may throw
-        return midi_in
-    except Exception:
-        logging.error(f"Cannot open port MIDI IN: {ENV_MIDI_IN_PORT}")
-        return None
-
-
-def get_midi_out() -> Optional[rtmidi.MidiOut]:
-    # noinspection PyBroadException
-    try:
-        midi_out, _ = open_midioutput(ENV_MIDI_OUT_PORT, interactive=False)
-        return midi_out
-    except Exception:
-        logging.error(f"Cannot open port MIDI OUT: {ENV_MIDI_OUT_PORT}")
-        return None
-
-
-def find_usb() -> None:
-    """Look for USB Audio device and set it default"""
-
-    try:
-        new_str = ENV_USB_AUDIO_NAMES.strip(' ,').replace("'", "").replace('"', '').replace(',', '","')
-        usb_audio = json.loads(f'["{new_str}"]')
-    except Exception as err:
-        msg = f"Failed to parse env. variable USB_AUDIO_NAMES, error: {err}"
-        raise RuntimeError(msg)
-
-    all_devices = sd.query_devices()
-    for k, dev in enumerate(all_devices):
-        for sd_name in usb_audio:
-            full_name = dev["name"]
-            if sd_name in full_name:
-                logging.info(f"Found requested device {sd_name} in {full_name}")
-                sd.default.device = k, k
-                return
-    logging.error(f"Not found requested device: {usb_audio}")
-
-
-find_usb()
-
-IN_CH = sd.query_devices(sd.default.device[0])["max_input_channels"]
-OUT_CH = sd.query_devices(sd.default.device[1])["max_output_channels"]
-if OUT_CH != 2:
-    raise RuntimeError(f"ALSA audio device must have 2 output channels, got {OUT_CH}")
-if IN_CH not in [1, 2]:
-    raise RuntimeError(f"ALSA audio device must have 1 or 2 input channels, got {IN_CH}")
+from utils.utilconfig import SD_TYPE, MAX_LEN, OUT_CH, MAX_SD_TYPE
 
 
 def make_zero_buffer(buff_len: int) -> np.ndarray:
     if buff_len < 0 or buff_len > MAX_LEN:
         raise RuntimeError(f"make_zero_buffer: incorrect buffer size: {buff_len}")
-    return np.zeros((buff_len, 2), SD_TYPE)
+    return np.zeros((buff_len, OUT_CH), SD_TYPE)
 
 
-def make_sin_sound(sound_freq: int, duration_sec: float, amplitude: int = 3000) -> np.ndarray:
-    points_in_array = int(sd.default.samplerate * duration_sec)
+def line_ndarray(slope: float, offset: float, duration_sec: float) -> np.ndarray:
+    """ Makes numpy array with linear function: y = slope * t + offset """
+    points_in_array: int = int(sounddevice.default.samplerate * duration_sec)
+    t = np.linspace(0, duration_sec, points_in_array)
+    return slope * t + offset
+
+
+def correct_dtype(x: np.ndarray) -> np.ndarray:
+    assert x.ndim == 1 or x.shape[1] == 1
+    assert x.dtype in [np.float64, np.float32]
+    x = (x * MAX_SD_TYPE).astype(SD_TYPE)
+    return np.column_stack((x, x))
+
+
+def make_sin_sound(sound_freq: int, duration_sec: float, amplitude: float = 0.25) -> np.ndarray:
+    assert 0 <= amplitude < 1 and sound_freq > 0 and duration_sec > 0
+    points_in_array: int = int(sounddevice.default.samplerate * duration_sec)
     t = np.linspace(0, duration_sec, points_in_array)
     x = amplitude * np.sin(2 * np.pi * sound_freq * t)
-    x = x.astype("int16")[:, np.newaxis]
-    x = np.column_stack((x, x))
     return x
 
 
-def make_changing_sound() -> np.ndarray:
-    a = make_sin_sound(330, 0.3)
-    b = make_sin_sound(550, 0.3)
-    return np.concatenate((a, b, a), axis=0)
+def make_noise(duration_sec: float, amplitude: float = 0.25):
+    points_in_array: int = int(sounddevice.default.samplerate * duration_sec)
+    x = np.random.standard_normal(points_in_array)
+    max_value = np.max(x)
+    x = x * (amplitude / max_value)
+    return x
 
 
-if __name__ == "__main__":
-    pass
+def int_to_bytes(value: float, byte_count: int = 0) -> list[int]:
+    """ MIDI sys-ex data bytes, convert value to list: ex. 12531 -> 01, 02, 05, 03, 01 """
+    assert value >= 0
+    value = round(value)
+    if byte_count <= 0:
+        byte_count = ceil(log10(value))
+    assert value <= 10 ** byte_count, f"value: {value}, byte_count: {byte_count}"
+    bytes_list = []
+    for i in range(byte_count):
+        bytes_list.append(value % 10)
+        value //= 10
+    return bytes_list[::-1]
+
+
+def bytes_to_int(byte_list: list[int]) -> int:
+    """ MIDI sys-ex data bytes, convert it to int: ex. 00, 01, 02, 05, 03, 09 -> 12539"""
+    value: int = 0
+    byte_list = byte_list[::-1]
+    for i in range(len(byte_list)):
+        value += byte_list[i] * (10 ** i)
+    return value

@@ -1,4 +1,5 @@
 __pycache__
+.pytest_cache
 #pyinstall files
 dist
 build
@@ -7,11 +8,15 @@ build
 #PyCharm
 .idea
 .run
-#other
-tests
+save_song
 midiconverter
 touchscreen4py*
 rules.txt
 kbdmap.txt
 log.txt
-.saved_env.sh
+log.bak
+looper.ini
+connect_bt.sh
+
+
+
