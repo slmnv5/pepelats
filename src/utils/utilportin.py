@@ -12,7 +12,7 @@ import rtmidi
 from mvc.countmidicontrol import CountMidiControl
 from mvc.menuhost import MenuHost
 from mvc.simplemidicontrol import SimpleMidiControl
-from utils.utilconfig import KBD_NOTES
+from utils.utilconfig import KBD_NOTES, ConfigName
 from utils.utilconfig import find_path, load_ini_section
 from utils.utillog import get_my_log
 
@@ -20,8 +20,8 @@ my_log = get_my_log(__name__)
 
 
 def get_pedal_control(q: Queue) -> MenuHost:
-    dic = load_ini_section(find_path("main.ini"), "MIDI")
-    pname = dic.get("midi_in")
+    dic = load_ini_section(find_path(ConfigName.main_ini), "MIDI")
+    pname = dic.get(ConfigName.midi_in)
     miw = MidiInWrap()
     if not miw.get_port(pname):
         raise RuntimeError(f"MIDI IN port is not open: {pname}")
@@ -60,6 +60,7 @@ class _KbdMidiIn:
     def _fake_callback(event: tuple[list[int], float]) -> None:
         pass
 
+    # noinspection PyUnresolvedReferences
     def on_press(self, kbd_event):
         if kbd_event.name == "esc":
             keyboard.unhook_all()

@@ -1,0 +1,16 @@
+2023-09-24 12:41:07;WARNING;utils.utilfactory>>>Optional lib. C:\Users\erik\git\pepeloop\touchscreen4py.so was not found
+2023-09-24 12:41:07;ERROR;utils.utilportout>>>MIDI OUT port is not open: Ssh, using fake port
+2023-09-24 12:41:24;WARNING;utils.utilfactory>>>Optional lib. C:\Users\erik\git\pepeloop\touchscreen4py.so was not found
+2023-09-24 12:41:24;ERROR;utils.utilportout>>>MIDI OUT port is not open: Ssh, using fake port
+2023-09-24 12:41:28;ERROR;drum.mididrum>>>Evaluation error: name 'PROGIDX' is not defined in expression: <code object <module> at 0x00000199795C7BE0, file "<string>", line 1>
+2023-09-24 12:41:43;ERROR;drum.mididrum>>>Evaluation error: name 'PROGIDX' is not defined in expression: <code object <module> at 0x00000199795C7BE0, file "<string>", line 1>
+2023-09-24 12:42:52;WARNING;utils.utilfactory>>>Optional lib. C:\Users\erik\git\pepeloop\touchscreen4py.so was not found
+2023-09-24 12:42:52;ERROR;utils.utilportout>>>MIDI OUT port is not open: Ssh, using fake port
+2023-09-24 13:28:01;WARNING;utils.utilfactory>>>Optional lib. C:\Users\erik\git\pepeloop\touchscreen4py.so was not found
+2023-09-24 13:28:01;ERROR;utils.utilportout>>>MIDI OUT port is not open: Ssh, using fake port
+2023-09-24 15:11:41;WARNING;utils.utilfactory>>>Optional lib. C:\Users\erik\git\pepeloop\touchscreen4py.so was not found
+2023-09-24 15:11:42;ERROR;utils.utilportout>>>MIDI OUT port is not open: Ssh, using fake port
+2023-09-24 15:13:14;WARNING;utils.utilfactory>>>Optional lib. C:\Users\erik\git\pepeloop\touchscreen4py.so was not found
+2023-09-24 15:13:14;ERROR;utils.utilportout>>>MIDI OUT port is not open: Ssh, using fake port
+2023-09-24 15:38:49;WARNING;utils.utilfactory>>>Optional lib. C:\Users\erik\git\pepeloop\touchscreen4py.so was not found
+2023-09-24 15:38:49;ERROR;utils.utilportout>>>MIDI OUT port is not open: Ssh, using fake port

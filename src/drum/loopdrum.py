@@ -79,5 +79,17 @@ class LoopDrum(BaseDrum):
             lp_lst.append("S" if silent else "_")
         return "L:" + "".join(lp_lst)
 
-    def show_drum_param(self) -> str:
+    def show_drum(self) -> str:
         return f"{self}:{self._part}"
+
+    def change_drum_level(self, chg: int) -> None:
+        pass
+
+    def set_volume(self, volume: float) -> None:
+        pass
+
+    def set_par(self, par: float) -> None:
+        pass
+
+    def get_par(self) -> float:
+        return 0.0

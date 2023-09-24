@@ -48,6 +48,7 @@ class BaseDrum(ABC):
         self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / SD_RATE)
         my_log.info(f"Created drum of type: {self}")
 
+    @abstractmethod
     def play_drums(self, out_data, idx) -> None:
         pass
 
@@ -59,33 +60,50 @@ class BaseDrum(ABC):
     def start_drum(self) -> None:
         pass
 
+    @abstractmethod
     def random_drum(self) -> None:
         lst = lst_for_slice(self._drum_level, len(self._ptn_lst), self._get_drum_levels())
         self._ptn_idx = random.choice(lst)
         self.start_drum()
 
+    @abstractmethod
     def change_drum_level(self, chg: int) -> None:
         self._drum_level = (self._drum_level + chg) % self._get_drum_levels()
         self.random_drum()
 
+    @abstractmethod
     def show_drum_config(self) -> str:
         return ""
 
+    @abstractmethod
     def iterate_drum_config(self, steps: int) -> None:
         pass
 
-    def change_volume(self, chg: float) -> None:
+    @abstractmethod
+    def set_volume(self, volume: float) -> None:
         pass
 
+    @abstractmethod
+    def set_par(self, par: float) -> None:
+        """May be swing or smth else"""
+        pass
+
+    @abstractmethod
     def get_volume(self) -> float:
-        return 0
+        return 1.0
 
-    def show_drum_param(self) -> str:
+    @abstractmethod
+    def get_par(self) -> float:
+        """May be swing or smth else"""
+        return 1.0
+
+    @abstractmethod
+    def show_drum(self) -> str:
         return f"{self}:bpm:{self._bpm:.2F}:vol:{self.get_volume():.2F}"
-
-    def __str__(self) -> str:
-        return f"{self.__class__.__name__[0]}:{self._ptn_idx}/{len(self._ptn_lst)}"
 
     @abstractmethod
     def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
         pass
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__[0]}:{self._ptn_idx}/{len(self._ptn_lst)}"

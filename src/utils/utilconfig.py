@@ -8,6 +8,21 @@ import sounddevice
 APP_DIR = os.sep + "pepeloop"
 
 
+class ConfigName:
+    # menu and midi config related
+    default_config: str = "default_config"
+    update_method: str = "update_method"
+    description: str = "description"
+    comment: str = "comment"
+    shared_lib: str = "touchscreen4py.so"
+    client_redraw: str = "_redraw"  # this is MenuClient command to update screen
+    play_section: str = "play"
+    menu_dir: str = "menu_dir"
+    main_ini: str = "main.ini"
+    midi_out: str = "midi_out"
+    midi_in: str = "midi_in"
+
+
 def find_path(path_end: str) -> str:
     """Find file or dir. creates one if missing"""
     tmp = os.getcwd() + os.sep + path_end
@@ -38,19 +53,15 @@ def update_ini_section(fname: str, sect: str, dic: dict[str, str]) -> None:
         cfg.write(f)
 
 
-def get_file_name(self) -> str:
-    return self._fname
-
-
-_audio = load_ini_section(find_path("main.ini"), "AUDIO")
+_audio = load_ini_section(find_path(ConfigName.main_ini), "AUDIO")
 
 SD_TYPE = _audio.get('sd_type')
 MAX_LEN_SECONDS = int(_audio.get('max_len_seconds'))
 SD_RATE = int(_audio.get('sd_rate'))
 
-_keyboard = load_ini_section(find_path("main.ini"), "KEYBOARD")
+_keyboard = load_ini_section(find_path(ConfigName.main_ini), "KEYBOARD")
 KBD_NOTES = _keyboard.get('kbd_notes')
-_screen = load_ini_section(find_path("main.ini"), "SCREEN")
+_screen = load_ini_section(find_path(ConfigName.main_ini), "SCREEN")
 FRAME_BUFFER_ID = _audio.get('frame_buffer_id')
 VERBOSE_MODE = "--debug" in sys.argv or "--info" in sys.argv
 KEEP_SCREEN = "--keep_screen" in sys.argv
@@ -70,13 +81,3 @@ sounddevice.check_input_settings(channels=IN_CH, dtype=SD_TYPE, samplerate=SD_RA
 sounddevice.default.samplerate = SD_RATE
 sounddevice.default.dtype = [SD_TYPE, SD_TYPE]
 sounddevice.default.latency = ('low', 'low')
-
-
-class ConfigName:
-    # menu and midi config related
-    default_config: str = "default_config"
-    update_method: str = "update_method"
-    description: str = "description"
-    comment: str = "comment"
-    shared_lib: str = "touchscreen4py.so"
-    client_redraw: str = "_redraw"  # this is MenuClient command to update screen

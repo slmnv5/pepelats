@@ -11,7 +11,7 @@ my_log = get_my_log(__name__)
 
 
 class MenuClient:
-    def __init__(self, queue: Queue = None):
+    def __init__(self, queue: Queue):
         self.__queue: Queue = queue
 
     def start(self):

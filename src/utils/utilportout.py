@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import sys
 from typing import Union
 
 import rtmidi
@@ -51,7 +50,7 @@ class MidiOutWrap:
                 self.port, self.name = self._midi_out, port_name
                 break
 
-        if self.name and self.port.is_port_open() and "--fake_out" not in sys.argv:
+        if self.name and self.port.is_port_open():
             return True
         else:
             my_log.error(f"MIDI OUT port is not open: {pname}, using fake port")
@@ -60,6 +59,6 @@ class MidiOutWrap:
 
     def show(self) -> str:
         port_lst = self._midi_out.get_ports()
-        port_lst = [x for x in port_lst if "RtMidi" not in x and "Through" not in x]
-        port_str = ":".join(port_lst)
+        port_lst = [x.split(":")[0] for x in port_lst if "RtMidi" not in x and "Through" not in x]
+        port_str = "\n".join(port_lst)
         return f"OUT: {self.name} open: {self.port.is_port_open()}\n{port_str}"

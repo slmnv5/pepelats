@@ -1,7 +1,7 @@
 import numpy as np
 
 from utils.utilalsa import make_zero_buffer
-from utils.utilconfig import MAX_LEN, SD_TYPE
+from utils.utilconfig import MAX_LEN, SD_TYPE, SD_RATE
 from utils.utillog import get_my_log
 from utils.utilnumpy import copy_to_right, copy_to_left, vol_db, trim_buffer
 
@@ -20,9 +20,9 @@ class WrapBuffer:
 
     def __str__(self):
         if self.is_empty:
-            return ""
+            return "---------------"
         if not self.__info_str:
-            self.__info_str = f"V:{vol_db(self.__buff):03}db"
+            self.__info_str = f"V:{vol_db(self.__buff):03}db L:{len(self.__buff) / SD_RATE:05.2F}s"
         if not self.__props_str:
             self.__props_str = f"{'S' if self.__is_silent else ' '}{'R' if self.__is_reverse else ' '}"
 

@@ -1,3 +1,4 @@
+from multiprocessing import Queue
 from threading import Timer
 from time import sleep
 
@@ -7,7 +8,8 @@ from utils.utilalsa import make_sin_sound, correct_dtype
 
 
 def test_1():
-    ctrl = ManyLoopCtrl()
+    queue = Queue()
+    ctrl = ManyLoopCtrl(queue)
     ctrl.get_drum().load_drum_config(None, 100_000)
     sound = make_sin_sound(440, 7)
     sound = correct_dtype(sound)

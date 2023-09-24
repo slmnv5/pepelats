@@ -7,21 +7,19 @@ from multiprocessing import Queue
 
 from buffer.loopsimple import LoopSimple
 from control.manyloopctrl import ManyLoopCtrl
-from mvc.menuclient import MenuClient
-from utils.utilconfig import ConfigName, SD_RATE, MAX_LEN_SECONDS
+from utils.utilconfig import ConfigName, SD_RATE, MAX_LEN_SECONDS, load_ini_section, find_path, update_ini_section
 from utils.utillog import get_my_log
-from utils.utilother import DrawInfo, CollectionOwner
+from utils.utilother import DrawInfo, CollectionOwner, FileFinder
 from utils.utilportout import MidiOutWrap
 
 my_log = get_my_log(__name__)
 
 
-class Looper(ManyLoopCtrl, MenuClient):
+class Looper(ManyLoopCtrl):
     """Adds screen connection, Mixer, looper commands"""
 
     def __init__(self, recv_q: Queue, send_q: Queue):
-        ManyLoopCtrl.__init__(self)
-        MenuClient.__init__(self, recv_q)
+        ManyLoopCtrl.__init__(self, recv_q)
         self._send_q = send_q
         self._saved_draw_info = DrawInfo()
 
@@ -62,28 +60,55 @@ class Looper(ManyLoopCtrl, MenuClient):
         os.system("git pull --ff-only; sleep 2")
 
     @staticmethod
+    def _show_menu_config() -> str:
+        dic = load_ini_section(find_path(ConfigName.main_ini), "MENU")
+        return "Menu: " + dic.get(ConfigName.menu_dir, "")
+
+    @staticmethod
+    def _next_menu_config() -> None:
+        dic = load_ini_section(find_path(ConfigName.main_ini), "MENU")
+        config = dic.get(ConfigName.menu_dir, "")
+        ff = FileFinder(find_path("config/menu"), False, "")
+        k = ff.find_item_idx(config)
+        ff.select_idx(k)
+        ff.iterate()
+        dic[ConfigName.menu_dir] = ff.selected_item()
+        update_ini_section(find_path(ConfigName.main_ini), "MENU", dic)
+
+    @staticmethod
     def _show_ports() -> None:
         mow = MidiOutWrap()
+        os.system("clear")
         print(mow.show())
         time.sleep(10)
 
     #  ============ All song parts view and related commands
 
-    def _clear_part(self, pid: int) -> None:
+    def _delete_song_part(self) -> None:
         selected = self._song.parts.selected_idx()
-        if pid == selected:
+        if self._next_id == selected:
             return  # can not delete active part
-        part = self._song.parts.select_idx(pid)
+        elif self._next_id < selected:
+            selected -= 1  # selected will be less after deletion
+
+        self._song.parts.select_idx(self._next_id)
+        self._song.parts.delete_selected()
+        self._song.parts.select_idx(selected)
         self._next_id = selected
+
+    def _clear_part(self) -> None:
+        selected = self._song.parts.selected_idx()
+        if self._next_id == selected:
+            return  # can not clear active part
+        part = self._song.parts.select_idx(self._next_id)
+        self._next_id = selected
+        self.stop_never()
         self._song.parts.select_idx(selected)
         if id(part) == self._drum.get_id():
             return  # loop drum uses part, can not delete it
-        if part.is_empty:
-            return
-
-        self.stop_never()
-        part.new_buff()
-        part.loops = CollectionOwner[LoopSimple](part)
+        if not part.is_empty:
+            part.new_buff()
+            part.loops = CollectionOwner[LoopSimple](part)
 
     def _undo_part(self) -> None:
         is_rec = self.get_is_rec()
@@ -108,11 +133,6 @@ class Looper(ManyLoopCtrl, MenuClient):
 
     #  ================= One song part view and related commands
 
-    def _change_loop_volume(self, chg_factor: float):
-        loop = self._song.parts.selected_item().loops.selected_item()
-        loop.multiply_buff(chg_factor)
-        loop._collection_str = ""
-
     def _change_loop(self, *params) -> None:
         self._song.parts.selected_item().loops.iterate(params[0])
 
@@ -129,5 +149,3 @@ class Looper(ManyLoopCtrl, MenuClient):
                 part.loops.add_item(deleted)
         elif params[0] == "delete" and part != loop:
             part.loops.delete_selected()
-
-    # =========== MIDI

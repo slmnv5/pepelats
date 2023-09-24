@@ -65,7 +65,7 @@ def _load_audio_samples(dname: str) -> dict[str, np.ndarray]:
 class SampleLoader:
     _MAX_AMPLITUDE = 0.5
     # sound name and sound samples, never change
-    _sounds = _load_audio_samples(find_path("config/samples"))
+    _sounds = _load_audio_samples(find_path("config/drum/samples"))
     maxes: dict[str, float] = {k: round(v.max(initial=0.01), 2) for k, v in _sounds.items()}
     for k, v in _sounds.items():
         _sounds[k] = v * (_MAX_AMPLITUDE / maxes[k])  # make max amplitude equal for all sounds
@@ -79,13 +79,8 @@ class SampleLoader:
     my_log.debug(f"Loaded sounds:\nvolumes:{volumes}\nmaxes:{maxes}")
 
     @classmethod
-    def change_volume(cls, chg: float) -> None:
-        new_vol = round(cls._volume * chg, 2)
-        new_vol = min(1.0, new_vol)
-        new_vol = max(0.05, new_vol)
-        if new_vol == cls._volume:
-            return
-        cls._volume = new_vol
+    def set_volume(cls, volume: float) -> None:
+        cls._volume = round(volume % 1, 2)
         cls._adjusted = _adjust_volume(cls._volume, cls._sounds)
 
     @classmethod

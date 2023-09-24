@@ -1,3 +1,4 @@
+from multiprocessing import Queue
 from threading import Timer
 
 from buffer.loopctrl import LoopCtrl
@@ -6,7 +7,9 @@ from utils.utilfactory import get_drum
 
 
 def test_1():
-    c1 = LoopCtrl(get_drum("AudioDrum"))
+    queue = Queue()
+    dr = get_drum("AudioDrum")
+    c1 = LoopCtrl(queue, dr)
     c1._set_is_rec(True)
     Timer(3, c1.stop_at_bound, args=[0]).start()
     l1 = SongPart()

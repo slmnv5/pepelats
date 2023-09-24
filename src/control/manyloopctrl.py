@@ -1,4 +1,5 @@
 from abc import ABC
+from multiprocessing import Queue
 from threading import Event, Thread
 
 from buffer.loopctrl import LoopCtrl
@@ -18,36 +19,23 @@ class ManyLoopCtrl(LoopCtrl, ABC):
      Song is collection of song parts with related methods"""
     _EMPTY_LINE = "=" * 25
 
-    def __init__(self):
+    def __init__(self, queue: Queue):
         dr = get_drum("AudioDrum")
-        LoopCtrl.__init__(self, dr)
+        LoopCtrl.__init__(self, queue, dr)
         self._next_id: int = 0
         self.__play_event: Event = Event()
         self._song: Song = Song(self)
+        self._song.load_latest(self)
         Thread(target=self._play_loop, name="play_loop", daemon=True).start()
 
     # ================ song part methods
 
-    def _show_loop(self, loop: LoopSimple) -> str:
-        bar_len = self._drum.get_bar_len()
-        if not bar_len or loop.is_empty:
-            return self._EMPTY_LINE
-        else:
-            return f"{loop} L:{loop.length / bar_len:05.2F}"
-
-    def _show_part(self, part: SongPart) -> str:
-        bar_len = self._drum.get_bar_len()
-        if not bar_len or part.is_empty:
-            return self._EMPTY_LINE
-        else:
-            return f"{part.to_str()} L:{part.length / bar_len:05.2F}"
-
     def _show_loops(self) -> str:
         part = self._song.parts.selected_item()
-        return part.loops.get_str(next_id=0, method=self._show_loop)
+        return part.loops.get_str()
 
     def _show_parts(self) -> str:
-        return self._song.parts.get_str(next_id=self._next_id, method=self._show_part)
+        return self._song.parts.get_str(self._next_id)
 
     def _play_loop(self) -> None:
         """runs in a thread, play and record current song part"""
@@ -62,7 +50,19 @@ class ManyLoopCtrl(LoopCtrl, ABC):
             if not self.__play_event.is_set():
                 self.add_command(["_stop_drum"])
 
-    def _select_part(self, pid: int) -> None:
+    def _add_song_part(self) -> None:
+        selected = self._song.parts.selected_idx()
+        self._next_id = self._song.parts.add_item(SongPart())
+        self._song.parts.select_idx(selected)
+
+    def _change_song_part(self, chg: int) -> None:
+        self._next_id += chg
+        self._next_id %= self._song.parts.item_count()
+
+    def _play_song_part(self, pid: int = None) -> None:
+        if pid is None:
+            pid = self._next_id
+
         if not self.__play_event.is_set():
             self._next_id = pid
             self.__play_event.set()
@@ -95,7 +95,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
 
             self.stop_at_bound(part.length)
 
-    def _record_selected(self) -> None:
+    def _overdub_song_part(self) -> None:
         if self._song.parts.selected_idx() != self._next_id:
             return
         part: SongPart = self._song.parts.selected_item()
@@ -123,12 +123,6 @@ class ManyLoopCtrl(LoopCtrl, ABC):
     def _load_drum_config(self, bar_len: int = None) -> None:
         self._drum.load_drum_config(None, bar_len)
         self._song.clear_name()
-
-    def _iterate_drum_config(self, steps: int) -> None:
-        self._drum.iterate_drum_config(steps)
-
-    def _show_drum_config(self) -> str:
-        return self._drum.show_drum_config()
 
     # ================= song methods
 
@@ -163,10 +157,14 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         bound = self._song.parts.selected_item().length if wait else 0
         self.stop_at_bound(bound)
 
-    def _init_song(self) -> None:
+    def _init_song(self, part_cnt: int = None) -> None:
         self._stop_song()
         self._next_id = 0
-        self._song.init()
+        self._song = Song(self)
+        parts = self._song.parts
+        if part_cnt is not None and part_cnt < 7:
+            while parts.item_count() < part_cnt:
+                parts.add_item(SongPart())
 
         kwargs = {"SongPart": self._song.parts.select_idx(0)}
         drum_type = self._drum.get_class_name()

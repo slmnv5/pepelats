@@ -1,4 +1,5 @@
 from abc import ABC
+from multiprocessing import Queue
 from threading import Event
 
 from drum.basedrum import BaseDrum
@@ -12,8 +13,8 @@ class LoopCtrl(MenuClient, ABC):
     # 5k is about 0.1 second. May be late by this time without going to next full cycle
     _LATE_SAMPLES: int = 5000
 
-    def __init__(self, drum: BaseDrum):
-        super().__init__()
+    def __init__(self, queue: Queue, drum: BaseDrum):
+        super().__init__(queue)
         self.idx: int = 0
         self.start_rec = 0
         self._drum: BaseDrum = drum
@@ -55,17 +56,29 @@ class LoopCtrl(MenuClient, ABC):
             self.__stop_len = self.idx + (bound_value - over)
 
     def __str__(self):
-        return f"Looper: IsRec:{self.get_is_rec()} " \
+        return f"IsRec:{self.get_is_rec()} " \
                f"StopLen: {self.__stop_len} Stop: {self.__stop_event.is_set()} " \
                f"Idx: {self.idx}"
 
     # ===================== drum methods
 
+    def _iterate_drum_config(self, steps: int) -> None:
+        self._drum.iterate_drum_config(steps)
+
+    def _show_drum_config(self) -> str:
+        return self._drum.show_drum_config()
+
+    def _change_drum_par(self, chg: float) -> None:
+        chg = 0.05 if chg > 0 else - 0.05
+        self._drum.set_par(self._drum.get_par() + chg)
+
     def _change_drum_volume(self, chg: float) -> None:
-        self._drum.change_volume(1.2 if chg > 0 else 0.8)
+        volume = self._drum.get_volume()
+        volume *= (1.2 if chg > 0 else 0.8)
+        self._drum.set_volume(volume)
 
     def _show_drum_param(self) -> str:
-        return self._drum.show_drum_param()
+        return self._drum.show_drum()
 
     def _random_drum(self) -> None:
         self._drum.random_drum()

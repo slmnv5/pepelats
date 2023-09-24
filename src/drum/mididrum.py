@@ -7,7 +7,7 @@ import numpy as np
 
 from drum.basedrum import BaseDrum
 from utils.utilalsa import int_to_bytes
-from utils.utilconfig import find_path, load_ini_section
+from utils.utilconfig import find_path, load_ini_section, ConfigName
 from utils.utillog import get_my_log
 from utils.utilother import FileFinder
 from utils.utilportout import MidiOutWrap
@@ -21,8 +21,9 @@ class MidiDrum(BaseDrum):
     For later sync at start of each bar a message (_bar_msg) is sent.
     List of all control messages in INI file.
     """
-    _MSG_LIST = ['_bar_msg', '_bpm_msg', '_volume_msg', '_prog_msg', '_progs_param', '_stop_msg']
-    _KEY_LIST = ["BPM", "COUNT", "VOLUME", "PROG", "FILL_BYTES"]
+
+    _MSG_LIST = ['_bar_msg', '_bpm_msg', '_volume_msg', '_prog_msg', '_progs_list', '_stop_msg']
+    _KEY_LIST = ["BPM", "COUNT", "VOLUME", "PROGIDX", "FILL_BYTES"]
 
     def __init__(self):
         BaseDrum.__init__(self)
@@ -47,7 +48,7 @@ class MidiDrum(BaseDrum):
                 self._send_midi(self._simple_msg_dic[msg])
             elif msg in self._param_msg_dic:
                 local_vars = {"BPM": self._bpm, "COUNT": self._count, "VOLUME": self._volume,
-                              "PROG": self._get_prog(), "FILL_BYTES": self._fill_bytes}
+                              "PROGIDX": self._ptn_idx, "FILL_BYTES": self._fill_bytes}
                 evaluated_msg = self._eval(self._param_msg_dic[msg], local_vars)
                 my_log.debug(f"Evaluated message: {evaluated_msg}")
                 if evaluated_msg:
@@ -65,12 +66,6 @@ class MidiDrum(BaseDrum):
         except Exception as ex:
             my_log.error(f"Evaluation error: {ex} in expression: {expr}")
             return list()
-
-    def _get_prog(self) -> int:
-        if 0 <= self._ptn_idx < len(self._ptn_lst):
-            return self._ptn_lst[self._ptn_idx]
-        else:
-            return 0
 
     def get_config(self) -> str:
         return self._ff.selected_item()
@@ -94,12 +89,11 @@ class MidiDrum(BaseDrum):
         super().change_drum_level(chg)
         self._queue.put("_prog_msg")
 
-    def change_volume(self, chg: float) -> None:
-        tmp = self._volume * chg
-        tmp = min(1., tmp)
-        tmp = max(0.05, tmp)
-        if tmp != self._volume:
-            self._volume = tmp
+    def set_volume(self, volume: float) -> None:
+        volume = min(1., volume)
+        volume = max(0.05, volume)
+        if volume != self._volume:
+            self._volume = volume
             self._queue.put("_volume_msg")
 
     def get_volume(self) -> float:
@@ -127,7 +121,7 @@ class MidiDrum(BaseDrum):
 
         fname = self._ff.get_full_name()
         dic = load_ini_section(fname, "MIDI")
-        pname = dic.get("midi_out")
+        pname = dic.get(ConfigName.midi_out)
         self._midi_out.get_port(pname)
         self._make_evals(bar_len)
 
@@ -153,7 +147,9 @@ class MidiDrum(BaseDrum):
                     self._simple_msg_dic[k] = evaluated_msg
         bar_len = self._bar_len if bar_len is None else bar_len
         self._set_bar_len(bar_len)
-        self._ptn_lst = self._simple_msg_dic.get("_progs_param", [list(range(128))])
+        self._ptn_lst = self._simple_msg_dic.get("_progs_list", None)
+        if not self._ptn_lst:
+            self._ptn_lst = list(range(128))
         my_log.info(f"Loaded MIDI drum, simple messages: {self._simple_msg_dic}")
         my_log.info(f"Loaded MIDI drum, param. messages: {self._param_msg_dic.keys()}")
 
@@ -172,9 +168,15 @@ class MidiDrum(BaseDrum):
     def iterate_drum_config(self, steps: int) -> None:
         self._ff.iterate(steps)
 
-    def show_drum_param(self) -> str:
-        base_info = super().show_drum_param()
+    def show_drum(self) -> str:
+        base_info = super().show_drum()
         port = f"{self._midi_out.name}"
         is_ok = f"{self._midi_out.port.is_port_open()}"
         config = self.get_config()
         return f"{base_info}\nport OK: {is_ok}/{port}\nconfig: {config}"
+
+    def set_par(self, par: float) -> None:
+        pass
+
+    def get_par(self) -> float:
+        return 0.0

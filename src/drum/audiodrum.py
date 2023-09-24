@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import random
 from math import ceil
+
+import numpy as np
 
 from drum._sampleloader import SampleLoader
 from drum.patterndrum import PatternDrum
@@ -11,9 +14,11 @@ my_log = get_my_log(__name__)
 
 
 class AudioDrum(PatternDrum):
+    """Has additional property self._par - swing from 50% to 75% """
 
     def __init__(self):
         PatternDrum.__init__(self, find_path("config/drum/audio"))
+        self._par: float = 0.65  # from 0.50 to 0.75
         self._set_bar_len(0)
 
     def get_config(self) -> str:
@@ -47,8 +52,45 @@ class AudioDrum(PatternDrum):
                 if notes[k] not in "123456789!":
                     continue
                 step_prob = "0123456789!".index(notes[k]) / 10
-                is_accent = accents[k] != "."
                 idx = round(k * step_len)
                 skip_prob = round(1 - step_prob, 2)
-                ptn_list.append((idx, skip_prob, is_accent, sound))
+                is_accent = accents[k] != "."
+                swing_factor: int = step_len if (k % 2 != 0) else 0
+                ptn_list.append((idx, skip_prob, is_accent, swing_factor, sound))
         my_log.debug(f"Converted drum pattern:\n{ptn_list}")
+
+    def random_drum(self) -> None:
+        super().random_drum()
+
+    def change_drum_level(self, chg: int) -> None:
+        super().change_drum_level(chg)
+
+    def set_par(self, par: float) -> None:
+        self._par = round(par % 1, 2)
+
+    def get_par(self) -> float:
+        return self._par
+
+    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
+        if self.is_silent or not self._bar_len:
+            return
+        data_len = len(out_data)
+        pos1 = idx % self._bar_len
+        pos2 = pos1 + data_len
+        sound_lst = self._ptn_lst[self._ptn_idx]
+        for tpl in [x for x in sound_lst if pos1 <= x[0] < pos2]:
+            pos, skip_prob, is_accent, swing_factor, sound = tpl
+            if skip_prob > 0 and random.random() < skip_prob:
+                continue
+            sound = SampleLoader.get_sound(sound, is_accent)
+            if swing_factor:
+                pos += round(swing_factor * self._par * 0.25)
+            self._record_samples(sound, pos)
+
+        self.play_samples(out_data, idx, True)
+
+    def show_drum(self) -> str:
+        base_info = super().show_drum()
+        intensity = f"intens.: {self._volumes[self._ptn_idx]:.3F} swing: {self._par}"
+        name = self._names[self._ptn_idx]
+        return f"{base_info}\n{intensity}\nname:{name}"

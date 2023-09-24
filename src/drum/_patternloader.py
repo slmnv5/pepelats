@@ -74,7 +74,8 @@ class PatternLoader:
         test = make_zero_buffer(test_len)
         ptn_lst: list[tuple] = list()
         self._fn_conv(test_len, ptn_dic, ptn_lst)
-        for pos, skip_prob, is_accent, sound in [x for x in ptn_lst if 0 <= x[0] < test_len]:
+        for tpl in [(x[0:3] + x[-1:]) for x in ptn_lst if 0 <= x[0] < test_len]:
+            pos, skip_prob, is_accent, sound = tpl
             if skip_prob > 0 and random.random() < skip_prob:
                 continue
             sound = SampleLoader.get_sound(sound, is_accent)

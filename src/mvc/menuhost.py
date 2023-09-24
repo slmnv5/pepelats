@@ -4,7 +4,7 @@ from configparser import ConfigParser
 from multiprocessing import Queue
 from threading import Event
 
-from utils.utilconfig import ConfigName, find_path
+from utils.utilconfig import ConfigName, find_path, load_ini_section
 from utils.utillog import get_my_log
 from utils.utilother import DrawInfo
 
@@ -15,11 +15,14 @@ class MenuHost:
     """Translate menu command with parameters and sends to a connection. """
 
     def __init__(self, queue: Queue):
-        self._menu_loader = _MenuLoader(find_path("config/menu"))
-        self._menu_loader.update_menu()
+        dic = load_ini_section(find_path(ConfigName.main_ini), "MENU")
+        dname = dic.get(ConfigName.menu_dir)
+        dname = find_path(f"config/menu/{dname}")
+        assert os.path.isdir(dname)
+        self._menu_loader = _MenuLoader(dname)
         self._draw_info = DrawInfo()
         self.__queue = queue
-        self._update_menu("play.ini")
+        self._update_menu(ConfigName.play_section)
         self.__queue.put([ConfigName.client_redraw, self._draw_info])
 
     @abstractmethod
@@ -75,39 +78,44 @@ class _MenuLoader:
     It parses directory for JSON files """
 
     def __init__(self, dname: str):
+        self._sect_idx: int = 0
+        self._section: str = ConfigName.play_section
         assert os.path.isdir(dname)
-        self._fname: str = ""
-        self._sect_id: int = 0
-        self._dic: dict[str, dict[str, dict[str, any]]] = dict()
-        for fname in [x for x in os.listdir(dname) if x.endswith('.ini')]:
+        self._dic = dict()
+        files_lst = ["play.ini", "song.ini", "drum.ini", "serv.ini"]
+        for fname in files_lst:
+            fname1, fname2 = f"{dname}/navigate.ini", f"{dname}/{fname}"
             cfg = ConfigParser()
-            cfg.read(dname + os.sep + fname)
-            my_log.info(f"Loading control config from {fname}")
-            self._dic[fname] = {s: dict(cfg.items(s)) for s in cfg.sections()}
-
-        self._fname = list(self._dic.keys())[0]
+            read_lst = cfg.read([fname1, fname2])
+            if len(read_lst) != 2:
+                raise RuntimeError(f"Not all INI menu files wre loaded: {fname1}, {fname2}")
+            dic = {s: dict(cfg.items(s)) for s in cfg.sections()}
+            self._dic |= dic
 
     def get(self, key: str) -> str:
-        lst = list(self._dic[self._fname])
-        sect: str = lst[self._sect_id]
-        try:
-            return self._dic[self._fname][sect][key]
-        except KeyError:
-            my_log.debug(f"Did not find menu: {self._fname}:{sect}:{key}")
-            return ""
+        sect_name = f"{self._section}.{self._sect_idx}"
+        sect_dic = self._dic.get(sect_name, dict())
+        if key in sect_dic:
+            return sect_dic[key]
 
-    def update_menu(self, fname: str = None) -> None:
-        if not fname:
-            self._fname = list(self._dic)[0]
-        else:
-            assert fname in list(self._dic)
-            self._fname = fname
-        self._sect_id = 0
+        my_log.debug(f"Did not find key: {key} in menu: {sect_name}")
+        return ""
+
+    def update_menu(self, section: str) -> None:
+        assert f"{section}.0" in self._dic
+        self._section = section
+        self._sect_idx = 0
 
     def update_section(self, go_next: bool = True) -> None:
-        lst = list(self._dic[self._fname])
-        self._sect_id += (1 if go_next else -1)
-        self._sect_id %= len(lst)
+        lst = [x for x in self._dic.keys() if self._section in x]
+        self._sect_idx += (1 if go_next else -1)
+        self._sect_idx %= len(lst)
 
     def __str__(self):
-        return f"{self._fname}:{self._sect_id}"
+        return f"{self._section}.{self._sect_idx}"
+
+
+if __name__ == "__main__":
+    ml = _MenuLoader(find_path("config/menu/button4"))
+    print(ml.get("60-100"))
+    print(ml.get("65-6"))

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import TypeVar, Generic, Callable
+from typing import TypeVar, Generic
 
 T = TypeVar('T')
 
@@ -13,7 +13,7 @@ def _stable_sub_list(item: int, items: list[any], sub_list_size: int) -> list[an
     start_id = (item // lst_size) * lst_size
     stop_id = start_id + lst_size
     if stop_id > lst_size:
-        return items[start_id:] + items[: stop_id % lst_size]
+        return items[start_id:] + items[:stop_id % lst_size]
     else:
         return items[start_id:stop_id]
 
@@ -51,10 +51,11 @@ class CollectionOwner(Generic[T]):
     def selected_idx(self) -> int:
         return self.__idx
 
-    def add_item(self, i: T) -> None:
+    def add_item(self, i: T) -> int:
         if i not in self.__items:
             self.__items.append(i)
         self.__idx = self.__items.index(i)
+        return self.__idx
 
     def find_item_idx(self, i: T) -> int:
         if i in self.__items:
@@ -82,21 +83,21 @@ class CollectionOwner(Generic[T]):
         self.__idx = 0
         return item
 
-    def get_str(self, next_id: int = -1, method: Callable = None) -> str:
+    def get_str(self, next_id: int = None) -> str:
         next_item = None
-        if 0 <= next_id < len(self.__items):
+        if next_id is not None:
+            next_id %= self.item_count()
             next_item = self.__items[next_id]
         item_sub_list = _stable_sub_list(self.__idx, self.__items, 5)
         curr_item = self.__items[self.__idx]
         result: str = ""
         for item in item_sub_list:
-            item_str = str(item) if method is None else method(item)
             if item == curr_item:
-                result += f"*{item_str}\n"
+                result += f"*{item}\n"
             elif item == next_item:
-                result += f"~{item_str}\n"
+                result += f"~{item}\n"
             else:
-                result += f"-{item_str}\n"
+                result += f"-{item}\n"
 
         return result[:-1]
 

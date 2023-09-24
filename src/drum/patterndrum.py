@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 import os
-import random
 from abc import abstractmethod
-
-import numpy as np
 
 from buffer.wrapbuffer import WrapBuffer
 from drum._patternloader import PatternLoader
@@ -38,8 +35,8 @@ class PatternDrum(BaseDrum, WrapBuffer):
         bar_len = self._bar_len if bar_len is None else bar_len
         self._set_bar_len(bar_len)
 
-    def change_volume(self, chg: float) -> None:
-        SampleLoader.change_volume(chg)  # change all sound samples
+    def set_volume(self, volume: float) -> None:
+        SampleLoader.set_volume(volume)  # change all sound samples
 
     def get_volume(self) -> float:
         return SampleLoader.get_volume()
@@ -61,27 +58,6 @@ class PatternDrum(BaseDrum, WrapBuffer):
     @abstractmethod
     def convert_one_ptn(bar_len: int, ptn_dic: dict[str, any], ptn_list: list[tuple]) -> None:
         pass
-
-    def show_drum_param(self) -> str:
-        base_info = super().show_drum_param()
-        intensity = self._volumes[self._ptn_idx]
-        name = self._names[self._ptn_idx]
-        return f"{base_info}\nintensity: {intensity:.3F}\nname:{name}"
-
-    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        if self.is_silent or not self._bar_len:
-            return
-        data_len = len(out_data)
-        pos1 = idx % self._bar_len
-        pos2 = pos1 + data_len
-        sound_lst = self._ptn_lst[self._ptn_idx]
-        for pos, skip_prob, is_accent, sound in [x for x in sound_lst if pos1 <= x[0] < pos2]:
-            if skip_prob > 0 and random.random() < skip_prob:
-                continue
-            sound = SampleLoader.get_sound(sound, is_accent)
-            self._record_samples(sound, pos)
-
-        self.play_samples(out_data, idx, True)
 
     def stop_drum(self) -> None:
         self.set_silent(True)

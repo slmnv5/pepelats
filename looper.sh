@@ -3,8 +3,6 @@
 TMP=$(dirname "$0")
 cd "$TMP" || exit 1
 RDIR="$(pwd -P)"
-mkdir "$RDIR/save_song"
-cd "$RDIR/src" || exit 1
 
 found=$(pgrep --full start_looper.py)
 if [ -n "$found" ]; then
@@ -14,8 +12,16 @@ fi
 
 sleep 5
 
+if [ ! -d "$RDIR/save_song" ]; then mkdir -p "$RDIR/save_song"; fi
+
+cd "$RDIR/src" || exit 1
+
 cat "$RDIR/log.txt" >> "$RDIR/log.bak"
 date > "$RDIR/log.txt"
+
+tail -1000 "$RDIR/log.bak" > "$RDIR/tmp"
+mv -fv "$RDIR/tmp" "$RDIR/log.bak"
+
 
 # disable assert
 CODE_OPTIMIZE="-O"
