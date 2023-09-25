@@ -5,7 +5,7 @@ from configparser import ConfigParser
 import numpy as np
 import sounddevice
 
-APP_DIR = os.sep + "pepeloop"
+APP_DIR = os.sep + "pepelats"
 
 
 class ConfigName:
