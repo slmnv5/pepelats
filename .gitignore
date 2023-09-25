@@ -1,0 +1,23 @@
+__pycache__
+.pytest_cache
+#pyinstall files
+dist
+build
+*.spec
+*.pyc
+#PyCharm
+.idea
+.run
+#app
+save_song
+midiconverter
+touchscreen4py*
+rules.txt
+kbdmap.txt
+log.txt
+log.bak
+
+
+
+
+
