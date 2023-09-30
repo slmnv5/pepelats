@@ -12,7 +12,7 @@ fi
 
 sleep 5
 
-if [ ! -d "$RDIR/save_song" ]; then mkdir -p "$RDIR/save_song"; fi
+if [ ! -d "$RDIR/.save_song" ]; then mkdir -p "$RDIR/.save_song"; fi
 
 cd "$RDIR/src" || exit 1
 
