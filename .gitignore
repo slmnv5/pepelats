@@ -9,7 +9,7 @@ build
 .idea
 .run
 #app
-save_song
+.save_song
 midiconverter
 touchscreen4py*
 rules.txt

@@ -20,7 +20,7 @@ class Song:
     def __init__(self, ctrl: LoopCtrl):
         self._name: str = ""
         self.parts = CollectionOwner[SongPart](SongPart())
-        self._ff = FileFinder(find_path("save_song"), True, "")
+        self._ff = FileFinder(find_path(".save_song"), True, "")
         if not self._ff.select_idx(0):
             self.save_song(ctrl)
 
