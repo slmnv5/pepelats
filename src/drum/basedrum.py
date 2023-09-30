@@ -1,4 +1,3 @@
-import random
 from abc import abstractmethod, ABC
 
 from utils.utilconfig import SD_RATE
@@ -54,7 +53,7 @@ class BaseDrum(ABC):
 
     @abstractmethod
     def stop_drum(self) -> None:
-        pass
+        self._ptn_idx, self._drum_level = 0, 0
 
     @abstractmethod
     def start_drum(self) -> None:
@@ -63,7 +62,10 @@ class BaseDrum(ABC):
     @abstractmethod
     def random_drum(self) -> None:
         lst = lst_for_slice(self._drum_level, len(self._ptn_lst), self._get_drum_levels())
-        self._ptn_idx = random.choice(lst)
+        assert lst
+        lst_len = len(lst)
+        self._ptn_idx += 1
+        self._ptn_idx %= lst_len
         self.start_drum()
 
     @abstractmethod

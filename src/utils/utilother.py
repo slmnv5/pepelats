@@ -57,10 +57,10 @@ class CollectionOwner(Generic[T]):
         self.__idx = self.__items.index(i)
         return self.__idx
 
-    def find_item_idx(self, i: T) -> int:
+    def find_item_idx(self, i: T, default=-1) -> int:
         if i in self.__items:
             return self.__items.index(i)
-        return -1
+        return default
 
     def select_idx(self, i: int) -> T:
         self.__idx = i % len(self.__items)

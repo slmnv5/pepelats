@@ -55,7 +55,7 @@ class AudioDrum(PatternDrum):
                 idx = round(k * step_len)
                 skip_prob = round(1 - step_prob, 2)
                 is_accent = accents[k] != "."
-                swing_factor: int = step_len if (k % 2 != 0) else 0
+                swing_factor: int = round(step_len) if (k % 2 != 0) else 0
                 ptn_list.append((idx, skip_prob, is_accent, swing_factor, sound))
         my_log.debug(f"Converted drum pattern:\n{ptn_list}")
 
@@ -85,7 +85,7 @@ class AudioDrum(PatternDrum):
             sound = SampleLoader.get_sound(sound, is_accent)
             if swing_factor:
                 pos += round(swing_factor * self._par * 0.25)
-            self._record_samples(sound, pos)
+            self.record_samples(sound, pos)
 
         self.play_samples(out_data, idx, True)
 

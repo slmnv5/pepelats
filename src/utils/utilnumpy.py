@@ -33,20 +33,20 @@ def copy_to_left(buff: np.ndarray, data: np.ndarray, idx: int) -> None:
         buff[slice_lst[1]] += data[slice_lst[3]]
 
 
-def copy_to_right(buff: np.ndarray, data: np.ndarray, idx: int, zero_buff: bool = False) -> None:
+def copy_to_right(buff: np.ndarray, data: np.ndarray, idx: int, zero_after: bool = False) -> None:
     """ insert from buff into data starting with idx.
-    If zero_buff=True empty buff after playing, this is needed for cyclical play of changing buffer """
+    If zero_after=True empty buff after playing, this is needed for cyclical play of changing buffer """
     buff_len = len(buff)
     data_len = len(data)
     slice_lst = _calc_slices_lst(buff_len, data_len, idx)
     if len(slice_lst) == 2:
         data[slice_lst[1]] += buff[slice_lst[0]]
-        if zero_buff:
+        if zero_after:
             buff[slice_lst[0]] = 0
     else:
         data[slice_lst[2]] += buff[slice_lst[0]]
         data[slice_lst[3]] += buff[slice_lst[1]]
-        if zero_buff:
+        if zero_after:
             buff[slice_lst[0]] = 0
             buff[slice_lst[1]] = 0
 

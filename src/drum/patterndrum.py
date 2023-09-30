@@ -61,6 +61,7 @@ class PatternDrum(BaseDrum, WrapBuffer):
 
     def stop_drum(self) -> None:
         self.set_silent(True)
+        super().stop_drum()
 
     def start_drum(self) -> None:
         self.set_silent(False)

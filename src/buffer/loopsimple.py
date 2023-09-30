@@ -37,7 +37,7 @@ class LoopSimple(WrapBuffer):
             self.play_samples(out_data, ctrl.idx)
 
             if ctrl.get_is_rec():
-                self._record_samples(in_data, ctrl.idx)
+                self.record_samples(in_data, ctrl.idx)
 
             ctrl.idx += frame_count
             if ctrl.idx >= ctrl.get_stop_len():

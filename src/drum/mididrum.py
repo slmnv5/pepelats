@@ -23,7 +23,7 @@ class MidiDrum(BaseDrum):
     """
 
     _MSG_LIST = ['_bar_msg', '_bpm_msg', '_volume_msg', '_prog_msg', '_progs_list', '_stop_msg']
-    _KEY_LIST = ["BPM", "COUNT", "VOLUME", "PROGIDX", "FILL_BYTES"]
+    _KEY_LIST = ["BPM", "COUNT", "VOLUME", "PROG", "FILL_BYTES"]
 
     def __init__(self):
         BaseDrum.__init__(self)
@@ -31,8 +31,9 @@ class MidiDrum(BaseDrum):
         self._ff = FileFinder(self._dname, True, ".ini")
         assert self._ff.selected_item()
         # ======== MIDI specific ===============
-        self._stopped: bool = True
         self._midi_out = MidiOutWrap()
+        self._ptn = 0  # pattern/program number from _ptn_lst
+        self._stopped: bool = True
         self._volume: float = 0.7  # volume sent to MIDI out port
         self._count: int = 0  # counter of bars since start
         self._simple_msg_dic: dict[str, list[list[int] | int]] = dict()  # list of plain MID messages
@@ -48,7 +49,7 @@ class MidiDrum(BaseDrum):
                 self._send_midi(self._simple_msg_dic[msg])
             elif msg in self._param_msg_dic:
                 local_vars = {"BPM": self._bpm, "COUNT": self._count, "VOLUME": self._volume,
-                              "PROGIDX": self._ptn_idx, "FILL_BYTES": self._fill_bytes}
+                              "PROG": self._ptn, "FILL_BYTES": self._fill_bytes}
                 evaluated_msg = self._eval(self._param_msg_dic[msg], local_vars)
                 my_log.debug(f"Evaluated message: {evaluated_msg}")
                 if evaluated_msg:
@@ -83,11 +84,11 @@ class MidiDrum(BaseDrum):
 
     def random_drum(self) -> None:
         super().random_drum()
+        self._ptn = self._ptn_lst[self._ptn_idx]
         self._queue.put("_prog_msg")
 
     def change_drum_level(self, chg: int) -> None:
         super().change_drum_level(chg)
-        self._queue.put("_prog_msg")
 
     def set_volume(self, volume: float) -> None:
         volume = min(1., volume)
@@ -155,6 +156,7 @@ class MidiDrum(BaseDrum):
 
     def stop_drum(self) -> None:
         self._queue.put("_stop_msg")
+        super().stop_drum()
         self._stopped = True
 
     def start_drum(self) -> None:
@@ -179,4 +181,10 @@ class MidiDrum(BaseDrum):
         pass
 
     def get_par(self) -> float:
-        return 0.0
+        return 1.0
+
+    def _get_drum_levels(self) -> int:
+        return 2
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__[0]}:{self._ptn}/{len(self._ptn_lst)}"

@@ -2,7 +2,9 @@ import os.path
 import pickle
 
 from buffer.loopctrl import LoopCtrl
+# noinspection PyUnresolvedReferences
 from song.songpart import SongPart
+
 from utils.utilconfig import find_path
 from utils.utilfactory import get_drum
 from utils.utillog import get_my_log
@@ -65,12 +67,14 @@ class Song:
             load_list, drum_type, config, bar_len, volume, par = pickle.load(f)
 
         load_list = [x if x is not None else SongPart() for x in load_list]
-        assert load_list
+        while len(load_list) < 4:
+            load_list.append(SongPart())
+        assert len(load_list) >= 4
         assert type(load_list[0]) == SongPart
-        assert drum_type in ["LoopDrum", "AudioDrum", "MidiDrum", "EuclidDrum"]
+        assert drum_type in ["LoopDrum", "AudioDrum", "MidiDrum"]
         assert type(bar_len) == int, f"{bar_len}"
-        assert type(volume) == float, f"{volume}"
-        assert type(par) == float, f"{par}"
+        assert type(volume) == float and 0 <= volume <= 1, f"{volume}"
+        assert type(par) == float and 0 <= par <= 1, f"{par}"
 
         kwargs = {"SongPart": load_list[0]}
         dr = get_drum(drum_type, **kwargs)
@@ -86,8 +90,8 @@ class Song:
         self.save_song(ctrl)
 
     def show_songs(self) -> str:
-        idx = self._ff.find_item_idx(self._name)
-        return self._ff.get_str(idx)
+        k = self._ff.find_item_idx(self._name, None)
+        return self._ff.get_str(k)
 
     def delete_song(self) -> None:
         self._ff.delete_selected()

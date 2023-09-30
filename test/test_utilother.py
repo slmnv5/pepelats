@@ -13,7 +13,7 @@ def test_1():
     co.select_idx(8)
     list_str = co.get_str(next_id=9)
     print(list_str)
-    assert ".H" in list_str
+    assert "-H" in list_str
     assert "*I" in list_str
     assert "~J" in list_str
 

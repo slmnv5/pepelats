@@ -60,14 +60,14 @@ class WrapBuffer:
         self.__buff = (self.__buff * chg_factor).astype(SD_TYPE)
         self.__info_str = ""
 
-    def _record_samples(self, in_data: np.ndarray, idx: int) -> None:
+    def record_samples(self, in_data: np.ndarray, idx: int) -> None:
         copy_to_left(self.__buff, in_data, idx)
 
-    def play_samples(self, out_data: np.ndarray, idx: int, zero_buff: bool = False) -> None:
+    def play_samples(self, out_data: np.ndarray, idx: int, zero_after: bool = False) -> None:
         if self.__is_silent:
             return
         tmp = self.__buff[::-1] if self.__is_reverse else self.__buff
-        copy_to_right(tmp, out_data, idx, zero_buff)
+        copy_to_right(tmp, out_data, idx, zero_after)
 
     def finalize(self, idx: int, base_len: int, start_idx: int) -> None:
         """Trim is done only once to fix buffer length for empty loop.
