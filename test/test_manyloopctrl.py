@@ -20,7 +20,7 @@ def test_1():
     print(f"==============>{ctrl}")
 
     loop = LoopSimple()
-    loop.record_samples(sound, 0)
+    loop._record_samples(sound, 0)
     ctrl.idx = len(sound)
 
     loop.trim_buffer(ctrl)

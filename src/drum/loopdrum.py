@@ -18,10 +18,8 @@ class LoopDrum(BaseDrum):
 
     def _get_drum_levels(self) -> int:
         cnt = self._part.loops.item_count()
-        if cnt < 3:
+        if cnt < 4:
             return 1
-        elif cnt < 5:
-            return 2
         else:
             return 3
 

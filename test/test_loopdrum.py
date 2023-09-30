@@ -9,7 +9,7 @@ def test_1():
     sound = make_sin_sound(440, 7)
     sound = correct_dtype(sound)
     sp = SongPart()
-    sp.record_samples(sound, 0)
+    sp._record_samples(sound, 0)
     kwargs = {"SongPart": sp}
     dr = get_drum("LoopDrum", **kwargs)
     dr.load_drum_config(None, 100_000)

@@ -20,11 +20,12 @@ class ManyLoopCtrl(LoopCtrl, ABC):
     _EMPTY_LINE = "=" * 25
 
     def __init__(self, queue: Queue):
-        dr = get_drum("AudioDrum")
+        self._song: Song = Song(self)
+        kwargs = {"SongPart": self._song.parts.select_idx(0)}
+        dr = get_drum("LoopDrum", **kwargs)
         LoopCtrl.__init__(self, queue, dr)
         self._next_id: int = 0
         self.__play_event: Event = Event()
-        self._song: Song = Song(self)
         self._song.load_latest(self)
         Thread(target=self._play_loop, name="play_loop", daemon=True).start()
 

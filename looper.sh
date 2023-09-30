@@ -2,7 +2,9 @@
 
 TMP=$(dirname "$0")
 cd "$TMP" || exit 1
-RDIR="$(pwd -P)"
+ROOTDIR="$(pwd -P)"
+APPDIR=$(basename "$ROOTDIR")
+export APPDIR
 
 found=$(pgrep --full start_looper.py)
 if [ -n "$found" ]; then
@@ -12,15 +14,15 @@ fi
 
 sleep 5
 
-if [ ! -d "$RDIR/.save_song" ]; then mkdir -p "$RDIR/.save_song"; fi
+if [ ! -d "$ROOTDIR/.save_song" ]; then mkdir -p "$ROOTDIR/.save_song"; fi
 
-cd "$RDIR/src" || exit 1
+cd "$ROOTDIR/src" || exit 1
 
-cat "$RDIR/log.txt" >> "$RDIR/log.bak"
-date > "$RDIR/log.txt"
+cat "/tmp/log.txt" >> "$ROOTDIR/log.bak"
+date > "/tmp/log.txt"
 
-tail -1000 "$RDIR/log.bak" > "$RDIR/tmp"
-mv -fv "$RDIR/tmp" "$RDIR/log.bak"
+tail -1000 "$ROOTDIR/log.bak" > "$ROOTDIR/tmp"
+mv -fv "$ROOTDIR/tmp" "$ROOTDIR/log.bak"
 
 
 # disable assert
@@ -46,7 +48,7 @@ stty -echo
 
 while true; do
   killall -s 9 -w -v python
-  if [ -f $RDIR/connect_bt.sh ]; then $RDIR/connect_bt.sh; fi
+  if [ -f "$ROOTDIR/connect_bt.sh" ]; then "$ROOTDIR/connect_bt.sh"; fi
   $PYTHON_CMD
   sleep 5
 done

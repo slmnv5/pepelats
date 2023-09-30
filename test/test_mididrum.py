@@ -4,8 +4,7 @@ from utils.utilportout import MidiOutWrap
 
 
 def test_1():
-    kwargs = {"MidiOutWrap": MidiOutWrap()}
-    dr = get_drum("MidiDrum", **kwargs)
+    dr = get_drum("MidiDrum")
     dr.load_drum_config(None, SD_RATE * 2)
     config, bar_len = dr.get_config(), dr.get_bar_len()
     assert bar_len == SD_RATE * 2

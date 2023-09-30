@@ -5,7 +5,11 @@ from configparser import ConfigParser
 import numpy as np
 import sounddevice
 
-APP_DIR = os.sep + "pepelats"
+from utils.utillog import get_my_log
+
+APPDIR = os.sep + os.environ['APPDIR']
+
+my_log = get_my_log(__name__)
 
 
 class ConfigName:
@@ -26,12 +30,11 @@ class ConfigName:
 def find_path(path_end: str) -> str:
     """Find file or dir. creates one if missing"""
     tmp = os.getcwd() + os.sep + path_end
-    if os.path.exists(tmp):
-        return tmp
-    pos = tmp.find(APP_DIR)
+    pos = tmp.find(APPDIR)
     if pos >= 0:
-        return tmp[:pos + len(APP_DIR)] + os.sep + path_end
+        return tmp[:pos + len(APPDIR)] + os.sep + path_end
     else:
+        my_log.error(f"Path not found: {path_end}")
         return path_end
 
 

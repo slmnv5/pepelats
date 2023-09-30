@@ -19,7 +19,7 @@ class MidiDrum(BaseDrum):
     """Sends MIDI messages as configured in midi.ini
     Sys-ex message may be sent (_bpm_msg) to set up and start drum machine.
     For later sync at start of each bar a message (_bar_msg) is sent.
-    List of all control messages in INI file.
+    List of all control messages is below.
     """
 
     _MSG_LIST = ['_bar_msg', '_bpm_msg', '_volume_msg', '_prog_msg', '_progs_list', '_stop_msg']
@@ -160,7 +160,7 @@ class MidiDrum(BaseDrum):
         self._stopped = True
 
     def start_drum(self) -> None:
-        """ To start drums in time we put them in _bar_msg_list """
+        """ To start drums in time we use _bar_msg """
         self._stopped = False
         self._count = -1
 
@@ -182,9 +182,6 @@ class MidiDrum(BaseDrum):
 
     def get_par(self) -> float:
         return 1.0
-
-    def _get_drum_levels(self) -> int:
-        return 2
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__[0]}:{self._ptn}/{len(self._ptn_lst)}"

@@ -1,7 +1,6 @@
 import logging
 import sys
-
-from utils.utilconfig import find_path
+import tempfile
 
 _fmt_str = "%(asctime)s;%(levelname)s;%(name)s>>>%(message)s"
 
@@ -13,7 +12,7 @@ def get_my_log(name: str, level: int = None) -> logging.Logger:
         logger.removeHandler(h)
 
     formatter = logging.Formatter(fmt=_fmt_str, datefmt="%Y-%m-%d %H:%M:%S")
-    fname: str = find_path("log.txt")
+    fname: str = tempfile.gettempdir() + "/log.txt"
 
     handler_file = logging.FileHandler(fname, mode='a')
     handler_file.setFormatter(formatter)
