@@ -11,10 +11,8 @@ build
 #app
 .save_song
 midiconverter
-touchscreen4py*
 rules.txt
 kbdmap.txt
-log.txt
 log.bak
 
 
