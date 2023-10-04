@@ -17,12 +17,10 @@ my_log = get_my_log(__name__)
 class ManyLoopCtrl(LoopCtrl, ABC):
     """added playback thread and Song.
      Song is collection of song parts with related methods"""
-    _EMPTY_LINE = "=" * 25
 
     def __init__(self, queue: Queue):
+        dr = create_drum("AudioDrum")
         self._song: Song = Song(self)
-        kwargs = {"SongPart": self._song.parts.select_idx(0)}
-        dr = create_drum("LoopDrum", **kwargs)
         LoopCtrl.__init__(self, queue, dr)
         self._next_id: int = 0
         self.__play_event: Event = Event()
