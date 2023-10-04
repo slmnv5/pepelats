@@ -143,39 +143,30 @@ class FileFinder(CollectionOwner[str]):
         return deleted
 
 
-def euclid_spacing(steps: int, beats: int, shift: int) -> list[int]:
-    """ Spaces beats in steps in most even way. Used in Euclid drum patterns """
-    assert steps and beats
-    beats = min(beats, steps)
-    dist: float = steps / beats  # exact distance between beats
-    beat_steps = [round(k * dist) for k in range(beats)]
-    beat_steps = [(-shift + k) % steps for k in beat_steps]
-    return beat_steps
+class EuclidSlicer:
+    """ Spaces beats in steps in most even way.
+    Used in Euclid drum patterns or when need to divide list evely """
 
+    def __init__(self, steps: int, beats: int, shift: int = 0):
+        assert steps and beats
+        beats = min(beats, steps)
+        dist: float = steps / beats  # exact distance between beats
+        self._beat_steps = [round(k * dist) for k in range(beats)]
+        self._beat_steps = [(-shift + k) % steps for k in self._beat_steps]
+        self._beats = beats
+        self._steps = steps
 
-def euclid_pattern_str(steps: int, beats: int, shift: int, accents: int) -> str:
-    beat_steps = euclid_spacing(steps, beats, shift)
-    lst = ['.'] * steps
-    for k in beat_steps:
-        lst[k] = '*' if accents > 0 and k % accents == 0 else '!'
-    return "".join(lst)
+    def beat_steps(self) -> list[int]:
+        return self._beat_steps
 
+    def rng_by_idx(self, idx: int) -> list[int]:
+        return list(range(self._steps))[self.slice_by_idx(idx)]
 
-def lst_for_slice(slc: int, length: int, slices: int) -> list[int]:
-    """ Ex. slc = 1 for 3 slices in range(9) will be [3, 4, 5], Slices may have different sizes """
-    lst = euclid_spacing(length, slices, 0)
-    if slc > len(lst) - 1:
-        slc = len(lst) - 1
-    lst.append(length)
-    return list(range(lst[slc], lst[slc + 1]))
-
-
-def slice_for_elm(elm: int, length: int, slices: int) -> int:
-    """ Ex. elm = 1 for 3 slices in range(9), it will be 0 as slice #0 is  [0, 1, 2] """
-    elm = min(length - 1, elm)
-    elm = max(0, elm)
-    lst = euclid_spacing(length, slices, 0)
-    for i in range(slices - 1):
-        if lst[i] <= elm < lst[i + 1]:
-            return i
-    return slices - 1
+    def slice_by_idx(self, idx: int) -> slice:
+        """ used with euclid_spacing to get specific list by idx """
+        idx %= self._beats
+        idx_nxt = (idx + 1) % self._beats
+        if self._beat_steps[idx] > self._beat_steps[idx_nxt]:
+            return slice(self._beat_steps[idx], None)
+        else:
+            return slice(self._beat_steps[idx], self._beat_steps[idx_nxt])

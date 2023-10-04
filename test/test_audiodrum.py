@@ -1,11 +1,11 @@
 import sounddevice
 
 from utils.utilalsa import make_zero_buffer
-from utils.utilfactory import get_drum
+from utils.utilfactory import create_drum
 
 
 def test_1():
-    dr = get_drum("AudioDrum")
+    dr = create_drum("AudioDrum")
     dr.load_drum_config(None, 100_000)
     arr = make_zero_buffer(120_000)
     dr.play_drums(arr, 0)

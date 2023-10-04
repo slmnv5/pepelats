@@ -6,7 +6,7 @@ from buffer.loopctrl import LoopCtrl
 from song.songpart import SongPart
 
 from utils.utilconfig import find_path
-from utils.utilfactory import get_drum
+from utils.utilfactory import create_drum
 from utils.utillog import get_my_log
 from utils.utilname import generate_name
 from utils.utilother import FileFinder, CollectionOwner
@@ -77,7 +77,7 @@ class Song:
         assert type(par) == float and 0 <= par <= 1, f"{par}"
 
         kwargs = {"SongPart": load_list[0]}
-        dr = get_drum(drum_type, **kwargs)
+        dr = create_drum(drum_type, **kwargs)
         dr.load_drum_config(config, bar_len)
         dr.set_volume(volume)
         dr.set_par(par)

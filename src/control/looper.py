@@ -134,7 +134,8 @@ class Looper(ManyLoopCtrl):
     #  ================= One song part view and related commands
 
     def _change_loop(self, *params) -> None:
-        self._song.parts.selected_item().loops.iterate(params[0])
+        loops = self._song.parts.selected_item().loops
+        loops.iterate(params[0])
 
     def _edit_loop(self, *params) -> None:
         part = self._song.parts.selected_item()

@@ -7,7 +7,7 @@ from buffer.loopsimple import LoopSimple
 from song.song import Song
 from song.songpart import SongPart
 from utils.utilconfig import ConfigName
-from utils.utilfactory import get_drum
+from utils.utilfactory import create_drum
 from utils.utillog import get_my_log
 from utils.utilother import CollectionOwner
 
@@ -22,7 +22,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
     def __init__(self, queue: Queue):
         self._song: Song = Song(self)
         kwargs = {"SongPart": self._song.parts.select_idx(0)}
-        dr = get_drum("LoopDrum", **kwargs)
+        dr = create_drum("LoopDrum", **kwargs)
         LoopCtrl.__init__(self, queue, dr)
         self._next_id: int = 0
         self.__play_event: Event = Event()
@@ -116,7 +116,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
             return
         self._stop_song()
         kwargs = {"SongPart": self._song.parts.select_idx(0)}
-        dr = get_drum(drum_type, **kwargs)
+        dr = create_drum(drum_type, **kwargs)
         dr.load_drum_config(None, bar_len)
         self._drum = dr
         self._song.clear_name()
@@ -170,5 +170,5 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         kwargs = {"SongPart": self._song.parts.select_idx(0)}
         drum_type = self._drum.get_class_name()
         config_name = self._drum.get_config()
-        self._drum = get_drum(drum_type, **kwargs)
+        self._drum = create_drum(drum_type, **kwargs)
         self._drum.load_drum_config(config_name, 0)

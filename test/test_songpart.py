@@ -3,12 +3,12 @@ from threading import Timer
 
 from buffer.loopctrl import LoopCtrl
 from song.songpart import SongPart
-from utils.utilfactory import get_drum
+from utils.utilfactory import create_drum
 
 
 def test_1():
     queue = Queue()
-    dr = get_drum("AudioDrum")
+    dr = create_drum("AudioDrum")
     c1 = LoopCtrl(queue, dr)
     c1._set_is_rec(True)
     Timer(3, c1.stop_at_bound, args=[0]).start()

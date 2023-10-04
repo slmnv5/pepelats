@@ -1,5 +1,4 @@
-from utils.utilother import FileFinder, CollectionOwner, euclid_spacing, euclid_pattern_str, lst_for_slice, \
-    slice_for_elm
+from utils.utilother import FileFinder, CollectionOwner, EuclidSlicer
 
 
 def test_1():
@@ -32,63 +31,31 @@ def test_3():
 
 
 def test_4():
-    arr = euclid_spacing(13, 5, 0)
-    assert arr == [0, 3, 5, 8, 10]
-    arr = euclid_spacing(13, 5, 5)
-    assert arr == [8, 11, 0, 3, 5]
-    arr = euclid_spacing(4, 5, 0)
-    assert arr == [0, 1, 2, 3]
-    arr = euclid_spacing(2, 8, 0)
-    assert arr == [0, 1]
+    assert EuclidSlicer(13, 5, 0).beat_steps() == [0, 3, 5, 8, 10]
+    assert EuclidSlicer(13, 5, 5).beat_steps() == [8, 11, 0, 3, 5]
 
-
-def test_5():
-    line = euclid_pattern_str(13, 5, 0, 0)
-    assert line == "!..!.!..!.!.."
-
-    line = euclid_pattern_str(13, 5, 1, 0)
-    assert line == "..!.!..!.!..!"
-
-    line = euclid_pattern_str(13, 5, 5, 0)
-    assert line == '!..!.!..!..!.'
-
-    line = euclid_pattern_str(13, 5, 5, 2)
-    assert line == '*..!.!..*..!.'
+    assert EuclidSlicer(4, 5, 0).beat_steps() == [0, 1, 2, 3]
+    assert EuclidSlicer(2, 8, 0).beat_steps() == [0, 1]
 
 
 def test_6():
-    assert lst_for_slice(0, 10, 3) == [0, 1, 2]
-    assert lst_for_slice(1, 10, 3) == [3, 4, 5, 6]
-    assert lst_for_slice(2, 10, 3) == [7, 8, 9]
+    assert EuclidSlicer(10, 3).rng_by_idx(0) == [0, 1, 2]
+    assert EuclidSlicer(10, 3).rng_by_idx(1) == [3, 4, 5, 6]
+    assert EuclidSlicer(10, 3).rng_by_idx(2) == [7, 8, 9]
 
-    assert lst_for_slice(0, 3, 3) == [0]
-    assert lst_for_slice(1, 3, 3) == [1]
-    assert lst_for_slice(2, 3, 3) == [2]
+    assert EuclidSlicer(3, 3).rng_by_idx(0) == [0]
+    assert EuclidSlicer(3, 3).rng_by_idx(1) == [1]
+    assert EuclidSlicer(3, 3).rng_by_idx(2) == [2]
 
-    assert lst_for_slice(0, 2, 3) == [0]
-    assert lst_for_slice(1, 2, 2) == [1]
-    assert lst_for_slice(1, 2, 3) == [1]
+    assert EuclidSlicer(2, 3).rng_by_idx(0) == [0]
+    assert EuclidSlicer(2, 2).rng_by_idx(1) == [1]
+    assert EuclidSlicer(2, 3).rng_by_idx(1) == [1]
 
-    assert lst_for_slice(0, 5, 30) == [0]
-    assert lst_for_slice(6, 5, 30) == [4]
-    assert lst_for_slice(7, 5, 30) == [4]
+    assert EuclidSlicer(5, 30).rng_by_idx(0) == [0]
+    assert EuclidSlicer(5, 30).rng_by_idx(6) == [1]
+    assert EuclidSlicer(5, 30).rng_by_idx(7) == [2]
 
-    assert lst_for_slice(0, 30, 5) == [0, 1, 2, 3, 4, 5]
-    assert lst_for_slice(3, 30, 5) == [18, 19, 20, 21, 22, 23]
+    assert EuclidSlicer(5, 3).rng_by_idx(1) == [2]
 
-    assert lst_for_slice(1, 5, 3) == [2]
-
-    assert slice_for_elm(0, 20, 5) == 0
-    assert slice_for_elm(1, 20, 5) == 0
-    assert slice_for_elm(5, 20, 5) == 1
-    assert slice_for_elm(19, 20, 5) == 4
-    assert slice_for_elm(20, 20, 5) == 4
-
-
-def test_7():
-    print()
-    for k in range(12):
-        sl_id = slice_for_elm(k, 12, 3)
-        sl = lst_for_slice(sl_id, 12, 3)
-        assert k in sl, f"{k}, {sl}, {sl_id}"
-        print(k, sl)
+    assert EuclidSlicer(30, 5).rng_by_idx(0) == [0, 1, 2, 3, 4, 5]
+    assert EuclidSlicer(30, 5).rng_by_idx(3) == [18, 19, 20, 21, 22, 23]

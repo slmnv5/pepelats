@@ -7,7 +7,7 @@ drums and recorded loops.
 There are about 200 patterns in a dozen of styles in directory: [config/drum/audio](./../config/drum/audio)
 Example: [Pop.ini](./../config/drum/audio/Pop.ini)
 
-Sound samples are saved in [config/drum/samples](./../config/drum/samples)
+Sound samples are saved in [config/drum/samples](./../config/drum/wav)
 
 ### Drum patterns
 

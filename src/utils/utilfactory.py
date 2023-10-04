@@ -25,8 +25,8 @@ def get_screen(recv_q: Queue, send_q: Queue) -> MenuClient:
         return PyScreen(recv_q)
 
 
-def get_drum(drum_type: str, **kwargs) -> BaseDrum:
-    my_log.info(f"Requested drum: {drum_type}")
+def create_drum(drum_type: str, **kwargs) -> BaseDrum:
+    my_log.info(f"Creating drum: {drum_type}")
     if drum_type == "AudioDrum":
         return AudioDrum()
     elif drum_type == "MidiDrum":

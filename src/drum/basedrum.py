@@ -3,7 +3,7 @@ from abc import abstractmethod, ABC
 
 from utils.utilconfig import SD_RATE
 from utils.utillog import get_my_log
-from utils.utilother import lst_for_slice
+from utils.utilother import EuclidSlicer
 
 my_log = get_my_log(__name__)
 
@@ -60,12 +60,10 @@ class BaseDrum(ABC):
 
     @abstractmethod
     def random_drum(self) -> None:
-        lst = lst_for_slice(self._drum_level, len(self._ptn_lst), self._get_drum_levels())
-        if self._ptn_idx in lst:
-            lst.remove(self._ptn_idx)
-        if not lst:
-            return
-        self._ptn_idx = random.choice(lst)
+        es = EuclidSlicer(len(self._ptn_lst), self._get_drum_levels(), 0)
+        sl: slice = es.slice_by_idx(self._drum_level)
+        lst = self._ptn_lst[sl]
+        self._ptn_idx = sl.start + random.randrange(len(lst))
         self.start_drum()
 
     @abstractmethod

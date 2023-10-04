@@ -1,5 +1,3 @@
-import random
-
 import numpy as np
 
 from drum.basedrum import BaseDrum
@@ -7,7 +5,8 @@ from song.songpart import SongPart
 
 
 class LoopDrum(BaseDrum):
-    """ Drum using song part as it's base """
+    """ Drum using song part as it's base.
+    The part will record real drum sounds and play along with all other parts """
 
     def __init__(self, part: SongPart):
         BaseDrum.__init__(self)
@@ -18,37 +17,39 @@ class LoopDrum(BaseDrum):
 
     def _get_drum_levels(self) -> int:
         cnt = self._part.loops.item_count()
-        if cnt < 4:
+        if cnt < 3:
             return 1
         else:
-            return 3
+            return 2
 
     def get_id(self) -> int:
         return id(self._part)
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        if self._part.is_silent or self._part.is_empty:
+        if self._part.is_empty:
             return
         self._part.play_samples(out_data, idx)
 
+    def change_drum_level(self, chg: int) -> None:
+        super().change_drum_level(chg)
+
     def random_drum(self) -> None:
         loops = self._part.loops
-        lp_max = loops.item_count()
-        assert lp_max > 0
-        lp_fraction: float = (self._drum_level + 1) / self._get_drum_levels()
-        assert 0 < lp_fraction <= 1
-        lp_cnt: int = round(lp_max * lp_fraction)
-        lp_lst = list(range(1, lp_max))
-        for _ in range(lp_cnt - 1):
-            k = random.choice(lp_lst)
-            lp_lst.remove(k)
-            loops.select_idx(k).set_silent(False)
-        for k in lp_lst:
-            loops.select_idx(k).set_silent(True)
-        self.start_drum()
+        total_cnt = self._part.loops.item_count()
+        play_cnt: int = 1 + self._drum_level * total_cnt // self._get_drum_levels()
+        assert 0 < play_cnt <= total_cnt
+        total_lst = list(range(total_cnt))
+        play_lst = np.random.choice(total_lst, size=play_cnt, replace=False)
+        for k in total_lst:
+            lp = loops.select_idx(k)
+            lp.set_silent(False if k in play_lst else True)
 
     # noinspection PyMethodMayBeStatic
     def get_volume(self) -> float:
+        return 1.0
+
+    # noinspection PyMethodMayBeStatic
+    def get_par(self) -> float:
         return 1.0
 
     def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
@@ -58,36 +59,29 @@ class LoopDrum(BaseDrum):
         self.start_drum()
 
     def iterate_drum_config(self, steps: int) -> None:
-        self._part.loops.iterate(steps)
+        pass
 
     def show_drum_config(self) -> str:
-        return self._part.loops.get_str()
+        return ""
 
     def stop_drum(self) -> None:
-        self._part.set_silent(True)
+        loops = self._part.loops
+        loops.apply_to_each(lambda x: x.set_silent(True))
 
     def start_drum(self) -> None:
-        self._part.set_silent(False)
+        self.random_drum()
 
     def __str__(self) -> str:
         lp_lst: list[str] = list()
         loops = self._part.loops
-        for k in range(loops.item_count()):
-            silent = loops.select_idx(k).is_silent
-            lp_lst.append("S" if silent else "_")
+        loops.apply_to_each(lambda x: lp_lst.append("S" if x.is_silent else "_"))
         return "L:" + "".join(lp_lst)
 
     def show_drum(self) -> str:
         return f"{self}:{self._part}"
-
-    def change_drum_level(self, chg: int) -> None:
-        pass
 
     def set_volume(self, volume: float) -> None:
         pass
 
     def set_par(self, par: float) -> None:
         pass
-
-    def get_par(self) -> float:
-        return 0.0
