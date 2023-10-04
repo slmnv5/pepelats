@@ -4,7 +4,7 @@ from multiprocessing import Process, Queue
 
 from control.looper import Looper
 from mvc.menuclient import MenuClient
-from utils.utilfactory import get_screen
+from mvc.pyscreen import PyScreen
 from utils.utillog import get_my_log
 from utils.utilportin import get_pedal_control
 
@@ -23,10 +23,10 @@ def do_looper(q_looper: Queue, q_screen: Queue) -> None:
 
 
 # noinspection PyBroadException
-def do_screen(q_looper: Queue, q_screen: Queue) -> None:
+def do_screen(q_screen: Queue) -> None:
     # noinspection PyBroadException
     try:
-        scr_view: MenuClient = get_screen(q_screen, q_looper)
+        scr_view: MenuClient = PyScreen(q_screen)
         scr_view.start()
     except Exception:
         my_log.error(f"============Error: {traceback.format_exc()}")
@@ -39,7 +39,7 @@ def go() -> None:
 
     p1 = Process(target=do_looper, args=(q_looper, q_screen), name="looper", daemon=True)
     p1.start()
-    p2 = Process(target=do_screen, args=(q_looper, q_screen), name="screen", daemon=True)
+    p2 = Process(target=do_screen, args=(q_screen,), name="screen", daemon=True)
     p2.start()
 
     # noinspection PyBroadException

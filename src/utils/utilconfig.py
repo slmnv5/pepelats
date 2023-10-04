@@ -18,7 +18,6 @@ class ConfigName:
     update_method: str = "update_method"
     description: str = "description"
     comment: str = "comment"
-    shared_lib: str = "touchscreen4py.so"
     client_redraw: str = "_redraw"  # this is MenuClient command to update screen
     play_section: str = "play"
     menu_dir: str = "menu_dir"
