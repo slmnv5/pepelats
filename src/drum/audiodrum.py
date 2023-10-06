@@ -14,11 +14,11 @@ my_log = get_my_log(__name__)
 
 
 class AudioDrum(PatternDrum):
-    """Has additional property self._par - swing from 50% to 75% """
+    """Has additional property self._par. Values from 0 to 1 match swing values from 50% to 75% """
 
     def __init__(self):
         PatternDrum.__init__(self, find_path("config/drum/audio"))
-        self._par: float = 0.65  # from 0.50 to 0.75
+        self._par: float = 0.6
         self._set_bar_len(0)
 
     def get_config(self) -> str:
