@@ -66,7 +66,9 @@ class AudioDrum(PatternDrum):
         super().change_drum_level(chg)
 
     def set_par(self, par: float) -> None:
-        self._par = round(par % 1, 2)
+        self._par = round(par, 2)
+        self._par = min(1.0, self._par)
+        self._par = max(0.0, self._par)
 
     def get_par(self) -> float:
         return self._par
@@ -82,10 +84,11 @@ class AudioDrum(PatternDrum):
             pos, skip_prob, is_accent, swing_factor, sound = tpl
             if skip_prob > 0 and random.random() < skip_prob:
                 continue
-            sound = SampleLoader.get_sound(sound, is_accent)
+            sound_arr = SampleLoader.get_sound(sound, is_accent)
             if swing_factor:
-                pos += round(swing_factor * self._par * 0.25)
-            self.record_samples(sound, pos)
+                chg = round(swing_factor * self._par * 0.25)
+                pos += chg
+            self.record_samples(sound_arr, pos)
 
         self.play_samples(out_data, idx, True)
 
