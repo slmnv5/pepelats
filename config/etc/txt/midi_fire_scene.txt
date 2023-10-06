@@ -29,7 +29,8 @@ If M0 == FC
 End
 
 If M0 == C0
-  stopClock
+  # stopClock
+  # DrumJam Randomize Loop Variations
   send B0 $70 $127
 End
 
