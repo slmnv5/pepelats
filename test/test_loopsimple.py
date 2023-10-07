@@ -8,7 +8,7 @@ from utils.utilfactory import create_drum
 
 def test_1():
     queue = Queue()
-    dr = create_drum("AudioDrum")
+    dr = create_drum("PatternDrum")
     c1 = LoopCtrl(queue, dr)
     c1._set_is_rec(True)
     l1 = LoopSimple()

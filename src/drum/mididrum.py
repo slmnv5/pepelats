@@ -34,12 +34,15 @@ class MidiDrum(BaseDrum):
         self._midi_out = MidiOutWrap()
         self._ptn = 0  # pattern/program number from _ptn_lst
         self._stopped: bool = True
-        self._volume: float = 0.7  # volume sent to MIDI out port
         self._count: int = 0  # counter of bars since start
         self._simple_msg_dic: dict[str, list[list[int] | int]] = dict()  # list of plain MID messages
         self._param_msg_dic: dict[str, any] = dict()  # list of messages to be evaluated
         self._queue = Queue()
         Thread(target=self._send_msg, daemon=True).start()
+
+    def set_volume(self, volume: float) -> None:
+        super().set_volume(volume)
+        self._queue.put("_volume_msg")
 
     def _send_msg(self) -> None:
         while True:
@@ -48,7 +51,7 @@ class MidiDrum(BaseDrum):
                 my_log.debug(f"Simple message: {msg}")
                 self._send_midi(self._simple_msg_dic[msg])
             elif msg in self._param_msg_dic:
-                local_vars = {"BPM": self._bpm, "COUNT": self._count, "VOLUME": self._volume,
+                local_vars = {"BPM": self._bpm, "COUNT": self._count, "VOLUME": self._volume111,
                               "PROG": self._ptn, "FILL_BYTES": self._fill_bytes}
                 evaluated_msg = self._eval(self._param_msg_dic[msg], local_vars)
                 my_log.debug(f"Evaluated message: {evaluated_msg}")
@@ -89,16 +92,6 @@ class MidiDrum(BaseDrum):
 
     def change_drum_level(self, chg: int) -> None:
         super().change_drum_level(chg)
-
-    def set_volume(self, volume: float) -> None:
-        volume = min(1., volume)
-        volume = max(0.05, volume)
-        if volume != self._volume:
-            self._volume = volume
-            self._queue.put("_volume_msg")
-
-    def get_volume(self) -> float:
-        return self._volume
 
     def _send_midi(self, msg: list[list[int] | int]) -> None:
         assert type(msg) == list and all(type(x) in [list, int] for x in msg), f"Message: {msg}"
@@ -176,12 +169,6 @@ class MidiDrum(BaseDrum):
         is_ok = f"{self._midi_out.port.is_port_open()}"
         config = self.get_config()
         return f"{base_info}\nport OK: {is_ok}/{port}\nconfig: {config}"
-
-    def set_par(self, par: float) -> None:
-        pass
-
-    def get_par(self) -> float:
-        return 1.0
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__[0]}:{self._ptn}/{len(self._ptn_lst)}"

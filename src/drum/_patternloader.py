@@ -14,7 +14,7 @@ my_log = get_my_log(__name__)
 
 class PatternLoader:
     """Load patterns from INI file. Logic to load and convert passed as two methods.
-    Loaded patterns are converted to play patterns - ready to play sound in audio callback function """
+    Loaded patterns are converted to play patterns - ready to play sound in pattern callback function """
 
     _loaded: dict[str, list[dict]] = dict()
 

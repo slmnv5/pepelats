@@ -151,10 +151,16 @@ class EuclidSlicer:
         assert steps and beats
         beats = min(beats, steps)
         dist: float = steps / beats  # exact distance between beats
-        self._beat_steps = [round(k * dist) for k in range(beats)]
+        self._beat_steps: list[int] = [round(k * dist) for k in range(beats)]
         self._beat_steps = [(-shift + k) % steps for k in self._beat_steps]
-        self._beats = beats
-        self._steps = steps
+        self._beats: int = beats
+        self._steps: int = steps
+
+    def get_ptrn_str(self) -> str:
+        pattern_lst = ['.'] * self._steps
+        for k in self._beat_steps:
+            pattern_lst[k] = '!'
+        return ''.join(pattern_lst)
 
     def beat_steps(self) -> list[int]:
         return self._beat_steps
@@ -163,7 +169,6 @@ class EuclidSlicer:
         return list(range(self._steps))[self.slice_by_idx(idx)]
 
     def slice_by_idx(self, idx: int) -> slice:
-        """ used with euclid_spacing to get specific list by idx """
         idx %= self._beats
         idx_nxt = (idx + 1) % self._beats
         if self._beat_steps[idx] > self._beat_steps[idx_nxt]:
