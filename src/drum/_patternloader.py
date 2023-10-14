@@ -1,13 +1,8 @@
 import os.path
-import random
 from configparser import ConfigParser
 from typing import Callable
 
-from drum._sampleloader import SampleLoader
-from utils.utilalsa import make_zero_buffer
-from utils.utilconfig import MAX_SD_TYPE
 from utils.utillog import get_my_log
-from utils.utilnumpy import copy_to_left
 
 my_log = get_my_log(__name__)
 
@@ -18,7 +13,7 @@ class PatternLoader:
 
     _loaded: dict[str, list[dict]] = dict()
 
-    def __init__(self, fname: str, fn_load: Callable, fn_conv: Callable):
+    def __init__(self, fname: str, fn_load: Callable, fn_conv: Callable, fn_volume: Callable):
         assert os.path.isfile(fname)
         self._fname = fname
         self._fn_conv = fn_conv
@@ -44,7 +39,7 @@ class PatternLoader:
             assert dic[ptn_name], "Empty section in INI file: {fname}, section: {ptn_name}"
             fn_load(ptn_name, dic[ptn_name], ptn_dic)
             ptn_dic["name"] = ptn_name
-            ptn_dic["volume"] = self._measure_ini_pattern(ptn_dic)  # add volume info
+            ptn_dic["volume"] = fn_volume(ptn_dic)  # add volume info
             self._ini_patterns.append(ptn_dic)
         assert len(self._ini_patterns) > 0
         # sort INI patterns by volume
@@ -68,16 +63,3 @@ class PatternLoader:
 
     def get_volumes(self) -> list[float]:
         return self._volumes
-
-    def _measure_ini_pattern(self, ptn_dic: dict[str, any]) -> float:
-        test_len = 100_000
-        test = make_zero_buffer(test_len)
-        ptn_lst: list[tuple] = list()
-        self._fn_conv(test_len, ptn_dic, ptn_lst)
-        for tpl in [(x[0:3] + x[-1:]) for x in ptn_lst if 0 <= x[0] < test_len]:
-            pos, skip_prob, is_accent, sound = tpl
-            if skip_prob > 0 and random.random() < skip_prob:
-                continue
-            sound = SampleLoader.get_sound(sound, is_accent)
-            copy_to_left(test, sound, pos)
-        return test.var() / MAX_SD_TYPE / MAX_SD_TYPE * 100
