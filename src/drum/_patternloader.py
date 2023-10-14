@@ -21,13 +21,13 @@ class PatternLoader:
         self._ini_patterns: list[dict[str, any]] = list()
         # patterns ready to play
         self._patterns: list[list[tuple]] = list()
-        self._names: list[str] = list()
-        self._volumes: list[float] = list()
+        self._ini_names: list[str] = list()
+        self._ini_volumes: list[float] = list()
 
         if fname in PatternLoader._loaded:
             self._ini_patterns = PatternLoader._loaded[fname]
-            self._names = [x["name"] for x in self._ini_patterns]
-            self._volumes = [x["volume"] for x in self._ini_patterns]
+            self._ini_names = [x["name"] for x in self._ini_patterns]
+            self._ini_volumes = [x["volume"] for x in self._ini_patterns]
             my_log.debug(f"Reuse of sorted patterns for: {fname}")
             return
 
@@ -44,9 +44,9 @@ class PatternLoader:
         assert len(self._ini_patterns) > 0
         # sort INI patterns by volume
         self._ini_patterns.sort(key=lambda x: x["volume"])
-        self._names = [x["name"] for x in self._ini_patterns]
-        self._volumes = [x["volume"] for x in self._ini_patterns]
-        my_log.debug(f"Loaded from: {fname}:\nnames: {self._names}\nvolumes: {self._volumes}")
+        self._ini_names = [x["name"] for x in self._ini_patterns]
+        self._ini_volumes = [x["volume"] for x in self._ini_patterns]
+        my_log.debug(f"Loaded from: {fname}:\nnames: {self._ini_names}\nvolumes: {self._ini_volumes}")
         PatternLoader._loaded[fname] = self._ini_patterns  # save for later reuse
 
     def get_patterns(self, bar_len: int) -> list[list[tuple]]:
@@ -59,7 +59,7 @@ class PatternLoader:
         return result
 
     def get_names(self) -> list[str]:
-        return self._names
+        return self._ini_names
 
     def get_volumes(self) -> list[float]:
-        return self._volumes
+        return self._ini_volumes
