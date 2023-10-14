@@ -15,6 +15,25 @@ class BaseDrum(ABC):
         self._ptn_idx: int = 0  # pattern/sound index
         self._ptn_lst: list[any] = list()  # play patterns
         self._drum_level = 0  # intensity of drum
+        self._par: float = 0.6  # from 0 to 1,  swing, used by some drum types
+        self._volume: float = 0.7  # from 0 to 1
+
+    def set_volume(self, volume: float) -> None:
+        volume = min(1., volume)
+        volume = max(0.05, volume)
+        if volume != self._volume:
+            self._volume = volume
+
+    def get_volume(self) -> float:
+        return self._volume
+
+    def set_par(self, par: float) -> None:
+        self._par = round(par, 2)
+        self._par = min(1.0, self._par)
+        self._par = max(0.0, self._par)
+
+    def get_par(self) -> float:
+        return self._par
 
     def _get_drum_levels(self) -> int:
         ptn_len = len(self._ptn_lst)
@@ -44,7 +63,7 @@ class BaseDrum(ABC):
         self._ptn_idx = 0
         self._drum_level = 0
         self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / SD_RATE)
-        my_log.info(f"Created drum of type: {self}")
+        my_log.info(f"Set bar len for: {self}")
 
     @abstractmethod
     def play_drums(self, out_data, idx) -> None:
@@ -78,24 +97,6 @@ class BaseDrum(ABC):
     @abstractmethod
     def iterate_drum_config(self, steps: int) -> None:
         pass
-
-    @abstractmethod
-    def set_volume(self, volume: float) -> None:
-        pass
-
-    @abstractmethod
-    def set_par(self, par: float) -> None:
-        """May be swing or smth else"""
-        pass
-
-    @abstractmethod
-    def get_volume(self) -> float:
-        return 1.0
-
-    @abstractmethod
-    def get_par(self) -> float:
-        """May be swing or smth else"""
-        return 1.0
 
     @abstractmethod
     def show_drum(self) -> str:

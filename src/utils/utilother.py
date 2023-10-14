@@ -147,14 +147,24 @@ class EuclidSlicer:
     """ Spaces beats in steps in most even way.
     Used in Euclid drum patterns or when need to divide list evely """
 
-    def __init__(self, steps: int, beats: int, shift: int = 0):
+    def __init__(self, steps: int, beats: int, shift: int, accent: int = 0):
         assert steps and beats
         beats = min(beats, steps)
+        shift %= steps
         dist: float = steps / beats  # exact distance between beats
-        self._beat_steps = [round(k * dist) for k in range(beats)]
+        self._beat_steps: list[int] = [round(k * dist) for k in range(beats)]
         self._beat_steps = [(-shift + k) % steps for k in self._beat_steps]
-        self._beats = beats
-        self._steps = steps
+        self._beats: int = beats
+        self._steps: int = steps
+        self._shift: int = shift
+        self._accent: int = accent
+
+    def get_ptrn_str(self) -> str:
+        pattern_lst = ['.'] * self._steps
+        for k in self._beat_steps:
+            is_accent = self._accent > 0 and k % self._accent == 0
+            pattern_lst[k] = '*' if is_accent else '+'
+        return ''.join(pattern_lst)
 
     def beat_steps(self) -> list[int]:
         return self._beat_steps
@@ -163,10 +173,12 @@ class EuclidSlicer:
         return list(range(self._steps))[self.slice_by_idx(idx)]
 
     def slice_by_idx(self, idx: int) -> slice:
-        """ used with euclid_spacing to get specific list by idx """
         idx %= self._beats
         idx_nxt = (idx + 1) % self._beats
         if self._beat_steps[idx] > self._beat_steps[idx_nxt]:
             return slice(self._beat_steps[idx], None)
         else:
             return slice(self._beat_steps[idx], self._beat_steps[idx_nxt])
+
+    def __str__(self):
+        return f"{self._steps},{self._beats},{self._shift}: {self.get_ptrn_str()}"

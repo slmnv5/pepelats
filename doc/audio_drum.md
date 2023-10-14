@@ -4,8 +4,8 @@ Audio drum is using text patterns and sample WAV files to produce drum accompani
 These sound samples are written into audio buffer along with recorded loops. This provides ideal synchronization between
 drums and recorded loops.
 
-There are about 200 patterns in a dozen of styles in directory: [config/drum/audio](./../config/drum/audio)
-Example: [Pop.ini](./../config/drum/audio/Pop.ini)
+There are about 200 patterns in a dozen of styles in directory: [config/drum/audio](./../config/drum/pattern)
+Example: [Pop.ini](../config/drum/pattern/Pop.ini)
 
 Sound samples are saved in [config/drum/samples](./../config/drum/wav)
 

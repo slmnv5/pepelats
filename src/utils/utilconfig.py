@@ -75,7 +75,7 @@ MAX_32_INT = np.iinfo(np.int32).max  # 2 ** 32 - 1
 OUT_CH = 2
 IN_CH = sounddevice.query_devices(sounddevice.default.device[0])["max_input_channels"]
 if IN_CH not in [1, 2]:
-    raise RuntimeError(f"ALSA audio device must have 1 or 2 input channels, got {IN_CH}")
+    raise RuntimeError(f"ALSA pattern device must have 1 or 2 input channels, got {IN_CH}")
 
 sounddevice.check_output_settings(channels=OUT_CH, dtype=SD_TYPE, samplerate=SD_RATE)
 sounddevice.check_input_settings(channels=IN_CH, dtype=SD_TYPE, samplerate=SD_RATE)

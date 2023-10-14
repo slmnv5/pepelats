@@ -73,19 +73,13 @@ class SampleLoader:
     volumes: dict[str, float] = {k: round(1000 * v.var(), 2) for k, v in _sounds.items()}
     maxes: dict[str, float] = {k: round(v.max(initial=0.01), 2) for k, v in _sounds.items()}
 
-    _volume: float = 0.7
     # _adjusted is for changing volume up and down, _sounds does not change
-    _adjusted = _adjust_volume(_volume, _sounds)
+    _adjusted = _adjust_volume(0.7, _sounds)
     my_log.debug(f"Loaded sounds:\nvolumes:{volumes}\nmaxes:{maxes}")
 
     @classmethod
     def set_volume(cls, volume: float) -> None:
-        cls._volume = round(volume % 1, 2)
-        cls._adjusted = _adjust_volume(cls._volume, cls._sounds)
-
-    @classmethod
-    def get_volume(cls) -> float:
-        return cls._volume
+        cls._adjusted = _adjust_volume(volume, cls._sounds)
 
     @classmethod
     def get_sound(cls, snd: str, accent: bool) -> np.ndarray:
