@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # commands to set and save ALSA mixer values
-# works for TROND (and similar using C-media chip) USB pattern
+# works for TROND (and similar using C-media chip) USB audio
 
 CARDN=$(aplay -l | grep -i -m1 "usb audio" | cut -f1 -d ':' | cut -f2 -d ' ')
 
