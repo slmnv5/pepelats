@@ -49,8 +49,9 @@ class EuclidDrum(LoopDrum):
         self._set_bar_len(bar_len)
         self.start_drum()
 
-    def _get_option(self, option: str, default: str) -> int:
-        val_str = self._ptn_dic.get(option, default)
+    def _get_option(self, sound: str, option: str, default: str) -> int:
+        dic = self._ptn_dic[sound]
+        val_str = dic.get(option, default)
         val_lst = val_str.split(",")
         val_str = random.choice(val_lst)
         return int(val_str)
@@ -61,16 +62,16 @@ class EuclidDrum(LoopDrum):
             return
 
         self._part = SongPart(bar_len)
-        while self._part.loops.item_count() < len(self._ptn_dic):
-            self._part.loops.add_item(LoopSimple(bar_len))
         base_steps = 16
         loops = self._part.loops
         for k, sound in enumerate(self._ptn_dic.keys()):
-            steps: int = self._get_option("steps", "16")
-            beats: int = self._get_option("beats", "4")
-            offset: int = self._get_option("offset", "0")
-            accent: int = self._get_option("accent", "2")
+            steps: int = self._get_option(sound, "steps", "16")
+            beats: int = self._get_option(sound, "beats", "4")
+            offset: int = self._get_option(sound, "offset", "0")
+            accent: int = self._get_option(sound, "accent", "2")
             es = EuclidSlicer(steps, beats, offset)
+            ptrn_str = es.get_ptrn_str()
+            print(22222222222222, sound, str(es))
 
             if k == 0:
                 base_steps = steps
@@ -82,7 +83,7 @@ class EuclidDrum(LoopDrum):
                 lp = LoopSimple(new_len)
                 loops.add_item(lp)
 
-            for n, s in enumerate(es.get_ptrn_str()):
+            for n, s in enumerate(ptrn_str):
                 if s == '.':
                     continue
                 pos = round(n * step_len)

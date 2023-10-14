@@ -36,7 +36,7 @@ class LoopDrum(BaseDrum):
     def random_drum(self) -> None:
         loops = self._part.loops
         total_cnt = self._part.loops.item_count()
-        play_cnt: int = 1 + self._drum_level * total_cnt // self._get_drum_levels()
+        play_cnt: int = (1 + self._drum_level) * total_cnt // self._get_drum_levels()
         assert 0 < play_cnt <= total_cnt
         total_lst = list(range(total_cnt))
         play_lst = np.random.choice(total_lst, size=play_cnt, replace=False)

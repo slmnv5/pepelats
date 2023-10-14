@@ -51,7 +51,7 @@ class MidiDrum(BaseDrum):
                 my_log.debug(f"Simple message: {msg}")
                 self._send_midi(self._simple_msg_dic[msg])
             elif msg in self._param_msg_dic:
-                local_vars = {"BPM": self._bpm, "COUNT": self._count, "VOLUME": self._volume111,
+                local_vars = {"BPM": self._bpm, "COUNT": self._count, "VOLUME": self._volume,
                               "PROG": self._ptn, "FILL_BYTES": self._fill_bytes}
                 evaluated_msg = self._eval(self._param_msg_dic[msg], local_vars)
                 my_log.debug(f"Evaluated message: {evaluated_msg}")

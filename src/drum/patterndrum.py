@@ -51,7 +51,7 @@ class PatternDrum(BaseDrum, WrapBuffer):
 
     def set_volume(self, volume: float) -> None:
         super().set_volume(volume)
-        SampleLoader.set_volume(self._volume111)  # change all sound samples
+        SampleLoader.set_volume(self._volume)  # change all sound samples
 
     def _set_bar_len(self, bar_len: int) -> None:
         super()._set_bar_len(bar_len)
@@ -87,7 +87,7 @@ class PatternDrum(BaseDrum, WrapBuffer):
                 continue
             sound_arr = SampleLoader.get_sound(sound, is_accent)
             if swing_factor:
-                chg = round(swing_factor * self._par111 * 0.25)
+                chg = round(swing_factor * self._par * 0.25)
                 pos += chg
             self.record_samples(sound_arr, pos)
 
@@ -95,7 +95,7 @@ class PatternDrum(BaseDrum, WrapBuffer):
 
     def show_drum(self) -> str:
         base_info = super().show_drum()
-        intensity = f"intens.: {self._volumes[self._ptn_idx]:.3F} swing: {self._par111}"
+        intensity = f"intens.: {self._volumes[self._ptn_idx]:.3F} swing: {self._par}"
         name = self._names[self._ptn_idx]
         return f"{base_info}\n{intensity}\nname:{name}"
 

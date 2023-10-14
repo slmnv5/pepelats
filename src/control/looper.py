@@ -47,8 +47,6 @@ class Looper(ManyLoopCtrl):
         self._send_q.put([ConfigName.client_redraw, draw_info])
 
     # ===============+ other methods
-    def _gui_test(self):
-        self._send_q.put(["_gui_test"])
 
     def _restart_looper(self) -> None:
         self._stop_song()
