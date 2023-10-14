@@ -121,15 +121,28 @@ class PatternDrum(BaseDrum, WrapBuffer):
         steps = len(accents)
         step_len = bar_len / steps
         sound_lst = SampleLoader.get_sound_names()
-        for sound, notes in [(k, v) for k, v in ptn_dic.items() if k in sound_lst]:
+        for sname, notes in [(k, v) for k, v in ptn_dic.items() if k in sound_lst]:
             assert steps == len(notes)
-            for k in range(steps):
-                if notes[k] not in "123456789!":
+            for k, s in enumerate(notes):
+                if s not in "123456789!":
                     continue
                 step_prob = "0123456789!".index(notes[k]) / 10
                 idx = round(k * step_len)
                 skip_prob = round(1 - step_prob, 2)
                 is_accent = accents[k] != "."
                 swing_factor: int = round(step_len) if (k % 2 != 0) else 0
-                ptn_list.append((idx, skip_prob, is_accent, swing_factor, sound))
+                ptn_list.append((idx, skip_prob, is_accent, swing_factor, sname))
         my_log.debug(f"Converted drum pattern:\n{ptn_list}")
+
+    @staticmethod
+    def _ptn_volume(ptn_dic: dict[str, any]) -> float:
+        """ Measure pattern volume or intensity """
+        result: float = 0.0
+        sound_lst = SampleLoader.get_sound_names()
+        for sname, notes in [(k, v) for (k, v) in ptn_dic.items() if k in sound_lst]:
+            for k, s in enumerate(notes):
+                if s not in "123456789!":
+                    continue
+                step_prob = "0123456789!".index(notes[k]) / 10
+                result += step_prob
+        return result
