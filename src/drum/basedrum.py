@@ -82,7 +82,7 @@ class BaseDrum(ABC):
         es = EuclidSlicer(len(self._ptn_lst), self._get_drum_levels(), 0)
         sl: slice = es.slice_by_idx(self._drum_level)
         lst = self._ptn_lst[sl]
-        self._ptn_idx = sl.start + random.randrange(len(lst))
+        self._ptn_idx = sl.start + (random.randrange(len(lst)) if lst else 0)
         self.start_drum()
 
     @abstractmethod

@@ -1,3 +1,5 @@
+import random
+
 from utils.utilother import FileFinder, CollectionOwner, EuclidSlicer
 
 
@@ -59,3 +61,13 @@ def test_6():
 
     assert EuclidSlicer(30, 5, 0).rng_by_idx(0) == [0, 1, 2, 3, 4, 5]
     assert EuclidSlicer(30, 5, 0).rng_by_idx(3) == [18, 19, 20, 21, 22, 23]
+
+
+def test_7():
+    lst = [1, 2]
+    es = EuclidSlicer(len(lst), 12, 0)
+    sl: slice = es.slice_by_idx(0)
+    lst = lst[sl]
+    idx = sl.start + random.randrange(len(lst))
+    assert idx == 0
+    assert lst == [1]
