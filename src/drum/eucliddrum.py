@@ -79,7 +79,6 @@ class EuclidDrum(BaseDrum):
     def _load_one_ptn(ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, any]) -> None:
         """One Drum pattern put into dictionary"""
         sound_lst = SampleLoader.get_sound_names()
-        print(22222222222222222, sect_dic)
         for sname, euclid_str in [(k, v) for (k, v) in sect_dic.items() if k in sound_lst]:
             euclid_lst = [int(x) for x in euclid_str.split(",")]
             assert len(euclid_lst) == 4
@@ -91,7 +90,6 @@ class EuclidDrum(BaseDrum):
     def _convert_one_ptn(bar_len: int, ptn_dic: dict[str, str], ptn_list: list[tuple]) -> None:
         """One Drum pattern converted into play list of (buff_position, skip_prob, is_accent, sound_name)"""
         sound_lst = SampleLoader.get_sound_names()
-        print(11111111111111111, ptn_dic.items())
         max_steps: int = max([len(v) for k, v in ptn_dic.items() if k in sound_lst])
         step_len: float = bar_len / max_steps
         for sname, notes in [(k, v) for k, v in ptn_dic.items() if k in sound_lst]:
