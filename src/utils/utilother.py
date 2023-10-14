@@ -147,7 +147,7 @@ class EuclidSlicer:
     """ Spaces beats in steps in most even way.
     Used in Euclid drum patterns or when need to divide list evely """
 
-    def __init__(self, steps: int, beats: int, shift: int = 0):
+    def __init__(self, steps: int, beats: int, shift: int, accent: int = 0):
         assert steps and beats
         beats = min(beats, steps)
         shift %= steps
@@ -157,11 +157,13 @@ class EuclidSlicer:
         self._beats: int = beats
         self._steps: int = steps
         self._shift: int = shift
+        self._accent: int = accent
 
     def get_ptrn_str(self) -> str:
         pattern_lst = ['.'] * self._steps
         for k in self._beat_steps:
-            pattern_lst[k] = '!'
+            is_accent = self._accent > 0 and k % self._accent == 0
+            pattern_lst[k] = '*' if is_accent else '+'
         return ''.join(pattern_lst)
 
     def beat_steps(self) -> list[int]:
