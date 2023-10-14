@@ -56,7 +56,7 @@ class PatternDrum(BaseDrum, WrapBuffer):
     def _set_bar_len(self, bar_len: int) -> None:
         super()._set_bar_len(bar_len)
         self.new_buff(self._bar_len)
-        pl = PatternLoader(self._ff.get_full_name(), self._load_one_ptn, self._convert_one_ptn)
+        pl = PatternLoader(self._ff.get_full_name(), self._load_one_ptn, self._convert_one_ptn, self._ptn_volume)
         self._ptn_lst = pl.get_patterns(bar_len)
         self._names = pl.get_names()
         self._volumes = pl.get_volumes()

@@ -39,23 +39,23 @@ def test_4():
 
 
 def test_6():
-    assert EuclidSlicer(10, 3).rng_by_idx(0) == [0, 1, 2]
-    assert EuclidSlicer(10, 3).rng_by_idx(1) == [3, 4, 5, 6]
-    assert EuclidSlicer(10, 3).rng_by_idx(2) == [7, 8, 9]
+    assert EuclidSlicer(10, 3, 0).rng_by_idx(0) == [0, 1, 2]
+    assert EuclidSlicer(10, 3, 0).rng_by_idx(1) == [3, 4, 5, 6]
+    assert EuclidSlicer(10, 3, 0).rng_by_idx(2) == [7, 8, 9]
 
-    assert EuclidSlicer(3, 3).rng_by_idx(0) == [0]
-    assert EuclidSlicer(3, 3).rng_by_idx(1) == [1]
-    assert EuclidSlicer(3, 3).rng_by_idx(2) == [2]
+    assert EuclidSlicer(3, 3, 0).rng_by_idx(0) == [0]
+    assert EuclidSlicer(3, 3, 0).rng_by_idx(1) == [1]
+    assert EuclidSlicer(3, 3, 0).rng_by_idx(2) == [2]
 
-    assert EuclidSlicer(2, 3).rng_by_idx(0) == [0]
-    assert EuclidSlicer(2, 2).rng_by_idx(1) == [1]
-    assert EuclidSlicer(2, 3).rng_by_idx(1) == [1]
+    assert EuclidSlicer(2, 3, 0).rng_by_idx(0) == [0]
+    assert EuclidSlicer(2, 2, 0).rng_by_idx(1) == [1]
+    assert EuclidSlicer(2, 3, 0).rng_by_idx(1) == [1]
 
-    assert EuclidSlicer(5, 30).rng_by_idx(0) == [0]
-    assert EuclidSlicer(5, 30).rng_by_idx(6) == [1]
-    assert EuclidSlicer(5, 30).rng_by_idx(7) == [2]
+    assert EuclidSlicer(5, 30, 0).rng_by_idx(0) == [0]
+    assert EuclidSlicer(5, 30, 0).rng_by_idx(6) == [1]
+    assert EuclidSlicer(5, 30, 0).rng_by_idx(7) == [2]
 
-    assert EuclidSlicer(5, 3).rng_by_idx(1) == [2]
+    assert EuclidSlicer(5, 3, 0).rng_by_idx(1) == [2]
 
-    assert EuclidSlicer(30, 5).rng_by_idx(0) == [0, 1, 2, 3, 4, 5]
-    assert EuclidSlicer(30, 5).rng_by_idx(3) == [18, 19, 20, 21, 22, 23]
+    assert EuclidSlicer(30, 5, 0).rng_by_idx(0) == [0, 1, 2, 3, 4, 5]
+    assert EuclidSlicer(30, 5, 0).rng_by_idx(3) == [18, 19, 20, 21, 22, 23]
