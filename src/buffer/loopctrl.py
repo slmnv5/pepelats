@@ -78,7 +78,7 @@ class LoopCtrl(MenuClient, ABC):
         self._drum.set_volume(volume)
 
     def _show_drum_param(self) -> str:
-        return self._drum.show_drum()
+        return self._drum.show_drum_param()
 
     def _random_drum(self) -> None:
         self._drum.random_drum()

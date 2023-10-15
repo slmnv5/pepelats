@@ -93,9 +93,9 @@ class PatternDrum(BaseDrum, WrapBuffer):
 
         self.play_samples(out_data, idx, True)
 
-    def show_drum(self) -> str:
-        base_info = super().show_drum()
-        intensity = f"intens.: {self._volumes[self._ptn_idx]:.3F} swing: {self._par}"
+    def show_drum_param(self) -> str:
+        base_info = super().show_drum_param()
+        intensity = f"intens: {self._volumes[self._ptn_idx]:.1F}"
         name = self._names[self._ptn_idx]
         return f"{base_info}\n{intensity}\nname:{name}"
 

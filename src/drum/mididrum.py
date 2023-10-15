@@ -163,8 +163,8 @@ class MidiDrum(BaseDrum):
     def iterate_drum_config(self, steps: int) -> None:
         self._ff.iterate(steps)
 
-    def show_drum(self) -> str:
-        base_info = super().show_drum()
+    def show_drum_param(self) -> str:
+        base_info = super().show_drum_param()
         port = f"{self._midi_out.name}"
         is_ok = f"{self._midi_out.port.is_port_open()}"
         config = self.get_config()

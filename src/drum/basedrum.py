@@ -99,12 +99,13 @@ class BaseDrum(ABC):
         pass
 
     @abstractmethod
-    def show_drum(self) -> str:
-        return f"{self}:bpm:{self._bpm:.2F}:vol:{self.get_volume():.2F}"
+    def show_drum_param(self) -> str:
+        return f"vol:{self._volume:.2F} par:{self._par}"
 
     @abstractmethod
     def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
         pass
 
     def __str__(self) -> str:
-        return f"{self.__class__.__name__[0]}:{self._ptn_idx}/{len(self._ptn_lst)}"
+        cls_name = self.__class__.__name__[0]
+        return f"{cls_name}:{self._ptn_idx}/{len(self._ptn_lst)} bpm:{self._bpm:.2F}"

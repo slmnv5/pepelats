@@ -69,5 +69,5 @@ class LoopDrum(BaseDrum):
         loops.apply_to_each(lambda x: lp_lst.append("S" if x.is_silent else "_"))
         return f"{self.__class__.__name__[0]}:" + "".join(lp_lst)
 
-    def show_drum(self) -> str:
-        return f"{self}:{self._part}"
+    def show_drum_param(self) -> str:
+        return f"{self._part}"
