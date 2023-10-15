@@ -99,7 +99,7 @@ class PatternDrum(BaseDrum, WrapBuffer):
         return f"{base_info}\n{intensity}\nname:{name}"
 
     @staticmethod
-    def _load_one_ptn(ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, any]) -> None:
+    def _load_one_ptn(ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
         """One Drum pattern put into dictionary"""
         sound_lst = SampleLoader.get_sound_names()
         max_steps: int = max([len(v) for k, v in sect_dic.items() if k in sound_lst])
@@ -114,7 +114,7 @@ class PatternDrum(BaseDrum, WrapBuffer):
         my_log.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
 
     @staticmethod
-    def _convert_one_ptn(bar_len: int, ptn_dic: dict[str, any], ptn_list: list[tuple]) -> None:
+    def _convert_one_ptn(bar_len: int, ptn_dic: dict[str, str], ptn_list: list[tuple]) -> None:
         """One Drum pattern converted into play list of (buff_position, skip_prob, is_accent, sound_name)"""
         accents: str = ptn_dic["accents"]
         steps = len(accents)
@@ -135,7 +135,7 @@ class PatternDrum(BaseDrum, WrapBuffer):
         my_log.debug(f"Converted drum patterns: {len(ptn_list)}")
 
     @staticmethod
-    def _ptn_intensity(ptn_dic: dict[str, any]) -> float:
+    def _ptn_intensity(ptn_dic: dict[str, str]) -> str:
         """ Measure pattern volume or intensity """
         result: float = 0.0
         sound_lst = SampleLoader.get_sound_names()
@@ -145,4 +145,4 @@ class PatternDrum(BaseDrum, WrapBuffer):
                     continue
                 step_prob = "0123456789!".index(notes[k]) / 10
                 result += step_prob
-        return result
+        return f"{result}.1F"

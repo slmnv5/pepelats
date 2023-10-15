@@ -39,11 +39,11 @@ class PatternLoader:
         self._ini_intensities = [x["intensity"] for x in self._ini_patterns]
         my_log.debug(f"Loaded from: {fname}:\nnames: {self._ini_names}\nintensities: {self._ini_intensities}")
 
-    def get_patterns(self, bar_len: int) -> list[list[tuple]]:
+    def get_patterns(self, bar_len: int) -> list[list[any]]:
         result = list()
         # INI patterns already sorted by intensity
         for ptn_dic in self._ini_patterns:
-            ptn_lst: list[tuple] = list()
+            ptn_lst: list[any] = list()
             self._fn_conv(bar_len, ptn_dic, ptn_lst)
             result.append(ptn_lst)
         return result
