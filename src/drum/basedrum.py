@@ -108,4 +108,4 @@ class BaseDrum(ABC):
 
     def __str__(self) -> str:
         cls_name = self.__class__.__name__[0]
-        return f"{cls_name}:{self._ptn_idx}/{len(self._ptn_lst)} bpm:{self._bpm:.2F}"
+        return f"{cls_name}:{self._ptn_idx}/{len(self._ptn_lst)} {self._bpm:.2F}"
