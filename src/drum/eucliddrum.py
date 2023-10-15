@@ -23,7 +23,7 @@ class EuclidDrum(BaseDrum):
         self._ff = FileFinder(self._dname, True, ".ini")
         assert self._ff.selected_item()
         self._names: list[str] = list()  # names of patterns
-        self._intensities: list[float] = list()  # intensity of patterns
+        self._intensities: list[str] = list()
 
     def stop_drum(self) -> None:
         self._silent = True
@@ -33,9 +33,9 @@ class EuclidDrum(BaseDrum):
 
     def show_drum_param(self) -> str:
         base_info = super().show_drum_param()
-        intensity = f"intens: {self._intensities[self._ptn_idx]:.1F}"
+        intensity = self._intensities[self._ptn_idx]
         name = self._names[self._ptn_idx]
-        return f"{base_info}\n{intensity}\nname:{name}"
+        return f"{base_info}\nintensity: {intensity}\nname: {name}"
 
     def get_config(self) -> str:
         return self._ff.selected_item()
@@ -108,7 +108,7 @@ class EuclidDrum(BaseDrum):
                 if s not in "+*":
                     continue
                 result += 1
-        return f"{result / max_steps}.1F"
+        return f"{round(result / max_steps, 1)}"
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         if self._silent or not self._bar_len:

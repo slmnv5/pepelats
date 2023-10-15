@@ -29,7 +29,7 @@ class PatternDrum(BaseDrum, WrapBuffer):
         self._ff = FileFinder(self._dname, True, ".ini")
         assert self._ff.selected_item()
         self._names: list[str] = list()  # names of patterns
-        self._intensities: list[float] = list()  # intensity of patterns
+        self._intensities: list[str] = list()
 
     def random_drum(self) -> None:
         super().random_drum()
@@ -94,9 +94,9 @@ class PatternDrum(BaseDrum, WrapBuffer):
 
     def show_drum_param(self) -> str:
         base_info = super().show_drum_param()
-        intensity = f"intens: {self._intensities[self._ptn_idx]:.1F}"
+        intensity = self._intensities[self._ptn_idx]
         name = self._names[self._ptn_idx]
-        return f"{base_info}\n{intensity}\nname:{name}"
+        return f"{base_info}\nintensity: {intensity}\nname: {name}"
 
     @staticmethod
     def _load_one_ptn(ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
@@ -145,4 +145,4 @@ class PatternDrum(BaseDrum, WrapBuffer):
                     continue
                 step_prob = "0123456789!".index(notes[k]) / 10
                 result += step_prob
-        return f"{result}.1F"
+        return f"{round(result, 1)}"
