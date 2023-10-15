@@ -29,7 +29,7 @@ class Looper(ManyLoopCtrl):
         else:
             self._saved_draw_info = draw_info
         dr = self._drum
-        draw_info.header = f"{dr.get_config()[:-4]}-{dr.get_bpm():05.2F}-{dr}"
+        draw_info.header = f"{dr.get_config()[:-4]} {dr}"
         if draw_info.update_method:
             # noinspection PyBroadException
             try:
