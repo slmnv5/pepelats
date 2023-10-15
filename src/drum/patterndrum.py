@@ -29,8 +29,7 @@ class PatternDrum(BaseDrum, WrapBuffer):
         self._ff = FileFinder(self._dname, True, ".ini")
         assert self._ff.selected_item()
         self._names: list[str] = list()  # names of patterns
-        self._volumes: list[float] = list()  # intensity of patterns
-        self._set_bar_len(0)
+        self._intensities: list[float] = list()  # intensity of patterns
 
     def random_drum(self) -> None:
         super().random_drum()
@@ -56,10 +55,10 @@ class PatternDrum(BaseDrum, WrapBuffer):
     def _set_bar_len(self, bar_len: int) -> None:
         super()._set_bar_len(bar_len)
         self.new_buff(self._bar_len)
-        pl = PatternLoader(self._ff.get_full_name(), self._load_one_ptn, self._convert_one_ptn, self._ptn_volume)
+        pl = PatternLoader(self._ff.get_full_name(), self._load_one_ptn, self._convert_one_ptn, self._ptn_intensity)
         self._ptn_lst = pl.get_patterns(bar_len)
         self._names = pl.get_names()
-        self._volumes = pl.get_volumes()
+        self._intensities = pl.get_intensities()
 
     def stop_drum(self) -> None:
         self.set_silent(True)
@@ -95,7 +94,7 @@ class PatternDrum(BaseDrum, WrapBuffer):
 
     def show_drum_param(self) -> str:
         base_info = super().show_drum_param()
-        intensity = f"intens: {self._volumes[self._ptn_idx]:.1F}"
+        intensity = f"intens: {self._intensities[self._ptn_idx]:.1F}"
         name = self._names[self._ptn_idx]
         return f"{base_info}\n{intensity}\nname:{name}"
 
@@ -132,10 +131,11 @@ class PatternDrum(BaseDrum, WrapBuffer):
                 is_accent = accents[k] != "."
                 swing_factor: int = round(step_len) if (k % 2 != 0) else 0
                 ptn_list.append((idx, skip_prob, is_accent, swing_factor, sname))
-        my_log.debug(f"Converted drum pattern:\n{ptn_list}")
+
+        my_log.debug(f"Converted drum patterns: {len(ptn_list)}")
 
     @staticmethod
-    def _ptn_volume(ptn_dic: dict[str, any]) -> float:
+    def _ptn_intensity(ptn_dic: dict[str, any]) -> float:
         """ Measure pattern volume or intensity """
         result: float = 0.0
         sound_lst = SampleLoader.get_sound_names()

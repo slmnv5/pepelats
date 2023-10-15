@@ -25,6 +25,8 @@ class EuclidDrum(BaseDrum):
         self._dname = find_path("config/drum/euclid")
         self._ff = FileFinder(self._dname, True, ".ini")
         assert self._ff.selected_item()
+        self._names: list[str] = list()  # names of patterns
+        self._intensities: list[float] = list()  # intensity of patterns
 
     def stop_drum(self) -> None:
         self._silent = True
@@ -34,7 +36,7 @@ class EuclidDrum(BaseDrum):
 
     def show_drum_param(self) -> str:
         base_info = super().show_drum_param()
-        intensity = f"intens: {self._volumes[self._ptn_idx]:.1F}"
+        intensity = f"intens: {self._intensities[self._ptn_idx]:.1F}"
         name = self._names[self._ptn_idx]
         return f"{base_info}\n{intensity}\nname:{name}"
 
@@ -57,10 +59,10 @@ class EuclidDrum(BaseDrum):
 
     def _set_bar_len(self, bar_len: int) -> None:
         super()._set_bar_len(bar_len)
-        pl = PatternLoader(self._ff.get_full_name(), self._load_one_ptn, self._convert_one_ptn, self._ptn_volume)
+        pl = PatternLoader(self._ff.get_full_name(), self._load_one_ptn, self._convert_one_ptn, self._ptn_intensity)
         self._ptn_lst = pl.get_patterns(bar_len)
         self._names = pl.get_names()
-        self._volumes = pl.get_volumes()
+        self._intensities = pl.get_intensities()
 
     def _get_option(self, sound: str, option: str, default: str) -> int:
         dic = self._ptn_dic[sound]
@@ -103,11 +105,11 @@ class EuclidDrum(BaseDrum):
                 sound_arr = SampleLoader.get_sound(sname, is_accent)
                 copy_to_right(sound_arr, buff, idx)
 
-        my_log.debug(f"Converted drum pattern:\n{ptn_list}")
+        my_log.debug(f"Converted drum patterns: {len(ptn_list)}")
 
     @staticmethod
-    def _ptn_volume(ptn_dic: dict[str, any]) -> float:
-        """ Measure pattern volume or intensity """
+    def _ptn_intensity(ptn_dic: dict[str, any]) -> float:
+        """ Measure pattern intensity """
         result: float = 0.0
         sound_lst = SampleLoader.get_sound_names()
         for sname, notes in [(k, v) for (k, v) in ptn_dic.items() if k in sound_lst]:

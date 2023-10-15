@@ -8,12 +8,10 @@ my_log = get_my_log(__name__)
 
 
 class PatternLoader:
-    """Load patterns from INI file. Logic to load and convert passed as two methods.
-    Loaded patterns are converted to play patterns - ready to play sound in pattern callback function """
+    """Load patterns from INI file. Logic to load, convert and calculate intensity is passed as 3 methods.
+    Loaded patterns are converted to playable patterns - ready to play sound """
 
-    _loaded: dict[str, list[dict]] = dict()
-
-    def __init__(self, fname: str, fn_load: Callable, fn_conv: Callable, fn_volume: Callable):
+    def __init__(self, fname: str, fn_load: Callable, fn_conv: Callable, fn_intensity: Callable):
         assert os.path.isfile(fname)
         self._fname = fname
         self._fn_conv = fn_conv
@@ -22,14 +20,7 @@ class PatternLoader:
         # patterns ready to play
         self._patterns: list[list[tuple]] = list()
         self._ini_names: list[str] = list()
-        self._ini_volumes: list[float] = list()
-
-        if fname in PatternLoader._loaded:
-            self._ini_patterns = PatternLoader._loaded[fname]
-            self._ini_names = [x["name"] for x in self._ini_patterns]
-            self._ini_volumes = [x["volume"] for x in self._ini_patterns]
-            my_log.debug(f"Reuse of sorted patterns for: {fname}")
-            return
+        self._ini_intensities: list[float] = list()
 
         cfg = ConfigParser()
         cfg.read(fname)
@@ -39,19 +30,18 @@ class PatternLoader:
             assert dic[ptn_name], "Empty section in INI file: {fname}, section: {ptn_name}"
             fn_load(ptn_name, dic[ptn_name], ptn_dic)
             ptn_dic["name"] = ptn_name
-            ptn_dic["volume"] = fn_volume(ptn_dic)  # add volume info
+            ptn_dic["intensity"] = fn_intensity(ptn_dic)  # add volume info
             self._ini_patterns.append(ptn_dic)
         assert len(self._ini_patterns) > 0
-        # sort INI patterns by volume
-        self._ini_patterns.sort(key=lambda x: x["volume"])
+        # sort INI patterns by intensity
+        self._ini_patterns.sort(key=lambda x: x["intensity"])
         self._ini_names = [x["name"] for x in self._ini_patterns]
-        self._ini_volumes = [x["volume"] for x in self._ini_patterns]
-        my_log.debug(f"Loaded from: {fname}:\nnames: {self._ini_names}\nvolumes: {self._ini_volumes}")
-        PatternLoader._loaded[fname] = self._ini_patterns  # save for later reuse
+        self._ini_intensities = [x["intensity"] for x in self._ini_patterns]
+        my_log.debug(f"Loaded from: {fname}:\nnames: {self._ini_names}\nintensities: {self._ini_intensities}")
 
     def get_patterns(self, bar_len: int) -> list[list[tuple]]:
         result = list()
-        # INI patterns already sorted by volume
+        # INI patterns already sorted by intensity
         for ptn_dic in self._ini_patterns:
             ptn_lst: list[tuple] = list()
             self._fn_conv(bar_len, ptn_dic, ptn_lst)
@@ -61,5 +51,5 @@ class PatternLoader:
     def get_names(self) -> list[str]:
         return self._ini_names
 
-    def get_volumes(self) -> list[float]:
-        return self._ini_volumes
+    def get_intensities(self) -> list[float]:
+        return self._ini_intensities
