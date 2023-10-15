@@ -8,6 +8,7 @@ build
 #PyCharm
 .idea
 .run
+*.iml
 #app
 .save_song
 midiconverter
