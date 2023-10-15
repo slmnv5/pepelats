@@ -3,6 +3,7 @@ from drum.eucliddrum import EuclidDrum
 from drum.loopdrum import LoopDrum
 from drum.mididrum import MidiDrum
 from drum.patterndrum import PatternDrum
+from song.songpart import SongPart
 from utils.utillog import get_my_log
 
 my_log = get_my_log(__name__)
@@ -17,7 +18,10 @@ def create_drum(drum_type: str, **kwargs) -> BaseDrum:
     elif drum_type == "MidiDrum":
         return MidiDrum()
     elif drum_type == "LoopDrum":
-        return LoopDrum(kwargs['SongPart'])
+        if 'SongPart' in kwargs:
+            sp = kwargs['SongPart']
+        else:
+            sp = SongPart()
+        return LoopDrum(sp)
     else:
-        my_log.error(f"Unknown drum type: {drum_type}")
-        return PatternDrum()
+        raise RuntimeError(f"Unknown drum type: {drum_type}")
