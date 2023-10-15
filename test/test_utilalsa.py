@@ -3,7 +3,7 @@ import sounddevice
 
 from utils.utilalsa import make_sin_sound, make_noise, correct_dtype, int_to_bytes, bytes_to_int
 from utils.utilconfig import SD_RATE
-from utils.utilnumpy import copy_to_right
+from utils.utilnumpy import play_buffer
 
 
 def test_1() -> None:
@@ -13,10 +13,10 @@ def test_1() -> None:
     freq_lst: list[int] = [60, 65, 70, 75, 80]
     for freq in freq_lst:
         sound = make_sin_sound(freq, 0.5)
-        copy_to_right(sound, result, 0)
+        play_buffer(sound, result, 0)
 
     sound = make_noise(0.1)
-    copy_to_right(sound, result, 0)
+    play_buffer(sound, result, 0)
 
     result = correct_dtype(result)
     sounddevice.play(result, blocking=True)

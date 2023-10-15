@@ -3,7 +3,7 @@ import random
 import numpy as np
 
 from utils.utilalsa import make_zero_buffer
-from utils.utilnumpy import copy_to_right, copy_to_left, trim_buffer
+from utils.utilnumpy import play_buffer, record_buffer, trim_buffer
 
 
 def _record(buff_len, data_len, idx):
@@ -13,7 +13,7 @@ def _record(buff_len, data_len, idx):
     data[:] = 2
     original = data.copy()
 
-    copy_to_left(buff, data, idx)
+    record_buffer(buff, data, idx)
     assert np.array_equal(original, data)
     if data_len == 0 or buff_len == 0:
         is_good = np.all(np.unique(buff) == [1])
@@ -33,7 +33,7 @@ def _play(buff_len, data_len, idx):
     data[:] = 2
     original = buff.copy()
 
-    copy_to_right(buff, data, idx)
+    play_buffer(buff, data, idx)
     assert np.array_equal(original, buff)
 
     if data_len == 0 or buff_len == 0:

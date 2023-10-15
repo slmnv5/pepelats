@@ -10,7 +10,7 @@ from drum.basedrum import BaseDrum
 from utils.utilalsa import make_zero_buffer
 from utils.utilconfig import find_path
 from utils.utillog import get_my_log
-from utils.utilnumpy import copy_to_right
+from utils.utilnumpy import play_buffer
 from utils.utilother import FileFinder, EuclidSlicer
 
 my_log = get_my_log(__name__)
@@ -103,7 +103,7 @@ class EuclidDrum(BaseDrum):
                 idx = round(k * step_len)
                 is_accent = s == "*"
                 sound_arr = SampleLoader.get_sound(sname, is_accent)
-                copy_to_right(sound_arr, buff, idx)
+                play_buffer(sound_arr, buff, idx)
 
         my_log.debug(f"Converted drum patterns: {len(ptn_list)}")
 
@@ -124,4 +124,4 @@ class EuclidDrum(BaseDrum):
             return
         sound_lst = self._ptn_lst[self._ptn_idx]
         for buff in [x[0] for x in sound_lst]:
-            copy_to_right(buff, out_data, idx)
+            play_buffer(buff, out_data, idx)

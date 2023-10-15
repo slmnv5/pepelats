@@ -21,7 +21,7 @@ def _calc_slices_lst(buff_len: int, data_len: int, idx: int) -> list[slice]:
         return [slice(idx1, buff_len), slice(0, idx2), slice(0, to_buff_end), slice(to_buff_end, to_buff_end + idx2)]
 
 
-def copy_to_left(buff: np.ndarray, data: np.ndarray, idx: int) -> None:
+def record_buffer(buff: np.ndarray, data: np.ndarray, idx: int) -> None:
     """ insert from data into buff starting with idx """
     buff_len = len(buff)
     data_len = len(data)
@@ -33,7 +33,7 @@ def copy_to_left(buff: np.ndarray, data: np.ndarray, idx: int) -> None:
         buff[slice_lst[1]] += data[slice_lst[3]]
 
 
-def copy_to_right(buff: np.ndarray, data: np.ndarray, idx: int, zero_after: bool = False) -> None:
+def play_buffer(buff: np.ndarray, data: np.ndarray, idx: int, zero_after: bool = False) -> None:
     """ insert from buff into data starting with idx.
     If zero_after=True empty buff after playing, this is needed for cyclical play of changing buffer """
     buff_len = len(buff)

@@ -3,7 +3,7 @@ import numpy as np
 from utils.utilalsa import make_zero_buffer
 from utils.utilconfig import MAX_LEN, SD_TYPE, SD_RATE
 from utils.utillog import get_my_log
-from utils.utilnumpy import copy_to_right, copy_to_left, vol_db, trim_buffer
+from utils.utilnumpy import play_buffer, record_buffer, vol_db, trim_buffer
 
 my_log = get_my_log(__name__)
 
@@ -61,13 +61,13 @@ class WrapBuffer:
         self.__info_str = ""
 
     def record_samples(self, in_data: np.ndarray, idx: int) -> None:
-        copy_to_left(self.__buff, in_data, idx)
+        record_buffer(self.__buff, in_data, idx)
 
     def play_samples(self, out_data: np.ndarray, idx: int, zero_after: bool = False) -> None:
         if self.__is_silent:
             return
         tmp = self.__buff[::-1] if self.__is_reverse else self.__buff
-        copy_to_right(tmp, out_data, idx, zero_after)
+        play_buffer(tmp, out_data, idx, zero_after)
 
     def finalize(self, idx: int, base_len: int, start_idx: int) -> None:
         """Trim is done only once to fix buffer length for empty loop.
