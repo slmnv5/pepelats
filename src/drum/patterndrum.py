@@ -109,9 +109,12 @@ class PatternDrum(BaseDrum, WrapBuffer):
         ptn_dic["accents"] = accents
         for sname, notes in [(k, v) for (k, v) in sect_dic.items() if k in sound_lst and v]:
             assert type(notes) == str and len(notes) > 0
-            notes = (notes * ceil(max_steps / len(notes)))[:max_steps]
-            ptn_dic[sname] = notes
-        my_log.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
+            try:
+                notes = (notes * ceil(max_steps / len(notes)))[:max_steps]
+                ptn_dic[sname] = notes
+                my_log.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
+            except Exception as ex:
+                my_log.error(f"Error {ex} in drum pattern: {ptn_name}\n{ptn_dic}")
 
     @staticmethod
     def _pattern_convert(bar_len: int, ptn_dic: dict[str, str], ptn_list: list[tuple]) -> None:

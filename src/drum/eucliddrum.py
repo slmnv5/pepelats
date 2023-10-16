@@ -72,11 +72,13 @@ class EuclidDrum(BaseDrum):
         """One Drum pattern put into dictionary"""
         sound_lst = SampleLoader.get_sound_names()
         for sname, euclid_str in [(k, v) for (k, v) in sect_dic.items() if k in sound_lst]:
-            euclid_lst = [int(x) for x in euclid_str.split(",")]
-            assert len(euclid_lst) == 4
-            notes = EuclidSlicer(euclid_lst[0], euclid_lst[1], euclid_lst[2], euclid_lst[3]).get_ptrn_str()
-            ptn_dic[sname] = notes
-        my_log.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
+            try:
+                euclid_lst = [int(x) for x in euclid_str.split(",")]
+                notes = EuclidSlicer(euclid_lst[0], euclid_lst[1], euclid_lst[2], euclid_lst[3]).get_ptrn_str()
+                ptn_dic[sname] = notes
+                my_log.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
+            except Exception as ex:
+                my_log.error(f"Error {ex} in drum pattern: {ptn_name}\n{ptn_dic}")
 
     @staticmethod
     def _pattern_convert(bar_len: int, ptn_dic: dict[str, str], ptn_list: list[np.ndarray]) -> None:
