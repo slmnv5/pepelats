@@ -11,10 +11,10 @@ class PatternLoader:
     """Load patterns from INI file. Logic to load, convert and calculate intensity is passed as 3 methods.
     Loaded patterns are converted to playable patterns - ready to play sound """
 
-    def __init__(self, fname: str, fn_load: Callable, fn_conv: Callable, fn_intensity: Callable):
+    def __init__(self, fname: str, fn_load: Callable, fn_convert: Callable, fn_intensity: Callable):
         assert os.path.isfile(fname)
         self._fname = fname
-        self._fn_conv = fn_conv
+        self._fn_convert = fn_convert
         # patterns from INI file
         self._ini_patterns: list[dict[str, any]] = list()
         # patterns ready to play
@@ -44,7 +44,7 @@ class PatternLoader:
         # INI patterns already sorted by intensity
         for ptn_dic in self._ini_patterns:
             ptn_lst: list[any] = list()
-            self._fn_conv(bar_len, ptn_dic, ptn_lst)
+            self._fn_convert(bar_len, ptn_dic, ptn_lst)
             result.append(ptn_lst)
         return result
 
