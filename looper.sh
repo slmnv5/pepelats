@@ -4,6 +4,7 @@ TMP=$(dirname "$0")
 cd "$TMP" || exit 1
 ROOTDIR="$(pwd -P)"
 APPDIR=$(basename "$ROOTDIR")
+export ROOTDIR
 export APPDIR
 
 found=$(pgrep --full start_looper.py)
@@ -48,7 +49,6 @@ stty -echo
 
 while true; do
   killall -s 9 -w -v python
-  if [ -f "$ROOTDIR/connect_bt.sh" ]; then "$ROOTDIR/connect_bt.sh"; fi
   $PYTHON_CMD
   sleep 5
 done

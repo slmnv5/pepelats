@@ -80,6 +80,11 @@ class Looper(ManyLoopCtrl):
         print("\n", mow.show())
         time.sleep(10)
 
+    @staticmethod
+    def _connect_bt() -> None:
+        os.system("$ROOTDIR/connect_bt.sh")
+        time.sleep(3)
+
     #  ============ All song parts view and related commands
 
     def _delete_song_part(self) -> None:
