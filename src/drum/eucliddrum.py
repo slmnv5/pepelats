@@ -3,7 +3,7 @@ from __future__ import annotations
 import numpy as np
 
 from drum._patternloader import PatternLoader
-from drum._sampleloader import SampleLoader
+from drum._sampleloader import SampleLoader, ACCENT_FACTOR
 from drum.basedrum import BaseDrum
 from utils.utilalsa import make_zero_buffer
 from utils.utilconfig import find_path
@@ -101,14 +101,12 @@ class EuclidDrum(BaseDrum):
     def _ptn_intensity(ptn_dic: dict[str, str]) -> str:
         """ Calculate pattern intensity """
         sound_lst = SampleLoader.get_sound_names()
-        max_steps: int = max([len(v) for k, v in ptn_dic.items() if k in sound_lst])
         result: float = 0.0
         for sname, notes in [(k, v) for (k, v) in ptn_dic.items() if k in sound_lst]:
-            for k, s in enumerate(notes):
-                if s not in "+*":
-                    continue
-                result += 1
-        return f"{round(result / max_steps, 1)}"
+            result += notes.count('+') / len(notes)
+            result += notes.count('*') * ACCENT_FACTOR / len(notes)
+
+        return f"{round(result, 1)}"
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         if self._silent or not self._bar_len:

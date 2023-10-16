@@ -8,7 +8,7 @@ import numpy as np
 
 from buffer.wrapbuffer import WrapBuffer
 from drum._patternloader import PatternLoader
-from drum._sampleloader import SampleLoader
+from drum._sampleloader import SampleLoader, ACCENT_FACTOR
 from drum.basedrum import BaseDrum
 from utils.utilconfig import find_path
 from utils.utillog import get_my_log
@@ -136,13 +136,14 @@ class PatternDrum(BaseDrum, WrapBuffer):
 
     @staticmethod
     def _ptn_intensity(ptn_dic: dict[str, str]) -> str:
-        """ Measure pattern volume or intensity """
+        """ Calculate pattern intensity """
         result: float = 0.0
         sound_lst = SampleLoader.get_sound_names()
+        accents = ptn_dic["accents"]
         for sname, notes in [(k, v) for (k, v) in ptn_dic.items() if k in sound_lst]:
             for k, s in enumerate(notes):
                 if s not in "123456789!":
                     continue
                 step_prob = "0123456789!".index(notes[k]) / 10
-                result += step_prob
+                result += step_prob * (1 if accents[k] != '!' else ACCENT_FACTOR)
         return f"{round(result, 1)}"

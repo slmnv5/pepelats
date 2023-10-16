@@ -10,12 +10,12 @@ from utils.utillog import get_my_log
 my_log = get_my_log(__name__)
 
 # how much accent amplitude is bigger
-_ACCENT_FACTOR = 1.2
+ACCENT_FACTOR = 1.2
 
 
 def _adjust_volume(vol: float, sounds: dict[str, np.ndarray]) -> dict[str, tuple[np.ndarray, np.ndarray]]:
     v1 = vol * MAX_SD_TYPE
-    v2 = v1 * _ACCENT_FACTOR
+    v2 = v1 * ACCENT_FACTOR
     return {k: ((v * v1).astype(SD_TYPE), (v * v2).astype(SD_TYPE)) for k, v in sounds.items()}
 
 
