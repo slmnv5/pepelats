@@ -144,7 +144,7 @@ class PatternDrum(BaseDrum, WrapBuffer):
             for k, s in enumerate(notes):
                 if s not in "123456789!":
                     continue
-                step_prob = "0123456789!".index(notes[k]) / 10
+                step_prob = "0123456789!".index(s) / 10
                 result += step_prob * (1 if accents[k] != '!' else ACCENT_FACTOR)
         return f"{round(result, 1)}"
 
