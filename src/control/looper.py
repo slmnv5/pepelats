@@ -77,7 +77,7 @@ class Looper(ManyLoopCtrl):
     def _show_ports() -> None:
         mow = MidiOutWrap()
         os.system("clear")
-        print(mow.show())
+        print("\n", mow.show())
         time.sleep(10)
 
     #  ============ All song parts view and related commands
