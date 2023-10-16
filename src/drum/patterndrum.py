@@ -147,3 +147,6 @@ class PatternDrum(BaseDrum, WrapBuffer):
                 step_prob = "0123456789!".index(notes[k]) / 10
                 result += step_prob * (1 if accents[k] != '!' else ACCENT_FACTOR)
         return f"{round(result, 1)}"
+
+    def get_drum_header(self) -> str:
+        return super().get_drum_header() + ":" + self._names[self._ptn_idx]

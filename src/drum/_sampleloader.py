@@ -4,7 +4,7 @@ import wave
 
 import numpy as np
 
-from utils.utilconfig import SD_TYPE, find_path, MAX_SD_TYPE
+from utils.utilconfig import SD_TYPE, find_path, MAX_SD_TYPE, SD_RATE
 from utils.utillog import get_my_log
 
 my_log = get_my_log(__name__)
@@ -71,11 +71,12 @@ class SampleLoader:
         _sounds[k] = v * (_MAX_AMPLITUDE / maxes[k])  # make max amplitude equal for all sounds
 
     volumes: dict[str, float] = {k: round(1000 * v.var(), 2) for k, v in _sounds.items()}
-    maxes: dict[str, float] = {k: round(v.max(initial=0.01), 2) for k, v in _sounds.items()}
+    durations: dict[str, float] = {k: round(len(v) / SD_RATE, 1) for k, v in _sounds.items()}
 
     # _adjusted is for changing volume up and down, _sounds does not change
     _adjusted = _adjust_volume(0.7, _sounds)
-    my_log.debug(f"Loaded sounds:\nvolumes:{volumes}\nmaxes:{maxes}")
+    my_log.debug(f"Loaded sounds:\nvolumes:{volumes}")
+    my_log.debug(f"Loaded sounds:\ndurations:{durations}")
 
     @classmethod
     def set_volume(cls, volume: float) -> None:

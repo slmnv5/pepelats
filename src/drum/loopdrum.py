@@ -63,11 +63,11 @@ class LoopDrum(BaseDrum):
     def start_drum(self) -> None:
         self.random_drum()
 
-    def __str__(self) -> str:
+    def get_drum_header(self) -> str:
         lp_lst: list[str] = list()
         loops = self._part.loops
         loops.apply_to_each(lambda x: lp_lst.append("S" if x.is_silent else "_"))
-        return f"{self.__class__.__name__[0]}:" + "".join(lp_lst)
+        return super().get_drum_header() + ":" + "".join(lp_lst)
 
     def show_drum_param(self) -> str:
-        return f"{self._part}"
+        return ""

@@ -114,3 +114,6 @@ class EuclidDrum(BaseDrum):
         sound_lst = self._ptn_lst[self._ptn_idx]
         for buff in sound_lst:
             play_buffer(buff, out_data, idx)
+
+    def get_drum_header(self) -> str:
+        return super().get_drum_header() + ":" + self._names[self._ptn_idx]

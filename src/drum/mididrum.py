@@ -170,5 +170,5 @@ class MidiDrum(BaseDrum):
         config = self.get_config()
         return f"{base_info}\nport OK: {is_ok}/{port}\nconfig: {config}"
 
-    def __str__(self) -> str:
-        return f"{self.__class__.__name__[0]}:{self._ptn}/{len(self._ptn_lst)}"
+    def get_drum_header(self) -> str:
+        return f"{self}:{self._ptn}/{len(self._ptn_lst)}:{self.get_config()}"
