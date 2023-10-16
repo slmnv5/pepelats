@@ -72,23 +72,24 @@ class EuclidDrum(BaseDrum):
         """One Drum pattern put into dictionary"""
         sound_lst = SampleLoader.get_sound_names()
         for sname, euclid_str in [(k, v) for (k, v) in sect_dic.items() if k in sound_lst]:
-            try:
-                euclid_lst = [int(x) for x in euclid_str.split(",")]
-                notes = EuclidSlicer(euclid_lst[0], euclid_lst[1], euclid_lst[2], euclid_lst[3]).get_ptrn_str()
-                ptn_dic[sname] = notes
-                my_log.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
-            except Exception as ex:
-                my_log.error(f"Error {ex} in drum pattern: {ptn_name}\n{ptn_dic}")
+            euclid_lst = [int(x) for x in euclid_str.split(",")]
+            notes = EuclidSlicer(euclid_lst[0], euclid_lst[1], euclid_lst[2], euclid_lst[3]).get_ptrn_str()
+            ptn_dic[sname] = notes
+        my_log.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
 
     @staticmethod
     def _pattern_convert(bar_len: int, ptn_dic: dict[str, str], ptn_list: list[np.ndarray]) -> None:
         """One Drum pattern converted into play list of (buff_position, skip_prob, is_accent, sound_name)"""
         sound_lst = SampleLoader.get_sound_names()
         max_steps: int = max([len(v) for k, v in ptn_dic.items() if k in sound_lst])
-        step_len: float = bar_len / max_steps
         for sname, notes in [(k, v) for k, v in ptn_dic.items() if k in sound_lst]:
-            buff = make_zero_buffer(round(step_len * len(notes)))
+            len_ratio = len(notes) / max_steps
+            assert 0 < len_ratio <= 1
+            print(1111111, len_ratio)
+            new_len = round(bar_len * len_ratio)
+            buff = make_zero_buffer(new_len)
             ptn_list.append(buff)
+            step_len: float = bar_len / max_steps
             for k, s in enumerate(notes):
                 if s not in "+*":
                     continue
