@@ -56,7 +56,7 @@ class EuclidDrum(BaseDrum):
 
     def _set_bar_len(self, bar_len: int) -> None:
         super()._set_bar_len(bar_len)
-        pl = PatternLoader(self._ff.get_full_name(), self._load_one_ptn, self._convert_one_ptn, self._ptn_intensity)
+        pl = PatternLoader(self._ff.get_full_name(), self._pattern_load, self._pattern_convert, self._pattern_intensity)
         self._ptn_lst = pl.get_patterns(bar_len)
         self._names = pl.get_names()
         self._intensities = pl.get_intensities()
@@ -68,7 +68,7 @@ class EuclidDrum(BaseDrum):
         super().change_drum_level(chg)
 
     @staticmethod
-    def _load_one_ptn(ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
+    def _pattern_load(ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
         """One Drum pattern put into dictionary"""
         sound_lst = SampleLoader.get_sound_names()
         for sname, euclid_str in [(k, v) for (k, v) in sect_dic.items() if k in sound_lst]:
@@ -79,7 +79,7 @@ class EuclidDrum(BaseDrum):
         my_log.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
 
     @staticmethod
-    def _convert_one_ptn(bar_len: int, ptn_dic: dict[str, str], ptn_list: list[np.ndarray]) -> None:
+    def _pattern_convert(bar_len: int, ptn_dic: dict[str, str], ptn_list: list[np.ndarray]) -> None:
         """One Drum pattern converted into play list of (buff_position, skip_prob, is_accent, sound_name)"""
         sound_lst = SampleLoader.get_sound_names()
         max_steps: int = max([len(v) for k, v in ptn_dic.items() if k in sound_lst])
@@ -98,7 +98,7 @@ class EuclidDrum(BaseDrum):
         my_log.debug(f"Converted drum patterns: {len(ptn_list)}")
 
     @staticmethod
-    def _ptn_intensity(ptn_dic: dict[str, str]) -> str:
+    def _pattern_intensity(ptn_dic: dict[str, str]) -> str:
         """ Calculate pattern intensity """
         sound_lst = SampleLoader.get_sound_names()
         result: float = 0.0
