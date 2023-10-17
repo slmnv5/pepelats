@@ -8,13 +8,14 @@ from drum.basedrum import BaseDrum
 from utils.utilalsa import make_zero_buffer
 from utils.utilconfig import find_path
 from utils.utillog import get_my_log
-from utils.utilnumpy import play_buffer
+from utils.utilnumpy import play_buffer, record_buffer
 from utils.utilother import FileFinder, EuclidSlicer
 
 my_log = get_my_log(__name__)
 
 
 class EuclidDrum(BaseDrum):
+    _DRUM_STEPS: int = 16
 
     def __init__(self):
         BaseDrum.__init__(self)
@@ -81,22 +82,17 @@ class EuclidDrum(BaseDrum):
     def _pattern_convert(bar_len: int, ptn_dic: dict[str, str], ptn_list: list[np.ndarray]) -> None:
         """One Drum pattern converted into play list of (buff_position, skip_prob, is_accent, sound_name)"""
         sound_lst = SampleLoader.get_sound_names()
-        max_steps: int = max([len(v) for k, v in ptn_dic.items() if k in sound_lst])
         for sname, notes in [(k, v) for k, v in ptn_dic.items() if k in sound_lst]:
-            len_ratio = len(notes) / max_steps
-            assert 0 < len_ratio <= 1
-            print(1111111, len_ratio)
-            new_len = round(bar_len * len_ratio)
+            new_len = round(bar_len * len(notes) / EuclidDrum._DRUM_STEPS)
             buff = make_zero_buffer(new_len)
             ptn_list.append(buff)
-            step_len: float = bar_len / max_steps
+            step_len: float = new_len / len(notes)
             for k, s in enumerate(notes):
                 if s not in "+*":
                     continue
                 idx = round(k * step_len)
-                is_accent = s == "*"
-                sound_arr = SampleLoader.get_sound(sname, is_accent)
-                play_buffer(sound_arr, buff, idx)
+                sound_arr = SampleLoader.get_sound(sname, s == "*")
+                record_buffer(buff, sound_arr, idx)
 
         my_log.debug(f"Converted drum patterns: {len(ptn_list)}")
 
