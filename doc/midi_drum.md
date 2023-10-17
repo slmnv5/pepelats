@@ -41,9 +41,9 @@ To pass decimal part use python expression, ex: FILL_BYTES(123.49 * 100, 5) == [
 
 Message may include valid python expressions:
 
-- \[0x90, 11, 12\] if COUNT == 0 else \[0x90, 111, 112\]
-- \[0xCO, random.choice(\[0, 1, 2, 3\])\]
-- \[0xF0, 0x5A\] + FILL_BYTES(BMP * 100, 7) + \[0xF7\]
+- [0x90, 11, 12] if COUNT == 0 else [0x90, 13, 14]
+- [0xCO, random.choice([0, 1, 2, 3])]
+- [0xF0, 0x5A] + FILL_BYTES(BMP * 100, 7) + [0xF7]
 
 ### MIDI port
 

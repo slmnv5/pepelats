@@ -11,11 +11,11 @@ Each view has INI file that configure available MIDI messages and respective com
 * [song view](./../config/menu/button6/song.ini) -- stop song at different points, save, save as new, empty, delete or
   load. Scroll list of saved songs.
 
-* [drum view](./../config/menu/button6/drum.ini) -- select one of 3 drum types, adjust volume and parameters. Assign
-  specific
-  configuration to drum e.g. style.
+* [drum view](./../config/menu/button6/drum.ini) -- adjust volume and parameters. Assign specific configuration to drum
+  e.g. style for pattern drum.
 
-* [service view](./../config/menu/button6/serv.ini) -- restart looper, reboot device, check for updates, etc
+* [service view](./../config/menu/button6/serv.ini) -- restart looper, reboot device, check for updates. Select one of
+  four drum types for song
 
 
 

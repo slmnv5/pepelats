@@ -7,7 +7,7 @@
 - Full history for "undo/redo", not only the latest change
 - Loops and parts are added/deleted on the run
 - Quantization - time of changing parts, recording is adjusted
-- Drum machine with 3 drum types. MIDI drum type can sync and control external MIDI device
+- Drum machine with four drum types. MIDI drum type can sync and control external MIDI device
 - Songs saved and loaded from SD card
 - Control of looper by MIDI (Bluetooth or USB) or by computer keyboard
 

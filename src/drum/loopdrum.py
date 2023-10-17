@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 
 from drum.basedrum import BaseDrum
@@ -16,18 +18,18 @@ class LoopDrum(BaseDrum):
         return ""
 
     def _get_drum_levels(self) -> int:
-        cnt = self._part.loops.item_count()
-        if cnt < 3:
+        k = self._part.loops.item_count()
+        if k <= 2:
             return 1
-        else:
+        elif k <= 4:
             return 2
+        else:
+            return 3
 
     def get_id(self) -> int:
         return id(self._part)
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        if self._part.is_empty:
-            return
         self._part.play_samples(out_data, idx)
 
     def change_drum_level(self, chg: int) -> None:
@@ -35,14 +37,11 @@ class LoopDrum(BaseDrum):
 
     def random_drum(self) -> None:
         loops = self._part.loops
-        total_cnt = self._part.loops.item_count()
-        play_cnt: int = (1 + self._drum_level) * total_cnt // self._get_drum_levels()
-        assert 0 < play_cnt <= total_cnt
-        total_lst = list(range(total_cnt))
-        play_lst = np.random.choice(total_lst, size=play_cnt, replace=False)
-        for k in total_lst:
-            lp = loops.select_idx(k)
-            lp.set_silent(False if k in play_lst else True)
+        level = self._drum_level
+        lst = list(range(self._part.loops.item_count()))
+        lst = random.choices(lst, k=2 + level)
+        lst_play = [loops.select_idx(k) for k in lst]
+        self._part.loops.apply_to_each(lambda x: x.set_silent(x not in lst_play))
 
     def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
         self.stop_drum()
@@ -57,8 +56,7 @@ class LoopDrum(BaseDrum):
         return ""
 
     def stop_drum(self) -> None:
-        loops = self._part.loops
-        loops.apply_to_each(lambda x: x.set_silent(True))
+        self._part.loops.apply_to_each(lambda x: x.set_silent(True))
 
     def start_drum(self) -> None:
         self.random_drum()

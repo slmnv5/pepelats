@@ -9,8 +9,8 @@ from utils.utillog import get_my_log
 
 my_log = get_my_log(__name__)
 
-# how much accent amplitude is bigger
-ACCENT_FACTOR = 1.2
+ACCENT_FACTOR = 1.2  # how much accent amplitude is bigger than non accent
+_INIT_AMPLITUDE: float = 0.7
 
 
 def _adjust_volume(vol: float, sounds: dict[str, np.ndarray]) -> dict[str, tuple[np.ndarray, np.ndarray]]:
@@ -63,20 +63,21 @@ def _load_audio_samples(dname: str) -> dict[str, np.ndarray]:
 
 
 class SampleLoader:
-    _MAX_AMPLITUDE = 0.5
-    # sound name and sound samples, never change
+    # sound name and loaded sound samples
     _sounds = _load_audio_samples(find_path("config/drum/wav"))
-    maxes: dict[str, float] = {k: round(v.max(initial=0.01), 2) for k, v in _sounds.items()}
+    _maxes: dict[str, float] = {k: round(v.max(initial=0.01), 2) for k, v in _sounds.items()}
+    _ampl_factor: float = _INIT_AMPLITUDE / ACCENT_FACTOR / max(_maxes.values())
+    # normalize amplitudes so that when volume == 1 there is no clipping
     for k, v in _sounds.items():
-        _sounds[k] = v * (_MAX_AMPLITUDE / maxes[k])  # make max amplitude equal for all sounds
+        _sounds[k] = v * _ampl_factor
+    _volumes: dict[str, float] = {k: round(1000 * v.var(), 2) for k, v in _sounds.items()}
+    _durations: dict[str, float] = {k: round(len(v) / SD_RATE, 1) for k, v in _sounds.items()}
 
-    volumes: dict[str, float] = {k: round(1000 * v.var(), 2) for k, v in _sounds.items()}
-    durations: dict[str, float] = {k: round(len(v) / SD_RATE, 1) for k, v in _sounds.items()}
-
-    # _adjusted is for changing volume up and down, _sounds does not change
+    # _adjusted are for changing volume up and down, _sounds do not change
     _adjusted = _adjust_volume(0.7, _sounds)
-    my_log.debug(f"Loaded sounds:\nvolumes:{volumes}")
-    my_log.debug(f"Loaded sounds:\ndurations:{durations}")
+    my_log.debug(f"Loaded sounds:\nvolumes:{_volumes}")
+    my_log.debug(f"Loaded sounds:\ndurations:{_durations}")
+    my_log.debug(f"Loaded sounds:\nmax-s:{_maxes}")
 
     @classmethod
     def set_volume(cls, volume: float) -> None:

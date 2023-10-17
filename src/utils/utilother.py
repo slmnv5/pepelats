@@ -145,7 +145,7 @@ class FileFinder(CollectionOwner[str]):
 
 class EuclidSlicer:
     """ Spaces beats in steps in most even way.
-    Used in Euclid drum patterns or when need to divide list evely """
+    Used in Euclid drum patterns or when need to divide list almost evely into sub lists """
 
     def __init__(self, steps: int, beats: int, shift: int, accent: int = 0):
         assert steps and beats
@@ -169,7 +169,7 @@ class EuclidSlicer:
     def beat_steps(self) -> list[int]:
         return self._beat_steps
 
-    def rng_by_idx(self, idx: int) -> list[int]:
+    def sub_list_by_idx(self, idx: int) -> list[int]:
         return list(range(self._steps))[self.slice_by_idx(idx)]
 
     def slice_by_idx(self, idx: int) -> slice:
