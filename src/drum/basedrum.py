@@ -1,14 +1,17 @@
 import random
 from abc import abstractmethod, ABC
 
+import numpy as np
+
 from utils.utilconfig import SD_RATE
 from utils.utillog import get_my_log
-from utils.utilother import EuclidSlicer
 
 my_log = get_my_log(__name__)
 
 
 class BaseDrum(ABC):
+    _DRUM_LEVELS: int = 3
+
     def __init__(self):
         self._bar_len: int = 0
         self._bpm: float = 0
@@ -34,15 +37,6 @@ class BaseDrum(ABC):
 
     def get_par(self) -> float:
         return self._par
-
-    def _get_drum_levels(self) -> int:
-        k = len(self._ptn_lst)
-        if k <= 2:
-            return 1
-        elif k <= 6:
-            return 2
-        else:
-            return 3
 
     def get_class_name(self) -> str:
         return self.__class__.__name__
@@ -81,8 +75,11 @@ class BaseDrum(ABC):
 
     @abstractmethod
     def random_drum(self) -> None:
-        es = EuclidSlicer(len(self._ptn_lst), self._get_drum_levels(), 0)
-        lst = es.sub_list_by_idx(self._drum_level)
+        lst = range(len(self._ptn_lst))
+        lst = np.array_split(lst, self._DRUM_LEVELS)
+        lst = [x for x in lst if len(x) > 0]
+        self._drum_level = 0 if self._drum_level >= len(lst) else self._drum_level
+        lst = lst[self._drum_level].tolist()
         if self._ptn_idx in lst:
             lst.remove(self._ptn_idx)
         if lst:
@@ -91,7 +88,7 @@ class BaseDrum(ABC):
 
     @abstractmethod
     def change_drum_level(self, chg: int) -> None:
-        self._drum_level = (self._drum_level + chg) % self._get_drum_levels()
+        self._drum_level = (self._drum_level + chg) % self._DRUM_LEVELS
         self.random_drum()
 
     @abstractmethod
@@ -108,7 +105,7 @@ class BaseDrum(ABC):
 
     def __str__(self) -> str:
         cls_name = self.__class__.__name__[0]
-        return f"{cls_name}:{self._bpm:.2F}"
+        return f"{cls_name}:{self._bpm:.2F}:{self._drum_level}"
 
     @abstractmethod
     def show_drum_param(self) -> str:

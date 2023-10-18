@@ -1,5 +1,3 @@
-import random
-
 import numpy as np
 
 from drum.basedrum import BaseDrum
@@ -17,15 +15,6 @@ class LoopDrum(BaseDrum):
     def get_config(self) -> str:
         return ""
 
-    def _get_drum_levels(self) -> int:
-        k = self._part.loops.item_count()
-        if k <= 2:
-            return 1
-        elif k <= 4:
-            return 2
-        else:
-            return 3
-
     def get_id(self) -> int:
         return id(self._part)
 
@@ -37,11 +26,11 @@ class LoopDrum(BaseDrum):
 
     def random_drum(self) -> None:
         loops = self._part.loops
-        level = self._drum_level
         lst = list(range(self._part.loops.item_count()))
-        lst = random.choices(lst, k=2 + level)
-        lst_play = [loops.select_idx(k) for k in lst]
-        self._part.loops.apply_to_each(lambda x: x.set_silent(x not in lst_play))
+        lp_count = min(len(lst), 2 + self._drum_level)  # play 2, 3, 4 loops for drum_level 0, 1, 2
+        lst = np.random.choice(lst, lp_count, replace=False)
+        lst = [loops.select_idx(k) for k in lst]
+        self._part.loops.apply_to_each(lambda x: x.set_silent(x not in lst))
 
     def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
         self.stop_drum()

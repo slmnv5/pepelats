@@ -20,6 +20,7 @@ class Looper(ManyLoopCtrl):
 
     def __init__(self, recv_q: Queue, send_q: Queue):
         ManyLoopCtrl.__init__(self, recv_q, "EuclidDrum")
+        self._song.load_latest(self)
         self._send_q = send_q
         self._saved_draw_info = DrawInfo()
 

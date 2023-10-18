@@ -23,7 +23,6 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         self._song: Song = Song(self)
         self._next_id: int = 0
         self.__play_event: Event = Event()
-        self._song.load_latest(self)
         Thread(target=self._play_loop, name="play_loop", daemon=True).start()
 
     # ================ song part methods
