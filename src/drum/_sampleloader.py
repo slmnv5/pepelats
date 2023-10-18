@@ -70,26 +70,30 @@ class SampleLoader:
     # normalize amplitudes so that when volume == 1 there is no clipping
     for k, v in _sounds.items():
         _sounds[k] = v * _ampl_factor
-    _volumes: dict[str, float] = {k: round(1000 * v.var(), 2) for k, v in _sounds.items()}
+    _powers: dict[str, float] = {k: round(1000 * v.var(), 2) for k, v in _sounds.items()}
     _durations: dict[str, float] = {k: round(len(v) / SD_RATE, 1) for k, v in _sounds.items()}
 
     # _adjusted are for changing volume up and down, _sounds do not change
     _adjusted = _adjust_volume(0.7, _sounds)
-    my_log.debug(f"Loaded sounds:\nvolumes:{_volumes}")
+    my_log.debug(f"Loaded sounds:\npowers:{_powers}")
     my_log.debug(f"Loaded sounds:\ndurations:{_durations}")
-    my_log.debug(f"Loaded sounds:\nmax-s:{_maxes}")
+    my_log.debug(f"Loaded sounds:\nmaximums:{_maxes}")
 
     @classmethod
     def set_volume(cls, volume: float) -> None:
         cls._adjusted = _adjust_volume(volume, cls._sounds)
 
     @classmethod
-    def get_sound(cls, snd: str, accent: bool) -> np.ndarray:
-        if snd in cls._adjusted:
-            if accent:
-                return cls._adjusted[snd][1]
+    def get_sound(cls, sname: str, is_accent: bool) -> np.ndarray:
+        if sname in cls._adjusted:
+            if is_accent:
+                return cls._adjusted[sname][1]
             else:
-                return cls._adjusted[snd][0]
+                return cls._adjusted[sname][0]
+
+    @classmethod
+    def get_power(cls, sname: str) -> float:
+        return cls._powers.get(sname)
 
     @classmethod
     def get_sound_names(cls) -> list[str]:

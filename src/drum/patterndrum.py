@@ -145,7 +145,9 @@ class PatternDrum(BaseDrum, WrapBuffer):
                 if s not in "123456789!":
                     continue
                 step_prob = "0123456789!".index(s) / 10
-                result += step_prob * (1 if accents[k] != '!' else ACCENT_FACTOR)
+                is_accent = accents[k] == '!'
+                factor = 1 if not is_accent else ACCENT_FACTOR * ACCENT_FACTOR
+                result += step_prob * factor * SampleLoader.get_power(sname)
         return f"{round(result, 1)}"
 
     def get_drum_header(self) -> str:

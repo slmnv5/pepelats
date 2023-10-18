@@ -102,8 +102,8 @@ class EuclidDrum(BaseDrum):
         sound_lst = SampleLoader.get_sound_names()
         result: float = 0.0
         for sname, notes in [(k, v) for (k, v) in ptn_dic.items() if k in sound_lst]:
-            result += notes.count('+') / len(notes)
-            result += notes.count('*') * ACCENT_FACTOR / len(notes)
+            result += notes.count('+') / len(notes) * SampleLoader.get_power(sname)
+            result += notes.count('*') * ACCENT_FACTOR * ACCENT_FACTOR / len(notes) * SampleLoader.get_power(sname)
 
         return f"{round(result, 1)}"
 
