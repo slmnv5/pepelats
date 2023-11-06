@@ -19,18 +19,13 @@ Each configuration directory has 5 files:
 
 ![song_view](img/song_view.png)
 
-Top row shows drum configuration name (IpadDrum), beats per minute (116.30) drum type (M - midi) and drum program
-index (0/16 - 0 out of 16)
-
-On second row there are few **touch buttons**: \[play\] \[song\] \[drum\] \[serv\] -- these will navigate between
-different views.
-
-Button labeled \[next\] switch between different parts of the same view
-
+Top row shows drum type and configuration name, beats per minute
 Below are hints for available button mappings:
+~~~
 A1 go_up -- one tap on button A will scroll the song llist up
 B1 go_dn -- one tap on button B will scroll the song list down
-D2/H load delete -- two taps on button D will load song. Tap and hold of button D will delete song
-
-Below is list of songs with selected song in green
+D2 load -- two taps on button D will load song
+DH delete -- tap and hold of button D will delete song
+~~~
+Below is list of songs with selected song in green and current song in yellow
 
