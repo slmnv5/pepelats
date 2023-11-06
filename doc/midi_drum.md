@@ -40,10 +40,11 @@ To pass decimal part use python expression, ex: FILL_BYTES(123.49 * 100, 5) == [
 ### Python expressions
 
 Message may include valid python expressions:
-
-- [0x90, 11, 12] if COUNT == 0 else [0x90, 13, 14]
-- [0xCO, random.choice([0, 1, 2, 3])]
-- [0xF0, 0x5A] + FILL_BYTES(BMP * 100, 7) + [0xF7]
+~~~
+[0x90, 11, 12] if COUNT == 0 else [0x90, 13, 14]
+[0xCO, random.choice([0, 1, 2, 3])]
+[0xF0, 0x5A] + FILL_BYTES(BMP * 100, 7) + [0xF7]
+~~~
 
 ### MIDI port
 
@@ -56,9 +57,9 @@ You can see to what port MIDI drum is connected and if the port is open as descr
 
 Standard feature of INI allows to use substitution to save on typing.
 Example is below when *bmp_drums* and *bpm_effects* substitute for long python expressions:
-
+~~~
 bpm_drum : [0xB0, 74 if BPM < 127.5 else 73, round(BPM) if BPM < 127.5 else (round(BPM) - 128)]
 bpm_effects : [0xB0, 71 if BPM < 127.5 else 70, round(BPM) if BPM < 127.5 else (round(BPM) - 128)]
 _bpm_msg : [%(bpm_drum)s, %(bpm_effects)s]
- 
+ ~~~
 

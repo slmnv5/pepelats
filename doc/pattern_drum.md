@@ -12,14 +12,15 @@ Sound samples are saved in [config/drum/samples](./../config/drum/wav)
 
 ### Drum patterns
 
-Drum patterns look like below. One pattern is inside INI section. Number of steps is equal to the longest drum length:
-
-\[Pop1MeasureA 4/4\]
-#...1234567890123456
-ac: ....!.......!...
-ch: !.!.!.!.!.!.!.!.
-sd: ....!.!.....8...
-bd: !.......2.....!.
+Drum patterns look like below. One pattern is inside INI section. Number of steps is equal to the longest drum length
+~~~
+[Pop1MeasureA 4/4]  
+#...1234567890123456  
+ac: ....!.......!...  
+ch: !.!.!.!.!.!.!.!.  
+sd: ....!.!.....8...  
+bd: !.......2.....!.  
+~~~
 
 * ac -- shows accents
 * bd, sd -- are drum names

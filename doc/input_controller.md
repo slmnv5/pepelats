@@ -33,7 +33,7 @@ E1, E2 (MIDI notes 12, 13). So if you see:
 
 ```
 65-2 : _stop_drum
- ```
+```
 
 this means that double tap on button D will stop drum
 
