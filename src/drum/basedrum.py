@@ -108,7 +108,7 @@ class BaseDrum(ABC):
 
     @abstractmethod
     def show_drum_param(self) -> str:
-        return f"vol:{self._volume:.2F} par:{self._par}"
+        return f"vol:{self._volume:.2F} par:{self._par:.2F}"
 
     def get_drum_header(self) -> str:
         return str(self)

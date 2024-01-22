@@ -70,12 +70,12 @@ class SampleLoader:
     # normalize amplitudes so that when volume == 1 there is no clipping
     for k, v in _sounds.items():
         _sounds[k] = v * _ampl_factor
-    _powers: dict[str, float] = {k: round(1000 * v.var(), 2) for k, v in _sounds.items()}
-    _durations: dict[str, float] = {k: round(len(v) / SD_RATE, 1) for k, v in _sounds.items()}
+    _variances: dict[str, float] = {k: round(1000 * v.var(), 2) for k, v in _sounds.items()}
+    _durations: dict[str, float] = {k: round(len(v) / SD_RATE, 2) for k, v in _sounds.items()}
 
     # _adjusted are for changing volume up and down, _sounds do not change
     _adjusted = _adjust_volume(0.7, _sounds)
-    my_log.debug(f"Loaded sounds:\npowers:{_powers}")
+    my_log.debug(f"Loaded sounds:\nvariances:{_variances}")
     my_log.debug(f"Loaded sounds:\ndurations:{_durations}")
     my_log.debug(f"Loaded sounds:\nmaximums:{_maxes}")
 
@@ -93,7 +93,7 @@ class SampleLoader:
 
     @classmethod
     def get_power(cls, sname: str) -> float:
-        return cls._powers.get(sname)
+        return cls._variances.get(sname) * cls._durations.get(sname)
 
     @classmethod
     def get_sound_names(cls) -> list[str]:

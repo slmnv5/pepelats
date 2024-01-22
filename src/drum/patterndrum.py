@@ -67,9 +67,9 @@ class PatternDrum(BufferDrum):
         accents = ptn_dic["accents"]
         for sname, notes in [(k, v) for (k, v) in ptn_dic.items() if k in sound_lst]:
             for k, s in enumerate(notes):
-                if s != "!":
+                if s not in "!":
                     continue
                 is_accent = accents[k] == '!'
                 factor = 1 if not is_accent else ACCENT_FACTOR * ACCENT_FACTOR
-                result += factor * SampleLoader.get_power(sname)
+                result += factor * SampleLoader.get_power(sname) / len(notes)
         return f"{round(result, 1)}"
