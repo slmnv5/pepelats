@@ -115,7 +115,6 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         dr = create_drum(drum_type, **kwargs)
         dr.load_drum_config(None, bar_len)
         self._drum = dr
-        self._song.clear_name()
 
     def _load_drum_config(self, bar_len: int = None) -> None:
         self._drum.load_drum_config(None, bar_len)
@@ -140,7 +139,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         self._song.save_new_song(self)
 
     def _show_name(self) -> str:
-        return self._song.get_name()
+        return self._song.get_complete_name(self)
 
     def _show_songs(self) -> str:
         return self._song.show_songs()

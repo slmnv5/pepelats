@@ -18,8 +18,8 @@ class BaseDrum(ABC):
         self._ptn_idx: int = 0  # pattern/sound index
         self._ptn_lst: list[any] = list()  # play patterns
         self._drum_level = 0  # intensity of drum
-        self._par: float = 0.6  # from 0 to 1,  swing, used by some drum types
-        self._volume: float = 0.7  # from 0 to 1
+        self._par: float = 0.5  # from 0 to 1,  swing, used by some drum types
+        self._volume: float = 0.5  # from 0 to 1
 
     def set_volume(self, volume: float) -> None:
         volume = min(1., volume)

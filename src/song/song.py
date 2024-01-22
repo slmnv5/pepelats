@@ -32,19 +32,24 @@ class Song:
             my_log.error(f"Error: {ex} loading saved song: {self._name}")
 
     def get_name(self) -> str:
+        if not self._name:
+            self._name = generate_name()
+        assert self._name.count(".") == 0
+        assert self._name.count("_") == 1
         return self._name
+
+    def get_complete_name(self, ctrl: LoopCtrl) -> str:
+        dr = ctrl.get_drum()
+        cls = dr.get_class_name()[0]
+        cfg = dr.get_config()[:-4]
+        return f"{self.get_name()}.{cls}.{cfg}"
 
     def clear_name(self) -> None:
         self._name = ""
 
     def save_song(self, ctrl: LoopCtrl) -> None:
         dr = ctrl.get_drum()
-        if not self._name:
-            self._name = generate_name()
-            cls = dr.get_class_name()[0]
-            cfg = dr.get_config()[:-4]
-            self._name += f".{cls}.{cfg}"
-        self._ff.add_item(self._name)
+        self._ff.add_item(self.get_complete_name(ctrl))
         fname = self._ff.get_full_name()
         save_list = list()
         self.parts.apply_to_each(lambda x: save_list.append(None if x.is_empty else x))
@@ -57,7 +62,7 @@ class Song:
         my_log.info(f"Saved song file: {fname}")
 
     def load_song(self, ctrl: LoopCtrl) -> None:
-        self._name = self._ff.selected_item()
+        self._name = self._ff.selected_item().split(".")[0]
         fname = self._ff.get_full_name()
         if not os.path.isfile(fname):
             my_log.error(f"File not found: {fname}")
