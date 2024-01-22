@@ -2,71 +2,21 @@ from __future__ import annotations
 
 import numpy as np
 
-from drum._patternloader import PatternLoader
 from drum._sampleloader import SampleLoader, ACCENT_FACTOR
-from drum.basedrum import BaseDrum
+from drum.bufferdrum import BufferDrum
 from utils.utilalsa import make_zero_buffer
-from utils.utilconfig import find_path
 from utils.utillog import get_my_log
-from utils.utilnumpy import play_buffer, record_buffer
-from utils.utilother import FileFinder, EuclidSlicer
+from utils.utilnumpy import record_buffer
+from utils.utilother import EuclidSlicer
 
 my_log = get_my_log(__name__)
 
 
-class EuclidDrum(BaseDrum):
+class EuclidDrum(BufferDrum):
     _DRUM_STEPS: int = 16
 
     def __init__(self):
-        BaseDrum.__init__(self)
-        self._silent: bool = True
-        self._dname = find_path("config/drum/euclid")
-        self._ff = FileFinder(self._dname, True, ".ini")
-        assert self._ff.selected_item()
-        self._names: list[str] = list()  # names of patterns
-        self._intensities: list[str] = list()
-
-    def stop_drum(self) -> None:
-        self._silent = True
-
-    def start_drum(self) -> None:
-        self._silent = False
-
-    def show_drum_param(self) -> str:
-        base_info = super().show_drum_param()
-        intensity = self._intensities[self._ptn_idx]
-        name = self._names[self._ptn_idx]
-        return f"{base_info}\nintensity: {intensity}\nname: {name}"
-
-    def get_config(self) -> str:
-        return self._ff.selected_item()
-
-    def show_drum_config(self) -> str:
-        return self._ff.get_str()
-
-    def iterate_drum_config(self, steps: int) -> None:
-        self._ff.iterate(steps)
-
-    def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
-        self.stop_drum()
-        if config:
-            k = self._ff.find_item_idx(config)
-            self._ff.select_idx(k)
-        bar_len = self._bar_len if bar_len is None else bar_len
-        self._set_bar_len(bar_len)
-
-    def _set_bar_len(self, bar_len: int) -> None:
-        super()._set_bar_len(bar_len)
-        pl = PatternLoader(self._ff.get_full_name(), self._pattern_load, self._pattern_convert, self._pattern_intensity)
-        self._ptn_lst = pl.get_patterns(bar_len)
-        self._names = pl.get_names()
-        self._intensities = pl.get_intensities()
-
-    def random_drum(self) -> None:
-        super().random_drum()
-
-    def change_drum_level(self, chg: int) -> None:
-        super().change_drum_level(chg)
+        BufferDrum.__init__(self, "config/drum/euclid")
 
     @staticmethod
     def _pattern_load(ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
@@ -78,12 +28,11 @@ class EuclidDrum(BaseDrum):
             ptn_dic[sname] = notes
         my_log.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
 
-    @staticmethod
-    def _pattern_convert(bar_len: int, ptn_dic: dict[str, str], ptn_list: list[np.ndarray]) -> None:
-        """One Drum pattern converted into play list of (buff_position, skip_prob, is_accent, sound_name)"""
+    def _pattern_convert(self, ptn_dic: dict[str, str]) -> list[np.ndarray]:
+        ptn_list = list()
         sound_lst = SampleLoader.get_sound_names()
         for sname, notes in [(k, v) for k, v in ptn_dic.items() if k in sound_lst]:
-            new_len = round(bar_len * len(notes) / EuclidDrum._DRUM_STEPS)
+            new_len = round(self._bar_len * len(notes) / EuclidDrum._DRUM_STEPS)
             buff = make_zero_buffer(new_len)
             ptn_list.append(buff)
             step_len: float = new_len / len(notes)
@@ -95,6 +44,7 @@ class EuclidDrum(BaseDrum):
                 record_buffer(buff, sound_arr, idx)
 
         my_log.debug(f"Converted drum patterns: {len(ptn_list)}")
+        return ptn_list
 
     @staticmethod
     def _pattern_intensity(ptn_dic: dict[str, str]) -> str:
@@ -106,13 +56,3 @@ class EuclidDrum(BaseDrum):
             result += notes.count('*') * ACCENT_FACTOR * ACCENT_FACTOR / len(notes) * SampleLoader.get_power(sname)
 
         return f"{round(result, 1)}"
-
-    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        if self._silent or not self._bar_len:
-            return
-        sound_lst = self._ptn_lst[self._ptn_idx]
-        for buff in sound_lst:
-            play_buffer(buff, out_data, idx)
-
-    def get_drum_header(self) -> str:
-        return super().get_drum_header() + ":" + self._names[self._ptn_idx]

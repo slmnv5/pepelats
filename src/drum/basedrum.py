@@ -86,7 +86,6 @@ class BaseDrum(ABC):
             self._ptn_idx = random.choice(lst)
         self.start_drum()
 
-    @abstractmethod
     def change_drum_level(self, chg: int) -> None:
         self._drum_level = (self._drum_level + chg) % self._DRUM_LEVELS
         self.random_drum()

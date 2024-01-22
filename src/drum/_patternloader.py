@@ -2,6 +2,8 @@ import os.path
 from configparser import ConfigParser
 from typing import Callable
 
+import numpy as np
+
 from utils.utillog import get_my_log
 
 my_log = get_my_log(__name__)
@@ -39,13 +41,11 @@ class PatternLoader:
         self._ini_intensities = [x["intensity"] for x in self._ini_patterns]
         my_log.debug(f"Loaded from: {fname}:\nnames: {self._ini_names}\nintensities: {self._ini_intensities}")
 
-    def get_patterns(self, bar_len: int) -> list[list[any]]:
-        result = list()
+    def get_patterns(self) -> list[list[np.ndarray]]:
+        result: list[list[np.ndarray]] = list()
         # INI patterns already sorted by intensity
         for ptn_dic in self._ini_patterns:
-            ptn_lst: list[any] = list()
-            self._fn_convert(bar_len, ptn_dic, ptn_lst)
-            result.append(ptn_lst)
+            result.append(self._fn_convert(ptn_dic))
         return result
 
     def get_names(self) -> list[str]:
