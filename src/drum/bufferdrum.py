@@ -73,11 +73,15 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
     def set_volume(self, volume: float) -> None:
         super().set_volume(volume)
         SampleLoader.set_volume(self._volume)  # change all sound samples
+        self._silent = True
         self._ptn_lst = self._pl.get_patterns()
+        self._silent = False
 
     def set_par(self, par: float) -> None:
         super().set_par(par)
+        self._silent = True
         self._ptn_lst = self._pl.get_patterns()
+        self._silent = False
 
     @staticmethod
     def _pattern_load(ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:

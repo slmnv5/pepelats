@@ -36,7 +36,7 @@ class PatternDrum(BufferDrum):
         my_log.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
 
     def _pattern_convert(self, ptn_dic: dict[str, str]) -> list[np.ndarray]:
-        ptn_list = list()
+        result = list()
         sound_lst = SampleLoader.get_sound_names()
         accents: str = ptn_dic["accents"]
         steps = len(accents)
@@ -44,7 +44,7 @@ class PatternDrum(BufferDrum):
         for sname, notes in [(k, v) for k, v in ptn_dic.items() if k in sound_lst]:
             assert steps == len(notes), f"steps: {steps}, notes: {notes}"
             buff = make_zero_buffer(self._bar_len)
-            ptn_list.append(buff)
+            result.append(buff)
             for k, s in enumerate(notes):
                 if s not in "!":
                     continue
@@ -56,8 +56,8 @@ class PatternDrum(BufferDrum):
                     idx += chg
                 record_buffer(buff, sound_arr, idx)
 
-        my_log.debug(f"Converted drum patterns: {len(ptn_list)}")
-        return ptn_list
+        my_log.debug(f"Converted all drum patterns: {len(result)}")
+        return result
 
     @staticmethod
     def _pattern_intensity(ptn_dic: dict[str, str]) -> str:
