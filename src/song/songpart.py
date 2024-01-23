@@ -56,4 +56,4 @@ class SongPart(LoopSimple):
     def __str__(self):
         if self.is_empty:
             return "---------------"
-        return f"{self.loops.item_count():02}/{len(self.__undos):02}-{LoopSimple.__str__(self)}"
+        return f"{LoopSimple.__str__(self)}  {self.loops.item_count():02}/{len(self.__undos):02}"

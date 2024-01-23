@@ -27,7 +27,7 @@ class WrapBuffer:
             if not self.__len_ratio:
                 self.__info_str += " L:----"
             elif self.__len_ratio >= 1:
-                self.__info_str += f" L:{round(self.__len_ratio):04}"
+                self.__info_str += f" L:--{round(self.__len_ratio):02}"
             else:
                 self.__info_str += f" L:1/{round(1 / self.__len_ratio):02}"
 

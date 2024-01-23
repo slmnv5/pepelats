@@ -86,8 +86,7 @@ class CollectionOwner(Generic[T]):
     def get_str(self, next_id: int = None) -> str:
         next_item = None
         if next_id is not None:
-            next_id %= self.item_count()
-            next_item = self.__items[next_id]
+            next_item = self.__items[next_id % self.item_count()]
         item_sub_list = _stable_sub_list(self.__idx, self.__items, 5)
         curr_item = self.__items[self.__idx]
         result: str = ""
