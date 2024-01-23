@@ -11,10 +11,10 @@ from utils.utilother import CollectionOwner
 class SongPart(LoopSimple):
     """SongPart includes many simple loops to play together"""
 
-    def __init__(self, length: int = MAX_LEN):
-        LoopSimple.__init__(self, length)
+    def __init__(self, sz: int = MAX_LEN):
+        LoopSimple.__init__(self, sz)
         self.loops = CollectionOwner[LoopSimple](self)
-        self.undos = CollectionOwner[LoopSimple](LoopSimple(0))
+        self.__undos: list[LoopSimple] = list()
 
     def trim_buffer(self, ctrl: LoopCtrl) -> None:
         loop: LoopSimple = self.loops.selected_item()
@@ -36,10 +36,9 @@ class SongPart(LoopSimple):
         LoopSimple.record_samples(loop, in_data, idx)
 
     def redo(self) -> bool:
-        self.undos.select_idx(-1)
-        item = self.undos.delete_selected()
-        if not item:
+        if not self.__undos:
             return False
+        item = self.__undos.pop()
         self.loops.add_item(item)
         return True
 
@@ -48,10 +47,13 @@ class SongPart(LoopSimple):
         item = self.loops.delete_selected()
         if not item:
             return False
-        self.undos.add_item(item)
+        self.__undos.append(item)
         return True
+
+    def clear_undo(self) -> None:
+        self.__undos.clear()
 
     def __str__(self):
         if self.is_empty:
             return "---------------"
-        return f"{self.loops.item_count():02}/{self.undos.item_count() - 1:02}-{LoopSimple.__str__(self)}"
+        return f"{self.loops.item_count():02}/{len(self.__undos):02}-{LoopSimple.__str__(self)}"

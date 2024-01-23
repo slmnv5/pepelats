@@ -1,7 +1,7 @@
 import numpy as np
 
 from utils.utilalsa import make_zero_buffer
-from utils.utilconfig import MAX_LEN, SD_TYPE, SD_RATE
+from utils.utilconfig import MAX_LEN
 from utils.utillog import get_my_log
 from utils.utilnumpy import play_buffer, record_buffer, vol_db, trim_buffer
 
@@ -12,6 +12,7 @@ class WrapBuffer:
     """buffer that can wrap over the end when get/play and set/record samples """
 
     def __init__(self, sz: int = MAX_LEN):
+        self.__len_ratio: float = 1.0
         self.__is_reverse: bool = False
         self.__is_silent: bool = False
         self.__buff: np.ndarray = make_zero_buffer(sz)
@@ -22,15 +23,16 @@ class WrapBuffer:
         if self.is_empty:
             return "---------------"
         if not self.__info_str:
-            self.__info_str = f"V:{vol_db(self.__buff):03}db L:{len(self.__buff) / SD_RATE:05.2F}s"
+            self.__info_str = f"V:{vol_db(self.__buff):03}db "
+            self.__info_str += f"L:{round(self.__len_ratio)}" if self.__len_ratio >= 1 else f"L:1/{round(1 / self.__len_ratio)} "
         if not self.__props_str:
             self.__props_str = f"{'S' if self.__is_silent else ' '}{'R' if self.__is_reverse else ' '}"
 
-        return self.__info_str + " " + self.__props_str
+        return self.__info_str + self.__props_str
 
-    def new_buff(self, sz: int = MAX_LEN) -> None:
-        self.__buff = make_zero_buffer(sz)
-        self.__info_str = ""
+    def max_buffer(self) -> None:
+        self.__buff = make_zero_buffer(MAX_LEN)
+        self.__info_str, self.__len_ratio = "", 1.0
 
     def flip_reverse(self) -> None:
         self.__is_reverse = not self.__is_reverse
@@ -56,10 +58,6 @@ class WrapBuffer:
     def is_empty(self) -> bool:
         return not (0 < len(self.__buff) < MAX_LEN)
 
-    def multiply_buff(self, chg_factor: float) -> None:
-        self.__buff = (self.__buff * chg_factor).astype(SD_TYPE)
-        self.__info_str = ""
-
     def record_samples(self, in_data: np.ndarray, idx: int) -> None:
         record_buffer(self.__buff, in_data, idx)
 
@@ -81,17 +79,16 @@ class WrapBuffer:
         if not base_len:  # Case 1
             assert start_idx == 0, "start==0 as we record 1st time"
             self.__buff = self.__buff[:idx]
+            self.__len_ratio = 1
         else:  # Case 2
             rec_len: int = idx - start_idx
             # new loop length must be ... 1/2, 1, 2, 3, ...
-            save_base_len = base_len
-            while rec_len < base_len // 2:
-                base_len //= 2
-            rec_len = round(rec_len / base_len) * base_len
+            tmp = base_len
+            while rec_len < tmp // 2:
+                tmp //= 2
+            rec_len = round(rec_len / tmp) * tmp
+            self.__len_ratio = rec_len / base_len
             # align start with main loop if not started from zero
-            offset = start_idx % base_len
+            offset = start_idx % tmp
             self.__buff = trim_buffer(self.__buff, rec_len, start_idx - offset)
-            assert rec_len < save_base_len or rec_len % save_base_len == 0
-            assert len(self.__buff) == rec_len
-            assert rec_len % base_len == 0
-            my_log.info(f"After trim length ratio: {rec_len / save_base_len}")
+            my_log.info(f"After trim length ratio: {self.__len_ratio}")

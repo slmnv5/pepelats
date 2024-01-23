@@ -9,7 +9,6 @@ from song.songpart import SongPart
 from utils.utilconfig import ConfigName
 from utils.utilfactory import create_drum
 from utils.utillog import get_my_log
-from utils.utilother import CollectionOwner
 
 my_log = get_my_log(__name__)
 
@@ -83,7 +82,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
                 part.trim_buffer(self)
             else:
                 part.loops.add_item(LoopSimple(part.length))
-                part.undos = CollectionOwner(LoopSimple(0))
+                part.clear_undo()
                 self._set_is_rec(True)
         else:
             if self.get_is_rec():
@@ -102,7 +101,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         assert part.loops.selected_idx() == part.loops.item_count() - 1
         assert not loop.is_empty
         assert self.get_is_rec()
-        loop.new_buff()
+        loop.max_buffer()
         self.start_rec = self.idx
 
     # ========== drum methods

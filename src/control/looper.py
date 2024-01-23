@@ -111,7 +111,7 @@ class Looper(ManyLoopCtrl):
         if id(part) == self._drum.get_id():
             return  # loop drum uses part, can not delete it
         if not part.is_empty:
-            part.new_buff()
+            part.max_buffer()
             part.loops = CollectionOwner[LoopSimple](part)
 
     def _undo_part(self) -> None:

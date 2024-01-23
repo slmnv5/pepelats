@@ -12,8 +12,8 @@ class LoopSimple(WrapBuffer):
     """Loop truncate itself to be multiple of bar length.
     Or init bar length if it is empty"""
 
-    def __init__(self, length: int = MAX_LEN):
-        WrapBuffer.__init__(self, length)
+    def __init__(self, sz: int = MAX_LEN):
+        WrapBuffer.__init__(self, sz)
 
     def trim_buffer(self, ctrl: LoopCtrl) -> None:
         """trims length to multiple of bar length"""
