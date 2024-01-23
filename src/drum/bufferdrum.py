@@ -22,7 +22,6 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
     def __init__(self, dname: str):
         BaseDrum.__init__(self)
         WrapBuffer.__init__(self, self._bar_len)
-        self._silent: bool = True
         self._dname = find_path(dname)
         assert os.path.isdir(self._dname)
         self._ff = FileFinder(self._dname, True, ".ini")
@@ -31,10 +30,12 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
         self._intensities: list[str] = list()
 
     def stop_drum(self) -> None:
-        self._silent = True
+        super().stop_drum()
+        self.set_silent(True)
 
     def start_drum(self) -> None:
-        self._silent = False
+        super().start_drum()
+        self.set_silent(False)
 
     def random_drum(self) -> None:
         super().random_drum()
@@ -73,15 +74,15 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
     def set_volume(self, volume: float) -> None:
         super().set_volume(volume)
         SampleLoader.set_volume(self._volume)  # change all sound samples
-        self._silent = True
+        self.set_silent(True)
         self._ptn_lst = self._pl.get_patterns()
-        self._silent = False
+        self.set_silent(False)
 
     def set_par(self, par: float) -> None:
         super().set_par(par)
-        self._silent = True
+        self.set_silent(True)
         self._ptn_lst = self._pl.get_patterns()
-        self._silent = False
+        self.set_silent(False)
 
     @staticmethod
     def _pattern_load(ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
@@ -98,7 +99,7 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
         return "0.0"
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        if self._silent or not self._bar_len:
+        if self.is_silent or not self._bar_len:
             return
         for buff in self._ptn_lst[self._ptn_idx]:
             play_buffer(buff, out_data, idx)

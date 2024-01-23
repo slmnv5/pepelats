@@ -44,9 +44,6 @@ class Song:
         cfg = dr.get_config()[:-4]
         return f"{self.get_name()}.{cls}.{cfg}"
 
-    def clear_name(self) -> None:
-        self._name = ""
-
     def save_song(self, ctrl: LoopCtrl) -> None:
         dr = ctrl.get_drum()
         self._ff.add_item(self.get_complete_name(ctrl))

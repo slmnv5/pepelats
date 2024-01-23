@@ -118,7 +118,6 @@ class ManyLoopCtrl(LoopCtrl, ABC):
 
     def _load_drum_config(self, bar_len: int = None) -> None:
         self._drum.load_drum_config(None, bar_len)
-        self._song.clear_name()
 
     # ================= song methods
 
