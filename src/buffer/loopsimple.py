@@ -9,8 +9,8 @@ my_log = get_my_log(__name__)
 
 
 class LoopSimple(WrapBuffer):
-    """Loop truncate itself to be multiple of bar length.
-    Or init bar length if it is empty"""
+    """Loop truncates itself to be multiple of bar length. Bar length is stored in a drum.
+    Loop creates drum with proper bar length if drum is empty"""
 
     def __init__(self, sz: int = MAX_LEN):
         WrapBuffer.__init__(self, sz)
