@@ -12,7 +12,7 @@ class WrapBuffer:
     """buffer that can wrap over the end when get/play and set/record samples """
 
     def __init__(self, sz: int = MAX_LEN):
-        self.__len_ratio: float = 1.0
+        self.__len_ratio: float = 0
         self.__is_reverse: bool = False
         self.__is_silent: bool = False
         self.__buff: np.ndarray = make_zero_buffer(sz)
@@ -23,16 +23,22 @@ class WrapBuffer:
         if self.is_empty:
             return "---------------"
         if not self.__info_str:
-            self.__info_str = f"V:{vol_db(self.__buff):03}db "
-            self.__info_str += f"L:{round(self.__len_ratio)}" if self.__len_ratio >= 1 else f"L:1/{round(1 / self.__len_ratio)} "
+            self.__info_str = f"V:{vol_db(self.__buff):03}db"
+            if not self.__len_ratio:
+                self.__info_str += " L:----"
+            elif self.__len_ratio >= 1:
+                self.__info_str += f" L:{round(self.__len_ratio):04}"
+            else:
+                self.__info_str += f" L:1/{round(1 / self.__len_ratio):02}"
+
         if not self.__props_str:
-            self.__props_str = f"{'S' if self.__is_silent else ' '}{'R' if self.__is_reverse else ' '}"
+            self.__props_str = f" {'S' if self.__is_silent else ' '}{'R' if self.__is_reverse else ' '}"
 
         return self.__info_str + self.__props_str
 
     def max_buffer(self) -> None:
         self.__buff = make_zero_buffer(MAX_LEN)
-        self.__info_str, self.__len_ratio = "", 1.0
+        self.__info_str, self.__len_ratio = "", 0
 
     def flip_reverse(self) -> None:
         self.__is_reverse = not self.__is_reverse
@@ -69,7 +75,7 @@ class WrapBuffer:
 
     def finalize(self, idx: int, base_len: int, start_idx: int) -> None:
         """Trim is done only once to fix buffer length for empty loop.
-        base_len - bigger of 2: parallel loop length or drum length
+        base_len - bigger of 2: parallel loop length or 1 bar length
         case 1) base_len == 0 trim to idx value, bar length is NOT known yet
         case 2) base_len != 0 trim to multiple of base_len i.e.  1/4 1/2 1 2 3 ...
         """
@@ -91,4 +97,5 @@ class WrapBuffer:
             # align start with main loop if not started from zero
             offset = start_idx % tmp
             self.__buff = trim_buffer(self.__buff, rec_len, start_idx - offset)
-            my_log.info(f"After trim length ratio: {self.__len_ratio}")
+
+        my_log.info(f"After trim length ratio: {self.__len_ratio}")
