@@ -24,16 +24,15 @@ class BaseDrum(ABC):
     def set_volume(self, volume: float) -> None:
         volume = min(1., volume)
         volume = max(0.05, volume)
-        if volume != self._volume:
-            self._volume = volume
+        self._volume = volume
 
     def get_volume(self) -> float:
         return self._volume
 
     def set_par(self, par: float) -> None:
-        self._par = round(par, 2)
-        self._par = min(1.0, self._par)
-        self._par = max(0.0, self._par)
+        par = min(1.0, par)
+        par = max(0.0, par)
+        self._par = par
 
     def get_par(self) -> float:
         return self._par
