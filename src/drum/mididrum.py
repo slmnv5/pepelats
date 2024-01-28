@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from multiprocessing import Queue
+from random import random
 from threading import Thread
 
 import numpy as np
@@ -27,6 +28,7 @@ class MidiDrum(BaseDrum):
 
     def __init__(self):
         BaseDrum.__init__(self)
+        self._par = 0.2  # for MIDI drum it is probability to change program at bar start
         self._dname = find_path("config/drum/midi")
         self._ff = FileFinder(self._dname, True, ".ini")
         assert self._ff.selected_item()
@@ -82,6 +84,8 @@ class MidiDrum(BaseDrum):
         if not self._bar_len or self._stopped:
             return
         if idx % self._bar_len == 0:
+            if random() < self._par:
+                self.random_drum()
             self._queue.put("_bar_msg")
             self._count += 1
 
