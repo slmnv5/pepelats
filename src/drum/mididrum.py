@@ -23,7 +23,7 @@ class MidiDrum(BaseDrum):
     List of all control messages is below.
     """
 
-    _MSG_LIST = ['_bar_msg', '_bpm_msg', '_volume_msg', '_prog_msg', '_progs_list', '_stop_msg']
+    _MSG_LIST = ['_bar_msg', '_bpm_msg', '_volume_msg', '_progs_list', '_stop_msg']
     _KEY_LIST = ["BPM", "COUNT", "VOLUME", "PROG", "FILL_BYTES"]
 
     def __init__(self):
@@ -36,7 +36,6 @@ class MidiDrum(BaseDrum):
         self._midi_out = MidiOutWrap()
         self._ptn = 0  # pattern/program number from _ptn_lst
         self._stopped: bool = True
-        self._count: int = 0  # counter of bars since start
         self._simple_msg_dic: dict[str, list[list[int] | int]] = dict()  # list of plain MID messages
         self._param_msg_dic: dict[str, any] = dict()  # list of messages to be evaluated
         self._queue = Queue()
@@ -53,7 +52,7 @@ class MidiDrum(BaseDrum):
                 my_log.debug(f"Simple message: {msg}")
                 self._send_midi(self._simple_msg_dic[msg])
             elif msg in self._param_msg_dic:
-                local_vars = {"BPM": self._bpm, "COUNT": self._count, "VOLUME": self._volume,
+                local_vars = {"BPM": self._bpm, "VOLUME": self._volume,
                               "PROG": self._ptn, "FILL_BYTES": self._fill_bytes}
                 evaluated_msg = self._eval(self._param_msg_dic[msg], local_vars)
                 my_log.debug(f"Evaluated message: {evaluated_msg}")
@@ -87,12 +86,10 @@ class MidiDrum(BaseDrum):
             if random() < self._par:
                 self.random_drum()
             self._queue.put("_bar_msg")
-            self._count += 1
-
+            
     def random_drum(self) -> None:
         super().random_drum()
         self._ptn = self._ptn_lst[self._ptn_idx]
-        self._queue.put("_prog_msg")
 
     def change_drum_level(self, chg: int) -> None:
         super().change_drum_level(chg)
@@ -159,7 +156,6 @@ class MidiDrum(BaseDrum):
     def start_drum(self) -> None:
         """ To start drums in time we use _bar_msg """
         self._stopped = False
-        self._count = -1
 
     def show_drum_config(self) -> str:
         return self._ff.get_str()

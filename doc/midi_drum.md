@@ -15,9 +15,8 @@ file substitutions -- all explained below.
 Messages are listed in the section "MESSAGES" where options are message names. Valid messages are:
 
 * _bpm_msg - sent when the 1-st loop is recorded and BPM is calculated. Used to set BPM on external drum.
-* _bar_msg - sent at start of each bar. Used to synchronize external drum.
+* _bar_msg - sent at start of each bar. Used to synchronize external drum, set program, start drum, etc
 * _volume_msg - set volume
-* _prog_msg - set external drum program or pattern
 * _stop_msg - stop drum. There is no start message, instead it uses _bar_msg
 * _progs_list - list of programs available on external drum. If not specified, GM standard is used: [0, 1, 2, ... 127]
 

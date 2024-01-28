@@ -10,8 +10,6 @@ my_log = get_my_log(__name__)
 
 
 class _FakeMidiOut:
-    msg_lst: list = list()
-    _count: int = 0
 
     def __init__(self):
         pass
@@ -23,11 +21,11 @@ class _FakeMidiOut:
     def close_port(self):
         pass
 
-    def send_message(self, msg):
-        if self._count > 100 or not msg or msg[0] == 0xF8 or msg[0] == 0xFE:
+    @staticmethod
+    def send_message(msg):
+        if not msg or msg[0] == 0xF8 or msg[0] == 0xFE:
             return  # do not log too much
-        self._count += 1
-        self.msg_lst.append(msg)
+
         my_log.info(f"~~~~~~~~~~~~Send MIDI message: {msg}")
 
 
