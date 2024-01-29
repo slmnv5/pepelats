@@ -86,13 +86,10 @@ class MidiDrum(BaseDrum):
             if random() < self._par:
                 self.random_drum()
             self._queue.put("_bar_msg")
-            
+
     def random_drum(self) -> None:
         super().random_drum()
         self._ptn = self._ptn_lst[self._ptn_idx]
-
-    def change_drum_level(self, chg: int) -> None:
-        super().change_drum_level(chg)
 
     def _send_midi(self, msg: list[list[int] | int]) -> None:
         assert type(msg) == list and all(type(x) in [list, int] for x in msg), f"Message: {msg}"

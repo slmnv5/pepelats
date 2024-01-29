@@ -21,13 +21,10 @@ class LoopDrum(BaseDrum):
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         self._part.play_samples(out_data, idx)
 
-    def change_drum_level(self, chg: int) -> None:
-        super().change_drum_level(chg)
-
     def random_drum(self) -> None:
         loops = self._part.loops
         lst = list(range(self._part.loops.item_count()))
-        lp_count = min(len(lst), 2 + self._drum_level)  # play 2, 3, 4 loops for drum_level 0, 1, 2
+        lp_count = min(len(lst), 1 + self._drum_level)  # play 1, 2, 3 loops for drum_level 0, 1, 2
         lst = np.random.choice(lst, lp_count, replace=False)
         lst = [loops.select_idx(k) for k in lst]
         self._part.loops.apply_to_each(lambda x: x.set_silent(x not in lst))
