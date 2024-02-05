@@ -123,7 +123,7 @@ class MidiDrum(BaseDrum):
         self._param_msg_dic.clear()
         self._simple_msg_dic.clear()
 
-        for k, v in [(x, y) for (x, y) in dic.items() if x in self._MSG_LIST and y and "__" not in y]:
+        for k, v in [(x, y) for (x, y) in dic.items() if x in self._MSG_LIST and y]:
             has_params = any(x in v for x in self._KEY_LIST)
             if has_params:
                 try:
@@ -143,7 +143,7 @@ class MidiDrum(BaseDrum):
         if not self._ptn_lst:
             self._ptn_lst = list(range(128))
         my_log.info(f"Loaded MIDI drum, simple messages: {self._simple_msg_dic}")
-        my_log.info(f"Loaded MIDI drum, param. messages: {self._param_msg_dic.keys()}")
+        my_log.info(f"Loaded MIDI drum, parameter message keys: {list(self._param_msg_dic.keys())}")
 
     def stop_drum(self) -> None:
         self._queue.put("_stop_msg")
