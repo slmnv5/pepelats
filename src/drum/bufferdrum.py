@@ -99,7 +99,7 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
         return "0.0"
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
-        if self.is_silent or not self._bar_len:
+        if self._is_silent() or not self._bar_len:
             return
         for buff in self._ptn_lst[self._ptn_idx]:
             play_buffer(buff, out_data, idx)

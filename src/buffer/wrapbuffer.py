@@ -52,8 +52,7 @@ class WrapBuffer:
         self.__is_silent = val
         self.__props_str = ""
 
-    @property
-    def is_silent(self) -> bool:
+    def _is_silent(self) -> bool:
         return self.__is_silent
 
     @property

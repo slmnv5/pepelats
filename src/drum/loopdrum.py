@@ -1,4 +1,4 @@
-from random import randrange
+from random import randrange, random
 
 import numpy as np
 
@@ -14,6 +14,7 @@ class LoopDrum(BaseDrum):
     def __init__(self, part: SongPart):
         BaseDrum.__init__(self)
         self._rand_shift: int = 0
+        self._stopped: bool = True
         self._part: SongPart = part
 
     def get_config(self) -> str:
@@ -23,10 +24,16 @@ class LoopDrum(BaseDrum):
         return id(self._part)
 
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
+        if not self._bar_len or self._stopped:
+            return
+        if idx % self._bar_len == 0:
+            if random() < self._par:
+                self.random_drum()
         self._part.play_samples(out_data, idx + self._rand_shift)
 
     def random_drum(self) -> None:
         self._rand_shift = self._bar_len * randrange(4)
+        self._stopped = False
         loops = self._part.loops
         lst: list[int] = list(range(1, loops.item_count()))
         lp_count = self._drum_level  # play 0, 1 or 2 loops in addition to loop zero
@@ -56,10 +63,7 @@ class LoopDrum(BaseDrum):
         self.random_drum()
 
     def get_drum_header(self) -> str:
-        lp_lst: list[str] = list()
-        loops = self._part.loops
-        loops.apply_to_each(lambda x: lp_lst.append("S" if x.is_silent else "_"))
-        return super().get_drum_header() + ":" + "".join(lp_lst)
+        return super().get_drum_header() + ":" + str(self._part)
 
     def show_drum_param(self) -> str:
-        return ""
+        return super().show_drum_param()
