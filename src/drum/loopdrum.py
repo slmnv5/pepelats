@@ -2,6 +2,7 @@ from random import randrange, random
 
 import numpy as np
 
+from buffer.wrapbuffer import WrapBuffer
 from drum.basedrum import BaseDrum
 from song.songpart import SongPart
 
@@ -34,7 +35,7 @@ class LoopDrum(BaseDrum):
 
         loops = self._part.loops
         for lp in [loops.select_idx(k) for k in [0, *self._play_lst]]:
-            lp.play_samples(out_data, idx + self._shift_idx)
+            WrapBuffer.play_samples(lp, out_data, idx + self._shift_idx)
 
     def random_drum(self) -> None:
         self._rand_shift = randrange(4)
