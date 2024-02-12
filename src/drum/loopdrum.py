@@ -33,11 +33,8 @@ class LoopDrum(BaseDrum):
                 self.random_drum()
 
         loops = self._part.loops
-
-        for k in range(loops.item_count()):
-            lp = loops.select_idx(k)
-            if k == 0 or k in self._play_lst:
-                lp.play_samples(out_data, idx + self._shift_idx)
+        for lp in [loops.select_idx(k) for k in [0, *self._play_lst]]:
+            lp.play_samples(out_data, idx + self._shift_idx)
 
     def random_drum(self) -> None:
         self._rand_shift = randrange(4)
