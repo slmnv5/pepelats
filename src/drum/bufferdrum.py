@@ -31,11 +31,11 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
 
     def stop_drum(self) -> None:
         super().stop_drum()
-        self.set_silent(True)
+        self._set_silent(True)
 
     def start_drum(self) -> None:
         super().start_drum()
-        self.set_silent(False)
+        self._set_silent(False)
 
     def random_drum(self) -> None:
         super().random_drum()
@@ -74,15 +74,15 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
     def set_volume(self, volume: float) -> None:
         super().set_volume(volume)
         SampleLoader.set_volume(self._volume)  # change all sound samples
-        self.set_silent(True)
+        self._set_silent(True)
         self._ptn_lst = self._pl.get_patterns()
-        self.set_silent(False)
+        self._set_silent(False)
 
     def set_par(self, par: float) -> None:
         super().set_par(par)
-        self.set_silent(True)
+        self._set_silent(True)
         self._ptn_lst = self._pl.get_patterns()
-        self.set_silent(False)
+        self._set_silent(False)
 
     @staticmethod
     def _pattern_load(ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:

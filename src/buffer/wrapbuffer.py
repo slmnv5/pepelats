@@ -48,7 +48,7 @@ class WrapBuffer:
         self.__is_silent = not self.__is_silent
         self.__props_str = ""
 
-    def set_silent(self, val: bool) -> None:
+    def _set_silent(self, val: bool) -> None:
         self.__is_silent = val
         self.__props_str = ""
 
@@ -66,11 +66,11 @@ class WrapBuffer:
     def record_samples(self, in_data: np.ndarray, idx: int) -> None:
         record_buffer(self.__buff, in_data, idx)
 
-    def play_samples(self, out_data: np.ndarray, idx: int, zero_after: bool = False) -> None:
+    def play_samples(self, out_data: np.ndarray, idx: int) -> None:
         if self.__is_silent:
             return
         tmp = self.__buff[::-1] if self.__is_reverse else self.__buff
-        play_buffer(tmp, out_data, idx, zero_after)
+        play_buffer(tmp, out_data, idx)
 
     def finalize(self, idx: int, base_len: int, start_idx: int) -> None:
         """Trim is done only once to fix buffer length for empty loop.
