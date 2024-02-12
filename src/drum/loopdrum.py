@@ -46,7 +46,8 @@ class LoopDrum(BaseDrum):
         loops = self._part.loops
         # play 0, 1 or 2 loops in addition to loop zero
         self._play_lst = list(range(loops.item_count()))[1:]
-        self._play_lst = np.random.choice(self._play_lst, self._drum_level).tolist()
+        self._play_lst = np.random.choice(self._play_lst, self._drum_level)
+        self._play_lst = list(set(self._play_lst))
 
     def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
         self.stop_drum()
