@@ -91,7 +91,7 @@ class Song:
         self.save_song(ctrl)
 
     def show_songs(self) -> str:
-        k = self._ff.find_item_idx(self._name, None)
+        k = self._ff.find_item_idx(self._name)
         return self._ff.get_str(k)
 
     def delete_song(self) -> None:
