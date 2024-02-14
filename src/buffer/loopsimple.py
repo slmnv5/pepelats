@@ -27,7 +27,7 @@ class LoopSimple(WrapBuffer):
 
     def play_buffer(self, ctrl: LoopCtrl):
         drum = ctrl.get_drum()
-        play_samples = drum.get_id() != id(self)  # drum and loop may be the same, avoid double play
+        play_samples = drum.play_samples(self)  # drum and loop may be the same, avoid double play
 
         # noinspection PyUnusedLocal
         def callback(in_data, out_data, frame_count, time_info, status):

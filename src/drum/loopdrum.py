@@ -20,6 +20,9 @@ class LoopDrum(BaseDrum):
         self._stopped: bool = True
         self._part: SongPart = part
 
+    def play_samples(self, buff: WrapBuffer) -> bool:
+        return id(self._part) != id(buff)
+
     def get_config(self) -> str:
         return ""
 
