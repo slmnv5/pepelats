@@ -14,10 +14,11 @@ file substitutions -- all explained below.
 
 Messages are listed in the section "MESSAGES" where options are message names. Valid messages are:
 
-* _bpm_msg - sent when the 1-st loop is recorded and BPM is calculated. Used to set BPM on external drum.
+* _bpm_msg - sent after 1st recorded and BPM calculated. Sets BPM on external drum using FILL_BPM method.
 * _bar_msg - sent at start of each bar. Used to synchronize external drum, set program, start drum, etc
-* _volume_msg - set volume
-* _stop_msg - stop drum. There is no start message, instead it uses _bar_msg
+* _volume_msg - set volume using VOLUME parameter.
+* _stop_msg - stop drum. There is no start message, instead use _bar_msg.
+* _prog_msg - program change using PROG parameter.
 * _progs_list - list of programs available on external drum. If not specified, GM standard is used: [0, 1, 2, ... 127]
 
 ### Message parameters
@@ -29,7 +30,7 @@ Messages may include parameters that are substituted when the message is sent.
 * PROG - index of MIDI program from the **_progs_list**. Some IOS drums have limited pattern list, or you may use
   only few selected programs, this is when **_progs_list** is needed.
 
-### Only method is shown below
+### Message methods
 
 FILL_BYTES - used to pass big number in a sys-ex message. Converts number into list of MIDI bytes:
 Example: FILL_BYTES(123.49, 5) == [0, 0, 1, 2, 3 ] -- converts 123.49 into list of 5 bytes
