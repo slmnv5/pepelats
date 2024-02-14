@@ -23,8 +23,8 @@ class MidiDrum(BaseDrum):
     List of all control messages is below.
     """
 
-    _MSG_LIST = ['_bar_msg', '_bpm_msg', '_volume_msg', '_progs_list', '_stop_msg']
-    _KEY_LIST = ["BPM", "COUNT", "VOLUME", "PROG", "FILL_BYTES"]
+    _MSG_LIST = ['_bar_msg', '_bpm_msg', '_volume_msg', '_progs_list', '_stop_msg', '_prog_msg']
+    _KEY_LIST = ["BPM", "VOLUME", "PROG", "FILL_BYTES"]
 
     def __init__(self):
         BaseDrum.__init__(self)
@@ -90,6 +90,7 @@ class MidiDrum(BaseDrum):
     def random_drum(self) -> None:
         super().random_drum()
         self._ptn = self._ptn_lst[self._ptn_idx]
+        self._queue.put("_prog_msg")
 
     def _send_midi(self, msg: list[list[int] | int]) -> None:
         assert type(msg) == list and all(type(x) in [list, int] for x in msg), f"Message: {msg}"

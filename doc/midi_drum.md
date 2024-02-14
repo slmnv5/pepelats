@@ -25,7 +25,6 @@ Messages are listed in the section "MESSAGES" where options are message names. V
 Messages may include parameters that are substituted when the message is sent.
 
 * BPM - beats per minute. To calculate quarter note duration in milliseconds use: round(60 / BPM * 1000)
-* COUNT - bar count since the start.
 * VOLUME - external MIDI device volume.
 * PROG - index of MIDI program from the **_progs_list**. Some IOS drums have limited pattern list, or you may use
   only few selected programs, this is when **_progs_list** is needed.
@@ -40,7 +39,7 @@ To pass decimal part use python expression, ex: FILL_BYTES(123.49 * 100, 5) == [
 
 Message may include valid python expressions:
 ~~~
-[0x90, 11, 12] if COUNT == 0 else [0x90, 13, 14]
+[0x90, 11, 12] if PROG == 0 else [0x90, 13, 14]
 [0xCO, random.choice([0, 1, 2, 3])]
 [0xF0, 0x5A] + FILL_BYTES(BMP * 100, 7) + [0xF7]
 ~~~
