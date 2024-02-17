@@ -12,10 +12,10 @@ def _stable_sub_list(idx: int, items: list[any], sub_list_size: int) -> list[any
     lst_size: int = min(sub_list_size, len(items))
     start_idx: int = (idx // lst_size) * lst_size
     stop_idx: int = start_idx + lst_size
-    if stop_idx >= len(items):
-        return items[start_idx:] + items[:stop_idx % lst_size]
-    else:
+    if stop_idx < len(items):
         return items[start_idx:stop_idx]
+    else:
+        return items[start_idx:] + items[:stop_idx % len(items)]
 
 
 class DrawInfo:
@@ -183,3 +183,14 @@ class EuclidSlicer:
 
     def __str__(self):
         return f"{self._steps},{self._beats},{self._shift}: {self.get_ptrn_str()}"
+
+
+if __name__ == "__main__":
+    def test_1():
+        lst = list(range(22))
+        sub_lst = _stable_sub_list(20, lst, 5)
+        assert [20, 21, 0, 1, 2] == sub_lst
+        print(sub_lst)
+
+
+    test_1()
