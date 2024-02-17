@@ -48,7 +48,7 @@ class CollectionOwner(Generic[T]):
             raise RuntimeError(f'Error: CollectionOwner init with empty collection')
         self.__idx: int = 0
 
-    def selected_idx(self) -> int:
+    def idx(self) -> int:
         return self.__idx
 
     def add_item(self, i: T) -> int:
@@ -62,7 +62,7 @@ class CollectionOwner(Generic[T]):
             return self.__items.index(i)
         return -1
 
-    def select_idx(self, i: int) -> T:
+    def set_idx(self, i: int) -> T:
         self.__idx = i % len(self.__items)
         return self.__items[self.__idx]
 

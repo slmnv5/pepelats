@@ -69,7 +69,7 @@ class Looper(ManyLoopCtrl):
         config = dic.get(ConfigName.menu_dir, "")
         ff = FileFinder(find_path("config/menu"), False, "")
         k = ff.find_item_idx(config)
-        ff.select_idx(k)
+        ff.set_idx(k)
         ff.iterate()
         dic[ConfigName.menu_dir] = ff.selected_item()
         update_ini_section(find_path(ConfigName.main_ini), "MENU", dic)
@@ -89,25 +89,25 @@ class Looper(ManyLoopCtrl):
     #  ============ All song parts view and related commands
 
     def _delete_song_part(self) -> None:
-        selected = self._song.parts.selected_idx()
+        selected = self._song.parts.idx()
         if self._next_id == selected:
             return  # can not delete active part
         elif self._next_id < selected:
             selected -= 1  # selected will be less after deletion
 
-        self._song.parts.select_idx(self._next_id)
+        self._song.parts.set_idx(self._next_id)
         self._song.parts.delete_selected()
-        self._song.parts.select_idx(selected)
+        self._song.parts.set_idx(selected)
         self._next_id = selected
 
     def _clear_part(self) -> None:
-        selected = self._song.parts.selected_idx()
+        selected = self._song.parts.idx()
         if self._next_id == selected:
             return  # can not clear active part
-        part = self._song.parts.select_idx(self._next_id)
+        part = self._song.parts.set_idx(self._next_id)
         self._next_id = selected
         self.stop_never()
-        self._song.parts.select_idx(selected)
+        self._song.parts.set_idx(selected)
         if id(part) == self._drum.get_id():
             return  # loop drum uses part, can not delete it
         if not part.is_empty:
@@ -129,7 +129,7 @@ class Looper(ManyLoopCtrl):
         part.redo()
 
     def _redo_all(self) -> None:
-        if self._song.parts.selected_idx() == self._next_id:
+        if self._song.parts.idx() == self._next_id:
             self._set_is_rec(False)
             part = self._song.parts.selected_item()
             while part.redo():

@@ -37,7 +37,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         """runs in a thread, play and record current song part"""
         while True:
             self.__play_event.wait()
-            part = self._song.parts.select_idx(self._next_id)
+            part = self._song.parts.set_idx(self._next_id)
             self.stop_never()
             self.start_rec, self.idx = 0, 0
             self._set_is_rec(part.is_empty)
@@ -47,9 +47,9 @@ class ManyLoopCtrl(LoopCtrl, ABC):
                 self.add_command(["_stop_drum"])
 
     def _add_song_part(self) -> None:
-        selected = self._song.parts.selected_idx()
+        selected = self._song.parts.idx()
         self._next_id = self._song.parts.add_item(SongPart())
-        self._song.parts.select_idx(selected)
+        self._song.parts.set_idx(selected)
 
     def _change_song_part(self, chg: int) -> None:
         self._next_id += chg
@@ -64,7 +64,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
             self.__play_event.set()
             return
 
-        if self._song.parts.selected_idx() == pid and self._next_id != pid:
+        if self._song.parts.idx() == pid and self._next_id != pid:
             self._next_id = pid
             self.stop_never()
             return
@@ -76,7 +76,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
             self.stop_at_bound(bar_len)
             return
 
-        if self._song.parts.selected_idx() == self._next_id:
+        if self._song.parts.idx() == self._next_id:
             if self.get_is_rec():
                 self._set_is_rec(False)
                 part.trim_buffer(self)
@@ -92,13 +92,13 @@ class ManyLoopCtrl(LoopCtrl, ABC):
             self.stop_at_bound(part.length)
 
     def _overdub_song_part(self) -> None:
-        if self._song.parts.selected_idx() != self._next_id:
+        if self._song.parts.idx() != self._next_id:
             return
         part: SongPart = self._song.parts.selected_item()
         if part.loops.item_count() < 2:
             return
         loop: LoopSimple = part.loops.selected_item()
-        assert part.loops.selected_idx() == part.loops.item_count() - 1
+        assert part.loops.idx() == part.loops.item_count() - 1
         assert not loop.is_empty
         assert self.get_is_rec()
         loop.max_buffer()
@@ -110,7 +110,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         if old_type == drum_type:
             return
         self._stop_song()
-        kwargs = {"SongPart": self._song.parts.select_idx(0)}
+        kwargs = {"SongPart": self._song.parts.set_idx(0)}
         dr = create_drum(drum_type, **kwargs)
         dr.load_drum_config(None, bar_len)
         self._drum = dr
@@ -160,7 +160,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
             while parts.item_count() < part_cnt:
                 parts.add_item(SongPart())
 
-        kwargs = {"SongPart": self._song.parts.select_idx(0)}
+        kwargs = {"SongPart": self._song.parts.set_idx(0)}
         drum_type = self._drum.get_class_name()
         config_name = self._drum.get_config()
         self._drum = create_drum(drum_type, **kwargs)

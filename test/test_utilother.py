@@ -11,7 +11,7 @@ def test_1():
     found_list = list()
     co.apply_to_each(lambda x: found_list.append(x if x == 'F' else None))
     assert found_list.index('F') == 5
-    co.select_idx(8)
+    co.set_idx(8)
     list_str = co.get_str(9)
     print(list_str)
     assert "-H" in list_str

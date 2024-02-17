@@ -21,11 +21,11 @@ class Song:
         self._name: str = ""
         self.parts = CollectionOwner[SongPart](SongPart())
         self._ff = FileFinder(find_path(".save_song"), True, "")
-        if not self._ff.select_idx(0):
+        if not self._ff.set_idx(0):
             self.save_song(ctrl)
 
     def load_latest(self, ctrl: LoopCtrl):
-        self._ff.select_idx(-1)
+        self._ff.set_idx(-1)
         try:
             self.load_song(ctrl)  # load latest saved song
         except Exception as ex:
