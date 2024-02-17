@@ -6,16 +6,16 @@ from typing import TypeVar, Generic
 T = TypeVar('T')
 
 
-def _stable_sub_list(item: int, items: list[any], sub_list_size: int) -> list[any]:
+def _stable_sub_list(idx: int, items: list[any], sub_list_size: int) -> list[any]:
     """ Sub list of elements surrounding item. If item changes sub list stays the same if
      item is still included in the sub list. Otherwise, all is recalculated."""
-    lst_size = min(sub_list_size, len(items))
-    start_id = (item // lst_size) * lst_size
-    stop_id = start_id + lst_size
-    if stop_id > lst_size:
-        return items[start_id:] + items[:stop_id % lst_size]
+    lst_size: int = min(sub_list_size, len(items))
+    start_idx: int = (idx // lst_size) * lst_size
+    stop_idx: int = start_idx + lst_size
+    if stop_idx > lst_size:
+        return items[start_idx:] + items[:stop_idx % lst_size]
     else:
-        return items[start_id:stop_id]
+        return items[start_idx:stop_idx]
 
 
 class DrawInfo:
@@ -83,12 +83,13 @@ class CollectionOwner(Generic[T]):
         self.__idx = 0
         return item
 
-    def get_str(self, next_id: int = None) -> str:
-        next_item = None
-        if next_id is not None:
-            next_item = self.__items[next_id % self.item_count()]
-        item_sub_list = _stable_sub_list(self.__idx, self.__items, 5)
+    def get_str(self, next_idx: int = None) -> str:
         curr_item = self.__items[self.__idx]
+        next_idx = curr_item if next_idx is None else (next_idx % self.item_count())
+        next_item = self.__items[next_idx]
+
+        item_sub_list = _stable_sub_list(next_idx, self.__items, 5)
+
         result: str = ""
         for item in item_sub_list:
             if item == curr_item:

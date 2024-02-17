@@ -1,4 +1,4 @@
-from random import randrange, random
+from random import randrange, random, sample
 
 import numpy as np
 
@@ -9,14 +9,15 @@ from song.songpart import SongPart
 
 class LoopDrum(BaseDrum):
     """ Drum using song part as it's base.
-    The part will record real drum sounds and play along with parts 1, 2 based on drum level
-    Random shift is applied to drum loop """
+    The song part will record real drum sounds and play along with other parts.
+    Loop #0 always plays, other loops may be added randomly if drum level > 0
+    Random shift is applied to drum loops """
 
     def __init__(self, part: SongPart):
         BaseDrum.__init__(self)
         self._rand_shift: int = 0  # shift by 1/4 of bar
         self._shift_idx: int = 0
-        self._play_lst: list[int] = list()  # list to play in addition to loop #0
+        self._play_lst: list[int] = list()  # list of loops in song part to play
         self._stopped: bool = True
         self._part: SongPart = part
 
@@ -45,10 +46,10 @@ class LoopDrum(BaseDrum):
         self._shift_idx = round(self._rand_shift * self.get_bar_len() / 4)
         self._stopped = False
         loops = self._part.loops
-        # play 0, 1 or 2 loops in addition to loop zero
-        self._play_lst = list(range(loops.item_count()))[1:]
-        self._play_lst = np.random.choice(self._play_lst, self._drum_level)
-        self._play_lst = list(set(self._play_lst))
+        lp_count: int = loops.item_count()
+        # play 1 or 2 random loops in addition to loop #0
+        lp_add = min(lp_count - 1, self._drum_level)
+        self._play_lst = sample(list(range(lp_count))[1:], lp_add)
 
     def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
         self.stop_drum()
