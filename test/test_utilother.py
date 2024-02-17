@@ -11,7 +11,7 @@ def test_1():
     found_list = list()
     co.apply_to_each(lambda x: found_list.append(x if x == 'F' else None))
     assert found_list.index('F') == 5
-    co.set_idx(8)
+    co.get_item(8)
     list_str = co.get_str(9)
     print(list_str)
     assert "-H" in list_str
@@ -28,7 +28,7 @@ def test_2():
 
 def test_3():
     ff = FileFinder(".", True, ".apple_orange")
-    assert "" == ff.selected_item()
+    assert "" == ff.get_item()
     assert 1 == ff.item_count()
 
 

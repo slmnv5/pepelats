@@ -48,8 +48,15 @@ class CollectionOwner(Generic[T]):
             raise RuntimeError(f'Error: CollectionOwner init with empty collection')
         self.__idx: int = 0
 
-    def idx(self) -> int:
-        return self.__idx
+    def get_idx(self, i: T = None) -> int:
+        if i is None:
+            return self.__idx
+        elif i in self.__items:
+            self.__idx = self.__items.index(i)
+            return self.__idx
+        else:
+            self.__idx = self.item_count() - 1
+            return -1
 
     def add_item(self, i: T) -> int:
         if i not in self.__items:
@@ -57,20 +64,15 @@ class CollectionOwner(Generic[T]):
         self.__idx = self.__items.index(i)
         return self.__idx
 
-    def find_item_idx(self, i: T) -> int:
-        if i in self.__items:
-            return self.__items.index(i)
-        return -1
-
-    def set_idx(self, i: int) -> T:
-        self.__idx = i % len(self.__items)
-        return self.__items[self.__idx]
+    def get_item(self, i: int = None) -> T:
+        if i is None:
+            return self.__items[self.__idx]
+        else:
+            self.__idx = i % len(self.__items)
+            return self.__items[self.__idx]
 
     def item_count(self) -> int:
         return len(self.__items)
-
-    def selected_item(self) -> T:
-        return self.__items[self.__idx]
 
     def apply_to_each(self, method) -> None:
         for x in self.__items:
@@ -129,7 +131,7 @@ class FileFinder(CollectionOwner[str]):
         return self.__dir
 
     def get_full_name(self) -> str:
-        return os.path.join(self.__dir, self.selected_item())
+        return os.path.join(self.__dir, self.get_item())
 
     def get_end_with(self) -> str:
         return self.__end_with

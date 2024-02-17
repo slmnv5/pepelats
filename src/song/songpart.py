@@ -17,7 +17,7 @@ class SongPart(LoopSimple):
         self.__undos: list[LoopSimple] = list()
 
     def trim_buffer(self, ctrl: LoopCtrl) -> None:
-        loop: LoopSimple = self.loops.selected_item()
+        loop: LoopSimple = self.loops.get_item()
         if not loop.is_empty:
             return
         drum = ctrl.get_drum()
@@ -32,7 +32,7 @@ class SongPart(LoopSimple):
         self.loops.apply_to_each(lambda x: LoopSimple.play_samples(x, out_data, idx))
 
     def record_samples(self, in_data: np.ndarray, idx: int) -> None:
-        loop = self.loops.selected_item()
+        loop = self.loops.get_item()
         LoopSimple.record_samples(loop, in_data, idx)
 
     def redo(self) -> bool:
@@ -43,7 +43,7 @@ class SongPart(LoopSimple):
         return True
 
     def undo(self) -> bool:
-        self.loops.set_idx(-1)
+        self.loops.get_item(-1)
         item = self.loops.delete_selected()
         if not item:
             return False

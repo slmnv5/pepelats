@@ -21,11 +21,11 @@ class Song:
         self._name: str = ""
         self.parts = CollectionOwner[SongPart](SongPart())
         self._ff = FileFinder(find_path(".save_song"), True, "")
-        if not self._ff.set_idx(0):
+        if not self._ff.get_item(0):
             self.save_song(ctrl)
 
     def load_latest(self, ctrl: LoopCtrl):
-        self._ff.set_idx(-1)
+        self._ff.get_item(-1)
         try:
             self.load_song(ctrl)  # load latest saved song
         except Exception as ex:
@@ -59,7 +59,7 @@ class Song:
         my_log.info(f"Saved song file: {fname}")
 
     def load_song(self, ctrl: LoopCtrl) -> None:
-        self._name = self._ff.selected_item().split(".")[0]
+        self._name = self._ff.get_item().split(".")[0]
         fname = self._ff.get_full_name()
         if not os.path.isfile(fname):
             my_log.error(f"File not found: {fname}")
@@ -91,8 +91,7 @@ class Song:
         self.save_song(ctrl)
 
     def show_songs(self) -> str:
-        k = self._ff.find_item_idx(self._name)
-        return self._ff.get_str(k)
+        return self._ff.get_str()
 
     def delete_song(self) -> None:
         self._ff.delete_selected()

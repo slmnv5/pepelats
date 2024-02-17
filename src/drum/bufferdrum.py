@@ -25,7 +25,7 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
         self._dname = find_path(dname)
         assert os.path.isdir(self._dname)
         self._ff = FileFinder(self._dname, True, ".ini")
-        assert self._ff.selected_item()
+        assert self._ff.get_item()
         self._names: list[str] = list()  # names of patterns
         self._intensities: list[str] = list()
 
@@ -47,7 +47,7 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
         return f"{base_info}\nintensity: {intensity}\nname: {name}"
 
     def get_config(self) -> str:
-        return self._ff.selected_item()
+        return self._ff.get_item()
 
     def show_drum_config(self) -> str:
         return self._ff.get_str()
@@ -58,8 +58,8 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
     def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
         self.stop_drum()
         if config:
-            k = self._ff.find_item_idx(config)
-            self._ff.set_idx(k)
+            self._ff.get_idx(config)
+
         bar_len = self._bar_len if bar_len is None else bar_len
         self._set_bar_len(bar_len)
 

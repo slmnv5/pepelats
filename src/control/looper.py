@@ -41,7 +41,7 @@ class Looper(ManyLoopCtrl):
         else:
             draw_info.content = ""
         assert draw_info.content is not None
-        length = self._song.parts.selected_item().length
+        length = self._song.parts.get_item().length
         draw_info.loop_seconds = MAX_LEN_SECONDS if self.get_stop_event().is_set() else length / SD_RATE
         draw_info.loop_position = 0 if not length else (self.idx % length) / length
         draw_info.is_rec = self.get_is_rec()
@@ -68,10 +68,9 @@ class Looper(ManyLoopCtrl):
         dic = load_ini_section(find_path(ConfigName.main_ini), "MENU")
         config = dic.get(ConfigName.menu_dir, "")
         ff = FileFinder(find_path("config/menu"), False, "")
-        k = ff.find_item_idx(config)
-        ff.set_idx(k)
+        ff.get_idx(config)
         ff.iterate()
-        dic[ConfigName.menu_dir] = ff.selected_item()
+        dic[ConfigName.menu_dir] = ff.get_item()
         update_ini_section(find_path(ConfigName.main_ini), "MENU", dic)
 
     @staticmethod
@@ -89,25 +88,25 @@ class Looper(ManyLoopCtrl):
     #  ============ All song parts view and related commands
 
     def _delete_song_part(self) -> None:
-        selected = self._song.parts.idx()
+        selected = self._song.parts.get_idx()
         if self._next_id == selected:
             return  # can not delete active part
         elif self._next_id < selected:
             selected -= 1  # selected will be less after deletion
 
-        self._song.parts.set_idx(self._next_id)
+        self._song.parts.get_item(self._next_id)
         self._song.parts.delete_selected()
-        self._song.parts.set_idx(selected)
+        self._song.parts.get_item(selected)
         self._next_id = selected
 
     def _clear_part(self) -> None:
-        selected = self._song.parts.idx()
+        selected = self._song.parts.get_idx()
         if self._next_id == selected:
             return  # can not clear active part
-        part = self._song.parts.set_idx(self._next_id)
+        part = self._song.parts.get_item(self._next_id)
         self._next_id = selected
         self.stop_never()
-        self._song.parts.set_idx(selected)
+        self._song.parts.get_item(selected)
         if id(part) == self._drum.get_id():
             return  # loop drum uses part, can not delete it
         if not part.is_empty:
@@ -117,7 +116,7 @@ class Looper(ManyLoopCtrl):
     def _undo_part(self) -> None:
         is_rec = self.get_is_rec()
         self._set_is_rec(False)
-        part = self._song.parts.selected_item()
+        part = self._song.parts.get_item()
         if not is_rec:
             part.undo()
         else:
@@ -125,25 +124,25 @@ class Looper(ManyLoopCtrl):
 
     def _redo_part(self) -> None:
         self._set_is_rec(False)
-        part = self._song.parts.selected_item()
+        part = self._song.parts.get_item()
         part.redo()
 
     def _redo_all(self) -> None:
-        if self._song.parts.idx() == self._next_id:
+        if self._song.parts.get_idx() == self._next_id:
             self._set_is_rec(False)
-            part = self._song.parts.selected_item()
+            part = self._song.parts.get_item()
             while part.redo():
                 pass
 
     #  ================= One song part view and related commands
 
     def _change_loop(self, *params) -> None:
-        loops = self._song.parts.selected_item().loops
+        loops = self._song.parts.get_item().loops
         loops.iterate(params[0])
 
     def _edit_loop(self, *params) -> None:
-        part = self._song.parts.selected_item()
-        loop = part.loops.selected_item()
+        part = self._song.parts.get_item()
+        loop = part.loops.get_item()
         if params[0] == "silent":
             loop.flip_silent()
         elif params[0] == "reverse":

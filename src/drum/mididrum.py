@@ -31,7 +31,7 @@ class MidiDrum(BaseDrum):
         self._par = 0.2  # for MIDI drum it is probability to change program at bar start
         self._dname = find_path("config/drum/midi")
         self._ff = FileFinder(self._dname, True, ".ini")
-        assert self._ff.selected_item()
+        assert self._ff.get_item()
         # ======== MIDI specific ===============
         self._midi_out = MidiOutWrap()
         self._ptn = 0  # pattern/program number from _ptn_lst
@@ -73,7 +73,7 @@ class MidiDrum(BaseDrum):
             return list()
 
     def get_config(self) -> str:
-        return self._ff.selected_item()
+        return self._ff.get_item()
 
     def _set_bar_len(self, bar_len: int) -> None:
         super()._set_bar_len(bar_len)
@@ -109,8 +109,7 @@ class MidiDrum(BaseDrum):
     def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
         self.stop_drum()
         if config:
-            k = self._ff.find_item_idx(config)
-            self._ff.set_idx(k)
+            self._ff.get_idx(config)
 
         fname = self._ff.get_full_name()
         dic = load_ini_section(fname, "MIDI")

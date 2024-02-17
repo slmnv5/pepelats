@@ -44,7 +44,7 @@ class LoopDrum(BaseDrum):
         self._shift_idx = round(self._rand_shift * self.get_bar_len() / 4)
         self._stopped = False
         loops = self._part.loops
-        save_idx: int = loops.idx()
+        save_idx: int = loops.get_idx()
         lp_count: int = loops.item_count()
         # play 1 or 2 random loops in addition to loop #0
         lp_add = min(lp_count - 1, self._drum_level)
@@ -52,8 +52,8 @@ class LoopDrum(BaseDrum):
         lst.append(0)
         self._play_lst.clear()
         for k in lst:
-            self._play_lst.append(loops.set_idx(k))
-        loops.set_idx(save_idx)
+            self._play_lst.append(loops.get_item(k))
+        loops.get_item(save_idx)
 
     def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
         self.stop_drum()
