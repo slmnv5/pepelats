@@ -38,8 +38,9 @@ class LoopDrum(BaseDrum):
                 self.random_drum()
 
         loops = self._part.loops
-        for lp in [loops.select_idx(k) for k in [0, *self._play_lst]]:
-            WrapBuffer.play_samples(lp, out_data, idx + self._shift_idx)
+        for k, lp in enumerate(loops):
+            if k in self._play_lst:
+                WrapBuffer.play_samples(lp, out_data, idx + self._shift_idx)
 
     def random_drum(self) -> None:
         self._rand_shift = randrange(4)
