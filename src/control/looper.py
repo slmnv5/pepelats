@@ -114,12 +114,13 @@ class Looper(ManyLoopCtrl):
             part.loops = CollectionOwner[LoopSimple](part)
 
     def _undo_part(self) -> None:
-        if self._song.parts.item_count() <= 1:
+        part = self._song.parts.get_item()
+        if part.loops.item_count() <= 1:
             return
 
         is_rec = self.get_is_rec()
         self._set_is_rec(False)
-        part = self._song.parts.get_item()
+
         if not is_rec:
             part.undo()
         else:
