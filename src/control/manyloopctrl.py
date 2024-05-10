@@ -56,15 +56,14 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         self._next_id %= self._song.parts.item_count()
 
     def _play_song_part(self, pid: int = None) -> None:
-        if pid is None:
+        bar_len = self._drum.get_bar_len()
+        if bar_len == 0:
+            pid = 0
+        elif pid is None:
             pid = self._next_id
 
         if not self.__play_event.is_set():
-            if self._drum.get_bar_len() == 0:
-                self._next_id = 0
-            else:
-                self._next_id = pid
-
+            self._next_id = pid
             self.__play_event.set()
             return
 
@@ -77,7 +76,6 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         self._next_id = pid
         part: SongPart = self._song.parts.get_item()
         if part.is_empty:
-            bar_len = self.get_drum().get_bar_len()
             self.stop_at_bound(bar_len)
             return
 
