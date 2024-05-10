@@ -39,7 +39,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
             self.__play_event.wait()
             part = self._song.parts.get_item(self._next_id)
             self.stop_never()
-            self.start_rec, self.idx = 0, 0
+            self._start_rec_idx, self.idx = 0, 0
             self._set_is_rec(part.is_empty)
             self.add_command([ConfigName.client_redraw, None])
             part.play_buffer(self)
@@ -98,14 +98,14 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         if self._song.parts.get_idx() != self._next_id:
             return
         part: SongPart = self._song.parts.get_item()
-        if part.loops.item_count() < 2:
+        if part.loops.item_count() <= 1:
             return
         loop: LoopSimple = part.loops.get_item()
         assert part.loops.get_idx() == part.loops.item_count() - 1
         assert not loop.is_empty
         assert self.get_is_rec()
         loop.max_buffer()
-        self.start_rec = self.idx
+        self._start_rec_idx = self.idx
 
     # ========== drum methods
     def _new_song(self, drum_type: str) -> None:

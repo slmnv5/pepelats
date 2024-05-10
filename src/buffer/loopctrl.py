@@ -17,7 +17,7 @@ class LoopCtrl(MenuClient, ABC):
         super().__init__(queue)
         self.idx: int = 0
         self._drum: BaseDrum = drum
-        self.__start_rec_idx: int = 0
+        self._start_rec_idx: int = 0
         self.__is_rec: bool = False
         self.__stop_len: int = MAX_32_INT
         self.__stop_event: Event = Event()
@@ -93,4 +93,4 @@ class LoopCtrl(MenuClient, ABC):
         self._drum.start_drum()
 
     def get_start_rec_idx(self) -> int:
-        return self.__start_rec_idx
+        return self._start_rec_idx
