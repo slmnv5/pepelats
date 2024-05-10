@@ -24,12 +24,15 @@ class WrapBuffer:
             return "---------------"
         if not self.__info_str:
             self.__info_str = f"V:{vol_db(self.__buff):03}db"
-            if not self.__len_ratio:
-                self.__info_str += " L:----"
+            tmp: str
+            if self.__len_ratio == 0:
+                tmp = ""
             elif self.__len_ratio >= 1:
-                self.__info_str += f" L:--{round(self.__len_ratio):02}"
+                tmp = f"{round(self.__len_ratio)}"
             else:
-                self.__info_str += f" L:1/{round(1 / self.__len_ratio):02}"
+                tmp = f"1/{round(1 / self.__len_ratio)}"
+
+            self.__info_str += tmp.rjust(5, " ")
 
         if not self.__props_str:
             self.__props_str = f" {'S' if self.__is_silent else ' '}{'R' if self.__is_reverse else ' '}"
