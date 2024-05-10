@@ -72,7 +72,7 @@ class Song:
         while len(load_list) < 4:
             load_list.append(SongPart())
         assert len(load_list) >= 4
-        assert type(load_list[0]) == SongPart
+        assert all(type(p) == SongPart for p in load_list)
         assert type(bar_len) == int, f"{bar_len}"
         assert type(volume) == float and 0 <= volume <= 1, f"{volume}"
         assert type(par) == float and 0 <= par <= 1, f"{par}"
@@ -83,6 +83,8 @@ class Song:
         dr.set_volume(volume)
         dr.set_par(par)
         ctrl.set_drum(dr)
+        for part in load_list:
+            part.init_str()
         self.parts = CollectionOwner(load_list)
         my_log.info(f"Loaded song file: {fname}")
 
