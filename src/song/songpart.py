@@ -24,7 +24,8 @@ class SongPart(LoopSimple):
         bar_len = drum.get_bar_len()
         part_len = self.length
         base_len = bar_len if self.is_empty else max(bar_len, part_len)
-        Thread(target=loop.finalize, args=(ctrl.idx, base_len, ctrl.start_rec)).start()
+        start_rec_idx = ctrl.get_start_rec_idx()
+        Thread(target=loop.finalize, args=(ctrl.idx, base_len, start_rec_idx)).start()
         if not bar_len:
             ctrl.add_command(["_load_drum_config", ctrl.idx])
 

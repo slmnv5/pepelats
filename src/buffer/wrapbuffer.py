@@ -72,21 +72,21 @@ class WrapBuffer:
         tmp = self.__buff[::-1] if self.__is_reverse else self.__buff
         play_buffer(tmp, out_data, idx)
 
-    def finalize(self, idx: int, base_len: int, start_idx: int) -> None:
+    def finalize(self, idx: int, base_len: int, start_rec_idx: int) -> None:
         """Trim is done only once to fix buffer length for empty loop.
         base_len - bigger of 2: parallel loop length or 1 bar length
         case 1) base_len == 0 trim to idx value, bar length is NOT known yet
         case 2) base_len != 0 trim to multiple of base_len i.e.  1/4 1/2 1 2 3 ...
         """
         assert self.is_empty
-        assert 0 <= start_idx < idx, f"start_idx: {start_idx}, idx: {idx}"
+        assert 0 <= start_rec_idx < idx, f"start_rec_idx: {start_rec_idx}, idx: {idx}"
         self.__info_str = ""  # force recalculate volume and length
         if not base_len:  # Case 1
-            assert start_idx == 0, "start==0 as we record 1st time"
+            assert start_rec_idx == 0, "start==0 as we record 1st time"
             self.__buff = self.__buff[:idx]
             self.__len_ratio = 1
         else:  # Case 2
-            rec_len: int = idx - start_idx
+            rec_len: int = idx - start_rec_idx
             # new loop length must be ... 1/2, 1, 2, 3, ...
             tmp = base_len
             while rec_len < tmp // 2:
@@ -94,7 +94,7 @@ class WrapBuffer:
             rec_len = round(rec_len / tmp) * tmp
             self.__len_ratio = rec_len / base_len
             # align start with main loop if not started from zero
-            offset = start_idx % tmp
-            self.__buff = trim_buffer(self.__buff, rec_len, start_idx - offset)
+            offset = start_rec_idx % tmp
+            self.__buff = trim_buffer(self.__buff, rec_len, start_rec_idx - offset)
 
         my_log.info(f"After trim length ratio: {self.__len_ratio}")

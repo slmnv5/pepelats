@@ -64,7 +64,8 @@ class ManyLoopCtrl(LoopCtrl, ABC):
             self.__play_event.set()
             return
 
-        if self._song.parts.get_idx() == pid and self._next_id != pid:
+        selected: int = self._song.parts.get_idx()
+        if selected == pid and self._next_id != pid:
             self._next_id = pid
             self.stop_never()
             return
@@ -76,7 +77,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
             self.stop_at_bound(bar_len)
             return
 
-        if self._song.parts.get_idx() == self._next_id:
+        if selected == self._next_id:
             if self.get_is_rec():
                 self._set_is_rec(False)
                 part.trim_buffer(self)
