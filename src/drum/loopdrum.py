@@ -27,9 +27,6 @@ class LoopDrum(BaseDrum):
     def get_config(self) -> str:
         return ""
 
-    def get_id(self) -> int:
-        return id(self._part)
-
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         if not self._bar_len or self._stopped:
             return

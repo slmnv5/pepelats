@@ -107,8 +107,8 @@ class Looper(ManyLoopCtrl):
         self._next_id = selected
         self.stop_never()
         self._song.parts.get_item(selected)
-        if id(part) == self._drum.get_id():
-            return  # loop drum uses part, can not delete it
+        if not self._drum.play_samples(part):
+            return  # loop drum uses this part, can not delete it
         if not part.is_empty:
             part.max_buffer()
             part.loops = CollectionOwner[LoopSimple](part)

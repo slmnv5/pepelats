@@ -44,9 +44,6 @@ class BaseDrum(ABC):
     def get_bpm(self) -> float:
         return self._bpm
 
-    def get_id(self) -> int:
-        return id(self)
-
     def get_bar_len(self) -> int:
         return self._bar_len
 
