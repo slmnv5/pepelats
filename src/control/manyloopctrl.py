@@ -60,7 +60,11 @@ class ManyLoopCtrl(LoopCtrl, ABC):
             pid = self._next_id
 
         if not self.__play_event.is_set():
-            self._next_id = pid
+            if self._drum.get_bar_len() == 0:
+                self._next_id = 0
+            else:
+                self._next_id = pid
+
             self.__play_event.set()
             return
 
