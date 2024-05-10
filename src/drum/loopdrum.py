@@ -1,4 +1,4 @@
-from random import randrange, random, sample
+from random import random, sample
 
 import numpy as np
 
@@ -15,8 +15,6 @@ class LoopDrum(BaseDrum):
 
     def __init__(self, part: SongPart):
         BaseDrum.__init__(self)
-        self._rand_shift: int = 0  # shift by 1/4 of bar
-        self._shift_idx: int = 0
         self._play_lst: list[WrapBuffer] = list()  # list of loops in song part to play
         self._stopped: bool = True
         self._part: SongPart = part
@@ -34,11 +32,9 @@ class LoopDrum(BaseDrum):
             if random() < self._par:
                 self.random_drum()
         for lp in self._play_lst:
-            WrapBuffer.play_samples(lp, out_data, idx + self._shift_idx)
+            WrapBuffer.play_samples(lp, out_data, idx)
 
     def random_drum(self) -> None:
-        self._rand_shift = randrange(4)
-        self._shift_idx = round(self._rand_shift * self.get_bar_len() / 4)
         self._stopped = False
         loops = self._part.loops
         save_idx: int = loops.get_idx()
@@ -69,9 +65,6 @@ class LoopDrum(BaseDrum):
 
     def start_drum(self) -> None:
         self.random_drum()
-
-    def get_drum_header(self) -> str:
-        return super().get_drum_header() + f":shft{self._rand_shift}"
 
     def show_drum_param(self) -> str:
         return super().show_drum_param()
