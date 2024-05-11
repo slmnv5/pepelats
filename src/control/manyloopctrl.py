@@ -4,6 +4,7 @@ from threading import Event, Thread
 
 from buffer.loopctrl import LoopCtrl
 from buffer.loopsimple import LoopSimple
+from drum.loopdrum import LoopDrum
 from song.song import Song
 from song.songpart import SongPart
 from utils.utilconfig import ConfigName
@@ -56,11 +57,12 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         self._next_id %= self._song.parts.item_count()
 
     def _play_song_part(self, pid: int = None) -> None:
-        bar_len = self._drum.get_bar_len()
-        if bar_len == 0:
-            pid = 0
-        elif pid is None:
+        if pid is None:
             pid = self._next_id
+
+        bar_len = self._drum.get_bar_len()
+        if bar_len == 0 and isinstance(self._drum, LoopDrum):
+            pid = 0
 
         if not self.__play_event.is_set():
             self._next_id = pid

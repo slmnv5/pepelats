@@ -148,7 +148,7 @@ class Looper(ManyLoopCtrl):
         part = self._song.parts.get_item()
         loop = part.loops.get_item()
         if params[0] == "silent":
-            loop.flip_silent()
+            loop.set_silent(not loop.is_silent())
         elif params[0] == "reverse":
             loop.flip_reverse()
         elif params[0] == "move" and part != loop:

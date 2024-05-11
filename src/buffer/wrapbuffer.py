@@ -50,15 +50,11 @@ class WrapBuffer:
         self.__is_reverse = not self.__is_reverse
         self.__props_str = ""
 
-    def flip_silent(self) -> None:
-        self.__is_silent = not self.__is_silent
-        self.__props_str = ""
-
-    def _set_silent(self, val: bool) -> None:
+    def set_silent(self, val: bool) -> None:
         self.__is_silent = val
         self.__props_str = ""
 
-    def _is_silent(self) -> bool:
+    def is_silent(self) -> bool:
         return self.__is_silent
 
     @property

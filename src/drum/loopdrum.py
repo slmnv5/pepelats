@@ -15,7 +15,6 @@ class LoopDrum(BaseDrum):
 
     def __init__(self, part: SongPart):
         BaseDrum.__init__(self)
-        self._play_lst: list[WrapBuffer] = list()  # list of loops in song part to play
         self._stopped: bool = True
         self._part: SongPart = part
 
@@ -31,22 +30,18 @@ class LoopDrum(BaseDrum):
         if idx % self._bar_len == 0:
             if random() < self._par:
                 self.random_drum()
-        for lp in self._play_lst:
-            WrapBuffer.play_samples(lp, out_data, idx)
+        self._part.play_samples(out_data, idx)
 
     def random_drum(self) -> None:
         self._stopped = False
         loops = self._part.loops
-        save_idx: int = loops.get_idx()
         lp_count: int = loops.item_count()
-        # play 1 or 2 random loops in addition to loop #0
-        lp_add = min(lp_count - 1, self._drum_level)
-        lst = sample(list(range(lp_count))[1:], lp_add)
-        lst.append(0)
-        self._play_lst.clear()
-        for k in lst:
-            self._play_lst.append(loops.get_item(k))
-        loops.get_item(save_idx)
+        # play 1, 2, 3 random loops
+        rand_lst: list[int] = sample(range(1, lp_count), min(self._drum_level, lp_count))
+
+        for k in range(1, lp_count):
+            lp = loops.get_item()
+            lp.set_silent(k not in rand_lst)
 
     def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
         self.stop_drum()
