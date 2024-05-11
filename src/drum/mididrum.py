@@ -109,7 +109,7 @@ class MidiDrum(BaseDrum):
     def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
         self.stop_drum()
         if config:
-            self._ff.get_idx(config)
+            self._ff.set_idx(config)
 
         fname = self._ff.get_full_name()
         dic = load_ini_section(fname, "MIDI")

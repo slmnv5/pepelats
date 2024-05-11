@@ -17,15 +17,10 @@ my_log = get_my_log(__name__)
 class Song:
     """Song keeps SongParts as CollectionOwner, can save and load from file"""
 
-    def __init__(self, ctrl: LoopCtrl):
+    def __init__(self):
         self._name: str = ""
         self.parts = CollectionOwner[SongPart]([SongPart(), SongPart(), SongPart(), SongPart()])
         self._ff = FileFinder(find_path(".save_song"), True, "")
-        self._ff.set_item(-1)
-        try:
-            self.load_song(ctrl)  # load latest saved song
-        except Exception as ex:
-            my_log.error(f"Error: {ex} loading saved song: {self._name}")
 
     def get_name(self) -> str:
         if not self._name:
@@ -42,7 +37,7 @@ class Song:
 
     def save_song(self, ctrl: LoopCtrl) -> None:
         dr = ctrl.get_drum()
-        self._ff.add_item(self.get_complete_name(ctrl))
+        self._ff.set_idx(self.get_complete_name(ctrl))
         fname = self._ff.get_full_name()
         parts_lst = list()
         self.parts.apply_to_each(lambda x: parts_lst.append(None if x.is_empty else x))

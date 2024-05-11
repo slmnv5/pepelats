@@ -40,7 +40,7 @@ class SongPart(LoopSimple):
         if not self.__undos:
             return False
         item = self.__undos.pop()
-        self.loops.add_item(item)
+        self.loops.set_idx(item)
         return True
 
     def undo(self) -> bool:

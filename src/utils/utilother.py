@@ -48,17 +48,19 @@ class CollectionOwner(Generic[T]):
             raise RuntimeError(f'Error: CollectionOwner init with empty collection')
         self.__idx: int = 0
 
-    def get_idx(self, i: T = None) -> int:
-        if i is None:
-            return self.__idx
-        elif i in self.__items:
+    def get_idx(self) -> int:
+        return self.__idx
+
+    def set_idx(self, i: T) -> int:
+        if i in self.__items:
             self.__idx = self.__items.index(i)
             return self.__idx
         else:
+            self.__items.append(i)
             self.__idx = self.item_count() - 1
-            return -1
+            return self.__idx
 
-    def add_item(self, i: T) -> int:
+    def add_item11111111111111(self, i: T) -> int:
         if i not in self.__items:
             self.__items.append(i)
         self.__idx = self.__items.index(i)

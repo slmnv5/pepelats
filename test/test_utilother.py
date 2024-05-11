@@ -7,7 +7,7 @@ def test_1():
     lst = [chr(k) for k in range(65, 80)]
     co = CollectionOwner(lst[0])
     for k in lst[1:]:
-        co.add_item(k)
+        co.set_idx(k)
     found_list = list()
     co.apply_to_each(lambda x: found_list.append(x if x == 'F' else None))
     assert found_list.index('F') == 5

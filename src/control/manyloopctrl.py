@@ -22,7 +22,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         dr = create_drum(drum_type)
         dr.load_drum_config()
         LoopCtrl.__init__(self, queue, dr)
-        self._song: Song = Song(self)
+        self._song: Song = Song()
         self._next_id: int = 0
         self.__play_event: Event = Event()
         Thread(target=self._play_loop, name="play_loop", daemon=True).start()
@@ -51,7 +51,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
 
     def _add_song_part(self) -> None:
         selected = self._song.parts.get_idx()
-        self._next_id = self._song.parts.add_item(SongPart())
+        self._next_id = self._song.parts.set_idx(SongPart())
         self._song.parts.set_item(selected)
 
     def _change_song_part(self, chg: int) -> None:
@@ -88,7 +88,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
                 self._set_is_rec(False)
                 part.trim_buffer(self)
             else:
-                part.loops.add_item(LoopSimple(part.length))
+                part.loops.set_idx(LoopSimple(part.length))
                 part.clear_undo()
                 self._set_is_rec(True)
         else:
@@ -158,17 +158,12 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         bound = self._song.parts.get_item().length if wait else 0
         self.stop_at_bound(bound)
 
-    def _init_song(self, part_cnt: int = None) -> None:
+    def _init_song(self) -> None:
         self._stop_song()
         self._next_id = 0
-        self._song = Song(self)
-        parts = self._song.parts
-        if part_cnt is not None and part_cnt < 7:
-            while parts.item_count() < part_cnt:
-                parts.add_item(SongPart())
-
+        self._song = Song()
         kwargs = {"SongPart": self._song.parts.set_item(0)}
         drum_type = self._drum.get_class_name()
         config_name = self._drum.get_config()
         self._drum = create_drum(drum_type, **kwargs)
-        self._drum.load_drum_config(config_name, 0)
+        self._drum.load_drum_config(config_name)
