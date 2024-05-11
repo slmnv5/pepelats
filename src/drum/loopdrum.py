@@ -37,10 +37,10 @@ class LoopDrum(BaseDrum):
         loops = self._part.loops
         lp_count: int = loops.item_count()
         # play 1, 2, 3 random loops
-        rand_lst: list[int] = sample(range(1, lp_count), min(self._drum_level, lp_count))
-
-        for k in range(1, lp_count):
-            lp = loops.get_item()
+        rand_lst: list[int] = sample(range(lp_count), min(self._drum_level + 1, lp_count))
+        rand_lst.append(0)
+        for k in range(lp_count):
+            lp = loops.get_item(k)
             lp.set_silent(k not in rand_lst)
 
     def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
