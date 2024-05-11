@@ -19,17 +19,13 @@ class Song:
 
     def __init__(self, ctrl: LoopCtrl):
         self._name: str = ""
+        self.parts = CollectionOwner[SongPart]([SongPart(), SongPart(), SongPart(), SongPart()])
         self._ff = FileFinder(find_path(".save_song"), True, "")
         self._ff.set_item(-1)
         try:
             self.load_song(ctrl)  # load latest saved song
         except Exception as ex:
             my_log.error(f"Error: {ex} loading saved song: {self._name}")
-            parts_lst = list()
-            while len(parts_lst) < 4:
-                parts_lst.append(SongPart())
-            self.parts = CollectionOwner[SongPart](parts_lst)
-            print(111111111111111111111, self.parts.item_count())
 
     def get_name(self) -> str:
         if not self._name:
@@ -51,7 +47,7 @@ class Song:
         parts_lst = list()
         self.parts.apply_to_each(lambda x: parts_lst.append(None if x.is_empty else x))
         assert len(parts_lst) == 4
-        assert all(type(p) == SongPart for p in parts_lst)
+        assert all(type(p) == SongPart or p is None for p in parts_lst)
 
         with open(fname, 'wb') as f:
             pickle.dump((parts_lst, dr.get_class_name(), dr.get_config(),
