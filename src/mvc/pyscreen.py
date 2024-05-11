@@ -28,6 +28,7 @@ _END_COLOR: str = '\x1b[0m'
 _RED_COLOR: str = '\x1b[1;31m'
 _GREEN_COLOR: str = '\x1b[1;32m'
 _YELLOW_COLOR: str = '\x1b[1;33m'
+_BLUE_COLOR: str = '\x1b[1;34m'
 _REVERSE_COLOR: str = '\x1b[7m'
 
 
@@ -68,9 +69,10 @@ class PyScreen(MenuClient):
         self.__header = draw_info.header[:_COLS].center(_COLS)
         print(self.__header)
         lines = wrap(draw_info.description, _COLS)
+        print(_BLUE_COLOR, end='')
         for line in [x for x in lines if x]:
             print(line)
-
+        print(_END_COLOR, end='')
         lines = draw_info.content.split('\n')
         for line in lines:
             line = line[:_COLS]
