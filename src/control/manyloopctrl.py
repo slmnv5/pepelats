@@ -50,7 +50,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
                 self.add_command(["_stop_drum"])
 
     def _add_song_part(self) -> None:
-        selected = self._song.parts.get_idx()
+        selected: int = self._song.parts.get_idx()
         self._next_id = self._song.parts.set_idx(SongPart())
         self._song.parts.set_item(selected)
 

@@ -99,13 +99,13 @@ class Looper(ManyLoopCtrl):
         self._next_id = selected
 
     def _clear_part(self) -> None:
-        selected = self._song.parts.get_idx()
+        selected: int = self._song.parts.get_idx()
         if self._next_id == selected:
             return  # can not clear active part
         part = self._song.parts.set_item(self._next_id)
         self._next_id = selected
         self.stop_never()
-        self._song.parts.sem(selected)
+        self._song.parts.set_item(selected)
         if not self._drum.play_samples(part):
             return  # loop drum uses this part, can not delete it
         if not part.is_empty:

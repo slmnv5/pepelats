@@ -13,7 +13,7 @@ class SongPart(LoopSimple):
 
     def __init__(self, sz: int = MAX_LEN):
         LoopSimple.__init__(self, sz)
-        self.loops = CollectionOwner[LoopSimple](self)
+        self.loops: CollectionOwner[LoopSimple] = CollectionOwner[LoopSimple](self)
         self.__undos: list[LoopSimple] = list()
 
     def trim_buffer(self, ctrl: LoopCtrl) -> None:

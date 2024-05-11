@@ -19,7 +19,8 @@ class Song:
 
     def __init__(self):
         self._name: str = ""
-        self.parts = CollectionOwner[SongPart]([SongPart(), SongPart(), SongPart(), SongPart()])
+        tmp = [SongPart(), SongPart(), SongPart(), SongPart()]
+        self.parts: CollectionOwner[SongPart] = CollectionOwner[SongPart](tmp)
         self._ff = FileFinder(find_path(".save_song"), True, "")
 
     def get_name(self) -> str:
