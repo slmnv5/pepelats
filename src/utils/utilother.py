@@ -64,12 +64,12 @@ class CollectionOwner(Generic[T]):
         self.__idx = self.__items.index(i)
         return self.__idx
 
-    def get_item(self, i: int = None) -> T:
-        if i is None:
-            return self.__items[self.__idx]
-        else:
-            self.__idx = i % len(self.__items)
-            return self.__items[self.__idx]
+    def get_item(self) -> T:
+        return self.__items[self.__idx]
+
+    def set_item(self, i: int) -> T:
+        self.__idx = i % len(self.__items)
+        return self.__items[self.__idx]
 
     def item_count(self) -> int:
         return len(self.__items)

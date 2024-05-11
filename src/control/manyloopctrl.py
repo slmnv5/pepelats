@@ -38,7 +38,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         """runs in a thread, play and record current song part"""
         while True:
             self.__play_event.wait()
-            part = self._song.parts.get_item(self._next_id)
+            part = self._song.parts.set_item(self._next_id)
             self.stop_never()
             self._start_rec_idx, self.idx = 0, 0
             self._set_is_rec(part.is_empty)
@@ -50,7 +50,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
     def _add_song_part(self) -> None:
         selected = self._song.parts.get_idx()
         self._next_id = self._song.parts.add_item(SongPart())
-        self._song.parts.get_item(selected)
+        self._song.parts.set_item(selected)
 
     def _change_song_part(self, chg: int) -> None:
         self._next_id += chg
@@ -115,7 +115,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         if old_type == drum_type:
             return
         self._stop_song()
-        kwargs = {"SongPart": self._song.parts.get_item(0)}
+        kwargs = {"SongPart": self._song.parts.set_item(0)}
         dr = create_drum(drum_type, **kwargs)
         dr.load_drum_config(None, bar_len)
         self._drum = dr
@@ -165,7 +165,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
             while parts.item_count() < part_cnt:
                 parts.add_item(SongPart())
 
-        kwargs = {"SongPart": self._song.parts.get_item(0)}
+        kwargs = {"SongPart": self._song.parts.set_item(0)}
         drum_type = self._drum.get_class_name()
         config_name = self._drum.get_config()
         self._drum = create_drum(drum_type, **kwargs)
