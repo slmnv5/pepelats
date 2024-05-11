@@ -52,15 +52,6 @@ class CollectionOwner(Generic[T]):
         return self.__idx
 
     def set_idx(self, i: T) -> int:
-        if i in self.__items:
-            self.__idx = self.__items.index(i)
-            return self.__idx
-        else:
-            self.__items.append(i)
-            self.__idx = self.item_count() - 1
-            return self.__idx
-
-    def add_item11111111111111(self, i: T) -> int:
         if i not in self.__items:
             self.__items.append(i)
         self.__idx = self.__items.index(i)
