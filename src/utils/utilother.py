@@ -6,16 +6,20 @@ from typing import TypeVar, Generic
 T = TypeVar('T')
 
 
-def _stable_sub_list(idx: int, items: list[any], sub_list_size: int) -> list[any]:
-    """ Sub list of elements surrounding item. If item changes sub list stays the same if
-     item is still included in the sub list. Otherwise, all is recalculated."""
-    lst_size: int = min(sub_list_size, len(items))
+def _stable_sub_list(idx: int, items: list[any], sub_list_size: int) -> list[tuple[str, int]]:
+    """ Sub list of elements surrounding one item at position = idx.
+    If item's idx changes sub list stays the same if item is still included in the sub list.
+    Otherwise, new sub list including item returned """
+    items_len: int = len(items)
+    lst_size: int = min(sub_list_size, items_len)
     start_idx: int = (idx // lst_size) * lst_size
     stop_idx: int = start_idx + lst_size
-    if stop_idx < len(items):
-        return items[start_idx:stop_idx]
+    if stop_idx < items_len:
+        tmp: list[int] = [*range(start_idx, stop_idx)]
     else:
-        return items[start_idx:] + items[:stop_idx % len(items)]
+        tmp: list[int] = [*range(start_idx, items_len), *range(0, stop_idx % items_len)]
+
+    return [(f"{k:02} {items[k]}", k) for k in tmp]
 
 
 class DrawInfo:
@@ -79,21 +83,17 @@ class CollectionOwner(Generic[T]):
         return item
 
     def get_str(self, next_idx: int = None) -> str:
-        next_item = None
-        if next_idx is not None:
-            next_item = self.__items[next_idx % self.item_count()]
-        item_sub_list = _stable_sub_list(self.__idx, self.__items, 5)
-        curr_item = self.__items[self.__idx]
-        result: str = ""
-        for item in item_sub_list:
-            if item == curr_item:
-                result += f"*{item}\n"
-            elif item == next_item:
-                result += f"~{item}\n"
+        item_sub_list: list[tuple[str, int]] = _stable_sub_list(self.__idx, self.__items, 5)
+        tmp: str = ""
+        for (s, k) in item_sub_list:
+            if k == self.__idx:
+                tmp += f"*{s}\n"
+            elif k == next_idx:
+                tmp += f"~{s}\n"
             else:
-                result += f"-{item}\n"
+                tmp += f"-{s}\n"
 
-        return result[:-1]
+        return tmp[:-1]
 
     def iterate(self, steps: int = 1) -> None:
         self.__idx += steps
