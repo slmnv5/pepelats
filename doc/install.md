@@ -1,9 +1,10 @@
 ## Installation
 
-* Install Raspberry Pi OS Lite, LCD screen with driver. To make text readable on 3.5 inch LCD select font Terminus 16x32
-  using command below. The terminal will have 10 rows and 30 columns - good enough to see from 2-meter distance.
+* Install latest Raspberry Pi OS Lite (bookworm as of today) with python 3.11, LCD screen with driver.
+* To make text readable on 3.5 inch LCD select font Terminus 16x32
+  using command 'sudo dpkg-reconfigure console-setup'. The terminal will have 10 rows and 30 columns - good enough to
+  see from 2-meter distance.
 
-sudo dpkg-reconfigure console-setup
 
 * Install dependencies running script [install_dependencies.sh](./../config/etc/scripts/install_dependencies.sh)
 
