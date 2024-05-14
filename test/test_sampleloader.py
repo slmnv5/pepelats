@@ -1,4 +1,4 @@
-import sounddevice
+import sounddevice as sd
 
 # noinspection PyProtectedMember
 from drum._sampleloader import SampleLoader
@@ -11,4 +11,4 @@ def test_1():
     print("")
     for sample in sample_lst:
         sound = sl.get_sound(sample, True)
-        sounddevice.play(sound, blocking=True)
+        sd.play(sound, blocking=True)

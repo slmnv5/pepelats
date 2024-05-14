@@ -27,10 +27,10 @@ class PatternDrum(BufferDrum):
         max_steps: int = max([len(v) for k, v in sect_dic.items() if k in sound_lst])
         accents: str = sect_dic.get("ac", ".")
         accents = (accents * ceil(max_steps / len(accents)))[:max_steps]
-        assert type(accents) == str and len(accents) == max_steps
+        assert isinstance(accents, str) and len(accents) == max_steps
         ptn_dic["accents"] = accents
         for sname, notes in [(k, v) for (k, v) in sect_dic.items() if k in sound_lst and v]:
-            assert type(notes) == str and len(notes) > 0
+            assert isinstance(notes, str) and len(notes) > 0
             notes = (notes * ceil(max_steps / len(notes)))[:max_steps]
             ptn_dic[sname] = notes
         my_log.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")

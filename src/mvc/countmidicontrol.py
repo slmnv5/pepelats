@@ -63,7 +63,7 @@ class CountMidiControl(MenuHost):
     # noinspection PyUnusedLocal
     def _process_msg(self, event, data=None) -> None:
         msg, deltatime = event
-        assert msg and type(msg) == list and all(type(x) == int for x in msg), f"msg: {msg}, type: {type(msg)}"
+        assert msg and isinstance(msg, list) and all(isinstance(x, int) for x in msg), f"msg: {msg}, type: {type(msg)}"
         if msg[0] & 0xF0 == rtmidi.midiconstants.CONTROL_CHANGE:
             msg = self.__midi_cc_to_note.convert(msg)
         if not msg:

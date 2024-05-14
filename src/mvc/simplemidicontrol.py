@@ -19,7 +19,7 @@ class SimpleMidiControl(MenuHost):
     # noinspection PyUnusedLocal
     def _process_msg(self, event, data=None) -> None:
         msg, _ = event
-        assert msg and type(msg) == list and all(type(x) == int for x in msg)
+        assert msg and isinstance(msg, list) and all(isinstance(x, int) for x in msg)
         note = msg[1]
         velo = msg[2]
         self._menuhost_send(f"{note}-{velo}")

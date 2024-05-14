@@ -43,7 +43,7 @@ class Song:
         parts_lst = list()
         self.parts.apply_to_each(lambda x: parts_lst.append(None if x.is_empty else x))
         assert len(parts_lst) == 4
-        assert all(type(p) == SongPart or p is None for p in parts_lst)
+        assert all(isinstance(p, SongPart) or p is None for p in parts_lst)
 
         with open(fname, 'wb') as f:
             pickle.dump((parts_lst, dr.get_class_name(), dr.get_config(),
@@ -65,10 +65,10 @@ class Song:
         while len(parts_lst) < 4:
             parts_lst.append(SongPart())
         assert len(parts_lst) == 4
-        assert all(type(p) == SongPart for p in parts_lst)
-        assert type(bar_len) == int, f"{bar_len}"
-        assert type(volume) == float and 0 <= volume <= 1, f"{volume}"
-        assert type(par) == float and 0 <= par <= 1, f"{par}"
+        assert all(isinstance(p, SongPart) for p in parts_lst)
+        assert isinstance(bar_len, int), f"{bar_len}"
+        assert isinstance(volume, float) and 0 <= volume <= 1, f"{volume}"
+        assert isinstance(par, float) and 0 <= par <= 1, f"{par}"
 
         kwargs = {"SongPart": parts_lst[0]}
         dr = create_drum(drum_type, **kwargs)

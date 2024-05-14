@@ -93,7 +93,7 @@ class MidiDrum(BaseDrum):
         self._queue.put("_prog_msg")
 
     def _send_midi(self, msg: list[list[int] | int]) -> None:
-        assert type(msg) == list and all(type(x) in [list, int] for x in msg), f"Message: {msg}"
+        assert isinstance(msg, list) and all(type(x) in [list, int] for x in msg), f"Message: {msg}"
         if msg and isinstance(msg[0], int):
             self._midi_out.port.send_message(msg)
         else:

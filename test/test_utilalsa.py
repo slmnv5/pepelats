@@ -1,5 +1,5 @@
 import numpy as np
-import sounddevice
+import sounddevice as sd
 
 from utils.utilalsa import make_sin_sound, make_noise, correct_dtype, int_to_bytes, bytes_to_int
 from utils.utilconfig import SD_RATE
@@ -19,7 +19,7 @@ def test_1() -> None:
     play_buffer(sound, result, 0)
 
     result = correct_dtype(result)
-    sounddevice.play(result, blocking=True)
+    sd.play(result, blocking=True)
 
 
 def test_2():

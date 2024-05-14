@@ -3,7 +3,7 @@ import sys
 from configparser import ConfigParser
 
 import numpy as np
-import sounddevice
+import sounddevice as sd
 
 from utils.utillog import get_my_log
 
@@ -55,11 +55,28 @@ def update_ini_section(fname: str, sect: str, dic: dict[str, str]) -> None:
         cfg.write(f)
 
 
-_audio = load_ini_section(find_path(ConfigName.main_ini), "AUDIO")
+_audio: dict[str, str] = load_ini_section(find_path(ConfigName.main_ini), "AUDIO")
+pref_lst: list[str] = _audio.get("preffered_list", "USB Audio").split(",")
+assert pref_lst and isinstance(pref_lst[0], str)
+for pref_name in pref_lst:
+    for idx, dev in enumerate(sd.query_devices()):
+        if pref_name.strip().upper() in dev.get("name").upper():
+            sd.default.device = (idx, idx)
+            my_log.info(f"Found default device provided in main.ini - {pref_name}")
+            break
 
-SD_TYPE = _audio.get('sd_type')
-MAX_LEN_SECONDS = int(_audio.get('max_len_seconds'))
-SD_RATE = int(_audio.get('sd_rate'))
+dev_in: dict[str, any] = sd.query_devices(sd.default.device[0])
+dev_out: dict[str, any] = sd.query_devices(sd.default.device[1])
+my_log.info(f"Using default IN device {dev_in['name']}")
+my_log.info(f"Using default OUT device {dev_out['name']}")
+SD_TYPE: str = _audio.get('sd_type', "int16")
+assert SD_TYPE and isinstance(SD_TYPE, str)
+
+MAX_LEN_SECONDS: int = int(_audio.get('max_len_seconds', 60))
+assert MAX_LEN_SECONDS and isinstance(MAX_LEN_SECONDS, int)
+
+SD_RATE: int = int(_audio.get('sd_rate', 44100))
+assert SD_RATE and isinstance(SD_RATE, int)
 
 _keyboard = load_ini_section(find_path(ConfigName.main_ini), "KEYBOARD")
 KBD_NOTES = _keyboard.get('kbd_notes')
@@ -72,14 +89,17 @@ MAX_SD_TYPE = np.iinfo(SD_TYPE).max
 MAX_LEN: int = MAX_LEN_SECONDS * SD_RATE
 MAX_32_INT = np.iinfo(np.int32).max  # 2 ** 32 - 1
 
-OUT_CH = 2
-IN_CH = sounddevice.query_devices(sounddevice.default.device[0])["max_input_channels"]
+OUT_CH = dev_out["max_output_channels"]
+IN_CH = dev_in["max_input_channels"]
 if IN_CH not in [1, 2]:
-    raise RuntimeError(f"ALSA pattern device must have 1 or 2 input channels, got {IN_CH}")
+    raise RuntimeError(f"ALSA IN device must have 1 or 2 channels, got {IN_CH}")
 
-sounddevice.check_output_settings(channels=OUT_CH, dtype=SD_TYPE, samplerate=SD_RATE)
-sounddevice.check_input_settings(channels=IN_CH, dtype=SD_TYPE, samplerate=SD_RATE)
+if OUT_CH not in [2]:
+    raise RuntimeError(f"ALSA OUT device must have 2 channels, got {OUT_CH}")
 
-sounddevice.default.samplerate = SD_RATE
-sounddevice.default.dtype = [SD_TYPE, SD_TYPE]
-sounddevice.default.latency = ('low', 'low')
+sd.check_output_settings(channels=OUT_CH, dtype=SD_TYPE, samplerate=SD_RATE)
+sd.check_input_settings(channels=IN_CH, dtype=SD_TYPE, samplerate=SD_RATE)
+
+sd.default.samplerate = SD_RATE
+sd.default.dtype = [SD_TYPE, SD_TYPE]
+sd.default.latency = ('low', 'low')

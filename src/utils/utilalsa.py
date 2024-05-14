@@ -1,7 +1,7 @@
 from math import ceil, log10
 
 import numpy as np
-import sounddevice
+import sounddevice as sd
 
 from utils.utilconfig import SD_TYPE, MAX_LEN, OUT_CH, MAX_SD_TYPE
 
@@ -14,7 +14,7 @@ def make_zero_buffer(buff_len: int) -> np.ndarray:
 
 def line_ndarray(slope: float, offset: float, duration_sec: float) -> np.ndarray:
     """ Makes numpy array with linear function: y = slope * t + offset """
-    points_in_array: int = int(sounddevice.default.samplerate * duration_sec)
+    points_in_array: int = int(sd.default.samplerate * duration_sec)
     t = np.linspace(0, duration_sec, points_in_array)
     return slope * t + offset
 
@@ -28,14 +28,14 @@ def correct_dtype(x: np.ndarray) -> np.ndarray:
 
 def make_sin_sound(sound_freq: int, duration_sec: float, amplitude: float = 0.25) -> np.ndarray:
     assert 0 <= amplitude < 1 and sound_freq > 0 and duration_sec > 0
-    points_in_array: int = int(sounddevice.default.samplerate * duration_sec)
+    points_in_array: int = int(sd.default.samplerate * duration_sec)
     t = np.linspace(0, duration_sec, points_in_array)
     x = amplitude * np.sin(2 * np.pi * sound_freq * t)
     return x
 
 
 def make_noise(duration_sec: float, amplitude: float = 0.25):
-    points_in_array: int = int(sounddevice.default.samplerate * duration_sec)
+    points_in_array: int = int(sd.default.samplerate * duration_sec)
     x = np.random.standard_normal(points_in_array)
     max_value = np.max(x)
     x = x * (amplitude / max_value)

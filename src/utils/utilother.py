@@ -44,7 +44,7 @@ class CollectionOwner(Generic[T]):
 
     def __init__(self, first: T | list[T]):
         self.__items: list[T] = list()
-        if type(first) == list:
+        if isinstance(first, list):
             self.__items.extend(first)
         else:
             self.__items.append(first)

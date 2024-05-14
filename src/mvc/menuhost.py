@@ -54,7 +54,7 @@ class MenuHost:
         self.__queue.put([ConfigName.client_redraw, self._draw_info])
 
     def __process_list(self, cmd: list) -> None:
-        if not (cmd and type(cmd) == list):
+        if not (cmd and isinstance(cmd, list)):
             return
         elif cmd[0] == "_update_menu":
             self._update_menu(cmd[1])

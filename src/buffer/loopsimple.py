@@ -1,4 +1,4 @@
-import sounddevice
+import sounddevice as sd
 
 from buffer.loopctrl import LoopCtrl
 from buffer.wrapbuffer import WrapBuffer
@@ -43,7 +43,7 @@ class LoopSimple(WrapBuffer):
             if ctrl.idx >= ctrl.get_stop_len():
                 ctrl.stop_at_bound(0)
 
-        with sounddevice.Stream(callback=callback):
+        with sd.Stream(callback=callback):
             ctrl.get_stop_event().wait()
 
         self.trim_buffer(ctrl)
