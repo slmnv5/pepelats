@@ -58,17 +58,28 @@ def update_ini_section(fname: str, sect: str, dic: dict[str, str]) -> None:
 _audio: dict[str, str] = load_ini_section(find_path(ConfigName.main_ini), "AUDIO")
 pref_lst: list[str] = _audio.get("preffered_list", "USB Audio").split(",")
 assert pref_lst and isinstance(pref_lst[0], str)
+found_dev: bool = False
 for pref_name in pref_lst:
+    if found_dev:
+        break
     for idx, dev in enumerate(sd.query_devices()):
         if pref_name.strip().upper() in dev.get("name").upper():
             sd.default.device = (idx, idx)
-            my_log.info(f"Found default device provided in main.ini - {pref_name}")
-            break
+            my_log.info(f"Found preferred device provided in main.ini - {pref_name}")
+            found_dev = True
 
 dev_in: dict[str, any] = sd.query_devices(sd.default.device[0])
 dev_out: dict[str, any] = sd.query_devices(sd.default.device[1])
-my_log.info(f"Using default IN device {dev_in['name']}")
-my_log.info(f"Using default OUT device {dev_out['name']}")
+my_log.info(f"Using IN device {dev_in['name']}")
+my_log.info(f"Using OUT device {dev_out['name']}")
+
+OUT_CH = dev_out["max_output_channels"]
+IN_CH = dev_in["max_input_channels"]
+if IN_CH not in [1, 2]:
+    raise RuntimeError(f"ALSA IN device must have 1 or 2 channels, got {IN_CH}")
+if OUT_CH not in [2]:
+    raise RuntimeError(f"ALSA OUT device must have 2 channels, got {OUT_CH}")
+
 SD_TYPE: str = _audio.get('sd_type', "int16")
 assert SD_TYPE and isinstance(SD_TYPE, str)
 
@@ -88,14 +99,6 @@ KEEP_SCREEN = "--keep_screen" in sys.argv
 MAX_SD_TYPE = np.iinfo(SD_TYPE).max
 MAX_LEN: int = MAX_LEN_SECONDS * SD_RATE
 MAX_32_INT = np.iinfo(np.int32).max  # 2 ** 32 - 1
-
-OUT_CH = dev_out["max_output_channels"]
-IN_CH = dev_in["max_input_channels"]
-if IN_CH not in [1, 2]:
-    raise RuntimeError(f"ALSA IN device must have 1 or 2 channels, got {IN_CH}")
-
-if OUT_CH not in [2]:
-    raise RuntimeError(f"ALSA OUT device must have 2 channels, got {OUT_CH}")
 
 sd.check_output_settings(channels=OUT_CH, dtype=SD_TYPE, samplerate=SD_RATE)
 sd.check_input_settings(channels=IN_CH, dtype=SD_TYPE, samplerate=SD_RATE)
