@@ -4,6 +4,6 @@ dtparam=audio=off
 [all]
 hdmi_ignore_hotplug=1
 dtparam=spi=on
-dtoverlay=mhs35:rotate=270
+dtoverlay=mhs35:rotate=90
 
 

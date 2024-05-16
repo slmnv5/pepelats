@@ -20,13 +20,13 @@ sudo cp -fvn ./pepelats/config/etc/scripts/mhs35.dtbo /boot/overlays/
 # copy Raspbian config files
 THE_FILE="config.txt"
 THE_DIR="/boot/firmware"
-THE_FULL="$THE_DIR/$THE_FILE"
-sudo cp -vn $THE_FULL $THE_FULL.old
-sudo cp -fv ./pepelats/config/etc/txt/$THE_FILE $THE_FULL
+THE_PATH="$THE_DIR/$THE_FILE"
+sudo cp -vn $THE_PATH $THE_PATH.old
+sudo cp -fv ./pepelats/config/etc/txt/$THE_FILE $THE_PATH
 
 THE_FILE="cmdline.txt"
 THE_DIR="/boot/firmware"
-THE_FULL="$THE_DIR/$THE_FILE"
-sudo cp -v $THE_FULL $THE_FULL.old
-sudo cp -fv ./pepelats/config/etc/txt/$THE_FILE $THE_FULL
+THE_PATH="$THE_DIR/$THE_FILE"
+sudo cp -v $THE_PATH $THE_PATH.old
+sudo cp -fv ./pepelats/config/etc/txt/$THE_FILE $THE_PATH
 
