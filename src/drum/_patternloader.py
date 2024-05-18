@@ -27,14 +27,10 @@ class PatternLoader:
         self._patterns: list[list[tuple]] = list()
         self._ini_names: list[str] = list()
         self._ini_intensities: list[float] = list()
-        self._fname: str = ""
         self.load_patterns(fname)
 
     def load_patterns(self, fname: str) -> None:
         assert os.path.isfile(fname)
-        if fname == self._fname:
-            return
-        self._fname = fname
         cfg = ConfigParser()
         cfg.read(fname)
         dic = {s: dict(cfg.items(s)) for s in cfg.sections()}

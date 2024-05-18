@@ -62,8 +62,8 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
         self.stop_drum()
         if config:
             self._ff.set_idx(config)
-            self._pl.load_patterns(self._ff.get_full_name())
 
+        self._pl.load_patterns(self._ff.get_full_name())
         bar_len = self._bar_len if bar_len is None else bar_len
         self._set_bar_len(bar_len)
 
