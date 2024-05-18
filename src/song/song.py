@@ -38,7 +38,7 @@ class Song:
 
     def save_song(self, ctrl: LoopCtrl) -> None:
         dr = ctrl.get_drum()
-        self._ff.set_idx(self.get_complete_name(ctrl))
+        self._ff.idx_from_item(self.get_complete_name(ctrl))
         fname = self._ff.get_full_name()
         parts_lst = list()
         self.parts.apply_to_each(lambda x: parts_lst.append(None if x.is_empty else x))
@@ -72,7 +72,8 @@ class Song:
 
         kwargs = {"SongPart": parts_lst[0]}
         dr = create_drum(drum_type, **kwargs)
-        dr.load_drum_config(config, bar_len)
+        dr.set_config(config)
+        dr.load_drum_config(bar_len)
         dr.set_volume(volume)
         dr.set_par(par)
         ctrl.set_drum(dr)

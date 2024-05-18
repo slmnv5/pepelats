@@ -49,7 +49,11 @@ class BaseDrum(ABC):
 
     @abstractmethod
     def get_config(self) -> str:
-        return ""
+        pass
+
+    @abstractmethod
+    def set_config(self, config: str) -> None:
+        pass
 
     def _set_bar_len(self, bar_len: int) -> None:
         self._bar_len = bar_len
@@ -102,7 +106,7 @@ class BaseDrum(ABC):
         pass
 
     @abstractmethod
-    def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
+    def load_drum_config(self, bar_len: int = None) -> None:
         pass
 
     def __str__(self) -> str:

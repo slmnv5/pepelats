@@ -15,7 +15,7 @@ def test_0():
 def test_1():
     lst = [chr(k) for k in range(65, 80)]
     co = CollectionOwner(lst)
-    co.set_item(8)
+    co.item_from_idx(8)
     list_str = co.get_str(9)
     print(list_str)
     assert "-07 H" in list_str

@@ -67,7 +67,7 @@ class Looper(ManyLoopCtrl):
         dic = load_ini_section(find_path(ConfigName.main_ini), "MENU")
         config = dic.get(ConfigName.menu_dir, "")
         ff = FileFinder(find_path("config/menu"), False, "")
-        ff.set_idx(config)
+        ff.idx_from_item(config)
         ff.iterate()
         dic[ConfigName.menu_dir] = ff.get_item()
         update_ini_section(find_path(ConfigName.main_ini), "MENU", dic)
@@ -93,19 +93,19 @@ class Looper(ManyLoopCtrl):
         elif self._next_id < selected:
             selected -= 1  # selected will be less after deletion
 
-        self._song.parts.set_item(self._next_id)
+        self._song.parts.item_from_idx(self._next_id)
         self._song.parts.delete_selected()
-        self._song.parts.set_item(selected)
+        self._song.parts.item_from_idx(selected)
         self._next_id = selected
 
     def _clear_part(self) -> None:
         selected: int = self._song.parts.get_idx()
         if self._next_id == selected:
             return  # can not clear active part
-        part = self._song.parts.set_item(self._next_id)
+        part = self._song.parts.item_from_idx(self._next_id)
         self._next_id = selected
         self.stop_never()
-        self._song.parts.set_item(selected)
+        self._song.parts.item_from_idx(selected)
         if not self._drum.play_samples(part):
             return  # loop drum uses this part, can not delete it
         if not part.is_empty:
@@ -153,6 +153,6 @@ class Looper(ManyLoopCtrl):
         elif params[0] == "move" and part != loop:
             deleted = part.loops.delete_selected()
             if deleted:
-                part.loops.set_idx(deleted)
+                part.loops.idx_from_item(deleted)
         elif params[0] == "delete" and part != loop:
             part.loops.delete_selected()

@@ -52,17 +52,17 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
     def get_config(self) -> str:
         return self._ff.get_item()
 
+    def set_config(self, config) -> None:
+        self._ff.idx_from_item(config)
+
     def show_drum_config(self) -> str:
         return self._ff.get_str()
 
     def iterate_drum_config(self, steps: int) -> None:
         self._ff.iterate(steps)
 
-    def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
+    def load_drum_config(self, bar_len: int = None) -> None:
         self.stop_drum()
-        if config:
-            self._ff.set_idx(config)
-
         self._pl.load_patterns(self._ff.get_full_name())
         bar_len = self._bar_len if bar_len is None else bar_len
         self._set_bar_len(bar_len)

@@ -75,6 +75,9 @@ class MidiDrum(BaseDrum):
     def get_config(self) -> str:
         return self._ff.get_item()
 
+    def set_config(self, config: str) -> None:
+        self._ff.idx_from_item(config)
+
     def _set_bar_len(self, bar_len: int) -> None:
         super()._set_bar_len(bar_len)
         self._queue.put("_bpm_msg")
@@ -106,11 +109,8 @@ class MidiDrum(BaseDrum):
         lst = int_to_bytes(param, byte_count)
         return lst
 
-    def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
+    def load_drum_config(self, bar_len: int = None) -> None:
         self.stop_drum()
-        if config:
-            self._ff.set_idx(config)
-
         fname = self._ff.get_full_name()
         dic = load_ini_section(fname, "MIDI")
         pname = dic.get(ConfigName.midi_out)

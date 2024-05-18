@@ -24,6 +24,9 @@ class LoopDrum(BaseDrum):
     def get_config(self) -> str:
         return ""
 
+    def set_config(self, config: str) -> None:
+        return
+
     def play_drums(self, out_data: np.ndarray, idx: int) -> None:
         if not self._bar_len or self._stopped:
             return
@@ -40,10 +43,10 @@ class LoopDrum(BaseDrum):
         rand_lst: list[int] = sample(range(lp_count), min(self._drum_level + 1, lp_count))
         rand_lst.append(0)
         for k in range(lp_count):
-            lp = loops.set_item(k)
+            lp = loops.item_from_idx(k)
             lp.set_silent(k not in rand_lst)
 
-    def load_drum_config(self, config: str = None, bar_len: int = None) -> None:
+    def load_drum_config(self, bar_len: int = None) -> None:
         self.stop_drum()
         bar_len = self._bar_len if bar_len is None else bar_len
         self._set_bar_len(bar_len)
