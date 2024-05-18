@@ -53,7 +53,6 @@ class PatternDrum(BufferDrum):
                 idx = round(k * step_len)
                 if k % 2 != 0:
                     chg = round(step_len * par * 0.25)
-                    print(333333333333, chg)
                     idx += chg
                 record_buffer(buff, sound_arr, idx)
 

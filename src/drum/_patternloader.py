@@ -17,25 +17,33 @@ class PatternLoader:
                  fn_load: Callable[[str, dict[str, str], dict[str, str]], None],
                  fn_convert: Callable[[int, float, dict[str, str]], list[np.ndarray]],
                  fn_intensity: Callable[[dict[str, str]], str]):
-        assert os.path.isfile(fname)
-        self._fname = fname
+        self._fn_load = fn_load
         self._fn_convert = fn_convert
+        self._fn_intensity = fn_intensity
+
         # patterns from INI file
         self._ini_patterns: list[dict[str, any]] = list()
         # patterns ready to play
         self._patterns: list[list[tuple]] = list()
         self._ini_names: list[str] = list()
         self._ini_intensities: list[float] = list()
+        self._fname: str = ""
+        self.load_patterns(fname)
 
+    def load_patterns(self, fname: str) -> None:
+        assert os.path.isfile(fname)
+        if fname == self._fname:
+            return
+        self._fname = fname
         cfg = ConfigParser()
         cfg.read(fname)
         dic = {s: dict(cfg.items(s)) for s in cfg.sections()}
         for ptn_name in dic:
             ptn_dic = dict()
             assert dic[ptn_name], "Empty section in INI file: {fname}, section: {ptn_name}"
-            fn_load(ptn_name, dic[ptn_name], ptn_dic)
+            self._fn_load(ptn_name, dic[ptn_name], ptn_dic)
             ptn_dic["name"] = ptn_name
-            ptn_dic["intensity"] = fn_intensity(ptn_dic)  # add volume info
+            ptn_dic["intensity"] = self._fn_intensity(ptn_dic)  # add volume info
             self._ini_patterns.append(ptn_dic)
         assert len(self._ini_patterns) > 0
         # sort INI patterns by intensity
