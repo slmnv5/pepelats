@@ -13,7 +13,10 @@ class PatternLoader:
     """Load patterns from INI file. Logic to load, convert and calculate intensity is passed as 3 methods.
     Loaded patterns are converted to playable patterns - ready to play sound """
 
-    def __init__(self, fname: str, fn_load: Callable, fn_convert: Callable, fn_intensity: Callable):
+    def __init__(self, fname: str,
+                 fn_load: Callable[[str, dict[str, str], dict[str, str]], None],
+                 fn_convert: Callable[[int, float, dict[str, str]], list[np.ndarray]],
+                 fn_intensity: Callable[[dict[str, str]], str]):
         assert os.path.isfile(fname)
         self._fname = fname
         self._fn_convert = fn_convert
@@ -41,11 +44,11 @@ class PatternLoader:
         self._ini_intensities = [x["intensity"] for x in self._ini_patterns]
         my_log.debug(f"Loaded from: {fname}:\nnames: {self._ini_names}\nintensities: {self._ini_intensities}")
 
-    def get_patterns(self) -> list[list[np.ndarray]]:
+    def get_patterns(self, bar_len: int, par: float) -> list[list[np.ndarray]]:
         result: list[list[np.ndarray]] = list()
         # INI patterns already sorted by intensity
         for ptn_dic in self._ini_patterns:
-            result.append(self._fn_convert(ptn_dic))
+            result.append(self._fn_convert(bar_len, par, ptn_dic))
         return result
 
     def get_names(self) -> list[str]:

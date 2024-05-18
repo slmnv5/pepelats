@@ -28,11 +28,12 @@ class EuclidDrum(BufferDrum):
             ptn_dic[sname] = notes
         my_log.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
 
-    def _pattern_convert(self, ptn_dic: dict[str, str]) -> list[np.ndarray]:
+    @staticmethod
+    def _pattern_convert(bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
         result = list()
         sound_lst = SampleLoader.get_sound_names()
         for sname, notes in [(k, v) for k, v in ptn_dic.items() if k in sound_lst]:
-            new_len = round(self._bar_len * len(notes) / EuclidDrum._DRUM_STEPS)
+            new_len = round(bar_len * len(notes) / EuclidDrum._DRUM_STEPS)
             buff = make_zero_buffer(new_len)
             result.append(buff)
             step_len: float = new_len / len(notes)
@@ -40,6 +41,9 @@ class EuclidDrum(BufferDrum):
                 if s not in "+*":
                     continue
                 idx = round(k * step_len)
+                if k % 2 != 0:
+                    chg = round(step_len * par * 0.25)
+                    idx += chg
                 sound_arr = SampleLoader.get_sound(sname, s == "*")
                 record_buffer(buff, sound_arr, idx)
 

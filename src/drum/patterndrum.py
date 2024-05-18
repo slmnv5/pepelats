@@ -35,24 +35,24 @@ class PatternDrum(BufferDrum):
             ptn_dic[sname] = notes
         my_log.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
 
-    def _pattern_convert(self, ptn_dic: dict[str, str]) -> list[np.ndarray]:
+    @staticmethod
+    def _pattern_convert(bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
         result = list()
         sound_lst = SampleLoader.get_sound_names()
         accents: str = ptn_dic["accents"]
         steps = len(accents)
-        step_len: float = self._bar_len / steps
+        step_len: float = bar_len / steps
         for sname, notes in [(k, v) for k, v in ptn_dic.items() if k in sound_lst]:
             assert steps == len(notes), f"steps: {steps}, notes: {notes}"
-            buff = make_zero_buffer(self._bar_len)
+            buff = make_zero_buffer(bar_len)
             result.append(buff)
             for k, s in enumerate(notes):
                 if s not in "!":
                     continue
                 sound_arr = SampleLoader.get_sound(sname, accents[k] == "!")
-                swing_factor: int = round(step_len) if (k % 2 != 0) else 0
                 idx = round(k * step_len)
-                if swing_factor:
-                    chg = round(swing_factor * self._par * 0.25)
+                if k % 2 != 0:
+                    chg = round(step_len * par * 0.25)
                     idx += chg
                 record_buffer(buff, sound_arr, idx)
 

@@ -28,6 +28,9 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
         assert self._ff.get_item()
         self._names: list[str] = list()  # names of patterns
         self._intensities: list[str] = list()
+        self._pl: PatternLoader \
+            = PatternLoader(self._ff.get_full_name(), self._pattern_load,
+                            self._pattern_convert, self._pattern_intensity)
 
     def stop_drum(self) -> None:
         super().stop_drum()
@@ -65,9 +68,7 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
 
     def _set_bar_len(self, bar_len: int) -> None:
         super()._set_bar_len(bar_len)
-        self._pl = PatternLoader(self._ff.get_full_name(), self._pattern_load, self._pattern_convert,
-                                 self._pattern_intensity)
-        self._ptn_lst = self._pl.get_patterns()
+        self._ptn_lst = self._pl.get_patterns(self._bar_len, self._par)
         self._names = self._pl.get_names()
         self._intensities = self._pl.get_intensities()
 
@@ -75,13 +76,13 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
         super().set_volume(volume)
         SampleLoader.set_volume(self._volume)  # change all sound samples
         self.set_silent(True)
-        self._ptn_lst = self._pl.get_patterns()
+        self._ptn_lst = self._pl.get_patterns(self._bar_len, self._par)
         self.set_silent(False)
 
     def set_par(self, par: float) -> None:
         super().set_par(par)
         self.set_silent(True)
-        self._ptn_lst = self._pl.get_patterns()
+        self._ptn_lst = self._pl.get_patterns(self._bar_len, self._par)
         self.set_silent(False)
 
     @staticmethod
@@ -89,7 +90,8 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
         """One Drum pattern put into dictionary"""
         pass
 
-    def _pattern_convert(self, ptn_dic: dict[str, str]) -> list[np.ndarray]:
+    @staticmethod
+    def _pattern_convert(bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
         """All Drum patterns converted into play list """
         pass
 
