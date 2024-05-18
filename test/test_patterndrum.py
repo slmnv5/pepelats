@@ -7,7 +7,14 @@ from utils.utilfactory import create_drum
 def test_1():
     dr = create_drum("PatternDrum")
     dr.start_drum()
-    dr.load_drum_config(None, 100_000)
     arr = make_zero_buffer(120_000)
+
+    dr.set_par(0)
+    dr.load_drum_config(None, 100_000)
+    dr.play_drums(arr, 0)
+    sd.play(arr, blocking=True)
+
+    dr.set_par(1)
+    dr.load_drum_config(None, 100_000)
     dr.play_drums(arr, 0)
     sd.play(arr, blocking=True)

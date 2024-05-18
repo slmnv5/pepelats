@@ -3,20 +3,24 @@ import random
 from utils.utilother import FileFinder, CollectionOwner, EuclidSlicer
 
 
+def test_0():
+    tpl = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I')
+    co = CollectionOwner(tpl)
+    found_list = list()
+    co.apply_to_each(lambda x: found_list.append(x if x in ['F', 'A', 'B'] else None))
+    assert found_list.index('F') == 5
+    assert found_list.index('A') == 0
+
+
 def test_1():
     lst = [chr(k) for k in range(65, 80)]
-    co = CollectionOwner(lst[0])
-    for k in lst[1:]:
-        co.set_idx(k)
-    found_list = list()
-    co.apply_to_each(lambda x: found_list.append(x if x == 'F' else None))
-    assert found_list.index('F') == 5
+    co = CollectionOwner(lst)
     co.set_item(8)
     list_str = co.get_str(9)
     print(list_str)
-    assert "-H" in list_str
-    assert "*I" in list_str
-    assert "~J" in list_str
+    assert "-07 H" in list_str
+    assert "*08 I" in list_str
+    assert "~09 J" in list_str
 
 
 def test_2():

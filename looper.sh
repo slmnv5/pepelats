@@ -4,7 +4,6 @@ TMP=$(dirname "$0")
 cd "$TMP" || exit 1
 ROOTDIR="$(pwd -P)"
 APPDIR=$(basename "$ROOTDIR")
-export ROOTDIR
 export APPDIR
 
 found=$(pgrep --full start_looper.py)

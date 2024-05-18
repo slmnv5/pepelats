@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Iterable
 
 T = TypeVar('T')
 
@@ -42,9 +42,9 @@ class CollectionOwner(Generic[T]):
     It is a parent for SongPart, FileFinder
     It always has at least one element - never empty. """
 
-    def __init__(self, first: T | list[T]):
+    def __init__(self, first: T | Iterable[T]):
         self.__items: list[T] = list()
-        if isinstance(first, list):
+        if isinstance(first, Iterable):
             self.__items.extend(first)
         else:
             self.__items.append(first)
