@@ -9,12 +9,14 @@ def test_1():
     dr.start_drum()
     arr = make_zero_buffer(120_000)
 
+    dr.load_drum_config("Test", 100_000)
+
     dr.set_par(0)
-    dr.load_drum_config(None, 100_000)
+    print(111111111111111, str(dr))
     dr.play_drums(arr, 0)
     sd.play(arr, blocking=True)
 
     dr.set_par(1)
-    dr.load_drum_config(None, 100_000)
+    print(111111111111111, str(dr))
     dr.play_drums(arr, 0)
     sd.play(arr, blocking=True)
