@@ -18,12 +18,12 @@ if [ ! -d "$ROOTDIR/.save_song" ]; then mkdir -p "$ROOTDIR/.save_song"; fi
 
 cd "$ROOTDIR/src" || exit 1
 
-cat "/tmp/log.txt" >> "$ROOTDIR/log.bak"
-date > "/tmp/log.txt"
-
-tail -1000 "$ROOTDIR/log.bak" > "$ROOTDIR/tmp"
-mv -fv "$ROOTDIR/tmp" "$ROOTDIR/log.bak"
-
+touch log.txt
+chmod a+rw log.txt
+cp log.txt log.bak
+tail -n 1000 log.bak > log.txt
+echo "===========================" >> log.txt
+date >> log.txt
 
 # disable assert
 CODE_OPTIMIZE="-O"
@@ -36,7 +36,7 @@ done
 KBD=""
 # sudo required for keyboard
 SUDO=""
-if lsusb | grep -i "USB Keyboard"; then KBD="--kbd"; SUDO="sudo"; fi
+if lsusb | grep -i "USB Keyboard"; then KBD="--kbd"; SUDO="sudo -E"; fi
 
 PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py $KBD $*"
 echo "$PYTHON_CMD"
