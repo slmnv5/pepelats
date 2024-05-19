@@ -27,19 +27,16 @@ mv -fv "$ROOTDIR/tmp" "$ROOTDIR/log.bak"
 
 # disable assert
 CODE_OPTIMIZE="-O"
-# use sudo and computer keyboard
-SUDO=""
 for var in "$@"; do
   if [ "$var" = "--debug" ] || [ "$var" = "--info" ]; then
     CODE_OPTIMIZE=""
   fi
-  if [ "$var" = "--kbd" ]; then
-    SUDO="sudo"
-  fi
 done
-# if keyboard plugged use it instead of MIDI controller
+# if keyboard is plugged use it instead of MIDI controller
 KBD=""
-if lsusb | grep -i "USB Keyboard"; then KBD="--KBD"; fi
+# sudo required for keyboard
+SUDO=""
+if lsusb | grep -i "USB Keyboard"; then KBD="--kbd"; SUDO="sudo"; fi
 
 PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py $KBD $*"
 echo "$PYTHON_CMD"
