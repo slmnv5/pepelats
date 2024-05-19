@@ -42,8 +42,9 @@ done
 PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py  $*"
 echo "$PYTHON_CMD"
 
-# disable under voltage error on screen and disable typing echo
+# disable under voltage error on screen, set huge font size, disable typing echo
 sudo dmesg -D
+sudo setfont Uni1-VGA32x16
 stty -echo
 
 while true; do
@@ -53,4 +54,5 @@ while true; do
 done
 
 sudo dmesg -E
+sudo setfont Uni1-VGA16
 stty echo
