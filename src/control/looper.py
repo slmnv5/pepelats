@@ -73,16 +73,11 @@ class Looper(ManyLoopCtrl):
         update_ini_section(find_path(ConfigName.main_ini), "MENU", dic)
 
     @staticmethod
-    def _show_ports() -> None:
+    def _show_midi_out_ports() -> None:
         mow = MidiOutWrap()
         os.system("clear")
         print("\n", mow.show())
         time.sleep(10)
-
-    @staticmethod
-    def _connect_bt() -> None:
-        os.system("$ROOTDIR/connect_bt.sh")
-        time.sleep(3)
 
     #  ============ All song parts view and related commands
 
