@@ -20,7 +20,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
 
     def __init__(self, queue: Queue, drum_type: str):
         dr = create_drum(drum_type)
-        dr.load_drum_config()
+        dr.load_config()
         LoopCtrl.__init__(self, queue, dr)
         self._song: Song = Song()
         self._next_id: int = 0
@@ -119,11 +119,11 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         self._stop_song()
         kwargs = {"SongPart": self._song.parts.item_from_idx(0)}
         dr = create_drum(drum_type, **kwargs)
-        dr.load_drum_config(bar_len)
+        dr.load_config(bar_len)
         self._drum = dr
 
     def _load_drum_config(self, bar_len: int = None) -> None:
-        self._drum.load_drum_config(bar_len)
+        self._drum.load_config(bar_len)
 
     # ================= song methods
 
@@ -159,10 +159,11 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         self.stop_at_bound(bound)
 
     def _init_song(self) -> None:
+        self._drum.stop()
         self._stop_song()
         self._next_id = 0
         self._song = Song()
         kwargs = {"SongPart": self._song.parts.item_from_idx(0)}
         drum_type = self._drum.get_class_name()
         self._drum = create_drum(drum_type, **kwargs)
-        self._drum.load_drum_config()
+        self._drum.load_config()

@@ -12,7 +12,7 @@ def test_1():
     sp.record_samples(sound, 0)
     kwargs = {"SongPart": sp}
     dr = create_drum("LoopDrum", **kwargs)
-    dr.load_drum_config(100_000)
+    dr.load_config(100_000)
     arr = make_zero_buffer(120_000)
-    dr.play_drums(arr, 0)
+    dr.play(arr, 0)
     sd.play(arr, blocking=True)

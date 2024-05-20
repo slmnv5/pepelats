@@ -32,19 +32,19 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
             = PatternLoader(self._ff.get_full_name(), self._pattern_load,
                             self._pattern_convert, self._pattern_intensity)
 
-    def stop_drum(self) -> None:
-        super().stop_drum()
+    def stop(self) -> None:
+        super().stop()
         self.set_silent(True)
 
-    def start_drum(self) -> None:
-        super().start_drum()
+    def start(self) -> None:
+        super().start()
         self.set_silent(False)
 
-    def random_drum(self) -> None:
-        super().random_drum()
+    def randomize(self) -> None:
+        super().randomize()
 
-    def show_drum_param(self) -> str:
-        base_info = super().show_drum_param()
+    def show_param(self) -> str:
+        base_info = super().show_param()
         intensity = self._intensities[self._ptn_idx]
         name = self._names[self._ptn_idx]
         return f"{base_info}\nintensity: {intensity}\nname: {name}"
@@ -55,14 +55,14 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
     def set_config(self, config) -> None:
         self._ff.idx_from_item(config)
 
-    def show_drum_config(self) -> str:
+    def show_config(self) -> str:
         return self._ff.get_str()
 
-    def iterate_drum_config(self, steps: int) -> None:
+    def iterate_config(self, steps: int) -> None:
         self._ff.iterate(steps)
 
-    def load_drum_config(self, bar_len: int = None) -> None:
-        self.stop_drum()
+    def load_config(self, bar_len: int = None) -> None:
+        self.stop()
         self._pl.load_patterns(self._ff.get_full_name())
         bar_len = self._bar_len if bar_len is None else bar_len
         self._set_bar_len(bar_len)
@@ -101,11 +101,11 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
         """ Calculate pattern intensity """
         return "0.0"
 
-    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
+    def play(self, out_data: np.ndarray, idx: int) -> None:
         if self.is_silent() or not self._bar_len:
             return
         for buff in self._ptn_lst[self._ptn_idx]:
             play_buffer(buff, out_data, idx)
 
-    def get_drum_header(self) -> str:
-        return super().get_drum_header() + ":" + self._names[self._ptn_idx]
+    def get_header(self) -> str:
+        return super().get_header() + ":" + self._names[self._ptn_idx]

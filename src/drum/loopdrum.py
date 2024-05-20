@@ -18,7 +18,7 @@ class LoopDrum(BaseDrum):
         self._stopped: bool = True
         self._part: SongPart = part
 
-    def play_samples(self, buff: WrapBuffer) -> bool:
+    def is_playable(self, buff: WrapBuffer) -> bool:
         return id(self._part) != id(buff)
 
     def get_config(self) -> str:
@@ -27,15 +27,15 @@ class LoopDrum(BaseDrum):
     def set_config(self, config: str) -> None:
         return
 
-    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
+    def play(self, out_data: np.ndarray, idx: int) -> None:
         if not self._bar_len or self._stopped:
             return
         if idx % self._bar_len == 0:
             if random() < self._par:
-                self.random_drum()
+                self.randomize()
         self._part.play_samples(out_data, idx)
 
-    def random_drum(self) -> None:
+    def randomize(self) -> None:
         self._stopped = False
         loops = self._part.loops
         lp_count: int = loops.item_count()
@@ -46,23 +46,23 @@ class LoopDrum(BaseDrum):
             lp = loops.item_from_idx(k)
             lp.set_silent(k not in rand_lst)
 
-    def load_drum_config(self, bar_len: int = None) -> None:
-        self.stop_drum()
+    def load_config(self, bar_len: int = None) -> None:
+        self.stop()
         bar_len = self._bar_len if bar_len is None else bar_len
         self._set_bar_len(bar_len)
-        self.start_drum()
+        self.start()
 
-    def iterate_drum_config(self, steps: int) -> None:
+    def iterate_config(self, steps: int) -> None:
         pass
 
-    def show_drum_config(self) -> str:
+    def show_config(self) -> str:
         return ""
 
-    def stop_drum(self) -> None:
+    def stop(self) -> None:
         self._stopped = True
 
-    def start_drum(self) -> None:
-        self.random_drum()
+    def start(self) -> None:
+        self.randomize()
 
-    def show_drum_param(self) -> str:
-        return super().show_drum_param()
+    def show_param(self) -> str:
+        return super().show_param()

@@ -82,16 +82,16 @@ class MidiDrum(BaseDrum):
         super()._set_bar_len(bar_len)
         self._queue.put("_bpm_msg")
 
-    def play_drums(self, out_data: np.ndarray, idx: int) -> None:
+    def play(self, out_data: np.ndarray, idx: int) -> None:
         if not self._bar_len or self._stopped:
             return
         if idx % self._bar_len == 0:
             if random() < self._par:
-                self.random_drum()
+                self.randomize()
             self._queue.put("_bar_msg")
 
-    def random_drum(self) -> None:
-        super().random_drum()
+    def randomize(self) -> None:
+        super().randomize()
         self._ptn = self._ptn_lst[self._ptn_idx]
         self._queue.put("_prog_msg")
 
@@ -109,8 +109,8 @@ class MidiDrum(BaseDrum):
         lst = int_to_bytes(param, byte_count)
         return lst
 
-    def load_drum_config(self, bar_len: int = None) -> None:
-        self.stop_drum()
+    def load_config(self, bar_len: int = None) -> None:
+        self.stop()
         fname = self._ff.get_full_name()
         dic = load_ini_section(fname, "MIDI")
         pname = dic.get(ConfigName.midi_out)
@@ -145,27 +145,27 @@ class MidiDrum(BaseDrum):
         my_log.info(f"Loaded MIDI drum, simple messages: {self._simple_msg_dic}")
         my_log.info(f"Loaded MIDI drum, parameter message keys: {list(self._param_msg_dic.keys())}")
 
-    def stop_drum(self) -> None:
+    def stop(self) -> None:
         self._queue.put("_stop_msg")
-        super().stop_drum()
+        super().stop()
         self._stopped = True
 
-    def start_drum(self) -> None:
+    def start(self) -> None:
         """ To start drums in time we use _bar_msg """
         self._stopped = False
 
-    def show_drum_config(self) -> str:
+    def show_config(self) -> str:
         return self._ff.get_str()
 
-    def iterate_drum_config(self, steps: int) -> None:
+    def iterate_config(self, steps: int) -> None:
         self._ff.iterate(steps)
 
-    def show_drum_param(self) -> str:
-        base_info = super().show_drum_param()
+    def show_param(self) -> str:
+        base_info = super().show_param()
         port = f"{self._midi_out.name}"
         is_ok = f"{self._midi_out.port.is_port_open()}"
         config = self.get_config()
         return f"{base_info}\nport OK: {is_ok}/{port}\nconfig: {config}"
 
-    def get_drum_header(self) -> str:
+    def get_header(self) -> str:
         return f"{self}:{self._ptn}/{len(self._ptn_lst)}:{self.get_config()}"

@@ -63,10 +63,10 @@ class LoopCtrl(MenuClient, ABC):
     # ===================== drum methods
 
     def _iterate_drum_config(self, steps: int) -> None:
-        self._drum.iterate_drum_config(steps)
+        self._drum.iterate_config(steps)
 
     def _show_drum_config(self) -> str:
-        return self._drum.show_drum_config()
+        return self._drum.show_config()
 
     def _change_drum_par(self, chg: float) -> None:
         chg = 0.2 if chg > 0 else -0.2
@@ -78,19 +78,19 @@ class LoopCtrl(MenuClient, ABC):
         self._drum.set_volume(volume)
 
     def _show_drum_param(self) -> str:
-        return self._drum.show_drum_param()
+        return self._drum.show_param()
 
     def _random_drum(self) -> None:
-        self._drum.random_drum()
+        self._drum.randomize()
 
     def _change_drum_level(self) -> None:
-        self._drum.change_drum_level(1)
+        self._drum.change_level(1)
 
     def _stop_drum(self) -> None:
-        self._drum.stop_drum()
+        self._drum.stop()
 
     def _start_drum(self) -> None:
-        self._drum.start_drum()
+        self._drum.start()
 
     def get_start_rec_idx(self) -> int:
         return self._start_rec_idx

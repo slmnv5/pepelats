@@ -64,24 +64,24 @@ class BaseDrum(ABC):
 
     # noinspection PyUnusedLocal
     # noinspection PyMethodMayBeStatic
-    def play_samples(self, buff: WrapBuffer) -> bool:
+    def is_playable(self, buff: WrapBuffer) -> bool:
         """ drum and loop may be the same, avoid double play """
         return True
 
     @abstractmethod
-    def play_drums(self, out_data, idx) -> None:
+    def play(self, out_data, idx) -> None:
         pass
 
     @abstractmethod
-    def stop_drum(self) -> None:
+    def stop(self) -> None:
         self._ptn_idx, self._drum_level = 0, 0
 
     @abstractmethod
-    def start_drum(self) -> None:
+    def start(self) -> None:
         pass
 
     @abstractmethod
-    def random_drum(self) -> None:
+    def randomize(self) -> None:
         lst = range(len(self._ptn_lst))
         lst = np.array_split(lst, self._DRUM_LEVELS)
         lst = [x for x in lst if len(x) > 0]
@@ -91,22 +91,22 @@ class BaseDrum(ABC):
             lst.remove(self._ptn_idx)
         if lst:
             self._ptn_idx = random.choice(lst)
-        self.start_drum()
+        self.start()
 
-    def change_drum_level(self, chg: int) -> None:
+    def change_level(self, chg: int) -> None:
         self._drum_level = (self._drum_level + chg) % self._DRUM_LEVELS
-        self.random_drum()
+        self.randomize()
 
     @abstractmethod
-    def show_drum_config(self) -> str:
+    def show_config(self) -> str:
         return ""
 
     @abstractmethod
-    def iterate_drum_config(self, steps: int) -> None:
+    def iterate_config(self, steps: int) -> None:
         pass
 
     @abstractmethod
-    def load_drum_config(self, bar_len: int = None) -> None:
+    def load_config(self, bar_len: int = None) -> None:
         pass
 
     def __str__(self) -> str:
@@ -114,8 +114,8 @@ class BaseDrum(ABC):
         return f"{cls_name}:{self._bpm:.2F}:{self._drum_level}"
 
     @abstractmethod
-    def show_drum_param(self) -> str:
+    def show_param(self) -> str:
         return f"vol:{self._volume:.2F} par:{self._par:.2F}"
 
-    def get_drum_header(self) -> str:
+    def get_header(self) -> str:
         return str(self)
