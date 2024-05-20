@@ -1,5 +1,6 @@
 import os.path
 import pickle
+from collections.abc import Iterable
 
 from buffer.loopctrl import LoopCtrl
 # noinspection PyUnresolvedReferences
@@ -14,13 +15,12 @@ from utils.utilother import FileFinder, CollectionOwner
 my_log = get_my_log(__name__)
 
 
-class Song:
+class Song(CollectionOwner[SongPart]):
     """Song keeps SongParts as CollectionOwner, can save and load from file"""
 
-    def __init__(self):
+    def __init__(self, first: SongPart | Iterable[SongPart]):
+        CollectionOwner.__init__(self, first)
         self._name: str = ""
-        tmp = [SongPart(), SongPart(), SongPart(), SongPart()]
-        self.parts: CollectionOwner[SongPart] = CollectionOwner[SongPart](tmp)
         self._ff = FileFinder(find_path(".save_song"), True, "")
 
     def get_name(self) -> str:
@@ -41,10 +41,8 @@ class Song:
         self._ff.idx_from_item(self.get_complete_name(ctrl))
         fname = self._ff.get_full_name()
         parts_lst = list()
-        self.parts.apply_to_each(lambda x: parts_lst.append(None if x.is_empty else x))
-        assert len(parts_lst) == 4
-        assert all(isinstance(p, SongPart) or p is None for p in parts_lst)
-
+        self.apply_to_each(lambda x: parts_lst.append(None if x.is_empty else x))
+        assert parts_lst
         with open(fname, 'wb') as f:
             pickle.dump((parts_lst, dr.get_class_name(), dr.get_config(),
                          dr.get_bar_len(), dr.get_volume(), dr.get_par()), f)
@@ -62,10 +60,7 @@ class Song:
             parts_lst, drum_type, config, bar_len, volume, par = pickle.load(f)
 
         parts_lst = [x if x is not None else SongPart() for x in parts_lst[0:4]]
-        while len(parts_lst) < 4:
-            parts_lst.append(SongPart())
-        assert len(parts_lst) == 4
-        assert all(isinstance(p, SongPart) for p in parts_lst)
+        assert parts_lst
         assert isinstance(bar_len, int), f"{bar_len}"
         assert isinstance(volume, float) and 0 <= volume <= 1, f"{volume}"
         assert isinstance(par, float) and 0 <= par <= 1, f"{par}"
@@ -78,8 +73,11 @@ class Song:
         dr.set_par(par)
         ctrl.set_drum(dr)
         for part in parts_lst:
-            part.init_str()
-        self.parts = CollectionOwner(parts_lst)
+            self.idx_from_item(part)
+        self.item_from_idx(0)
+        while self.item_count() > len(parts_lst):
+            self.delete_selected()
+
         my_log.info(f"Loaded song file: {fname}")
 
     def save_new_song(self, ctrl) -> None:

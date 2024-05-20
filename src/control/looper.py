@@ -40,7 +40,7 @@ class Looper(ManyLoopCtrl):
         else:
             draw_info.content = ""
         assert draw_info.content is not None
-        length = self._song.parts.get_item().length
+        length = self._song.get_item().length
         draw_info.loop_seconds = MAX_LEN_SECONDS if self.get_stop_event().is_set() else length / SD_RATE
         draw_info.loop_position = 0 if not length else (self.idx % length) / length
         draw_info.is_rec = self.get_is_rec()
@@ -82,25 +82,25 @@ class Looper(ManyLoopCtrl):
     #  ============ All song parts view and related commands
 
     def _delete_song_part(self) -> None:
-        selected = self._song.parts.get_idx()
+        selected = self._song.get_idx()
         if self._next_id == selected:
             return  # can not delete active part
         elif self._next_id < selected:
             selected -= 1  # selected will be less after deletion
 
-        self._song.parts.item_from_idx(self._next_id)
-        self._song.parts.delete_selected()
-        self._song.parts.item_from_idx(selected)
+        self._song.item_from_idx(self._next_id)
+        self._song.delete_selected()
+        self._song.item_from_idx(selected)
         self._next_id = selected
 
     def _clear_part(self) -> None:
-        selected: int = self._song.parts.get_idx()
+        selected: int = self._song.get_idx()
         if self._next_id == selected:
             return  # can not clear active part
-        part = self._song.parts.item_from_idx(self._next_id)
+        part = self._song.item_from_idx(self._next_id)
         self._next_id = selected
         self.stop_never()
-        self._song.parts.item_from_idx(selected)
+        self._song.item_from_idx(selected)
         if not self._drum.is_playable(part):
             return  # loop drum uses this part, can not delete it
         if not part.is_empty:
@@ -108,7 +108,7 @@ class Looper(ManyLoopCtrl):
             part.loops = CollectionOwner[LoopSimple](part)
 
     def _undo_part(self) -> None:
-        part = self._song.parts.get_item()
+        part = self._song.get_item()
         if part.loops.item_count() <= 1:
             return
 
@@ -122,24 +122,24 @@ class Looper(ManyLoopCtrl):
 
     def _redo_part(self) -> None:
         self._set_is_rec(False)
-        part = self._song.parts.get_item()
+        part = self._song.get_item()
         part.redo()
 
     def _redo_all(self) -> None:
-        if self._song.parts.get_idx() == self._next_id:
+        if self._song.get_idx() == self._next_id:
             self._set_is_rec(False)
-            part = self._song.parts.get_item()
+            part = self._song.get_item()
             while part.redo():
                 pass
 
     #  ================= One song part view and related commands
 
     def _change_loop(self, *params) -> None:
-        loops = self._song.parts.get_item().loops
+        loops = self._song.get_item().loops
         loops.iterate(params[0])
 
     def _edit_loop(self, *params) -> None:
-        part = self._song.parts.get_item()
+        part = self._song.get_item()
         loop = part.loops.get_item()
         if params[0] == "silent":
             loop.set_silent(not loop.is_silent())

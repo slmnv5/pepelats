@@ -22,7 +22,8 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         dr = create_drum(drum_type)
         dr.load_config()
         LoopCtrl.__init__(self, queue, dr)
-        self._song: Song = Song()
+        tmp = [SongPart(), SongPart(), SongPart(), SongPart()]
+        self._song: Song = Song(tmp)
         self._next_id: int = 0
         self.__play_event: Event = Event()
         Thread(target=self._play_loop, name="play_loop", daemon=True).start()
@@ -30,17 +31,17 @@ class ManyLoopCtrl(LoopCtrl, ABC):
     # ================ song part methods
 
     def _show_loops(self) -> str:
-        part = self._song.parts.get_item()
+        part = self._song.get_item()
         return part.loops.get_str()
 
     def _show_parts(self) -> str:
-        return self._song.parts.get_str(self._next_id)
+        return self._song.get_str(self._next_id)
 
     def _play_loop(self) -> None:
         """runs in a thread, play and record current song part"""
         while True:
             self.__play_event.wait()
-            part = self._song.parts.item_from_idx(self._next_id)
+            part = self._song.item_from_idx(self._next_id)
             self.stop_never()
             self._start_rec_idx, self.idx = 0, 0
             self._set_is_rec(part.is_empty)
@@ -50,13 +51,13 @@ class ManyLoopCtrl(LoopCtrl, ABC):
                 self.add_command(["_stop_drum"])
 
     def _add_song_part(self) -> None:
-        selected: int = self._song.parts.get_idx()
-        self._next_id = self._song.parts.idx_from_item(SongPart())
-        self._song.parts.item_from_idx(selected)
+        selected: int = self._song.get_idx()
+        self._next_id = self._song.idx_from_item(SongPart())
+        self._song.item_from_idx(selected)
 
     def _change_song_part(self, chg: int) -> None:
         self._next_id += chg
-        self._next_id %= self._song.parts.item_count()
+        self._next_id %= self._song.item_count()
 
     def _play_song_part(self, pid: int = None) -> None:
         if pid is None:
@@ -71,14 +72,14 @@ class ManyLoopCtrl(LoopCtrl, ABC):
             self.__play_event.set()
             return
 
-        selected: int = self._song.parts.get_idx()
+        selected: int = self._song.get_idx()
         if selected == pid and self._next_id != pid:
             self._next_id = pid
             self.stop_never()
             return
 
         self._next_id = pid
-        part: SongPart = self._song.parts.get_item()
+        part: SongPart = self._song.get_item()
         if part.is_empty:
             self.stop_at_bound(bar_len)
             return
@@ -99,9 +100,9 @@ class ManyLoopCtrl(LoopCtrl, ABC):
             self.stop_at_bound(part.length)
 
     def _overdub_song_part(self) -> None:
-        if self._song.parts.get_idx() != self._next_id:
+        if self._song.get_idx() != self._next_id:
             return
-        part: SongPart = self._song.parts.get_item()
+        part: SongPart = self._song.get_item()
         if part.loops.item_count() <= 1:
             return
         loop: LoopSimple = part.loops.get_item()
@@ -117,7 +118,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         if old_type == drum_type:
             return
         self._stop_song()
-        kwargs = {"SongPart": self._song.parts.item_from_idx(0)}
+        kwargs = {"SongPart": self._song.item_from_idx(0)}
         dr = create_drum(drum_type, **kwargs)
         dr.load_config(bar_len)
         self._drum = dr
@@ -155,15 +156,17 @@ class ManyLoopCtrl(LoopCtrl, ABC):
     def _stop_song(self, wait: int = 0) -> None:
         self._set_is_rec(False)
         self.__play_event.clear()
-        bound = self._song.parts.get_item().length if wait else 0
+        bound = self._song.get_item().length if wait else 0
         self.stop_at_bound(bound)
 
     def _init_song(self) -> None:
         self._drum.stop()
         self._stop_song()
         self._next_id = 0
-        self._song = Song()
-        kwargs = {"SongPart": self._song.parts.item_from_idx(0)}
+        self._song.apply_to_each(lambda x: x.max_buffer)
+        kwargs = {"SongPart": self._song.item_from_idx(0)}
         drum_type = self._drum.get_class_name()
+        config = self._drum.get_config()
         self._drum = create_drum(drum_type, **kwargs)
+        self._drum.set_config(config)
         self._drum.load_config()

@@ -1,6 +1,6 @@
 import random
 
-words1 = ["brave", "slim", "wise", "smart", "good", "new", "first", "last", "long", "great", "little", "own", "other",
+words1 = ["brave", "slim", "wise", "smart", "good", "new", "first", "last", "long", "great", "little", "my", "another",
           "old", "right", "big", "high", "his", "small", "large", "next", "early", "young", "fast", "her",
           "fit", "same", "able", "happy", "nice", "deep", "black", "blue", "green"]
 
