@@ -163,7 +163,8 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         self._drum.stop()
         self._stop_song()
         self._next_id = 0
-        self._song.apply_to_each(lambda x: x.max_buffer)
+        tmp = [SongPart(), SongPart(), SongPart(), SongPart()]
+        self._song = Song(tmp)
         kwargs = {"SongPart": self._song.item_from_idx(0)}
         drum_type = self._drum.get_class_name()
         config = self._drum.get_config()
