@@ -91,9 +91,8 @@ assert SD_RATE and isinstance(SD_RATE, int)
 
 _keyboard = load_ini_section(find_path(ConfigName.main_ini), "KEYBOARD")
 KBD_NOTES = _keyboard.get('kbd_notes')
+
 _screen = load_ini_section(find_path(ConfigName.main_ini), "SCREEN")
-FRAME_BUFFER_ID = _audio.get('frame_buffer_id')
-VERBOSE_MODE = "--debug" in sys.argv or "--info" in sys.argv
 KEEP_SCREEN = "--keep_screen" in sys.argv
 
 MAX_SD_TYPE = np.iinfo(SD_TYPE).max
