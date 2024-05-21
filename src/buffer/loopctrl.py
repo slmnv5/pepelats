@@ -74,7 +74,7 @@ class LoopCtrl(MenuClient, ABC):
 
     def _change_drum_volume(self, chg: float) -> None:
         volume = self._drum.get_volume()
-        volume *= (1.2 if chg > 0 else 0.8)
+        volume *= (1.2 if chg > 0 else 0.83)
         self._drum.set_volume(volume)
 
     def _show_drum_param(self) -> str:

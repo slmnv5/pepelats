@@ -10,6 +10,10 @@ my_log = get_my_log(__name__)
 
 
 class BaseDrum(ABC):
+    # samples sorted by energy. Low enrgy used for rythm, high enegry for drum fills/breaks
+    QUIET_FRACTION = 0.7
+    # Fill/break can not be too short, if short is extended by half a bar
+    SMALLEST_FILL_FRACTION = 0.1
 
     def __init__(self):
         self._bar_len: int = 0
@@ -82,7 +86,7 @@ class BaseDrum(ABC):
     def randomize(self) -> None:
         self._is_fill = False
         lst_len: int = len(self._ptn_lst)
-        lst_split: int = round(lst_len * 0.8)
+        lst_split: int = round(lst_len * self.QUIET_FRACTION)
         self._ptn_idx = random.randrange(0, lst_split)
         self.start()
 
@@ -91,13 +95,13 @@ class BaseDrum(ABC):
             return
         self._is_fill = True
         lst_len: int = len(self._ptn_lst)
-        lst_split: int = round(lst_len * 0.8)
+        lst_split: int = round(lst_len * self.QUIET_FRACTION)
         self._ptn_idx = random.randrange(lst_split, lst_len)
 
         bar_len = self.get_bar_len()
         tmp: int = idx % bar_len
-        if tmp < 0.1 * bar_len:
-            tmp = tmp + bar_len
+        if tmp < self.SMALLEST_FILL_FRACTION * bar_len:
+            tmp = tmp + bar_len // 2
         # return to normal level
         Timer(tmp / SD_RATE, self.randomize).start()
 
