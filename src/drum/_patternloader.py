@@ -13,8 +13,7 @@ class PatternLoader:
     """Load patterns from INI file. Logic to load, convert and calculate intensity is passed as 3 methods.
     Loaded patterns are converted to playable patterns - ready to play sound """
 
-    def __init__(self, fname: str,
-                 fn_load: Callable[[str, dict[str, str], dict[str, str]], None],
+    def __init__(self, fn_load: Callable[[str, dict[str, str], dict[str, str]], None],
                  fn_convert: Callable[[int, float, dict[str, str]], list[np.ndarray]],
                  fn_intensity: Callable[[dict[str, str]], str]):
         self._fn_load = fn_load
@@ -24,13 +23,13 @@ class PatternLoader:
         # patterns from INI file
         self._ini_patterns: list[dict[str, any]] = list()
         # patterns ready to play
-        self._patterns: list[list[tuple]] = list()
+        self._snd_patterns: list[list[np.ndarray]] = list()
         self._ini_names: list[str] = list()
         self._ini_intensities: list[float] = list()
-        self.load_patterns(fname)
 
     def load_patterns(self, fname: str) -> None:
         assert os.path.isfile(fname)
+        self._snd_patterns.clear()
         cfg = ConfigParser()
         cfg.read(fname)
         dic = {s: dict(cfg.items(s)) for s in cfg.sections()}
@@ -49,14 +48,14 @@ class PatternLoader:
         my_log.debug(f"Loaded from: {fname}:\nnames: {self._ini_names}\nintensities: {self._ini_intensities}")
 
     def get_patterns(self, bar_len: int, par: float) -> list[list[np.ndarray]]:
-        result: list[list[np.ndarray]] = list()
-        # INI patterns already sorted by intensity
-        for ptn_dic in self._ini_patterns:
-            result.append(self._fn_convert(bar_len, par, ptn_dic))
-        return result
+        if not self._snd_patterns:
+            # INI patterns already sorted by intensity
+            for ptn_dic in self._ini_patterns:
+                self._snd_patterns.append(self._fn_convert(bar_len, par, ptn_dic))
+        return self._snd_patterns
 
-    def get_names(self) -> list[str]:
-        return self._ini_names
+    def get_pattern_name(self, idx: int) -> str:
+        return self._ini_names[idx] if 0 <= idx < len(self._ini_names) else ""
 
     def get_intensities(self) -> list[float]:
         return self._ini_intensities

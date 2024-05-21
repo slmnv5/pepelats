@@ -26,10 +26,8 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
         assert os.path.isdir(self._dname)
         self._ff = FileFinder(self._dname, True, ".ini")
         assert self._ff.get_item()
-        self._names: list[str] = list()  # names of patterns
         self._pl: PatternLoader \
-            = PatternLoader(self._ff.get_full_name(), self._pattern_load,
-                            self._pattern_convert, self._pattern_intensity)
+            = PatternLoader(self._pattern_load, self._pattern_convert, self._pattern_intensity)
 
     def stop(self) -> None:
         super().stop()
@@ -45,7 +43,7 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
     def show_param(self) -> str:
         base_info = super().show_param()
         intensity = self._pl.get_intensities()[self._ptn_idx]
-        name = self._names[self._ptn_idx]
+        name = self._pl.get_pattern_name(self._ptn_idx)
         return f"{base_info}\nintensity: {intensity}\nname: {name}"
 
     def get_config(self) -> str:
@@ -54,13 +52,12 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
     def set_config(self, config=None) -> None:
         if config:
             self._ff.idx_from_item(config)
-        self._ptn_lst = self._pl.get_patterns(self._bar_len, self._par)
-        self._names = self._pl.get_names()
+        self._pl.load_patterns(self._ff.get_full_name())
 
     def _set_bar_len(self, bar_len: int) -> None:
+        print(1111111111111111111)
         super()._set_bar_len(bar_len)
         self._ptn_lst = self._pl.get_patterns(self._bar_len, self._par)
-        self._names = self._pl.get_names()
 
     def show_config(self) -> str:
         return self._ff.get_str()
@@ -103,4 +100,5 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
             play_buffer(buff, out_data, idx)
 
     def get_header(self) -> str:
-        return super().get_header() + ":" + self._names[self._ptn_idx]
+        name = self._pl.get_pattern_name(self._ptn_idx)
+        return super().get_header() + ":" + name
