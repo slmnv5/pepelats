@@ -10,7 +10,7 @@ def test_1():
     dr.set_config("Test.ini")
     arr = make_zero_buffer(150_000)
 
-    dr.load_config(300_000)
+    dr.init(300_000)
 
     dr.set_par(0)
     dr.play(arr, 0)

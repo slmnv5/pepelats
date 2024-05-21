@@ -23,7 +23,7 @@ class LoopSimple(WrapBuffer):
         bar_len = drum.get_bar_len()
         self.finalize(ctrl.idx, bar_len, 0)
         if not bar_len:
-            ctrl.add_command(["_load_drum_config", ctrl.idx])
+            ctrl.add_command(["_init_drum", ctrl.idx])
 
     def play_buffer(self, ctrl: LoopCtrl):
         drum = ctrl.get_drum()

@@ -57,6 +57,11 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
         self._ptn_lst = self._pl.get_patterns(self._bar_len, self._par)
         self._names = self._pl.get_names()
 
+    def _set_bar_len(self, bar_len: int) -> None:
+        super()._set_bar_len(bar_len)
+        self._ptn_lst = self._pl.get_patterns(self._bar_len, self._par)
+        self._names = self._pl.get_names()
+
     def show_config(self) -> str:
         return self._ff.get_str()
 

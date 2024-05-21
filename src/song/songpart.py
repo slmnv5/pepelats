@@ -27,7 +27,7 @@ class SongPart(LoopSimple):
         start_rec_idx = ctrl.get_start_rec_idx()
         Thread(target=loop.finalize, args=(ctrl.idx, base_len, start_rec_idx)).start()
         if not bar_len:
-            ctrl.add_command(["_load_drum_config", ctrl.idx])
+            ctrl.add_command(["_init_drum", ctrl.idx])
 
     def play_samples(self, out_data: np.ndarray, idx: int, zero_after: bool = False) -> None:
         self.loops.apply_to_each(lambda x: LoopSimple.play_samples(x, out_data, idx))

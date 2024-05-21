@@ -68,7 +68,7 @@ class Song(CollectionOwner[SongPart]):
         kwargs = {"SongPart": parts_lst[0]}
         dr = create_drum(drum_type, **kwargs)
         dr.set_config(config)
-        dr.load_config(bar_len)
+        dr.init(bar_len)
         dr.set_volume(volume)
         dr.set_par(par)
         ctrl.set_drum(dr)

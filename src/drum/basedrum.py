@@ -109,10 +109,7 @@ class BaseDrum(ABC):
     def iterate_config(self, steps: int) -> None:
         pass
 
-    def load_config(self, bar_len: int = None) -> None:
-        if bar_len is None:
-            return
-        self.stop()
+    def init(self, bar_len: int) -> None:
         self._set_bar_len(bar_len)
         self.start()
 

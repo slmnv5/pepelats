@@ -15,7 +15,7 @@ def test_1():
 
 def run_once(drum_type: str) -> None:
     ctrl = ManyLoopCtrl(Queue(), drum_type)
-    ctrl.get_drum().load_config(100_000)
+    ctrl.get_drum().init(100_000)
     ctrl.get_drum().start()
 
     sound = make_sin_sound(440, 7)
