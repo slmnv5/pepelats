@@ -16,7 +16,7 @@ class MenuHost:
 
     def __init__(self, queue: Queue):
         dic = load_ini_section(find_path(ConfigName.main_ini), "MENU")
-        dname = dic.get(ConfigName.menu_dir)
+        dname = dic.get(ConfigName.menu_dir, "")
         dname = find_path(f"config/menu/{dname}")
         assert os.path.isdir(dname)
         self._menu_loader = _MenuLoader(dname)

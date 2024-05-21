@@ -21,7 +21,7 @@ my_log = get_my_log(__name__)
 
 def get_pedal_control(q: Queue) -> MenuHost:
     dic = load_ini_section(find_path(ConfigName.main_ini), "MIDI")
-    pname = dic.get(ConfigName.midi_in)
+    pname = dic.get(ConfigName.midi_in, "")
     miw = MidiInWrap()
     if not miw.get_port(pname):
         raise RuntimeError(f"MIDI IN port is not open: {pname}")

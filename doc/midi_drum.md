@@ -4,8 +4,8 @@ MIDI drum sends MIDI messages to external drum machine to synchronize it with th
 and program (aka pattern)
 Two examples for hardware drum and IOS application drum are:
 
-* [Hardware drum](./../config/drum/midi/Valeton.ini)
-* [Ipad drum](./../config/drum/midi/IpadDrum.ini)
+* [Hardware drum](../config/drum/midi1111111111111/Valeton.ini)
+* [Ipad drum](../config/drum/midi1111111111111/IpadDrum.ini)
 
 There are few elements used in the INI configuration file: messages, parameters, methods, python expressions and INI
 file substitutions -- all explained below.
