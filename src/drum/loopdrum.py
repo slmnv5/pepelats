@@ -40,7 +40,7 @@ class LoopDrum(BaseDrum):
         loops = self._part.loops
         lp_count: int = loops.item_count()
         # play 1, 2, 3 random loops
-        rand_lst: list[int] = sample(range(lp_count), min(self._drum_level + 1, lp_count))
+        rand_lst: list[int] = sample(range(lp_count), min(self._is_fill + 1, lp_count))
         rand_lst.append(0)
         for k in range(lp_count):
             lp = loops.item_from_idx(k)

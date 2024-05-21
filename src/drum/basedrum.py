@@ -1,7 +1,6 @@
 import random
 from abc import abstractmethod, ABC
-
-import numpy as np
+from threading import Timer
 
 from buffer.wrapbuffer import WrapBuffer
 from utils.utilconfig import SD_RATE
@@ -11,14 +10,13 @@ my_log = get_my_log(__name__)
 
 
 class BaseDrum(ABC):
-    _DRUM_LEVELS: int = 3
 
     def __init__(self):
         self._bar_len: int = 0
         self._bpm: float = 0
         self._ptn_idx: int = 0  # pattern/sound index
         self._ptn_lst: list[any] = list()  # play patterns
-        self._drum_level = 0  # intensity of drum
+        self._is_fill: bool = False  # Fill or intense break of rythm
         self._par: float = 0.5  # from 0 to 1,  swing, used by some drum types
         self._volume: float = 0.5  # from 0 to 1
 
@@ -58,7 +56,7 @@ class BaseDrum(ABC):
     def _set_bar_len(self, bar_len: int) -> None:
         self._bar_len = bar_len
         self._ptn_idx = 0
-        self._drum_level = 0
+        self._is_fill = 0
         self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / SD_RATE)
         my_log.info(f"Set bar len for: {self}")
 
@@ -74,7 +72,7 @@ class BaseDrum(ABC):
 
     @abstractmethod
     def stop(self) -> None:
-        self._ptn_idx, self._drum_level = 0, 0
+        self._ptn_idx, self._is_fill = 0, 0
 
     @abstractmethod
     def start(self) -> None:
@@ -82,20 +80,26 @@ class BaseDrum(ABC):
 
     @abstractmethod
     def randomize(self) -> None:
-        lst = range(len(self._ptn_lst))
-        lst = np.array_split(lst, self._DRUM_LEVELS)
-        lst = [x for x in lst if len(x) > 0]
-        self._drum_level = 0 if self._drum_level >= len(lst) else self._drum_level
-        lst = lst[self._drum_level].tolist()
-        if self._ptn_idx in lst:
-            lst.remove(self._ptn_idx)
-        if lst:
-            self._ptn_idx = random.choice(lst)
+        self._is_fill = False
+        lst_len: int = len(self._ptn_lst)
+        lst_split: int = round(lst_len * 0.8)
+        self._ptn_idx = random.randrange(0, lst_split)
         self.start()
 
-    def change_level(self, chg: int) -> None:
-        self._drum_level = (self._drum_level + chg) % self._DRUM_LEVELS
-        self.randomize()
+    def play_fill(self, idx: int) -> None:
+        if self._is_fill:
+            return
+        self._is_fill = True
+        lst_len: int = len(self._ptn_lst)
+        lst_split: int = round(lst_len * 0.8)
+        self._ptn_idx = random.randrange(lst_split, lst_len)
+
+        bar_len = self.get_bar_len()
+        tmp: int = idx % bar_len
+        if tmp < 0.1 * bar_len:
+            tmp = tmp + bar_len
+        # return to normal level
+        Timer(tmp / SD_RATE, self.randomize).start()
 
     @abstractmethod
     def show_config(self) -> str:
@@ -111,7 +115,7 @@ class BaseDrum(ABC):
 
     def __str__(self) -> str:
         cls_name = self.__class__.__name__[0]
-        return f"{cls_name}:{self._bpm:.2F}:{self._drum_level}"
+        return f"{cls_name}:{self._bpm:.2F}"
 
     @abstractmethod
     def show_param(self) -> str:
