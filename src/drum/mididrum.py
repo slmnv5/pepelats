@@ -75,7 +75,7 @@ class MidiDrum(BaseDrum):
     def get_config(self) -> str:
         return ""
 
-    def set_config(self, config: str) -> None:
+    def set_config(self, config: str = None) -> None:
         pass
 
     def show_config(self) -> str:

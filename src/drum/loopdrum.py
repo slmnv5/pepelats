@@ -24,7 +24,7 @@ class LoopDrum(BaseDrum):
     def get_config(self) -> str:
         return ""
 
-    def set_config(self, config: str) -> None:
+    def set_config(self, config: str = None) -> None:
         return
 
     def play(self, out_data: np.ndarray, idx: int) -> None:

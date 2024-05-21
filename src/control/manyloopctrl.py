@@ -20,6 +20,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
 
     def __init__(self, queue: Queue, drum_type: str):
         dr = create_drum(drum_type)
+        dr.set_config()
         dr.load_config()
         LoopCtrl.__init__(self, queue, dr)
         tmp = [SongPart(), SongPart(), SongPart(), SongPart()]
