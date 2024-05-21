@@ -5,24 +5,19 @@ and program
 
 MIDI messages sent are:
 
-* [] - sent after 1st loop recorded and BPM calculated. Sets BPM on external drum.
-* _bar_msg - sent at start of each bar. Used to synchronize external drum
-* _volume_msg - set volume using VOLUME parameter.
-* _stop_msg - stop drum. There is no start message, instead use _bar_msg.
-* _prog_msg - program change using PROG parameter.
-
+*1) [0xF0, 0x5A, BPM_LIST, 0xF7] - sysEx message sent after 1st loop recorded and BPM calculated. Sets BPM on external
+drum. BPM_LIST is 6 bytes long. For bpm=123.45 it will be filled with decimal values: [0, 1, 2, 3, 4, 5]
+*2) [0xF0, 0x5B, 0xF7] - sysEx message sent at start of each bar. Used to synchronize external drum
+*3) [0xB0, 8, VOL] - set volume where VOL has value from 0 to 128.
+*4) [0xFC] - stop drum. There is no start message, instead 2) is used.
+*4) [0xC0, PROG] - program change where PROG number from 0 to 32.
 
 ### MIDI port
 
-Each INI configuration has section "MIDI" and option "midi_out". This is MIDI port name (or part of full name) that is
-used to send messages. If port is not available (device is not connected) so called "FakeMidiOut" port is used that logs
-few messages in the log file.
+**Main.ini** configuration has section "MIDI" and option "midi_out". This is MIDI port name (or part of full name) that
+is used to send messages. If port is not available (device is not connected) so called "FakeMidiOut" port is used that
+logs few messages in the log file.
 You can see to what port MIDI drum is connected and if the port is open as described in other document.
 
-### INI file substitution
-
-Standard feature of INI allows to use substitution to save on typing.
-Example is below when *bmp_drums* and *bpm_effects* substitute for long python expressions:
-~~~
 
 
