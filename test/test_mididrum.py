@@ -7,6 +7,6 @@ def test_1():
     dr.load_config(SD_RATE * 2)
     config, bar_len = dr.get_config(), dr.get_bar_len()
     assert bar_len == SD_RATE * 2
-    assert "ini" == config[-3:]
+    assert "" == config
     dr.start()
     dr.stop()

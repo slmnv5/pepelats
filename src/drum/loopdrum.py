@@ -46,12 +46,6 @@ class LoopDrum(BaseDrum):
             lp = loops.item_from_idx(k)
             lp.set_silent(k not in rand_lst)
 
-    def load_config(self, bar_len: int = None) -> None:
-        self.stop()
-        bar_len = self._bar_len if bar_len is None else bar_len
-        self._set_bar_len(bar_len)
-        self.start()
-
     def iterate_config(self, steps: int) -> None:
         pass
 

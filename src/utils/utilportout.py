@@ -48,12 +48,11 @@ class MidiOutWrap:
                 self.port, self.name = self._midi_out, port_name
                 break
 
-        if self.name and self.port.is_port_open():
-            return True
-        else:
+        if not self.name or not self.port.is_port_open():
             my_log.error(f"MIDI OUT port is not open: {pname}, using fake port")
             self.port, self.name = _FakeMidiOut(), "FakeMidiOut"
-            return True
+
+        return True
 
     def show(self) -> str:
         port_lst = self._midi_out.get_ports()

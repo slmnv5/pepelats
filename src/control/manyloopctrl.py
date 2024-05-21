@@ -123,8 +123,8 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         dr.load_config(bar_len)
         self._drum = dr
 
-    def _load_drum_config(self, bar_len: int = None) -> None:
-        self._drum.load_config(bar_len)
+    def _load_drum_config(self) -> None:
+        self._drum.load_config()
 
     # ================= song methods
 

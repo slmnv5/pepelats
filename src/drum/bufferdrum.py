@@ -61,12 +61,6 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
     def iterate_config(self, steps: int) -> None:
         self._ff.iterate(steps)
 
-    def load_config(self, bar_len: int = None) -> None:
-        self.stop()
-        self._pl.load_patterns(self._ff.get_full_name())
-        bar_len = self._bar_len if bar_len is None else bar_len
-        self._set_bar_len(bar_len)
-
     def _set_bar_len(self, bar_len: int) -> None:
         super()._set_bar_len(bar_len)
         self._ptn_lst = self._pl.get_patterns(self._bar_len, self._par)

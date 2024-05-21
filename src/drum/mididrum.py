@@ -28,8 +28,8 @@ class MidiDrum(BaseDrum):
         self._mow = MidiOutWrap()
         dic = load_ini_section(find_path(ConfigName.main_ini), "MIDI")
         pname = dic.get(ConfigName.midi_out, "")
-        if not self._mow.get_port(pname):
-            raise RuntimeError(f"MIDI OUT port is not open: {pname}")
+        tmp: bool = self._mow.get_port(pname)
+        assert tmp, "MIDI out port must be open. It may be a fake port just for logging"
 
     def set_volume(self, volume: float) -> None:
         super().set_volume(volume)
@@ -82,7 +82,4 @@ class MidiDrum(BaseDrum):
         return ""
 
     def iterate_config(self, steps: int) -> None:
-        pass
-
-    def load_config(self, bar_len: int = None) -> None:
         pass
