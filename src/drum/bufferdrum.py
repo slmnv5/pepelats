@@ -86,8 +86,17 @@ class BufferDrum(BaseDrum, ABC):
     def play(self, out_data: np.ndarray, idx: int) -> None:
         if self._is_stopped or not self._bar_len:
             return
-        for buff in self._ptn_lst[self._ptn_idx]:
-            play_buffer(buff, out_data, idx)
+        drum_lst = self._ptn_lst[self._ptn_idx]
+        skip_drum_idx_lst: list[int] = list()
+        lst_len: int = len(drum_lst)
+        if idx % self._bar_len == 0:
+            skip_drum_count = np.random.choice(self.SKIP_DRUM_COUNT_LIST, 1)
+            skip_drum_count = min(skip_drum_count, lst_len)
+            skip_drum_idx_lst = np.random.choice(range(lst_len), skip_drum_count)
+
+        for k, buff in enumerate(self._ptn_lst[self._ptn_idx]):
+            if k not in skip_drum_idx_lst:
+                play_buffer(buff, out_data, idx)
 
     def get_header(self) -> str:
         name = self._pl.get_pattern_name(self._ptn_idx)

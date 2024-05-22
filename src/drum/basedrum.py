@@ -15,6 +15,8 @@ class BaseDrum(ABC):
     QUIET_FRACTION = 0.7
     # Fill/break can not be too short, if short is extended by half a bar
     SMALLEST_FILL_FRACTION = 0.1
+    # Used to skip some drum sounds for the whole bar
+    SKIP_DRUM_COUNT_LIST = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3]
 
     def __init__(self):
         self._is_stopped: bool = True
