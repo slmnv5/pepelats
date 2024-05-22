@@ -90,16 +90,16 @@ SD_RATE: int = int(_audio.get('sd_rate', 44100))
 assert SD_RATE and isinstance(SD_RATE, int)
 
 _keyboard = load_ini_section(find_path(ConfigName.main_ini), "KEYBOARD")
-tmp = _keyboard.get('kbd_notes', '1,2,3,4,q,w')
+tmp = _keyboard.get('kbd_notes_windows', '1,2,3,4,q,w')
 tmp = [x.strip() for x in tmp.split(',')]
 if len(tmp) != 6:
-    raise RuntimeError(f"kbd_notes in main.ini must have at 6 keys, found: {tmp}")
+    raise RuntimeError(f"kbd_notes_windows in main.ini must have at 6 keys, found: {tmp}")
 KBD_NOTES: list[str] = tmp
 
 tmp = _keyboard.get('kbd_notes_linux', KBD_NOTES)
 tmp = [x.strip() for x in tmp.split(',')]
 if len(tmp) != 6:
-    raise RuntimeError(f"kbd_notes in main.ini must have 6 keys, found: {tmp}")
+    raise RuntimeError(f"kbd_notes_windows in main.ini must have 6 keys, found: {tmp}")
 KBD_NOTES_LINUX: list[str] = tmp
 
 tmp = _keyboard.get('midi_notes', '60,62,64,65,12,13')
