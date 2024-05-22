@@ -14,30 +14,29 @@ class MidiCcToNote:
     Used for expression pedal to send note ON/OF when pedal goes Down/Up """
 
     def __init__(self):
-        self.__prev_msg: list[int] = [80, 0, 0]
+        self.__prev_msg: list[int] = [0, 0, 0]
         self.__sent_on = False
 
-    def convert(self, msg: list[int]):
-        if msg[1] != self.__prev_msg[1]:
+    def convert(self, msg: list[int]) -> list[int]:
+        if msg[1] != self.__prev_msg[1] or msg[0] != self.__prev_msg[0]:
             self.__prev_msg = msg
             self.__sent_on = False
-            return None
+            return []
 
         # expression pedal goes down, hence value goes down
-        if self.__prev_msg[2] > msg[2]:
-            if not self.__sent_on:
-                self.__prev_msg = msg
-                self.__sent_on = True
-                return [0x90, msg[1], 100]
-            else:
-                return None
-        else:
-            if self.__sent_on:
-                self.__prev_msg = msg
-                self.__sent_on = False
-                return [0x80, msg[1], 0]
-            else:
-                return None
+        if self.__prev_msg[2] > msg[2] and not self.__sent_on:
+            self.__prev_msg = msg
+            self.__sent_on = True
+            return [0x90, msg[1], 100]
+
+        # expression pedal goes up, hence value goes down
+        if self.__prev_msg[2] < msg[2] and self.__sent_on:
+            self.__prev_msg = msg
+            self.__sent_on = False
+            return [0x80, msg[1], 0]
+
+        self.__prev_msg = msg
+        return []
 
 
 class CountMidiControl(MenuHost):
