@@ -11,12 +11,10 @@ my_log = get_my_log(__name__)
 
 
 class BaseDrum(ABC):
-    # samples sorted by energy. Low enrgy used for rythm, high enegry for drum fills/breaks
-    QUIET_FRACTION = 0.7
+    # patterns sorted by energy. Low enrgy patterns used for rythm, high enegry for drum fills/breaks
+    QUIET_PTRN_FRACTION: float = 0.7
     # Fill/break can not be too short, if short is extended by half a bar
-    SMALLEST_FILL_FRACTION = 0.1
-    # Used to skip some drum sounds for the whole bar
-    SKIP_DRUM_COUNT_LIST = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3]
+    SMALLEST_FILL_FRACTION: float = 0.1
 
     def __init__(self):
         self._is_stopped: bool = True
@@ -88,7 +86,7 @@ class BaseDrum(ABC):
         self._is_fill = False
         lst_len: int = len(self._ptn_lst)
         assert lst_len > 0
-        lst_split: int = ceil(lst_len * self.QUIET_FRACTION)
+        lst_split: int = ceil(lst_len * self.QUIET_PTRN_FRACTION)
         self._ptn_idx = random.randrange(0, lst_split)
         self.start()
 
@@ -97,7 +95,7 @@ class BaseDrum(ABC):
             return
         self._is_fill = True
         lst_len: int = len(self._ptn_lst)
-        lst_split: int = floor(lst_len * self.QUIET_FRACTION)
+        lst_split: int = floor(lst_len * self.QUIET_PTRN_FRACTION)
         self._ptn_idx = random.randrange(lst_split, lst_len)
 
         tmp: int = idx % self._bar_len

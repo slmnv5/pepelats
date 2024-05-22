@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from abc import ABC
+from random import choice
 
 import numpy as np
 
@@ -17,9 +18,12 @@ my_log = get_my_log(__name__)
 
 
 class BufferDrum(BaseDrum, ABC):
+    # Used to skip some drum sounds for the whole bar
+    DRUM_COUNT_LIST: list[int] = [4, 4, 4, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 1]
 
     def __init__(self, dname: str):
         BaseDrum.__init__(self)
+        self._drum_count: int = 5
         tmp: str = find_path(dname)
         assert os.path.isdir(tmp)
         self._ff = FileFinder(tmp, True, ".ini")
@@ -86,17 +90,10 @@ class BufferDrum(BaseDrum, ABC):
     def play(self, out_data: np.ndarray, idx: int) -> None:
         if self._is_stopped or not self._bar_len:
             return
-        drum_lst = self._ptn_lst[self._ptn_idx]
-        skip_drum_idx_lst: list[int] = list()
-        lst_len: int = len(drum_lst)
         if idx % self._bar_len == 0:
-            skip_drum_count = np.random.choice(self.SKIP_DRUM_COUNT_LIST, 1)
-            skip_drum_count = min(skip_drum_count, lst_len)
-            skip_drum_idx_lst = np.random.choice(range(lst_len), skip_drum_count)
-
-        for k, buff in enumerate(self._ptn_lst[self._ptn_idx]):
-            if k not in skip_drum_idx_lst:
-                play_buffer(buff, out_data, idx)
+            self._drum_count = choice(self.DRUM_COUNT_LIST)
+        for buff in self._ptn_lst[self._ptn_idx][0:self._drum_count]:
+            play_buffer(buff, out_data, idx)
 
     def get_header(self) -> str:
         name = self._pl.get_pattern_name(self._ptn_idx)
