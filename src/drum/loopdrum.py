@@ -1,10 +1,12 @@
-from random import choice
+from random import choice, random
+from threading import Timer
 
 import numpy as np
 
 from buffer.wrapbuffer import WrapBuffer
 from drum.basedrum import BaseDrum
 from song.songpart import SongPart
+from utils.utilconfig import SD_RATE
 
 
 class LoopDrum(BaseDrum):
@@ -26,17 +28,28 @@ class LoopDrum(BaseDrum):
     def randomize(self) -> None:
         self._is_fill = False
         self._play_drum_count = choice(self.DRUM_COUNT_LIST)
-        loops = self._part.loops
-        self._ptn_idx = 0
-        self._ptn_lst.clear()
-        loops.apply_to_each(lambda x: self._ptn_lst.append(x if len(self._ptn_lst) < self._play_drum_count else None))
         self.start()
+
+    def play_fill(self, idx: int) -> None:
+        if self._is_fill or not self._bar_len:
+            return
+        self._is_fill = True
+        self._play_drum_count = 5
+        tmp: int = idx % self._bar_len
+        if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
+            tmp = tmp + self._bar_len // 2
+        # return to normal level
+        Timer(tmp / SD_RATE, self.randomize).start()
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
         if self._is_stopped or not self._bar_len:
             return
-        for loop in [x for x in self._ptn_lst if x]:
-            WrapBuffer.play_samples(loop, out_data, idx)
+        if idx % self._bar_len == 0:
+            if random() < self._par:
+                self.randomize()
+        loops = self._part.loops
+        loops.apply_to_each(lambda x: WrapBuffer.play_samples(x, out_data, idx) if loops.idx_from_item(
+            x) < self._play_drum_count else None)
 
     def iterate_config(self, steps: int) -> None:
         pass
