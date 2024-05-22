@@ -41,7 +41,7 @@ class BufferDrum(BaseDrum, ABC):
 
     def show_param(self) -> str:
         base_info = super().show_param()
-        intensity = self._pl.get_intensities()[self._ptn_idx]
+        intensity = self._pl.get_intensity(self._ptn_idx)
         name = self._pl.get_pattern_name(self._ptn_idx)
         return f"{base_info}\nintensity: {intensity}\nname: {name}"
 

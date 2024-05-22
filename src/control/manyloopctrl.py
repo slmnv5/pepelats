@@ -113,7 +113,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         self._start_rec_idx = self.idx
 
     # ========== drum methods
-    def _new_song(self, drum_type: str) -> None:
+    def _change_drum_type(self, drum_type: str) -> None:
         old_type, bar_len = self._drum.get_class_name(), self._drum.get_bar_len()
         if old_type == drum_type:
             return
