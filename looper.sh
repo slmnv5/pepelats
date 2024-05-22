@@ -32,13 +32,12 @@ for var in "$@"; do
     CODE_OPTIMIZE=""
   fi
 done
-# if keyboard is plugged use it instead of MIDI controller
-KBD=""
+
 # sudo required for keyboard
 SUDO=""
-if lsusb | grep -i "USB Keyboard"; then KBD="--kbd"; SUDO="sudo -E"; fi
+if lsusb | grep -i "USB Keyboard"; then export HAS_KBD="YES"; SUDO="sudo -E"; fi
 
-PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py $KBD $*"
+PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py $*"
 echo "$PYTHON_CMD"
 
 # disable under voltage error on screen, set huge font size, disable typing echo

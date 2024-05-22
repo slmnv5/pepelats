@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import os
-import sys
 from multiprocessing import Queue
 from typing import Union, Callable
 
@@ -11,12 +10,14 @@ import rtmidi
 
 from mvc.countmidicontrol import CountMidiControl
 from mvc.menuhost import MenuHost
-from mvc.simplemidicontrol import SimpleMidiControl
 from utils.utilconfig import KBD_NOTES, ConfigName
 from utils.utilconfig import find_path, load_ini_section
 from utils.utillog import get_my_log
 
 my_log = get_my_log(__name__)
+
+_IS_LINUX = os.name == "posix"
+_HAS_KBD = os.environ.get('HAS_KBD', "").upper() in ["Y", "YES", "TRUE", "1"]
 
 
 def get_pedal_control(q: Queue) -> MenuHost:
@@ -25,11 +26,7 @@ def get_pedal_control(q: Queue) -> MenuHost:
     miw = MidiInWrap()
     if not miw.get_port(pname):
         raise RuntimeError(f"MIDI IN port is not open: {pname}")
-
-    if "--count" in sys.argv:  # will be counting notes in python controller
-        return CountMidiControl(miw.port, q)
-    else:
-        return SimpleMidiControl(miw.port, q)
+    return CountMidiControl(miw.port, q)
 
 
 class _KbdMidiIn:
@@ -94,7 +91,7 @@ class MidiInWrap:
 
     def get_port(self, pname: str) -> bool:
         self._midi_in.close_port()
-        if "--kbd" in sys.argv:
+        if _HAS_KBD or not _IS_LINUX:
             self.port, self.name = _KbdMidiIn(), "KbdMidiIn"
             return True
 

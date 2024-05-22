@@ -10,7 +10,7 @@ Some of the options used in this INI file are:
   started as:
 
 ```
-looper.sh --kbd
+looper.sh
 ```
 
 * menu_dir -- where menu configuration files are stored. (default is [button6](./../config/menu/button6))

@@ -3,7 +3,7 @@
 Lopper accepts MIDI messages and using menu configuration files convert them into to looper's commands.
 Buttons are few on most foot controllers, and looper has many more commands than available buttons. To deal with it
 **multi tap mode** is used. If delay between taps is less than 0.6 seconds they belong to a series and produce a
-different MIDI command. Multi tap mode is activated with "--count" command line parameter.
+different MIDI command.
 
 As an example button A sends note 60, velocity = 100. Multiple tapping will send additional note 60 with changed
 velocity. Changed velocity = number of taps + 5 if the last tap was a long hold. For this example:
