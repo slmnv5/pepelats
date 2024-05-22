@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import os
 from multiprocessing import Queue
 from typing import Union, Callable
@@ -10,7 +9,7 @@ import rtmidi
 
 from mvc.countmidicontrol import CountMidiControl
 from mvc.menuhost import MenuHost
-from utils.utilconfig import KBD_NOTES, ConfigName
+from utils.utilconfig import KBD_NOTES, ConfigName, KBD_NOTES_LINUX, MIDI_NOTES
 from utils.utilconfig import find_path, load_ini_section
 from utils.utillog import get_my_log
 
@@ -33,12 +32,7 @@ class _KbdMidiIn:
     """Using keyboard keys instead of MIDI notes"""
 
     def __init__(self):
-        notes_str = "{" + KBD_NOTES + "}"
-        try:
-            self.__kbd_notes: dict[str, int] = json.loads(notes_str)
-        except Exception as ex:
-            raise RuntimeError(f"Failed to parse env. variable KBD_NOTES, error: {ex}")
-
+        self.__kbd_notes: dict[str, int] = zip(KBD_NOTES_LINUX if _IS_LINUX else KBD_NOTES, MIDI_NOTES)
         self._func: Callable[[tuple[list, any]], None] = self._fake_callback
         self._data: any = None
         self._pressed_key = False

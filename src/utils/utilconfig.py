@@ -28,10 +28,10 @@ class ConfigName:
 
 def find_path(path_end: str) -> str:
     """Find file or dir. creates one if missing"""
-    tmp = os.getcwd() + os.sep + path_end
-    pos = tmp.find(APPDIR)
+    tmp1 = os.getcwd() + os.sep + path_end
+    pos = tmp1.find(APPDIR)
     if pos >= 0:
-        return tmp[:pos + len(APPDIR)] + os.sep + path_end
+        return tmp1[:pos + len(APPDIR)] + os.sep + path_end
     else:
         my_log.error(f"Path not found: {path_end}")
         return path_end
@@ -90,7 +90,32 @@ SD_RATE: int = int(_audio.get('sd_rate', 44100))
 assert SD_RATE and isinstance(SD_RATE, int)
 
 _keyboard = load_ini_section(find_path(ConfigName.main_ini), "KEYBOARD")
-KBD_NOTES = _keyboard.get('kbd_notes')
+tmp = _keyboard.get('kbd_notes', '1,2,3,4,q,w')
+tmp = [x.strip() for x in tmp.split(',')]
+if len(tmp) != 6:
+    raise RuntimeError(f"kbd_notes in main.ini must have at 6 keys, found: {tmp}")
+KBD_NOTES: list[str] = tmp
+
+tmp = _keyboard.get('kbd_notes_linux', KBD_NOTES)
+tmp = [x.strip() for x in tmp.split(',')]
+if len(tmp) != 6:
+    raise RuntimeError(f"kbd_notes in main.ini must have 6 keys, found: {tmp}")
+KBD_NOTES_LINUX: list[str] = tmp
+
+tmp = _keyboard.get('midi_notes', '60,62,64,65,12,13')
+tmp = [x.strip() for x in tmp.split(',')]
+# noinspection PyBroadException
+try:
+    tmp = [int(x) for x in tmp]
+except Exception:
+    pass
+
+if len(tmp) != 6:
+    raise RuntimeError(f"midi_notes in main.ini must have 6 values, found: {tmp}")
+if not all(isinstance(x, int) and 0 <= x <= 127 for x in tmp):
+    raise RuntimeError(f"midi_notes in main.ini must have integer values [0:127], found: {tmp}")
+1
+MIDI_NOTES: list[int] = tmp
 
 _screen = load_ini_section(find_path(ConfigName.main_ini), "SCREEN")
 KEEP_SCREEN = "--keep_screen" in sys.argv
