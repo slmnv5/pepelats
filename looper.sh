@@ -48,6 +48,7 @@ stty -echo
 
 while true; do
   killall -s 9 -w -v python
+  git pull
   $PYTHON_CMD
   sleep 5
 done
