@@ -1,5 +1,6 @@
 import random
 from abc import abstractmethod, ABC
+from math import ceil, floor
 from threading import Timer
 
 from buffer.wrapbuffer import WrapBuffer
@@ -16,6 +17,7 @@ class BaseDrum(ABC):
     SMALLEST_FILL_FRACTION = 0.1
 
     def __init__(self):
+        self._stopped: bool = True
         self._bar_len: int = 0
         self._bpm: float = 0
         self._ptn_idx: int = 0  # pattern/sound index
@@ -55,7 +57,7 @@ class BaseDrum(ABC):
 
     @abstractmethod
     def set_config(self, config: str = None) -> None:
-        pass
+        self.stop()
 
     def _set_bar_len(self, bar_len: int) -> None:
         assert bar_len > 0
@@ -86,22 +88,21 @@ class BaseDrum(ABC):
     def randomize(self) -> None:
         self._is_fill = False
         lst_len: int = len(self._ptn_lst)
-        lst_split: int = round(lst_len * self.QUIET_FRACTION)
+        lst_split: int = ceil(lst_len * self.QUIET_FRACTION)
         self._ptn_idx = random.randrange(0, lst_split)
         self.start()
 
     def play_fill(self, idx: int) -> None:
-        if self._is_fill:
+        if self._is_fill or not self._bar_len:
             return
         self._is_fill = True
         lst_len: int = len(self._ptn_lst)
-        lst_split: int = round(lst_len * self.QUIET_FRACTION)
+        lst_split: int = floor(lst_len * self.QUIET_FRACTION)
         self._ptn_idx = random.randrange(lst_split, lst_len)
 
-        bar_len = self.get_bar_len()
-        tmp: int = idx % bar_len
-        if tmp < self.SMALLEST_FILL_FRACTION * bar_len:
-            tmp = tmp + bar_len // 2
+        tmp: int = idx % self._bar_len
+        if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
+            tmp = tmp + self._bar_len // 2
         # return to normal level
         Timer(tmp / SD_RATE, self.randomize).start()
 

@@ -15,7 +15,6 @@ class LoopDrum(BaseDrum):
 
     def __init__(self, part: SongPart):
         BaseDrum.__init__(self)
-        self._stopped: bool = True
         self._part: SongPart = part
 
     def is_playable(self, buff: WrapBuffer) -> bool:

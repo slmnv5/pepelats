@@ -23,7 +23,6 @@ class MidiDrum(BaseDrum):
         BaseDrum.__init__(self)
         self._ptn_lst = [x for x in range(32)]
         self._par = 0.2  # for MIDI drum it is probability to change program at bar start
-        self._stopped: bool = True
         # ======== MIDI specific ===============
         self._mow = MidiOutWrap()
         dic = load_ini_section(find_path(ConfigName.main_ini), "MIDI")
@@ -76,7 +75,7 @@ class MidiDrum(BaseDrum):
         return ""
 
     def set_config(self, config: str = None) -> None:
-        pass
+        return
 
     def show_config(self) -> str:
         return ""

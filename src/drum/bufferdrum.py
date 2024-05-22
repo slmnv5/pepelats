@@ -5,7 +5,6 @@ from abc import ABC
 
 import numpy as np
 
-from buffer.wrapbuffer import WrapBuffer
 from drum._patternloader import PatternLoader
 from drum._sampleloader import SampleLoader
 from drum.basedrum import BaseDrum
@@ -17,11 +16,10 @@ from utils.utilother import FileFinder
 my_log = get_my_log(__name__)
 
 
-class BufferDrum(BaseDrum, WrapBuffer, ABC):
+class BufferDrum(BaseDrum, ABC):
 
     def __init__(self, dname: str):
         BaseDrum.__init__(self)
-        WrapBuffer.__init__(self, self._bar_len)
         tmp: str = find_path(dname)
         assert os.path.isdir(tmp)
         self._ff = FileFinder(tmp, True, ".ini")
@@ -31,11 +29,9 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
 
     def stop(self) -> None:
         super().stop()
-        self.set_silent(True)
 
     def start(self) -> None:
         super().start()
-        self.set_silent(False)
 
     def randomize(self) -> None:
         super().randomize()
@@ -50,6 +46,7 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
         return self._ff.get_item()
 
     def set_config(self, config=None) -> None:
+        super().set_config()
         if config:
             self._ff.idx_from_item(config)
         self._pl.load_patterns(self._ff.get_full_name())
@@ -67,15 +64,15 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
     def set_volume(self, volume: float) -> None:
         super().set_volume(volume)
         SampleLoader.set_volume(self._volume)  # change all sound samples
-        self.set_silent(True)
+        self.stop()
         self._ptn_lst = self._pl.get_patterns(self._bar_len, self._par)
-        self.set_silent(False)
+        self.start()
 
     def set_par(self, par: float) -> None:
         super().set_par(par)
-        self.set_silent(True)
+        self.stop()
         self._ptn_lst = self._pl.get_patterns(self._bar_len, self._par)
-        self.set_silent(False)
+        self.start()
 
     @staticmethod
     def _pattern_load(ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
@@ -93,7 +90,7 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
         return "0.0"
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
-        if self.is_silent() or not self._bar_len:
+        if self._stopped or not self._bar_len:
             return
         for buff in self._ptn_lst[self._ptn_idx]:
             play_buffer(buff, out_data, idx)

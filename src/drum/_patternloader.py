@@ -22,14 +22,11 @@ class PatternLoader:
 
         # patterns from INI file
         self._ini_patterns: list[dict[str, any]] = list()
-        # patterns ready to play
-        self._snd_patterns: list[list[np.ndarray]] = list()
         self._ini_names: list[str] = list()
         self._ini_intensities: list[float] = list()
 
     def load_patterns(self, fname: str) -> None:
         assert os.path.isfile(fname)
-        self._snd_patterns.clear()
         cfg = ConfigParser()
         cfg.read(fname)
         dic = {s: dict(cfg.items(s)) for s in cfg.sections()}
@@ -48,11 +45,11 @@ class PatternLoader:
         my_log.debug(f"Loaded from: {fname}:\nnames: {self._ini_names}\nintensities: {self._ini_intensities}")
 
     def get_patterns(self, bar_len: int, par: float) -> list[list[np.ndarray]]:
-        if not self._snd_patterns:
-            # INI patterns already sorted by intensity
-            for ptn_dic in self._ini_patterns:
-                self._snd_patterns.append(self._fn_convert(bar_len, par, ptn_dic))
-        return self._snd_patterns
+        tmp: list[list[np.ndarray]] = list()
+        # INI patterns already sorted by intensity
+        for ptn_dic in self._ini_patterns:
+            tmp.append(self._fn_convert(bar_len, par, ptn_dic))
+        return tmp
 
     def get_pattern_name(self, idx: int) -> str:
         return self._ini_names[idx] if 0 <= idx < len(self._ini_names) else ""
