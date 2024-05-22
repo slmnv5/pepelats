@@ -12,7 +12,8 @@ def get_my_log(name: str, level: int = None) -> logging.Logger:
         logger.removeHandler(h)
 
     formatter = logging.Formatter(fmt=_fmt_str, datefmt="%Y-%m-%d %H:%M:%S")
-    fname: str = tempfile.gettempdir() + "/log.txt"
+    fname: str = "./log.txt"
+    print(1111111111111111111111111111, fname)
 
     handler_file = logging.FileHandler(fname, mode='a')
     handler_file.setFormatter(formatter)
