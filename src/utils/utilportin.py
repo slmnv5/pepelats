@@ -32,7 +32,7 @@ class _KbdMidiIn:
     """Using keyboard keys instead of MIDI notes"""
 
     def __init__(self):
-        self.__kbd_notes: dict[str, int] = zip(KBD_NOTES_LINUX if _IS_LINUX else KBD_NOTES, MIDI_NOTES)
+        self.__kbd_notes: dict[str, int] = dict(zip(KBD_NOTES_LINUX if _IS_LINUX else KBD_NOTES, MIDI_NOTES))
         self._func: Callable[[tuple[list, any]], None] = self._fake_callback
         self._data: any = None
         self._pressed_key = False
