@@ -17,7 +17,7 @@ class BaseDrum(ABC):
     SMALLEST_FILL_FRACTION = 0.1
 
     def __init__(self):
-        self._stopped: bool = True
+        self._is_stopped: bool = True
         self._bar_len: int = 0
         self._bpm: float = 0
         self._ptn_idx: int = 0  # pattern/sound index
@@ -76,13 +76,11 @@ class BaseDrum(ABC):
     def play(self, out_data, idx) -> None:
         pass
 
-    @abstractmethod
     def stop(self) -> None:
-        self._ptn_idx, self._is_fill = 0, False
+        self._is_stopped, self._ptn_idx, self._is_fill = True, 0, False
 
-    @abstractmethod
     def start(self) -> None:
-        pass
+        self._is_stopped = False
 
     @abstractmethod
     def randomize(self) -> None:

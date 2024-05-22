@@ -27,12 +27,6 @@ class BufferDrum(BaseDrum, ABC):
         self._pl: PatternLoader \
             = PatternLoader(self._pattern_load, self._pattern_convert, self._pattern_intensity)
 
-    def stop(self) -> None:
-        super().stop()
-
-    def start(self) -> None:
-        super().start()
-
     def randomize(self) -> None:
         super().randomize()
 
@@ -90,7 +84,7 @@ class BufferDrum(BaseDrum, ABC):
         return "0.0"
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
-        if self._stopped or not self._bar_len:
+        if self._is_stopped or not self._bar_len:
             return
         for buff in self._ptn_lst[self._ptn_idx]:
             play_buffer(buff, out_data, idx)

@@ -27,7 +27,7 @@ class LoopDrum(BaseDrum):
         return
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
-        if not self._bar_len or self._stopped:
+        if self._is_stopped or not self._bar_len:
             return
         if idx % self._bar_len == 0:
             if random() < self._par:
@@ -35,7 +35,6 @@ class LoopDrum(BaseDrum):
         self._part.play_samples(out_data, idx)
 
     def randomize(self) -> None:
-        self._stopped = False
         loops = self._part.loops
         lp_count: int = loops.item_count()
         # play 1, 2, 3 random loops
@@ -44,18 +43,13 @@ class LoopDrum(BaseDrum):
         for k in range(lp_count):
             lp = loops.item_from_idx(k)
             lp.set_silent(k not in rand_lst)
+        self.start()
 
     def iterate_config(self, steps: int) -> None:
         pass
 
     def show_config(self) -> str:
         return ""
-
-    def stop(self) -> None:
-        self._stopped = True
-
-    def start(self) -> None:
-        self.randomize()
 
     def show_param(self) -> str:
         return super().show_param()

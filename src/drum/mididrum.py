@@ -40,7 +40,7 @@ class MidiDrum(BaseDrum):
         self._mow.port.send_message([0xF0, 0x5A] + lst + [0xF7])
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
-        if not self._bar_len or self._stopped:
+        if not self._bar_len or self._is_stopped:
             return
         if idx % self._bar_len == 0:
             if random() < self._par:
@@ -55,11 +55,6 @@ class MidiDrum(BaseDrum):
     def stop(self) -> None:
         self._mow.port.send_message([0xFC])
         super().stop()
-        self._stopped = True
-
-    def start(self) -> None:
-        """ To start drums in time we use _bar_msg """
-        self._stopped = False
 
     def show_param(self) -> str:
         base_info = super().show_param()
