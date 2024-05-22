@@ -58,9 +58,10 @@ class BaseDrum(ABC):
         pass
 
     def _set_bar_len(self, bar_len: int) -> None:
+        assert bar_len > 0
+        self.stop()
         self._bar_len = bar_len
-        self._ptn_idx, self._is_fill = 0, False
-        self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / SD_RATE)
+        self._bpm = 60 * 4 / (bar_len / SD_RATE)
         my_log.info(f"Set bar len for: {self}")
 
     # noinspection PyUnusedLocal
