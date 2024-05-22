@@ -1,7 +1,9 @@
-import random
 from abc import abstractmethod, ABC
 from math import ceil, floor
+from random import choice, randrange
 from threading import Timer
+
+import numpy as np
 
 from buffer.wrapbuffer import WrapBuffer
 from utils.utilconfig import SD_RATE
@@ -15,8 +17,11 @@ class BaseDrum(ABC):
     QUIET_PTRN_FRACTION: float = 0.7
     # Fill/break can not be too short, if short is extended by half a bar
     SMALLEST_FILL_FRACTION: float = 0.1
+    # Used to skip some drum sounds for the whole bar
+    DRUM_COUNT_LIST: list[int] = [5, 5, 4, 4, 4, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2]
 
     def __init__(self):
+        self._play_drum_count: int = 5
         self._is_stopped: bool = True
         self._bar_len: int = 0
         self._bpm: float = 0
@@ -72,7 +77,7 @@ class BaseDrum(ABC):
         return True
 
     @abstractmethod
-    def play(self, out_data, idx) -> None:
+    def play(self, out_data: np.ndarray, idx: int) -> None:
         pass
 
     def stop(self) -> None:
@@ -81,22 +86,23 @@ class BaseDrum(ABC):
     def start(self) -> None:
         self._is_stopped = False
 
-    @abstractmethod
     def randomize(self) -> None:
         self._is_fill = False
+        self._play_drum_count = choice(self.DRUM_COUNT_LIST)
         lst_len: int = len(self._ptn_lst)
         assert lst_len > 0
         lst_split: int = ceil(lst_len * self.QUIET_PTRN_FRACTION)
-        self._ptn_idx = random.randrange(0, lst_split)
+        self._ptn_idx = randrange(0, lst_split)
         self.start()
 
     def play_fill(self, idx: int) -> None:
         if self._is_fill or not self._bar_len:
             return
         self._is_fill = True
+        self._play_drum_count = 5
         lst_len: int = len(self._ptn_lst)
         lst_split: int = floor(lst_len * self.QUIET_PTRN_FRACTION)
-        self._ptn_idx = random.randrange(lst_split, lst_len)
+        self._ptn_idx = randrange(lst_split, lst_len)
 
         tmp: int = idx % self._bar_len
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:

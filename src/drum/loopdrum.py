@@ -1,4 +1,4 @@
-from random import random, sample
+from random import choice
 
 import numpy as np
 
@@ -23,24 +23,20 @@ class LoopDrum(BaseDrum):
     def get_config(self) -> str:
         return ""
 
+    def randomize(self) -> None:
+        self._is_fill = False
+        self._play_drum_count = choice(self.DRUM_COUNT_LIST)
+        loops = self._part.loops
+        self._ptn_idx = 0
+        self._ptn_lst.clear()
+        loops.apply_to_each(lambda x: self._ptn_lst.append(x if len(self._ptn_lst) < self._play_drum_count else None))
+        self.start()
+
     def play(self, out_data: np.ndarray, idx: int) -> None:
         if self._is_stopped or not self._bar_len:
             return
-        if idx % self._bar_len == 0:
-            if random() < self._par:
-                self.randomize()
-        self._part.play_samples(out_data, idx)
-
-    def randomize(self) -> None:
-        loops = self._part.loops
-        lp_count: int = loops.item_count()
-        # play 1, 2, 3 random loops
-        rand_lst: list[int] = sample(range(lp_count), min(self._is_fill + 1, lp_count))
-        rand_lst.append(0)
-        for k in range(lp_count):
-            lp = loops.item_from_idx(k)
-            lp.set_silent(k not in rand_lst)
-        self.start()
+        for loop in [x for x in self._ptn_lst if x]:
+            WrapBuffer.play_samples(loop, out_data, idx)
 
     def iterate_config(self, steps: int) -> None:
         pass

@@ -49,7 +49,6 @@ class MidiDrum(BaseDrum):
 
     def randomize(self) -> None:
         super().randomize()
-        self._ptn_idx = self._ptn_lst[self._ptn_idx]
         self._mow.port.send_message([0xC0, self._ptn_lst[self._ptn_idx]])
 
     def stop(self) -> None:
