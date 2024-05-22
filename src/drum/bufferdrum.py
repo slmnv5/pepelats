@@ -22,9 +22,9 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
     def __init__(self, dname: str):
         BaseDrum.__init__(self)
         WrapBuffer.__init__(self, self._bar_len)
-        self._dname = find_path(dname)
-        assert os.path.isdir(self._dname)
-        self._ff = FileFinder(self._dname, True, ".ini")
+        tmp: str = find_path(dname)
+        assert os.path.isdir(tmp)
+        self._ff = FileFinder(tmp, True, ".ini")
         assert self._ff.get_item()
         self._pl: PatternLoader \
             = PatternLoader(self._pattern_load, self._pattern_convert, self._pattern_intensity)
@@ -55,7 +55,6 @@ class BufferDrum(BaseDrum, WrapBuffer, ABC):
         self._pl.load_patterns(self._ff.get_full_name())
 
     def _set_bar_len(self, bar_len: int) -> None:
-        print(1111111111111111111)
         super()._set_bar_len(bar_len)
         self._ptn_lst = self._pl.get_patterns(self._bar_len, self._par)
 

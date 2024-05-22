@@ -59,8 +59,7 @@ class BaseDrum(ABC):
 
     def _set_bar_len(self, bar_len: int) -> None:
         self._bar_len = bar_len
-        self._ptn_idx = 0
-        self._is_fill = 0
+        self._ptn_idx, self._is_fill = 0, False
         self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / SD_RATE)
         my_log.info(f"Set bar len for: {self}")
 
@@ -76,7 +75,7 @@ class BaseDrum(ABC):
 
     @abstractmethod
     def stop(self) -> None:
-        self._ptn_idx, self._is_fill = 0, 0
+        self._ptn_idx, self._is_fill = 0, False
 
     @abstractmethod
     def start(self) -> None:
