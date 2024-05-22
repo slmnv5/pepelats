@@ -55,9 +55,8 @@ class BaseDrum(ABC):
     def get_config(self) -> str:
         pass
 
-    @abstractmethod
     def set_config(self, config: str = None) -> None:
-        self.stop()
+        pass
 
     def _set_bar_len(self, bar_len: int) -> None:
         assert bar_len > 0
@@ -86,6 +85,7 @@ class BaseDrum(ABC):
     def randomize(self) -> None:
         self._is_fill = False
         lst_len: int = len(self._ptn_lst)
+        assert lst_len > 0
         lst_split: int = ceil(lst_len * self.QUIET_FRACTION)
         self._ptn_idx = random.randrange(0, lst_split)
         self.start()
@@ -113,6 +113,8 @@ class BaseDrum(ABC):
         pass
 
     def init(self, bar_len: int) -> None:
+        if self._bar_len <= 0:
+            return
         self._set_bar_len(bar_len)
         self.start()
 

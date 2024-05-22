@@ -40,7 +40,6 @@ class BufferDrum(BaseDrum, ABC):
         return self._ff.get_item()
 
     def set_config(self, config=None) -> None:
-        super().set_config()
         if config:
             self._ff.idx_from_item(config)
         self._pl.load_patterns(self._ff.get_full_name())

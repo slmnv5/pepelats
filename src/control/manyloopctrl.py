@@ -125,6 +125,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
 
     def _load_drum_config(self) -> None:
         self._drum.set_config()
+        self._drum.init(self._drum.get_bar_len())
 
     def _init_drum(self, bar_len: int) -> None:
         self._drum.init(bar_len)
