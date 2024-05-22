@@ -18,6 +18,10 @@ class LoopDrum(BaseDrum):
     def __init__(self, part: SongPart):
         BaseDrum.__init__(self)
         self._part: SongPart = part
+        # Used to skip some drum sounds
+        self.DRUM_COUNT_LIST: list[int] = [3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1]
+        # Fill/break can not be too short, if short is extended by half a bar
+        self.SMALLEST_FILL_FRACTION: float = 0.1
 
     def is_playable(self, buff: WrapBuffer) -> bool:
         return id(self._part) != id(buff)

@@ -38,7 +38,7 @@ class MidiOutWrap:
         self.port: TYPE_MIDI_OUT = self._midi_out
         self.name: str = ""
 
-    def get_port(self, pname: str) -> bool:
+    def get_port(self, pname: str) -> None:
         self._midi_out.close_port()
         self.name = ""
         for k in range(self._midi_out.get_port_count()):
@@ -51,8 +51,6 @@ class MidiOutWrap:
         if not self.name or not self.port.is_port_open():
             my_log.error(f"MIDI OUT port is not open: {pname}, using fake port")
             self.port, self.name = _FakeMidiOut(), "FakeMidiOut"
-
-        return True
 
     def show(self) -> str:
         port_lst = self._midi_out.get_ports()

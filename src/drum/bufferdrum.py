@@ -2,13 +2,16 @@ from __future__ import annotations
 
 import os
 from abc import ABC
+from math import ceil, floor
+from random import randrange, choice
+from threading import Timer
 
 import numpy as np
 
 from drum._patternloader import PatternLoader
 from drum._sampleloader import SampleLoader
 from drum.basedrum import BaseDrum
-from utils.utilconfig import find_path
+from utils.utilconfig import find_path, SD_RATE
 from utils.utillog import get_my_log
 from utils.utilnumpy import play_buffer
 from utils.utilother import FileFinder
@@ -20,6 +23,15 @@ class BufferDrum(BaseDrum, ABC):
 
     def __init__(self, dname: str):
         BaseDrum.__init__(self)
+        # patterns sorted by energy. Low enrgy patterns used for rythm, high enegry for drum fills/breaks
+        self.QUIET_PTRN_FRACTION: float = 0.7
+        # Used to skip some drum sounds
+        self.DRUM_COUNT_LIST: list[int] = [5, 5, 4, 4, 4, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2]
+        # Fill/break can not be too short, if short is extended by half a bar
+        self.SMALLEST_FILL_FRACTION: float = 0.1
+
+        self._ptn_idx: int = 0  # pattern/sound index
+        self._ptn_lst: list[list[np.ndarray]] = list()  # play patterns
         tmp: str = find_path(dname)
         assert os.path.isdir(tmp)
         self._ff = FileFinder(tmp, True, ".ini")
@@ -89,3 +101,31 @@ class BufferDrum(BaseDrum, ABC):
     def get_header(self) -> str:
         name = self._pl.get_pattern_name(self._ptn_idx)
         return super().get_header() + ":" + name
+
+    def randomize(self) -> None:
+        self._is_fill = False
+        self._play_drum_count = choice(self.DRUM_COUNT_LIST)
+        lst_len: int = len(self._ptn_lst)
+        assert lst_len > 0
+        lst_split: int = ceil(lst_len * self.QUIET_PTRN_FRACTION)
+        self._ptn_idx = randrange(0, lst_split)
+        self.start()
+
+    def play_fill(self, idx: int) -> None:
+        if self._is_fill or not self._bar_len:
+            return
+        self._is_fill = True
+        self._play_drum_count = 5
+        lst_len: int = len(self._ptn_lst)
+        lst_split: int = floor(lst_len * self.QUIET_PTRN_FRACTION)
+        self._ptn_idx = randrange(lst_split, lst_len)
+
+        tmp: int = idx % self._bar_len
+        if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
+            tmp = tmp + self._bar_len // 2
+        # return to normal level
+        Timer(tmp / SD_RATE, self.randomize).start()
+
+    def start(self) -> None:
+        self._ptn_idx = 0
+        self._is_stopped = False

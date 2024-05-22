@@ -1,7 +1,4 @@
 from abc import abstractmethod, ABC
-from math import ceil, floor
-from random import choice, randrange
-from threading import Timer
 
 import numpy as np
 
@@ -13,20 +10,12 @@ my_log = get_my_log(__name__)
 
 
 class BaseDrum(ABC):
-    # patterns sorted by energy. Low enrgy patterns used for rythm, high enegry for drum fills/breaks
-    QUIET_PTRN_FRACTION: float = 0.7
-    # Fill/break can not be too short, if short is extended by half a bar
-    SMALLEST_FILL_FRACTION: float = 0.1
-    # Used to skip some drum sounds for the whole bar
-    DRUM_COUNT_LIST: list[int] = [5, 5, 4, 4, 4, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2]
 
     def __init__(self):
         self._play_drum_count: int = 5
         self._is_stopped: bool = True
         self._bar_len: int = 0
         self._bpm: float = 0
-        self._ptn_idx: int = 0  # pattern/sound index
-        self._ptn_lst: list[list[np.ndarray]] = list()  # play patterns
         self._is_fill: bool = False  # is playing fill/break
         self._par: float = 0.5  # from 0 to 1,  swing, used by some drum types
         self._volume: float = 0.5  # from 0 to 1
@@ -81,34 +70,18 @@ class BaseDrum(ABC):
         pass
 
     def stop(self) -> None:
-        self._is_stopped, self._ptn_idx, self._is_fill = True, 0, False
+        self._is_stopped, self._is_fill = True, False
 
     def start(self) -> None:
         self._is_stopped = False
 
+    @abstractmethod
     def randomize(self) -> None:
-        self._is_fill = False
-        self._play_drum_count = choice(self.DRUM_COUNT_LIST)
-        lst_len: int = len(self._ptn_lst)
-        assert lst_len > 0
-        lst_split: int = ceil(lst_len * self.QUIET_PTRN_FRACTION)
-        self._ptn_idx = randrange(0, lst_split)
-        self.start()
+        pass
 
+    @abstractmethod
     def play_fill(self, idx: int) -> None:
-        if self._is_fill or not self._bar_len:
-            return
-        self._is_fill = True
-        self._play_drum_count = 5
-        lst_len: int = len(self._ptn_lst)
-        lst_split: int = floor(lst_len * self.QUIET_PTRN_FRACTION)
-        self._ptn_idx = randrange(lst_split, lst_len)
-
-        tmp: int = idx % self._bar_len
-        if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
-            tmp = tmp + self._bar_len // 2
-        # return to normal level
-        Timer(tmp / SD_RATE, self.randomize).start()
+        pass
 
     @abstractmethod
     def show_config(self) -> str:

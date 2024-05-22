@@ -21,14 +21,12 @@ class MidiDrum(BaseDrum):
 
     def __init__(self):
         BaseDrum.__init__(self)
-        self._ptn_lst = [x for x in range(32)]
         self._par = 0.2  # for MIDI drum it is probability to change program at bar start
         # ======== MIDI specific ===============
         self._mow = MidiOutWrap()
         dic = load_ini_section(find_path(ConfigName.main_ini), "MIDI")
         pname = dic.get(ConfigName.midi_out, "")
-        tmp: bool = self._mow.get_port(pname)
-        assert tmp, "MIDI out port must be open. It may be a fake port just for logging"
+        self._mow.get_port(pname)
 
     def set_volume(self, volume: float) -> None:
         super().set_volume(volume)
@@ -48,8 +46,10 @@ class MidiDrum(BaseDrum):
             self._mow.port.send_message([0xF0, 0x5B, 0xF7])
 
     def randomize(self) -> None:
-        super().randomize()
-        self._mow.port.send_message([0xC0, self._ptn_lst[self._ptn_idx]])
+        self._mow.port.send_message([0xF0, 0x5C, 0xF7])
+
+    def play_fill(self, idx: int) -> None:
+        self._mow.port.send_message([0xF0, 0x5D, 0xF7])
 
     def stop(self) -> None:
         self._mow.port.send_message([0xFC])
@@ -61,9 +61,6 @@ class MidiDrum(BaseDrum):
         is_ok = f"{self._mow.port.is_port_open()}"
         config = self.get_config()
         return f"{base_info}\nport OK: {is_ok}/{port}\nconfig: {config}"
-
-    def get_header(self) -> str:
-        return f"{self}:{self._ptn_idx}/{len(self._ptn_lst)}:{self.get_config()}"
 
     def get_config(self) -> str:
         return ""
