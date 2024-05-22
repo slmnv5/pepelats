@@ -19,9 +19,9 @@ class ManyLoopCtrl(LoopCtrl, ABC):
      Song is collection of song parts with related methods"""
 
     def __init__(self, queue: Queue, drum_type: str):
-        dr = create_drum(drum_type)
-        dr.set_config()
-        LoopCtrl.__init__(self, queue, dr)
+        drum = create_drum(drum_type)
+        drum.set_config()
+        LoopCtrl.__init__(self, queue, drum)
         tmp = [SongPart(), SongPart(), SongPart(), SongPart()]
         self._song: Song = Song(tmp)
         self._next_id: int = 0
@@ -121,14 +121,14 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         kwargs = {"SongPart": self._song.item_from_idx(0)}
         self._drum = create_drum(drum_type, **kwargs)
         self._drum.set_config()
-        self._drum.init(bar_len)
+        self._drum.set_bar_len(bar_len)
 
     def _load_drum_config(self) -> None:
         self._drum.set_config()
-        self._drum.init(self._drum.get_bar_len())
+        self._drum.set_bar_len(self._drum.get_bar_len())
 
     def _init_drum(self, bar_len: int) -> None:
-        self._drum.init(bar_len)
+        self._drum.set_bar_len(bar_len)
 
     # ================= song methods
 

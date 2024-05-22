@@ -19,9 +19,6 @@ class WrapBuffer:
         self.__info_str: str = ""
         self.__props_str: str = ""
 
-    def init_str(self) -> None:
-        self.__info_str, self.__props_str = "", ""
-
     def __str__(self):
         if self.is_empty:
             return "---------------"

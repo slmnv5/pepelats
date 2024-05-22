@@ -3,10 +3,10 @@ from utils.utilfactory import create_drum
 
 
 def test_1():
-    dr = create_drum("MidiDrum")
-    dr.init(SD_RATE * 2)
-    config, bar_len = dr.get_config(), dr.get_bar_len()
+    drum = create_drum("MidiDrum")
+    drum.set_bar_len(SD_RATE * 2)
+    config, bar_len = drum.get_config(), drum.get_bar_len()
     assert bar_len == SD_RATE * 2
     assert "" == config
-    dr.start()
-    dr.stop()
+    drum.start()
+    drum.stop()

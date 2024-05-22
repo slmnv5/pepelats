@@ -44,9 +44,10 @@ class BufferDrum(BaseDrum, ABC):
             self._ff.idx_from_item(config)
         self._pl.load_patterns(self._ff.get_full_name())
 
-    def _set_bar_len(self, bar_len: int) -> None:
-        super()._set_bar_len(bar_len)
+    def set_bar_len(self, bar_len: int) -> None:
+        super().set_bar_len(bar_len)
         self._ptn_lst = self._pl.get_patterns(self._bar_len, self._par)
+        assert self._ptn_lst
 
     def show_config(self) -> str:
         return self._ff.get_str()

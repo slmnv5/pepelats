@@ -28,8 +28,8 @@ class Looper(ManyLoopCtrl):
             draw_info = self._saved_draw_info
         else:
             self._saved_draw_info = draw_info
-        dr = self._drum
-        draw_info.header = dr.get_header()
+
+        draw_info.header = self._drum.get_header()
         if draw_info.update_method:
             # noinspection PyBroadException
             try:

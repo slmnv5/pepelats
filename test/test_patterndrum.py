@@ -5,17 +5,17 @@ from utils.utilfactory import create_drum
 
 
 def test_1():
-    dr = create_drum("PatternDrum")
-    dr.start()
-    dr.set_config("Test.ini")
+    drum = create_drum("PatternDrum")
+    drum.start()
+    drum.set_config("Test.ini")
     arr = make_zero_buffer(150_000)
 
-    dr.init(300_000)
+    drum.set_bar_len(300_000)
 
-    dr.set_par(0)
-    dr.play(arr, 0)
+    drum.set_par(0)
+    drum.play(arr, 0)
     sd.play(arr, blocking=True)
 
-    dr.set_par(1)
-    dr.play(arr, 0)
+    drum.set_par(1)
+    drum.play(arr, 0)
     sd.play(arr, blocking=True)

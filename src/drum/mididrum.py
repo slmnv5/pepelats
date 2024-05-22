@@ -34,8 +34,8 @@ class MidiDrum(BaseDrum):
         super().set_volume(volume)
         self._mow.port.send_message([0xB0, 8, round(volume * 127)])
 
-    def _set_bar_len(self, bar_len: int) -> None:
-        super()._set_bar_len(bar_len)
+    def set_bar_len(self, bar_len: int) -> None:
+        super().set_bar_len(bar_len)
         lst = int_to_bytes(round(self._bpm * 100), 6)
         self._mow.port.send_message([0xF0, 0x5A] + lst + [0xF7])
 

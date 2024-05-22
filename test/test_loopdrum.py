@@ -11,8 +11,8 @@ def test_1():
     sp = SongPart()
     sp.record_samples(sound, 0)
     kwargs = {"SongPart": sp}
-    dr = create_drum("LoopDrum", **kwargs)
-    dr.init(100_000)
+    drum = create_drum("LoopDrum", **kwargs)
+    drum.set_bar_len(100_000)
     arr = make_zero_buffer(120_000)
-    dr.play(arr, 0)
+    drum.play(arr, 0)
     sd.play(arr, blocking=True)
