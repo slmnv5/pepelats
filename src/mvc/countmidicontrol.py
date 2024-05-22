@@ -4,6 +4,7 @@ from threading import Timer
 import rtmidi.midiconstants
 
 from mvc.menuhost import MenuHost
+from utils.utilconfig import MIN_VELO, STD_VELO
 from utils.utillog import get_my_log
 
 my_log = get_my_log(__name__)
@@ -45,7 +46,7 @@ class CountMidiControl(MenuHost):
     take the original note, count taps, +5 if the last tap is long,
     set velocity of note to counted value. After inactivity period ~0.6 seconds count is reset"""
 
-    __count_sec: float = 0.600
+    _COUNT_SEC: float = 0.600
 
     def __init__(self, midi_in, queue: Queue):
         MenuHost.__init__(self, queue)
@@ -68,12 +69,15 @@ class CountMidiControl(MenuHost):
         if not msg:
             return
 
+        note_on: bool = msg[0] & 0xF0 == rtmidi.midiconstants.NOTE_ON
         note: int = msg[1]
         velo: int = msg[2]
+        if note_on and velo < MIN_VELO:
+            return
+        velo = STD_VELO
         str_note = f"{note}-{velo}"
-        is_on = msg[0] & 0xF0 == rtmidi.midiconstants.NOTE_ON
 
-        if is_on and self.__past_note != note:
+        if note_on and self.__past_note != note:
             # do not send same note many times, we count it below
             my_log.debug(f"Sending non-counted note: {str_note}")
             self._menuhost_send(str_note)
@@ -82,12 +86,12 @@ class CountMidiControl(MenuHost):
             self.__on_count, self.__off_count = 0, 0
             self.__past_note = note
 
-        if is_on:
+        if note_on:
             self.__on_count += 1
         elif self.__on_count > 0:  # old OFF note may come before new ON, we correct here
             self.__off_count += 1
 
-        Timer(CountMidiControl.__count_sec, self.__count_enqueue,
+        Timer(CountMidiControl._COUNT_SEC, self.__count_enqueue,
               [self.__on_count, self.__off_count, note]).start()
 
     def __count_enqueue(self, on_count: int, off_count: int, note: int) -> None:

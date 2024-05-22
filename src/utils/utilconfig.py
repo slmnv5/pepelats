@@ -114,7 +114,7 @@ if len(tmp) != 6:
     raise RuntimeError(f"midi_notes in main.ini must have 6 values, found: {tmp}")
 if not all(isinstance(x, int) and 0 <= x <= 127 for x in tmp):
     raise RuntimeError(f"midi_notes in main.ini must have integer values [0:127], found: {tmp}")
-1
+
 MIDI_NOTES: list[int] = tmp
 
 _screen = load_ini_section(find_path(ConfigName.main_ini), "SCREEN")
@@ -130,3 +130,8 @@ sd.check_input_settings(channels=IN_CH, dtype=SD_TYPE, samplerate=SD_RATE)
 sd.default.samplerate = SD_RATE
 sd.default.dtype = [SD_TYPE, SD_TYPE]
 sd.default.latency = ('low', 'low')
+
+# min note velocity to consider, conted notes have velocity equal to count
+MIN_VELO: int = 10
+# standard note velocity, note loder than MIN_VELO is converted to STD_VELO
+STD_VELO: int = 100
