@@ -119,9 +119,9 @@ class ManyLoopCtrl(LoopCtrl, ABC):
             return
         self._stop_song()
         kwargs = {"SongPart": self._song.item_from_idx(0)}
-        dr = create_drum(drum_type, **kwargs)
-        dr.init(bar_len)
-        self._drum = dr
+        self._drum = create_drum(drum_type, **kwargs)
+        self._drum.set_config()
+        self._drum.init(bar_len)
 
     def _load_drum_config(self) -> None:
         self._drum.set_config()

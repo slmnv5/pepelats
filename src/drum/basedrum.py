@@ -20,7 +20,7 @@ class BaseDrum(ABC):
         self._bpm: float = 0
         self._ptn_idx: int = 0  # pattern/sound index
         self._ptn_lst: list[any] = list()  # play patterns
-        self._is_fill: bool = False  # Fill or intense break of rythm
+        self._is_fill: bool = False  # is playing fill/break
         self._par: float = 0.5  # from 0 to 1,  swing, used by some drum types
         self._volume: float = 0.5  # from 0 to 1
 
