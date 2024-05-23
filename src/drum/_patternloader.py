@@ -16,46 +16,44 @@ class PatternLoader:
     def __init__(self, fn_load: Callable[[str, dict[str, str], dict[str, str]], None],
                  fn_convert: Callable[[int, float, dict[str, str]], list[np.ndarray]],
                  fn_intensity: Callable[[dict[str, str]], str]):
+        # patterns sorted by energy. Low enrgy patterns used for rythm, high enegry for drum fills/breaks
+        self.QUIET_PTRN_FRACTION: float = 0.7
+        # split quiet and loud patterns based on intencity
+        self.__split_id: int = 0
         self.__fn_load = fn_load
         self.__fn_convert = fn_convert
         self.__fn_intensity = fn_intensity
-
-        # patterns from INI file
-        self.__patterns: list[dict[str, str]] = list()
-        self.__names: list[str] = list()
-        self.__intensities: list[str] = list()
+        # dict of patterns from INI file, name: str, intensity: str
+        self.__str_patterns: list[tuple[dict[str, str], str, str]] = list()
+        # list of patterns as sounds, name: str, intesity: strs
+        self.__snd_patterns: list[tuple[list[np.ndarray], str, str]] = list()
 
     def load_patterns(self, fname: str) -> None:
         assert os.path.isfile(fname)
         cfg = ConfigParser()
         cfg.read(fname)
         dic: dict[str, dict[str, str]] = {s: dict(cfg.items(s)) for s in cfg.sections()}
-        self.__patterns.clear()
-        self.__names.clear()
-        self.__intensities.clear()
+        self.__str_patterns.clear()
         for ptn_name in dic:
             ptn_dic: dict[str, str] = dict()
             assert dic[ptn_name], "Empty section in INI file: {fname}, section: {ptn_name}"
             self.__fn_load(ptn_name, dic[ptn_name], ptn_dic)
-            ptn_dic["name"] = ptn_name
-            ptn_dic["intensity"] = self.__fn_intensity(ptn_dic)  # add volume info
-            self.__patterns.append(ptn_dic)
-        assert len(self.__patterns) > 0
+            intensity: str = self.__fn_intensity(ptn_dic)  # pattern energy
+            self.__str_patterns.append((ptn_dic, ptn_name, intensity))
+        assert len(self.__str_patterns) > 0
         # sort INI patterns by intensity
-        self.__patterns.sort(key=lambda x: x["intensity"])
-        self.__names = [x["name"] for x in self.__patterns]
-        self.__intensities = [x["intensity"] for x in self.__patterns]
-        my_log.debug(f"Loaded from: {fname}:\nnames: {self.__names}\nintensities: {self.__intensities}")
+        self.__str_patterns.sort(key=lambda x: x[2])
+        my_log.debug(f"Loaded from: {fname}:\npatterns: {self.__str_patterns}")
 
-    def get_patterns(self, bar_len: int, par: float) -> list[list[np.ndarray]]:
-        tmp: list[list[np.ndarray]] = list()
-        # INI patterns already sorted by intensity
-        for ptn_dic in self.__patterns:
-            tmp.append(self.__fn_convert(bar_len, par, ptn_dic))
-        return tmp
+    def prepare_patterns(self, bar_len: int, par: float) -> None:
+        self.__snd_patterns.clear()
+        # INI patterns are already sorted by intensity
+        for ptn_dic, name, intensity in self.__str_patterns:
+            self.__snd_patterns.append((self.__fn_convert(bar_len, par, ptn_dic), name, intensity))
+        self.__split_id = round(len(self.__snd_patterns) * self.QUIET_PTRN_FRACTION)
 
-    def get_pattern_name(self, idx: int) -> str:
-        return self.__names[idx] if 0 <= idx < len(self.__names) else ""
+    def get_quiet_patterns(self) -> list[tuple[list[np.ndarray], str, str]]:
+        return self.__snd_patterns[:self.__split_id]
 
-    def get_intensity(self, idx: int) -> str:
-        return self.__intensities[idx] if 0 <= idx < len(self.__intensities) else ""
+    def get_loud_patterns(self) -> list[tuple[list[np.ndarray], str, str]]:
+        return self.__snd_patterns[self.__split_id:]

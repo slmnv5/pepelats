@@ -1,4 +1,4 @@
-from random import choice, random
+from random import random
 from threading import Timer
 
 import numpy as np
@@ -17,11 +17,9 @@ class LoopDrum(BaseDrum):
 
     def __init__(self, part: SongPart):
         BaseDrum.__init__(self)
+        self.DRUM_SKIP_PROB: float = 0.3
+        self.__drum_skip_set: set[SongPart] = set()
         self._part: SongPart = part
-        # Used to skip some drum sounds
-        self.DRUM_COUNT_LIST: list[int] = [3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1]
-        # Fill/break can not be too short, if short is extended by half a bar
-        self.SMALLEST_FILL_FRACTION: float = 0.1
 
     def is_playable(self, buff: WrapBuffer) -> bool:
         return id(self._part) != id(buff)
@@ -30,15 +28,12 @@ class LoopDrum(BaseDrum):
         return ""
 
     def randomize(self) -> None:
-        self._is_fill = False
-        self._play_drum_count = choice(self.DRUM_COUNT_LIST)
-        self.start()
+        self.__drum_skip_set.clear()
+        self._part.loops.apply_to_each(lambda x:
+                                       self.__drum_skip_set.add(x) if random() < self.DRUM_SKIP_PROB else None)
 
     def play_fill(self, idx: int) -> None:
-        if self._is_fill or not self._bar_len:
-            return
-        self._is_fill = True
-        self._play_drum_count = 5
+        self.__drum_skip_set.clear()
         tmp: int = idx % self._bar_len
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2
@@ -52,8 +47,8 @@ class LoopDrum(BaseDrum):
             if random() < self._par:
                 self.randomize()
         loops = self._part.loops
-        loops.apply_to_each(lambda x: WrapBuffer.play_samples(x, out_data, idx) if loops.idx_from_item(
-            x) < self._play_drum_count else None)
+        loops.apply_to_each(lambda x:
+                            WrapBuffer.play_samples(x, out_data, idx) if x not in self.__drum_skip_set else None)
 
     def iterate_config(self, steps: int) -> None:
         pass

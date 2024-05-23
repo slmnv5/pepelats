@@ -14,6 +14,7 @@ _INIT_AMPLITUDE: float = 0.7
 
 
 def _adjust_volume(vol: float, sounds: dict[str, np.ndarray]) -> dict[str, tuple[np.ndarray, np.ndarray]]:
+    """ Create sounds with specific volumes - normal and accented. Input suonds in dict. stay unchanged """
     v1 = vol * MAX_SD_TYPE
     v2 = v1 * ACCENT_FACTOR
     return {k: ((v * v1).astype(SD_TYPE), (v * v2).astype(SD_TYPE)) for k, v in sounds.items()}

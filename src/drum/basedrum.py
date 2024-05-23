@@ -12,13 +12,13 @@ my_log = get_my_log(__name__)
 class BaseDrum(ABC):
 
     def __init__(self):
-        self._play_drum_count: int = 5
         self._is_stopped: bool = True
         self._bar_len: int = 0
         self._bpm: float = 0
-        self._is_fill: bool = False  # is playing fill/break
         self._par: float = 0.5  # from 0 to 1,  swing, used by some drum types
         self._volume: float = 0.5  # from 0 to 1
+        # Fill/break can not be too short, if short is extended by half a bar
+        self.SMALLEST_FILL_FRACTION: float = 0.1
 
     def set_volume(self, volume: float) -> None:
         volume = min(1., volume)
@@ -70,7 +70,7 @@ class BaseDrum(ABC):
         pass
 
     def stop(self) -> None:
-        self._is_stopped, self._is_fill = True, False
+        self._is_stopped = True
 
     def start(self) -> None:
         self._is_stopped = False
