@@ -60,7 +60,7 @@ def _load_audio_samples(dname: str) -> dict[str, np.ndarray]:
         assert sound.dtype == np.float64 and np.max(sound) < 1 and sound.shape[1] == 2
         if OUT_CH == 1:
             # mono output is set for mono input
-            sound = sound[:, 0]
+            sound = sound[:, :1]
         result[fname[:-4]] = sound
     my_log.info(f"Loaded samples from {len(result)} WAV files")
     return result
