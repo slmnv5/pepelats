@@ -5,11 +5,13 @@ import time
 import traceback
 from multiprocessing import Queue
 
-from buffer.loopsimple import LoopSimple
 from control.manyloopctrl import ManyLoopCtrl
+from song.song import Song
+from song.songpart import SongPart
 from utils.utilconfig import ConfigName, SD_RATE, MAX_LEN_SECONDS, load_ini_section, find_path, update_ini_section
+from utils.utilfactory import create_drum
 from utils.utillog import get_my_log
-from utils.utilother import DrawInfo, CollectionOwner, FileFinder
+from utils.utilother import DrawInfo, FileFinder
 from utils.utilportout import MidiOutWrap
 
 my_log = get_my_log(__name__)
@@ -46,7 +48,7 @@ class Looper(ManyLoopCtrl):
         draw_info.is_rec = self.get_is_rec()
         self._send_q.put([ConfigName.client_redraw, draw_info])
 
-    # ===============+ other methods
+    # ===============+ other methods ===============================
 
     def _restart_looper(self) -> None:
         self._stop_song()
@@ -79,33 +81,7 @@ class Looper(ManyLoopCtrl):
         print("\n", mow.show())
         time.sleep(10)
 
-    #  ============ All song parts view and related commands
-
-    def _delete_song_part(self) -> None:
-        selected = self._song.get_idx()
-        if self._next_id == selected:
-            return  # can not delete active part
-        elif self._next_id < selected:
-            selected -= 1  # selected will be less after deletion
-
-        self._song.item_from_idx(self._next_id)
-        self._song.delete_selected()
-        self._song.item_from_idx(selected)
-        self._next_id = selected
-
-    def _clear_part(self) -> None:
-        selected: int = self._song.get_idx()
-        if self._next_id == selected:
-            return  # can not clear active part
-        part = self._song.item_from_idx(self._next_id)
-        self._next_id = selected
-        self.stop_never()
-        self._song.item_from_idx(selected)
-        if not self._drum.is_playable(part):
-            return  # loop drum uses this part, can not delete it
-        if not part.is_empty:
-            part.max_buffer()
-            part.loops = CollectionOwner[LoopSimple](part)
+    #  ============ all parts methods ===============
 
     def _undo_part(self) -> None:
         part = self._song.get_item()
@@ -125,14 +101,7 @@ class Looper(ManyLoopCtrl):
         part = self._song.get_item()
         part.redo()
 
-    def _redo_all(self) -> None:
-        if self._song.get_idx() == self._next_id:
-            self._set_is_rec(False)
-            part = self._song.get_item()
-            while part.redo():
-                pass
-
-    #  ================= One song part view and related commands
+    # ================= one part methods ====================================
 
     def _change_loop(self, *params) -> None:
         loops = self._song.get_item().loops
@@ -151,3 +120,61 @@ class Looper(ManyLoopCtrl):
                 part.loops.idx_from_item(deleted)
         elif params[0] == "delete" and part != loop:
             part.loops.delete_selected()
+
+    # ================= song methods =============================
+
+    def _init_song(self) -> None:
+        self._drum.stop()
+        self._stop_song()
+        tmp = [SongPart(), SongPart(), SongPart(), SongPart()]
+        self._song = Song(tmp)
+        kwargs = {"SongPart": self._song.item_from_idx(0)}
+        drum_type = self._drum.get_class_name()
+        config = self._drum.get_config()
+        self._drum = create_drum(drum_type, **kwargs)
+        self._drum.set_config(config)
+
+    def _delete_song(self) -> None:
+        self._stop_song()
+        self._song.delete_song()
+
+    def _load_song(self) -> None:
+        self._stop_song()
+        self._song.load_song(self)
+
+    def _save_song(self) -> None:
+        self._stop_song()
+        self._song.save_song(self)
+
+    def _save_new_song(self) -> None:
+        self._stop_song()
+        self._song.save_new_song(self)
+
+    def _show_name(self) -> str:
+        return self._song.get_complete_name(self)
+
+    def _show_songs(self) -> str:
+        return self._song.show_songs()
+
+    def _iterate_song(self, steps: int) -> None:
+        self._song.iterate_song(steps)
+
+    # ========== drum methods ==================================
+    def _change_drum_type(self, drum_type: str) -> None:
+        old_type, bar_len = self._drum.get_class_name(), self._drum.get_bar_len()
+        if old_type == drum_type:
+            return
+        self._stop_song()
+        kwargs = {"SongPart": self._song.item_from_idx(0)}
+        self._drum = create_drum(drum_type, **kwargs)
+        self._drum.set_config()
+        self._drum.set_bar_len(bar_len)
+
+    def _load_drum_config(self) -> None:
+        self._drum.set_config()
+        bar_len = self._drum.get_bar_len()
+        if bar_len:
+            self._drum.set_bar_len(bar_len)
+
+    def _init_drum(self, bar_len: int) -> None:
+        self._drum.set_bar_len(bar_len)
