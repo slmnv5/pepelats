@@ -77,8 +77,10 @@ OUT_CH = dev_out["max_output_channels"]
 IN_CH = dev_in["max_input_channels"]
 if IN_CH not in [1, 2]:
     raise RuntimeError(f"ALSA IN device must have 1 or 2 channels, got {IN_CH}")
-if OUT_CH not in [2]:
-    raise RuntimeError(f"ALSA OUT device must have 2 channels, got {OUT_CH}")
+if OUT_CH not in [1, 2]:
+    raise RuntimeError(f"ALSA OUT device must have 1 or 2 channels, got {OUT_CH}")
+
+IN_CH = OUT_CH = min(IN_CH, OUT_CH)
 
 SD_TYPE: str = _audio.get('sd_type', "int16")
 assert SD_TYPE and isinstance(SD_TYPE, str)
@@ -88,6 +90,18 @@ assert MAX_LEN_SECONDS and isinstance(MAX_LEN_SECONDS, int)
 
 SD_RATE: int = int(_audio.get('sd_rate', 44100))
 assert SD_RATE and isinstance(SD_RATE, int)
+
+MAX_SD_TYPE = np.iinfo(SD_TYPE).max
+MAX_LEN: int = MAX_LEN_SECONDS * SD_RATE
+MAX_32_INT = np.iinfo(np.int32).max  # 2 ** 32 - 1
+
+sd.default.samplerate = SD_RATE
+sd.default.dtype = [SD_TYPE, SD_TYPE]
+sd.default.latency = ('low', 'low')
+sd.default.channels = IN_CH, OUT_CH
+
+sd.check_output_settings(channels=OUT_CH, dtype=SD_TYPE, samplerate=SD_RATE)
+sd.check_input_settings(channels=IN_CH, dtype=SD_TYPE, samplerate=SD_RATE)
 
 _keyboard = load_ini_section(find_path(ConfigName.main_ini), "KEYBOARD")
 tmp = _keyboard.get('kbd_notes_windows', '1,2,3,4,q,w')
@@ -119,17 +133,6 @@ MIDI_NOTES: list[int] = tmp
 
 _screen = load_ini_section(find_path(ConfigName.main_ini), "SCREEN")
 KEEP_SCREEN = "--keep_screen" in sys.argv
-
-MAX_SD_TYPE = np.iinfo(SD_TYPE).max
-MAX_LEN: int = MAX_LEN_SECONDS * SD_RATE
-MAX_32_INT = np.iinfo(np.int32).max  # 2 ** 32 - 1
-
-sd.check_output_settings(channels=OUT_CH, dtype=SD_TYPE, samplerate=SD_RATE)
-sd.check_input_settings(channels=IN_CH, dtype=SD_TYPE, samplerate=SD_RATE)
-
-sd.default.samplerate = SD_RATE
-sd.default.dtype = [SD_TYPE, SD_TYPE]
-sd.default.latency = ('low', 'low')
 
 # min note velocity to consider, conted notes have velocity equal to count
 MIN_VELO: int = 10
