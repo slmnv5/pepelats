@@ -97,3 +97,11 @@ class WrapBuffer:
             self.__buff = trim_buffer(self.__buff, rec_len, start_rec_idx - offset)
 
         my_log.info(f"After trim length ratio: {self.__len_ratio}")
+
+    def set_channels(self, channels: int) -> None:
+        assert channels in [1, 2]
+        assert self.__buff.shape[1] in [1, 2]
+        if self.__buff.shape[1] == 2 and channels == 1:
+            self.__buff = self.__buff[:, :1]
+        elif self.__buff.shape[1] == 1 and channels == 2:
+            self.__buff = np.column_stack((self.__buff, self.__buff))

@@ -5,7 +5,7 @@ from collections.abc import Iterable
 from buffer.loopctrl import LoopCtrl
 # noinspection PyUnresolvedReferences
 from song.songpart import SongPart
-from utils.utilconfig import find_path
+from utils.utilconfig import find_path, OUT_CH
 from utils.utilfactory import create_drum
 from utils.utillog import get_my_log
 from utils.utilname import generate_name
@@ -58,7 +58,7 @@ class Song(CollectionOwner[SongPart]):
         with open(fname, 'rb') as f:
             parts_lst, drum_type, config, bar_len, volume, par = pickle.load(f)
 
-        parts_lst = [x if x is not None else SongPart() for x in parts_lst[0:4]]
+        parts_lst: list[SongPart] = [x if x is not None else SongPart() for x in parts_lst[0:4]]
         assert parts_lst
         assert isinstance(bar_len, int) and bar_len > 0, f"{bar_len}"
         assert isinstance(volume, float) and 0 <= volume <= 1, f"{volume}"
@@ -72,7 +72,9 @@ class Song(CollectionOwner[SongPart]):
         drum.set_par(par)
         ctrl.set_drum(drum)
         for part in parts_lst:
+            part.loops.apply_to_each(lambda x: x.set_channels(OUT_CH))
             self.idx_from_item(part)
+
         self.item_from_idx(0)
         while self.item_count() > len(parts_lst):
             self.delete_selected()
