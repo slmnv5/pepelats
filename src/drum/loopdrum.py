@@ -18,7 +18,7 @@ class LoopDrum(BaseDrum):
     def __init__(self, part: SongPart):
         BaseDrum.__init__(self)
         self.DRUM_SKIP_PROB: float = 0.3
-        self.__drum_skip_set: set[SongPart] = set()
+        self.__drum_skip_lst: list[int] = list()
         self._part: SongPart = part
 
     def is_playable(self, buff: WrapBuffer) -> bool:
@@ -28,12 +28,12 @@ class LoopDrum(BaseDrum):
         return ""
 
     def randomize(self) -> None:
-        self.__drum_skip_set.clear()
+        self.__drum_skip_lst.clear()
         self._part.loops.apply_to_each(lambda x:
-                                       self.__drum_skip_set.add(x) if random() < self.DRUM_SKIP_PROB else None)
+                                       self.__drum_skip_lst.append(id(x)) if random() < self.DRUM_SKIP_PROB else 0)
 
     def play_fill(self, idx: int) -> None:
-        self.__drum_skip_set.clear()
+        self.__drum_skip_lst.clear()
         tmp: int = idx % self._bar_len
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2
@@ -48,7 +48,7 @@ class LoopDrum(BaseDrum):
                 self.randomize()
         loops = self._part.loops
         loops.apply_to_each(lambda x:
-                            WrapBuffer.play_samples(x, out_data, idx) if x not in self.__drum_skip_set else None)
+                            WrapBuffer.play_samples(x, out_data, idx) if id(x) not in self.__drum_skip_lst else None)
 
     def iterate_config(self, steps: int) -> None:
         pass

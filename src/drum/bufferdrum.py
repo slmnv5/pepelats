@@ -24,7 +24,7 @@ class BufferDrum(BaseDrum, ABC):
         BaseDrum.__init__(self)
         # Used to skip some drum sounds from patterns
         self.DRUM_SKIP_PROB: float = 0.2
-        self.__drum_skip_set: list[np.ndarray] = list()
+        self.__drum_skip_lst: list[int] = list()
         self.__drum_play_lst: list[np.ndarray] = list()  # play patterns
         self.__drum_name: str = ""
         self.__drum_intensity: str = ""
@@ -61,13 +61,11 @@ class BufferDrum(BaseDrum, ABC):
     def set_volume(self, volume: float) -> None:
         super().set_volume(volume)
         SampleLoader.set_volume(self._volume)  # change all sound samples
-        self.stop()
         self._pl.prepare_patterns(self._bar_len, self._par)
         self.randomize()
 
     def set_par(self, par: float) -> None:
         super().set_par(par)
-        self.stop()
         self._pl.prepare_patterns(self._bar_len, self._par)
 
     @staticmethod
@@ -88,7 +86,7 @@ class BufferDrum(BaseDrum, ABC):
     def play(self, out_data: np.ndarray, idx: int) -> None:
         if self._is_stopped or not self._bar_len:
             return
-        for buff in [x for x in self.__drum_play_lst if x not in self.__drum_skip_set]:
+        for buff in [x for x in self.__drum_play_lst if id(x) not in self.__drum_skip_lst]:
             play_buffer(buff, out_data, idx)
 
     def get_header(self) -> str:
@@ -97,15 +95,17 @@ class BufferDrum(BaseDrum, ABC):
     def randomize(self) -> None:
         self.__drum_play_lst, self.__drum_name, self.__drum_intensity \
             = choice(self._pl.get_quiet_patterns())
-        self.__drum_skip_set.clear()
+        assert self.__drum_play_lst
+        self.__drum_skip_lst.clear()
         for drum in self.__drum_play_lst:
             if random() < self.DRUM_SKIP_PROB:
-                self.__drum_skip_set.append(drum)
+                self.__drum_skip_lst.append(id(drum))
 
     def play_fill(self, idx: int) -> None:
         self.__drum_play_lst, self.__drum_name, self.__drum_intensity \
             = choice(self._pl.get_loud_patterns())
-        self.__drum_skip_set.clear()
+        assert self.__drum_play_lst
+        self.__drum_skip_lst.clear()
         tmp: int = idx % self._bar_len
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2

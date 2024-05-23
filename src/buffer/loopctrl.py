@@ -82,9 +82,11 @@ class LoopCtrl(MenuClient, ABC):
 
     def _random_drum(self) -> None:
         self._drum.randomize()
+        self._drum.start()
 
     def _play_drum_fill(self) -> None:
         self._drum.play_fill(self.idx)
+        self._drum.start()
 
     def _stop_drum(self) -> None:
         self._drum.stop()
