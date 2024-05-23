@@ -62,7 +62,7 @@ def _load_audio_samples(dname: str) -> dict[str, np.ndarray]:
             # mono output is set for mono input
             sound = sound[:, 0]
         result[fname[:-4]] = sound
-    my_log.info(f"Loaded samples for {len(result)} WAV files")
+    my_log.info(f"Loaded samples from {len(result)} WAV files")
     return result
 
 
