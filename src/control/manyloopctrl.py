@@ -51,6 +51,8 @@ class ManyLoopCtrl(LoopCtrl, ABC):
                 part.loops.idx_from_item(LoopSimple(part.length))
                 part.clear_undo()
                 self._set_is_rec(True)
+            else:
+                self._set_is_rec(False)
             self._start_rec_idx, self.idx, self.__rec_id = 0, 0, -1
             self.add_command([ConfigName.client_redraw, None])
             part.play_buffer(self)
@@ -110,13 +112,13 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         if self._song.get_idx() != self.__next_id:
             self.__rec_id = self.__next_id
             return
+        self.__rec_id = -1
         part: SongPart = self._song.get_item()
         if part.is_empty:
             return
         loop: LoopSimple = part.loops.get_item()
         assert part.loops.get_idx() == part.loops.item_count() - 1
         assert not loop.is_empty
-        assert self.get_is_rec()
         loop.max_buffer()
         self._start_rec_idx = self.idx
 
