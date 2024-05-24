@@ -120,6 +120,8 @@ class Looper(ManyLoopCtrl):
                 part.loops.idx_from_item(deleted)
         elif params[0] == "delete" and part != loop:
             part.loops.delete_selected()
+        elif params[0] == "clear":
+            loop.clear_buffer()
 
     # ================= song methods =============================
 

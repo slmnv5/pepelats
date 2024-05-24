@@ -39,6 +39,9 @@ class WrapBuffer:
 
         return self.__info_str + self.__props_str
 
+    def clear_buffer(self) -> None:
+        self.__buff.fill(0)
+
     def max_buffer(self) -> None:
         self.__buff = make_zero_buffer(MAX_LEN)
         self.__info_str, self.__len_ratio = "", 0
