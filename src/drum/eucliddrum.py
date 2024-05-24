@@ -50,11 +50,10 @@ class EuclidDrum(BufferDrum):
         """ Calculate pattern intensity """
         result: float = 0.0
         for sname, notes in ptn_dic.items():
-            for _, s in enumerate(notes):
+            for s in notes:
                 if s not in "+*":
                     continue
                 is_accent = s == '*'
                 factor = 1 if not is_accent else ACCENT_FACTOR * ACCENT_FACTOR
                 result += factor * self._sl.get_power(sname) / len(notes)
-
         return f"{round(result, 1)}"
