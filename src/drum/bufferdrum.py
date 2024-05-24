@@ -22,6 +22,7 @@ class BufferDrum(BaseDrum, ABC):
 
     def __init__(self, dname: str):
         BaseDrum.__init__(self)
+        self._sl = SampleLoader()
         # Used to skip some drum sounds from patterns
         self.DRUM_SKIP_PROB: float = 0.2
         self.__drum_skip_lst: list[int] = list()
@@ -60,7 +61,7 @@ class BufferDrum(BaseDrum, ABC):
 
     def set_volume(self, volume: float) -> None:
         super().set_volume(volume)
-        SampleLoader.set_volume(self._volume)  # change all sound samples
+        self._sl.set_volume(self._volume)  # change all sound samples
         self._pl.prepare_patterns(self._bar_len, self._par)
         self.randomize()
 
@@ -68,18 +69,15 @@ class BufferDrum(BaseDrum, ABC):
         super().set_par(par)
         self._pl.prepare_patterns(self._bar_len, self._par)
 
-    @staticmethod
-    def _load(ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
+    def _load(self, ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
         """One Drum pattern put into dictionary"""
-        pass
+        return
 
-    @staticmethod
-    def _convert(bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
+    def _convert(self, bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
         """All Drum patterns converted into play list """
-        pass
+        return list()
 
-    @staticmethod
-    def _intensity(ptn_dic: dict[str, str]) -> str:
+    def _intensity(self, ptn_dic: dict[str, str]) -> str:
         """ Calculate pattern intensity """
         return "0.0"
 

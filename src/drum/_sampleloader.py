@@ -68,38 +68,36 @@ def _load_audio_samples(dname: str) -> dict[str, np.ndarray]:
 
 
 class SampleLoader:
-    # sound name and loaded sound samples
-    _sounds = _load_audio_samples(find_path("config/drum/wav"))
-    _maxes: dict[str, float] = {k: round(v.max(initial=0.01), 2) for k, v in _sounds.items()}
-    _ampl_factor: float = _INIT_AMPLITUDE / ACCENT_FACTOR / max(_maxes.values())
-    # normalize amplitudes so that when volume == 1 there is no clipping
-    for k, v in _sounds.items():
-        _sounds[k] = v * _ampl_factor
-    _variances: dict[str, float] = {k: round(1000 * v.var(), 2) for k, v in _sounds.items()}
-    _durations: dict[str, float] = {k: round(len(v) / SD_RATE, 2) for k, v in _sounds.items()}
 
-    # _adjusted are for changing volume up and down, _sounds do not change
-    _adjusted = _adjust_volume(0.7, _sounds)
-    my_log.debug(f"Loaded sounds:\nvariances:{_variances}")
-    my_log.debug(f"Loaded sounds:\ndurations:{_durations}")
-    my_log.debug(f"Loaded sounds:\nmaximums:{_maxes}")
+    def __init__(self):
+        # sound names and loaded sound samples
+        self._sounds = _load_audio_samples(find_path("config/drum/wav"))
+        self._maxes: dict[str, float] = {k: round(v.max(initial=0.01), 2) for k, v in self._sounds.items()}
+        self._ampl_factor: float = _INIT_AMPLITUDE / ACCENT_FACTOR / max(self._maxes.values())
+        # normalize amplitudes so that when volume == 1 there is no clipping
+        for k, v in self._sounds.items():
+            self._sounds[k] = v * self._ampl_factor
+        self._variances: dict[str, float] = {k: round(1000 * v.var(), 2) for k, v in self._sounds.items()}
+        self._durations: dict[str, float] = {k: round(len(v) / SD_RATE, 2) for k, v in self._sounds.items()}
 
-    @classmethod
-    def set_volume(cls, volume: float) -> None:
-        cls._adjusted = _adjust_volume(volume, cls._sounds)
+        # _adjusted are for changing volume up and down, _sounds do not change
+        self._adjusted = _adjust_volume(0.7, self._sounds)
+        my_log.debug(f"Loaded sounds:\nvariances:{self._variances}")
+        my_log.debug(f"Loaded sounds:\ndurations:{self._durations}")
+        my_log.debug(f"Loaded sounds:\nmaximums:{self._maxes}")
 
-    @classmethod
-    def get_sound(cls, sname: str, is_accent: bool) -> np.ndarray:
-        if sname in cls._adjusted:
+    def set_volume(self, volume: float) -> None:
+        self._adjusted = _adjust_volume(volume, self._sounds)
+
+    def get_sound(self, sname: str, is_accent: bool) -> np.ndarray:
+        if sname in self._adjusted:
             if is_accent:
-                return cls._adjusted[sname][1]
+                return self._adjusted[sname][1]
             else:
-                return cls._adjusted[sname][0]
+                return self._adjusted[sname][0]
 
-    @classmethod
-    def get_power(cls, sname: str) -> float:
-        return cls._variances.get(sname) * cls._durations.get(sname)
+    def get_power(self, sname: str) -> float:
+        return self._variances.get(sname) * self._durations.get(sname)
 
-    @classmethod
-    def get_sound_names(cls) -> list[str]:
-        return list(cls._adjusted.keys())
+    def get_sound_names(self) -> list[str]:
+        return list(self._adjusted.keys())
