@@ -34,7 +34,7 @@ class BufferDrum(BaseDrum, ABC):
         self._ff = FileFinder(tmp, True, ".ini")
         assert self._ff.get_item()
         self._pl: PatternLoader \
-            = PatternLoader(self._pattern_load, self._pattern_convert, self._pattern_intensity)
+            = PatternLoader(self._load, self._convert, self._intensity)
 
     def show_param(self) -> str:
         base_info = super().show_param()
@@ -69,17 +69,17 @@ class BufferDrum(BaseDrum, ABC):
         self._pl.prepare_patterns(self._bar_len, self._par)
 
     @staticmethod
-    def _pattern_load(ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
+    def _load(ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
         """One Drum pattern put into dictionary"""
         pass
 
     @staticmethod
-    def _pattern_convert(bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
+    def _convert(bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
         """All Drum patterns converted into play list """
         pass
 
     @staticmethod
-    def _pattern_intensity(ptn_dic: dict[str, str]) -> str:
+    def _intensity(ptn_dic: dict[str, str]) -> str:
         """ Calculate pattern intensity """
         return "0.0"
 

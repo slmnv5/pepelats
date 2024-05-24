@@ -19,7 +19,7 @@ class EuclidDrum(BufferDrum):
         BufferDrum.__init__(self, "config/drum/euclid")
 
     @staticmethod
-    def _pattern_load(ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
+    def _load(ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
         """One Drum pattern put into dictionary"""
         sound_lst = SampleLoader.get_sound_names()
         for sname, euclid_str in [(k, v) for (k, v) in sect_dic.items() if k in sound_lst]:
@@ -29,7 +29,7 @@ class EuclidDrum(BufferDrum):
         my_log.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
 
     @staticmethod
-    def _pattern_convert(bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
+    def _convert(bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
         result = list()
         sound_lst = SampleLoader.get_sound_names()
         for sname, notes in [(k, v) for k, v in ptn_dic.items() if k in sound_lst]:
@@ -51,7 +51,7 @@ class EuclidDrum(BufferDrum):
         return result
 
     @staticmethod
-    def _pattern_intensity(ptn_dic: dict[str, str]) -> str:
+    def _intensity(ptn_dic: dict[str, str]) -> str:
         """ Calculate pattern intensity """
         sound_lst = SampleLoader.get_sound_names()
         result: float = 0.0
