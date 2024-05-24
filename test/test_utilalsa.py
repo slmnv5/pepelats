@@ -33,12 +33,11 @@ def test_2():
 def test_3() -> None:
     duration_sec: float = 1.0
     result: np.ndarray = sd.rec(round(duration_sec * SD_RATE), dtype='int16', blocking=True)
-    print(111111111111, result.shape)
+    print(111111111111, result.shape, result.dtype, np.amax(result))
 
     for _ in range(3):
         sd.play(result, blocking=True)
 
 
 if __name__ == "__main__":
-    test_1()
     test_3()
