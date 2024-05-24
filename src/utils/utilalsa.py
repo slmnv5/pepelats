@@ -20,10 +20,15 @@ def line_ndarray(slope: float, offset: float, duration_sec: float) -> np.ndarray
 
 
 def correct_dtype(x: np.ndarray) -> np.ndarray:
-    assert x.ndim == 1 or x.shape[1] == 1
+    assert x.ndim == 1 or (x.shape[1] == 1 and x.ndim == 2)
     assert x.dtype in [np.float64, np.float32]
     x = (x * MAX_SD_TYPE).astype(SD_TYPE)
-    return np.column_stack((x, x))
+    if OUT_CH == 2:
+        return np.column_stack((x, x))
+    elif x.ndim == 1:
+        return x.reshape(-1, 1)
+    else:
+        return x
 
 
 def make_sin_sound(sound_freq: int, duration_sec: float, amplitude: float = 0.25) -> np.ndarray:

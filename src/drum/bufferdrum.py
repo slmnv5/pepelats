@@ -52,6 +52,7 @@ class BufferDrum(BaseDrum, ABC):
     def set_bar_len(self, bar_len: int) -> None:
         super().set_bar_len(bar_len)
         self._pl.prepare_patterns(self._bar_len, self._par)
+        self.randomize()
 
     def show_config(self) -> str:
         return self._ff.get_str()
@@ -63,7 +64,6 @@ class BufferDrum(BaseDrum, ABC):
         super().set_volume(volume)
         self._sl.set_volume(self._volume)  # change all sound samples
         self._pl.prepare_patterns(self._bar_len, self._par)
-        self.randomize()
 
     def set_par(self, par: float) -> None:
         super().set_par(par)
