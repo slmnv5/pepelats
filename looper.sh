@@ -2,9 +2,6 @@
 
 TMP=$(dirname "$0")
 cd "$TMP" || exit 1
-ROOTDIR="$(pwd -P)"
-APPDIR=$(basename "$ROOTDIR")
-export APPDIR
 
 found=$(pgrep --full start_looper.py)
 if [ -n "$found" ]; then
@@ -14,9 +11,9 @@ fi
 
 sleep 5
 
-if [ ! -d "$ROOTDIR/.save_song" ]; then mkdir -p "$ROOTDIR/.save_song"; fi
+if [ ! -d ".save_song" ]; then mkdir -p ".save_song"; fi
 
-cd "$ROOTDIR/src" || exit 1
+cd "./src" || exit 1
 
 touch log.txt
 chmod a+rw log.txt

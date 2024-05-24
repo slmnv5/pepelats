@@ -7,7 +7,7 @@ import sounddevice as sd
 
 from utils.utillog import get_my_log
 
-APPDIR = os.sep + os.environ['APPDIR']
+APPDIR = os.sep + 'pepelats'
 
 my_log = get_my_log(__name__)
 
