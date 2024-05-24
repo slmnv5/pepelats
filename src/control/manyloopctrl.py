@@ -45,7 +45,12 @@ class ManyLoopCtrl(LoopCtrl, ABC):
             self.__play_event.wait()
             part = self._song.item_from_idx(self.__next_id)
             self.stop_never()
-            self._set_is_rec(part.is_empty or self.__rec_id == self.__next_id)
+            if part.is_empty:
+                self._set_is_rec(True)
+            elif self.__rec_id == self.__next_id:
+                part.loops.idx_from_item(LoopSimple(part.length))
+                part.clear_undo()
+                self._set_is_rec(True)
             self._start_rec_idx, self.idx, self.__rec_id = 0, 0, -1
             self.add_command([ConfigName.client_redraw, None])
             part.play_buffer(self)
