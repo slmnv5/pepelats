@@ -98,7 +98,7 @@ class BufferDrum(BaseDrum, ABC):
             play_buffer(buff, out_data, idx)
 
     def __str__(self) -> str:
-        return f"{super()}:{self.__drum_name}"
+        return f"{super().__str__()}:{self.__drum_name}"
 
     def randomize(self) -> None:
         self.__drum_play_lst, self.__drum_name, self.__drum_intensity \

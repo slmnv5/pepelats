@@ -103,10 +103,10 @@ class BaseDrum(ABC):
     def iterate_config(self, steps: int) -> None:
         pass
 
-    def __str__(self) -> str:
-        cls_name = self.__class__.__name__[0]
-        return f"{cls_name}:{self._bpm:.2F}"
-
     @abstractmethod
     def show_param(self) -> str:
         return f"vol:{self._volume:.2F} par:{self._par:.2F}"
+
+    def __str__(self) -> str:
+        cls_name = self.__class__.__name__[0]
+        return f"{cls_name}:{self._bpm:.2F}"
