@@ -19,6 +19,6 @@ print("Loop", l1)
 
 
 def test_1():
-    Timer(3, c1.stop_at_bound, args=[0]).start()
+    Timer(5, c1.stop_at_bound, args=[0]).start()
     c1.stop_never()
     l1.play_buffer(c1)
