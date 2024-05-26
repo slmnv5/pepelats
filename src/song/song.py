@@ -4,7 +4,6 @@ import pickle
 from buffer.loopctrl import LoopCtrl
 from drum.drumfactory import create_drum
 from drum.loopdrum import LoopDrum
-from drum.silentdrum import SilentDrum
 # noinspection PyUnresolvedReferences
 from song.songpart import SongPart
 from utils.utilaudio import find_path, SD_CH, SD_TYPE
@@ -23,15 +22,11 @@ class Song(CollectionOwner[SongPart]):
         self._name: str = ""
         self._ctrl: LoopCtrl = ctrl
         self._ff = FileFinder(find_path(".save_song"), True, "")
-        if not load_song or not self._ff.item_from_idx(-1): # no saved song
+        if not load_song or not self._ff.item_from_idx(-1):  # no saved song
             while self.item_count() < 4:
                 self.idx_from_item(SongPart())
         else:
             self.load_song()  # there is latest song saved
-
-        if isinstance(ctrl.get_drum(), LoopDrum):
-                drum = create_drum("LoopDrum", kwargs={"SongPart": self.item_from_idx(0)})
-                self._ctrl.set_drum(drum)
 
     def get_name(self) -> str:
         if not self._name:
@@ -76,8 +71,7 @@ class Song(CollectionOwner[SongPart]):
             [(x.correct_buffer(SD_CH, SD_TYPE) if need_fix else x)
              if x is not None else SongPart() for x in parts_lst[0:4]]
         assert parts_lst
-        kwargs = {"SongPart": parts_lst[0]}
-        drum = create_drum(drum_type, **kwargs)
+        drum = create_drum(drum_type)
         self._ctrl.set_drum(drum)
         drum.set_pickle(drum_info)
         for part in parts_lst:
@@ -86,6 +80,9 @@ class Song(CollectionOwner[SongPart]):
         self.item_from_idx(0)
         while self.item_count() > len(parts_lst):
             self.delete_selected()
+
+        if isinstance(drum, LoopDrum) and not drum.songpart:
+            drum.songpart = self.item_from_idx(0)
 
         my_log.info(f"Loaded song file: {fname}")
 

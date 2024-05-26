@@ -20,7 +20,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
 
     def __init__(self, queue: Queue):
         LoopCtrl.__init__(self, queue)
-        self._song: Song = Song(self)
+        self._song: Song = Song(self, True)
         self.__next_id: int = 0
         self.__play_event: Event = Event()
         Thread(target=self.__play_loop, name="play_loop", daemon=True).start()

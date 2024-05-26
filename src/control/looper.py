@@ -7,7 +7,8 @@ from multiprocessing import Queue
 
 from control.manyloopctrl import ManyLoopCtrl
 from drum.drumfactory import create_drum
-from song.songpart import SongPart
+from drum.loopdrum import LoopDrum
+from song.song import Song
 from utils.utilaudio import SD_RATE
 from utils.utilconfig import ConfigName, load_ini_section, find_path, update_ini_section
 from utils.utillog import MyLog
@@ -126,17 +127,11 @@ class Looper(ManyLoopCtrl):
     def _init_song(self) -> None:
         self._drum.stop()
         self._stop_song()
-        part_len = self._song.item_count()
-        while self._song.apply_to_each(lambda x: x.m)
-            self._song.idx_from_item(SongPart())
-        self._song.item_from_idx(0)
-        while self._song.item_count() < 4:
-            self._song.delete_selected()
-        kwargs = {"SongPart": self._song.item_from_idx(0)}
         drum_type = self._drum.get_class_name()
         config = self._drum.get_config()
-        self._drum = create_drum(drum_type, **kwargs)
+        self._drum = create_drum(drum_type)
         self._drum.set_config(config)
+        self._song = Song(self)
 
     def _delete_song(self) -> None:
         self._stop_song()
@@ -169,8 +164,7 @@ class Looper(ManyLoopCtrl):
         if old_type == drum_type:
             return
         self._stop_song()
-        kwargs = {"SongPart": self._song.item_from_idx(0)}
-        self._drum = create_drum(drum_type, **kwargs)
+        self._drum = create_drum(drum_type)
         self._drum.set_config()
         self._drum.set_bar_len(bar_len)
 
@@ -181,4 +175,7 @@ class Looper(ManyLoopCtrl):
             self._drum.set_bar_len(bar_len)
 
     def _init_drum(self, bar_len: int) -> None:
+        if isinstance(self._drum, LoopDrum) and not self._drum.songpart:
+            self._drum.songpart = self._song.item_from_idx(0)
+
         self._drum.set_bar_len(bar_len)

@@ -15,6 +15,9 @@ class SilentDrum(BaseDrum):
     def get_config(self) -> str:
         return ""
 
+    def set_config(self, config: str = None) -> None:
+        pass
+
     def play(self, out_data: np.ndarray, idx: int) -> None:
         pass
 

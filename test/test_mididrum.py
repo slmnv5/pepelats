@@ -1,5 +1,5 @@
-from utils.utilaudio import SD_RATE
 from drum.drumfactory import create_drum
+from utils.utilaudio import SD_RATE
 
 
 def test_1():

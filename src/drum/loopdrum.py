@@ -19,23 +19,17 @@ class LoopDrum(BaseDrum):
         BaseDrum.__init__(self)
         self.DRUM_SKIP_PROB: float = 0.3
         self.__drum_skip_lst: list[int] = list()
-        self._part: SongPart | None = None
-
-    def set_songpart(self, part: SongPart) -> None:
-        self._part = part
+        self.songpart: SongPart | None = None
 
     def is_playable(self, buff: WrapBuffer) -> bool:
-        return id(self._part) != id(buff)
-
-    def get_config(self) -> str:
-        return ""
+        return id(self.songpart) != id(buff)
 
     def randomize(self) -> None:
         self.__drum_skip_lst.clear()
-        if not self._part:
+        if not self.songpart:
             return
-        self._part.loops.apply_to_each(lambda x:
-                                       self.__drum_skip_lst.append(id(x)) if random() < self.DRUM_SKIP_PROB else 0)
+        self.songpart.loops.apply_to_each(lambda x:
+                                          self.__drum_skip_lst.append(id(x)) if random() < self.DRUM_SKIP_PROB else 0)
 
     def play_fill(self, idx: int) -> None:
         self.__drum_skip_lst.clear()
@@ -46,12 +40,12 @@ class LoopDrum(BaseDrum):
         Timer(tmp / SD_RATE, self.randomize).start()
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
-        if self._is_stopped or not self._bar_len or not self._part:
+        if self._is_stopped or not self._bar_len or not self.songpart:
             return
         if idx % self._bar_len == 0:
             if random() < self._par:
                 self.randomize()
-        loops = self._part.loops
+        loops = self.songpart.loops
         loops.apply_to_each(lambda x:
                             WrapBuffer.play_samples(x, out_data, idx) if id(x) not in self.__drum_skip_lst else None)
 
@@ -63,3 +57,9 @@ class LoopDrum(BaseDrum):
 
     def show_param(self) -> str:
         return super().show_param()
+
+    def get_config(self) -> str:
+        return ""
+
+    def set_config(self, config: str = None) -> None:
+        pass

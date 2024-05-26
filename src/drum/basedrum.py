@@ -61,6 +61,7 @@ class BaseDrum(ABC):
     def get_config(self) -> str:
         pass
 
+    @abstractmethod
     def set_config(self, config: str = None) -> None:
         pass
 
