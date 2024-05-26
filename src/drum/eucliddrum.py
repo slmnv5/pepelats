@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from drum.bufferdrum import BufferDrum
+from drum._bufferdrum import BufferDrum
 from utils.utilalsa import make_zero_buffer
 from utils.utillog import MyLog
 from utils.utilnumpy import record_buffer

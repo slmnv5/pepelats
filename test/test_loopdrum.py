@@ -3,7 +3,7 @@ import sounddevice as sd
 from song.songpart import SongPart
 from utils.utilalsa import make_zero_buffer, make_sin_sound, correct_sound
 from utils.utilaudio import SD_TYPE, SD_CH
-from drum.drumfactory import DrumFactory
+from drum.drumfactory import create_drum
 
 
 def test_1():
@@ -12,7 +12,7 @@ def test_1():
     sp = SongPart()
     sp.record_samples(sound, 0)
     kwargs = {"SongPart": sp}
-    drum = DrumFactory.create_drum("LoopDrum", **kwargs)
+    drum = create_drum("LoopDrum", **kwargs)
     drum.set_bar_len(100_000)
     arr = make_zero_buffer(120_000)
     drum.play(arr, 0)

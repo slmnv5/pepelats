@@ -6,7 +6,7 @@ import traceback
 from multiprocessing import Queue
 
 from control.manyloopctrl import ManyLoopCtrl
-from drum.drumfactory import DrumFactory
+from drum.drumfactory import create_drum
 from song.song import Song
 from song.songpart import SongPart
 from utils.utilaudio import SD_RATE
@@ -132,7 +132,7 @@ class Looper(ManyLoopCtrl):
         kwargs = {"SongPart": self._song.item_from_idx(0)}
         drum_type = self._drum.get_class_name()
         config = self._drum.get_config()
-        self._drum = DrumFactory.create_drum(drum_type, **kwargs)
+        self._drum = create_drum(drum_type, **kwargs)
         self._drum.set_config(config)
 
     def _delete_song(self) -> None:
@@ -167,7 +167,7 @@ class Looper(ManyLoopCtrl):
             return
         self._stop_song()
         kwargs = {"SongPart": self._song.item_from_idx(0)}
-        self._drum = DrumFactory.create_drum(drum_type, **kwargs)
+        self._drum = create_drum(drum_type, **kwargs)
         self._drum.set_config()
         self._drum.set_bar_len(bar_len)
 

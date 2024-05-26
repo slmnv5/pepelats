@@ -4,7 +4,7 @@ from threading import Event, Thread
 
 from buffer.loopctrl import LoopCtrl
 from buffer.loopsimple import LoopSimple
-from drum.drumfactory import DrumFactory
+from drum.drumfactory import create_drum
 from drum.loopdrum import LoopDrum
 from song.song import Song
 from song.songpart import SongPart
@@ -23,7 +23,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
         tmp = [SongPart(), SongPart(), SongPart(), SongPart()]
         self._song: Song = Song(tmp)
         kwargs = {"SongPart": tmp[0]}
-        drum = DrumFactory.create_drum(drum_type, **kwargs)
+        drum = create_drum(drum_type, **kwargs)
         drum.set_config()
         LoopCtrl.__init__(self, queue, drum)
         self.__next_id: int = 0

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from abc import ABC
+from abc import ABC, abstractmethod
 from random import choice, choices, sample, random
 from threading import Timer
 
@@ -73,14 +73,17 @@ class BufferDrum(BaseDrum, ABC):
         super().set_par(par)
         self._pl.prepare_patterns(self._bar_len, self._par)
 
+    @abstractmethod
     def _load(self, ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
         """One Drum pattern put into dictionary"""
         return
 
+    @abstractmethod
     def _convert(self, bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
         """All Drum patterns converted into play list """
         return list()
 
+    @abstractmethod
     def _intensity(self, ptn_dic: dict[str, str]) -> str:
         """ Calculate pattern intensity """
         return "0.0"

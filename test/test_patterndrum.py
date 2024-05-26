@@ -3,10 +3,10 @@ from threading import Timer
 
 from buffer.loopctrl import LoopCtrl
 from buffer.loopsimple import LoopSimple
-from drum.drumfactory import DrumFactory
+from drum.drumfactory import create_drum
 
 queue = Queue()
-drum = DrumFactory.create_drum("PatternDrum")
+drum = create_drum("PatternDrum")
 drum.set_config("Test.ini")
 drum.set_bar_len(100_000)
 drum.set_par(0)

@@ -3,7 +3,7 @@ import pickle
 from collections.abc import Iterable
 
 from buffer.loopctrl import LoopCtrl
-from drum.drumfactory import DrumFactory
+from drum.drumfactory import create_drum
 # noinspection PyUnresolvedReferences
 from song.songpart import SongPart
 from utils.utilaudio import find_path, SD_CH, SD_TYPE
@@ -66,7 +66,7 @@ class Song(CollectionOwner[SongPart]):
              if x is not None else SongPart() for x in parts_lst[0:4]]
         assert parts_lst
         kwargs = {"SongPart": parts_lst[0]}
-        drum = DrumFactory.create_drum(drum_type, **kwargs)
+        drum = create_drum(drum_type, **kwargs)
         ctrl.set_drum(drum)
         drum.set_pickle(drum_info)
         for part in parts_lst:
