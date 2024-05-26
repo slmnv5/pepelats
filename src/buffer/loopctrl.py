@@ -3,7 +3,6 @@ from multiprocessing import Queue
 from threading import Event
 
 from drum.basedrum import BaseDrum
-from drum.loopdrum import LoopDrum
 from drum.silentdrum import SilentDrum
 from mvc.menuclient import MenuClient
 
@@ -18,7 +17,7 @@ class LoopCtrl(MenuClient, ABC):
     def __init__(self, queue: Queue):
         super().__init__(queue)
         self.idx: int = 0
-        self._drum: BaseDrum = LoopDrum()
+        self._drum: BaseDrum = SilentDrum()
         self._start_rec_idx: int = 0
         self.__is_rec: bool = False
         self.__stop_len: int = 0
