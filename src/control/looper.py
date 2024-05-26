@@ -127,7 +127,7 @@ class Looper(ManyLoopCtrl):
         self._drum.stop()
         self._stop_song()
         part_len = self._song.item_count()
-        while self._song.item_count() < part_len + 4:
+        while self._song.apply_to_each(lambda x: x.m)
             self._song.idx_from_item(SongPart())
         self._song.item_from_idx(0)
         while self._song.item_count() < 4:

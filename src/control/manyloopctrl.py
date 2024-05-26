@@ -19,8 +19,8 @@ class ManyLoopCtrl(LoopCtrl, ABC):
      Song is collection of song parts with related methods"""
 
     def __init__(self, queue: Queue):
-        self._song: Song = Song(self)
         LoopCtrl.__init__(self, queue)
+        self._song: Song = Song(self)
         self.__next_id: int = 0
         self.__play_event: Event = Event()
         Thread(target=self.__play_loop, name="play_loop", daemon=True).start()
