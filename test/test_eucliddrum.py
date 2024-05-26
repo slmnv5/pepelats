@@ -6,9 +6,9 @@ from buffer.loopsimple import LoopSimple
 from drum.drumfactory import DrumFactory
 
 queue = Queue()
-drum = DrumFactory.create_drum("PatternDrum")
+drum = DrumFactory.create_drum("EuclidDrum")
 drum.set_config("Test.ini")
-drum.set_bar_len(100_000)
+drum.set_bar_len(88_000)
 drum.set_par(0)
 drum.start()
 
