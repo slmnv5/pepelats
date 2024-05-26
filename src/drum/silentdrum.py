@@ -7,6 +7,7 @@ my_log = MyLog()
 
 
 class SilentDrum(BaseDrum):
+    """ Drum that does nothing """
 
     def __init__(self):
         BaseDrum.__init__(self)
