@@ -20,10 +20,9 @@ class EuclidDrum(BufferDrum):
     def _load(self, ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
         """One Drum pattern put into dictionary"""
         for sname, euclid_str in sect_dic.items():
-            euclid_lst = [int(x) for x in euclid_str.split(",")]
-            if euclid_lst[0] and euclid_lst[1]:
-                notes = EuclidSlicer(euclid_lst[0], euclid_lst[1], euclid_lst[2], euclid_lst[3]).get_ptrn_str()
-                ptn_dic[sname] = notes
+            ptn_lst = [int(x) for x in euclid_str.split(",")]
+            if ptn_lst[0] and ptn_lst[1]:
+                ptn_dic[sname] = EuclidSlicer(ptn_lst[0], ptn_lst[1], ptn_lst[2], ptn_lst[3]).get_ptrn_str()
         my_log.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
 
     def _convert(self, bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
