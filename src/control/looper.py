@@ -22,7 +22,7 @@ class Looper(ManyLoopCtrl):
     """Adds screen connection, Mixer, looper commands"""
 
     def __init__(self, recv_q: Queue, send_q: Queue):
-        ManyLoopCtrl.__init__(self, recv_q, "EuclidDrum")
+        ManyLoopCtrl.__init__(self, recv_q, "PatternDrum")
         self._send_q = send_q
         self._saved_draw_info = DrawInfo()
 
