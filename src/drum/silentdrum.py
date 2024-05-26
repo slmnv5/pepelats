@@ -1,0 +1,33 @@
+import numpy as np
+
+from drum.basedrum import BaseDrum
+from utils.utillog import MyLog
+
+my_log = MyLog()
+
+
+class SilentDrum(BaseDrum):
+
+    def __init__(self):
+        BaseDrum.__init__(self)
+
+    def get_config(self) -> str:
+        return ""
+
+    def play(self, out_data: np.ndarray, idx: int) -> None:
+        pass
+
+    def randomize(self) -> None:
+        pass
+
+    def play_fill(self, idx: int) -> None:
+        pass
+
+    def show_config(self) -> str:
+        return ""
+
+    def iterate_config(self, steps: int) -> None:
+        pass
+
+    def show_param(self) -> str:
+        return ""

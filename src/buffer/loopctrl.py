@@ -3,6 +3,7 @@ from multiprocessing import Queue
 from threading import Event
 
 from drum.basedrum import BaseDrum
+from drum.silentdrum import SilentDrum
 from mvc.menuclient import MenuClient
 
 
@@ -13,10 +14,10 @@ class LoopCtrl(MenuClient, ABC):
     _LATE_SAMPLES: int = 5000
     _HUGE_INT = 2 ** 30
 
-    def __init__(self, queue: Queue, drum: BaseDrum):
+    def __init__(self, queue: Queue):
         super().__init__(queue)
         self.idx: int = 0
-        self._drum: BaseDrum = drum
+        self._drum: BaseDrum = SilentDrum()
         self._start_rec_idx: int = 0
         self.__is_rec: bool = False
         self.__stop_len: int = 0

@@ -1,6 +1,5 @@
 import os.path
 import pickle
-from collections.abc import Iterable
 
 from buffer.loopctrl import LoopCtrl
 from drum.drumfactory import create_drum
@@ -17,10 +16,18 @@ my_log = MyLog()
 class Song(CollectionOwner[SongPart]):
     """Song keeps SongParts as CollectionOwner, can save and load from file"""
 
-    def __init__(self, first: SongPart | Iterable[SongPart]):
-        CollectionOwner.__init__(self, first)
+    def __init__(self, ctrl: LoopCtrl):
+        CollectionOwner.__init__(self, SongPart())
         self._name: str = ""
+        self._ctrl: LoopCtrl = ctrl
         self._ff = FileFinder(find_path(".save_song"), True, "")
+        if self._ff.item_from_idx(-1):
+            self.load_song()  # there is latest song saved
+        else:
+            while self.item_count() < 4:
+                self.idx_from_item(SongPart())
+            drum = create_drum("LoopDrum", kwargs={"SongPart": self.item_from_idx(0)})
+            self._ctrl.set_drum(drum)
 
     def get_name(self) -> str:
         if not self._name:
@@ -29,15 +36,15 @@ class Song(CollectionOwner[SongPart]):
         assert self._name.count("_") == 1
         return self._name
 
-    def get_complete_name(self, ctrl: LoopCtrl) -> str:
-        drum = ctrl.get_drum()
+    def get_complete_name(self) -> str:
+        drum = self._ctrl.get_drum()
         cls = drum.get_class_name()[0]
         cfg = drum.get_config()[:-4]
         return f"{self.get_name()}.{cls}.{cfg}"
 
-    def save_song(self, ctrl: LoopCtrl) -> None:
-        drum = ctrl.get_drum()
-        self._ff.idx_from_item(self.get_complete_name(ctrl))
+    def save_song(self) -> None:
+        drum = self._ctrl.get_drum()
+        self._ff.idx_from_item(self.get_complete_name())
         fname = self._ff.get_full_name()
         parts_lst = list()
         self.apply_to_each(lambda x: parts_lst.append(None if x.is_empty else x))
@@ -49,7 +56,7 @@ class Song(CollectionOwner[SongPart]):
 
         my_log.info(f"Saved song file: {fname}")
 
-    def load_song(self, ctrl: LoopCtrl) -> None:
+    def load_song(self) -> None:
         self._name = self._ff.get_item().split(".")[0]
         fname = self._ff.get_full_name()
         if not os.path.isfile(fname):
@@ -67,7 +74,7 @@ class Song(CollectionOwner[SongPart]):
         assert parts_lst
         kwargs = {"SongPart": parts_lst[0]}
         drum = create_drum(drum_type, **kwargs)
-        ctrl.set_drum(drum)
+        self._ctrl.set_drum(drum)
         drum.set_pickle(drum_info)
         for part in parts_lst:
             self.idx_from_item(part)
@@ -78,9 +85,9 @@ class Song(CollectionOwner[SongPart]):
 
         my_log.info(f"Loaded song file: {fname}")
 
-    def save_new_song(self, ctrl) -> None:
+    def save_new_song(self) -> None:
         self._name = ""
-        self.save_song(ctrl)
+        self.save_song()
 
     def show_songs(self) -> str:
         return self._ff.get_str()

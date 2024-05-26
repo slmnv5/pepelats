@@ -7,7 +7,6 @@ from multiprocessing import Queue
 
 from control.manyloopctrl import ManyLoopCtrl
 from drum.drumfactory import create_drum
-from song.song import Song
 from song.songpart import SongPart
 from utils.utilaudio import SD_RATE
 from utils.utilconfig import ConfigName, load_ini_section, find_path, update_ini_section
@@ -22,7 +21,7 @@ class Looper(ManyLoopCtrl):
     """Adds screen connection, Mixer, looper commands"""
 
     def __init__(self, recv_q: Queue, send_q: Queue):
-        ManyLoopCtrl.__init__(self, recv_q, "PatternDrum")
+        ManyLoopCtrl.__init__(self, recv_q)
         self._send_q = send_q
         self._saved_draw_info = DrawInfo()
 
@@ -32,7 +31,7 @@ class Looper(ManyLoopCtrl):
         else:
             self._saved_draw_info = draw_info
 
-        draw_info.header = self._drum.get_header()
+        draw_info.header = f"{self._drum}"
         if draw_info.update_method:
             # noinspection PyBroadException
             try:
@@ -127,8 +126,12 @@ class Looper(ManyLoopCtrl):
     def _init_song(self) -> None:
         self._drum.stop()
         self._stop_song()
-        tmp = [SongPart(), SongPart(), SongPart(), SongPart()]
-        self._song = Song(tmp)
+        part_len = self._song.item_count()
+        while self._song.item_count() < part_len + 4:
+            self._song.idx_from_item(SongPart())
+        self._song.item_from_idx(0)
+        while self._song.item_count() < 4:
+            self._song.delete_selected()
         kwargs = {"SongPart": self._song.item_from_idx(0)}
         drum_type = self._drum.get_class_name()
         config = self._drum.get_config()
@@ -141,18 +144,18 @@ class Looper(ManyLoopCtrl):
 
     def _load_song(self) -> None:
         self._stop_song()
-        self._song.load_song(self)
+        self._song.load_song()
 
     def _save_song(self) -> None:
         self._stop_song()
-        self._song.save_song(self)
+        self._song.save_song()
 
     def _save_new_song(self) -> None:
         self._stop_song()
-        self._song.save_new_song(self)
+        self._song.save_new_song()
 
     def _show_name(self) -> str:
-        return self._song.get_complete_name(self)
+        return self._song.get_complete_name()
 
     def _show_songs(self) -> str:
         return self._song.show_songs()

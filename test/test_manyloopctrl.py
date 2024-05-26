@@ -7,6 +7,7 @@ from utils.utilalsa import make_sin_sound, correct_sound
 from utils.utilaudio import SD_TYPE, SD_CH
 
 
+
 def test_1():
     run_once("PatternDrum")
     run_once("EuclidDrum")
@@ -15,7 +16,8 @@ def test_1():
 
 
 def run_once(drum_type: str) -> None:
-    ctrl = ManyLoopCtrl(Queue(), drum_type)
+    ctrl = ManyLoopCtrl(Queue())
+    ctrl.set_drum(drum)
     ctrl.get_drum().set_bar_len(100_000)
     ctrl.get_drum().start()
 

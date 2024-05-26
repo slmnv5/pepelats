@@ -12,13 +12,13 @@ drum.set_bar_len(88_000)
 drum.set_par(0)
 drum.start()
 
-c1 = LoopCtrl(queue, drum)
+ctrl = LoopCtrl(queue)
 l1 = LoopSimple()
-print("LooCtl", c1)
+print("LooCtl", ctrl)
 print("Loop", l1)
 
 
 def test_1():
-    Timer(5, c1.stop_at_bound, args=[0]).start()
-    c1.stop_never()
-    l1.play_buffer(c1)
+    Timer(5, ctrl.stop_at_bound, args=[0]).start()
+    ctrl.stop_never()
+    l1.play_buffer(ctrl)

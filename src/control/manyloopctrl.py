@@ -4,7 +4,6 @@ from threading import Event, Thread
 
 from buffer.loopctrl import LoopCtrl
 from buffer.loopsimple import LoopSimple
-from drum.drumfactory import create_drum
 from drum.loopdrum import LoopDrum
 from song.song import Song
 from song.songpart import SongPart
@@ -19,13 +18,9 @@ class ManyLoopCtrl(LoopCtrl, ABC):
     """added playback thread and Song.
      Song is collection of song parts with related methods"""
 
-    def __init__(self, queue: Queue, drum_type: str):
-        tmp = [SongPart(), SongPart(), SongPart(), SongPart()]
-        self._song: Song = Song(tmp)
-        kwargs = {"SongPart": tmp[0]}
-        drum = create_drum(drum_type, **kwargs)
-        drum.set_config()
-        LoopCtrl.__init__(self, queue, drum)
+    def __init__(self, queue: Queue):
+        self._song: Song = Song(self)
+        LoopCtrl.__init__(self, queue)
         self.__next_id: int = 0
         self.__play_event: Event = Event()
         Thread(target=self.__play_loop, name="play_loop", daemon=True).start()
