@@ -10,19 +10,21 @@ import numpy as np
 from drum._patternloader import PatternLoader
 from drum._sampleloader import SampleLoader
 from drum.basedrum import BaseDrum
-from utils.utilconfig import find_path, SD_RATE
-from utils.utillog import get_my_log
+from utils.utilaudio import SD_RATE
+from utils.utilconfig import find_path
+from utils.utillog import MyLog
 from utils.utilnumpy import play_buffer
 from utils.utilother import FileFinder
 
-my_log = get_my_log(__name__)
+my_log = MyLog()
 
 
 class BufferDrum(BaseDrum, ABC):
 
-    def __init__(self, dname: str):
+    def __init__(self, ptnrn_dir: str):
         BaseDrum.__init__(self)
         self._sl = SampleLoader()
+        self._sl.set_volume(self._volume)
         # Used to skip some drum sounds from patterns
         self.DRUM_SKIP_PROB: float = 0.2
         self.__drum_skip_lst: list[int] = list()
@@ -30,7 +32,7 @@ class BufferDrum(BaseDrum, ABC):
         self.__drum_name: str = ""
         self.__drum_intensity: str = ""
 
-        tmp: str = find_path(dname)
+        tmp: str = find_path(ptnrn_dir)
         assert os.path.isdir(tmp)
         self._ff = FileFinder(tmp, True, ".ini")
         assert self._ff.get_item()

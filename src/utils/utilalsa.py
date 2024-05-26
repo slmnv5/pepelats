@@ -1,46 +1,69 @@
+import os
+import sys
+import wave
 from math import ceil, log10
+from typing import Any
 
 import numpy as np
-import sounddevice as sd
+from numpy import dtype, floating
 
-from utils.utilconfig import SD_TYPE, MAX_LEN, OUT_CH, MAX_SD_TYPE
+from utils.utilaudio import SD_TYPE, MAX_LEN, SD_CH, SD_RATE
 
 
 def make_zero_buffer(buff_len: int) -> np.ndarray:
     if buff_len < 0 or buff_len > MAX_LEN:
         raise RuntimeError(f"make_zero_buffer: incorrect buffer size: {buff_len}")
-    return np.zeros((buff_len, OUT_CH), SD_TYPE)
+    return np.zeros((buff_len, SD_CH), SD_TYPE)
 
 
 def line_ndarray(slope: float, offset: float, duration_sec: float) -> np.ndarray:
     """ Makes numpy array with linear function: y = slope * t + offset """
-    points_in_array: int = int(sd.default.samplerate * duration_sec)
+    points_in_array: int = int(SD_RATE * duration_sec)
     t = np.linspace(0, duration_sec, points_in_array)
     return slope * t + offset
 
 
-def correct_dtype(x: np.ndarray) -> np.ndarray:
-    assert x.ndim == 1 or (x.shape[1] == 1 and x.ndim == 2)
-    assert x.dtype in [np.float64, np.float32]
-    x = (x * MAX_SD_TYPE).astype(SD_TYPE)
-    if OUT_CH == 2:
-        return np.column_stack((x, x))
-    elif x.ndim == 1:
-        return x.reshape(-1, 1)
+def correct_sound(x: np.ndarray, channels: int, datatype: str) -> np.ndarray:
+    """ Convert numpy array to datatype amd channels """
+    assert x.ndim in [1, 2]
+    assert channels in [1, 2]
+    factor = get_conversion_factor(x.dtype, datatype)
+    x = (x * factor).astype(datatype)
+    if x.ndim == 1:
+        x = x.reshape(-1, 1)
+    if x.shape[1] < channels:
+        x = np.column_stack((x, x))
+    elif x.shape[1] > channels:
+        x = x[:, :1]
+    return x
+
+
+def get_conversion_factor(type_src: str, type_dst: str) -> float | int:
+    """ returns conversion factor when changing dtype in numpy array with sound """
+    src_float = np.issubdtype(type_src, np.floating)
+    dst_float = np.issubdtype(type_dst, np.floating)
+    if src_float:
+        if dst_float:
+            return 1
+        else:
+            return float(np.iinfo(type_dst).max)
     else:
-        return x
+        if dst_float:
+            return 1 / float(np.iinfo(type_src).max)
+        else:
+            return float(np.iinfo(type_dst).max) / float(np.iinfo(type_src).max)
 
 
 def make_sin_sound(sound_freq: int, duration_sec: float, amplitude: float = 0.25) -> np.ndarray:
     assert 0 <= amplitude < 1 and sound_freq > 0 and duration_sec > 0
-    points_in_array: int = int(sd.default.samplerate * duration_sec)
+    points_in_array: int = int(SD_RATE * duration_sec)
     t = np.linspace(0, duration_sec, points_in_array)
     x = amplitude * np.sin(2 * np.pi * sound_freq * t)
     return x
 
 
 def make_noise(duration_sec: float, amplitude: float = 0.25):
-    points_in_array: int = int(sd.default.samplerate * duration_sec)
+    points_in_array: int = int(SD_RATE * duration_sec)
     x = np.random.standard_normal(points_in_array)
     max_value = np.max(x)
     x = x * (amplitude / max_value)
@@ -68,3 +91,47 @@ def bytes_to_int(byte_list: list[int]) -> int:
     for i in range(len(byte_list)):
         value += byte_list[i] * (10 ** i)
     return value
+
+
+def read_wav_slow(fname: str) -> np.ndarray[Any, dtype[floating[Any]]]:
+    """ slow reading using wave module, avoids import of specialized modules """
+    assert os.path.isfile(fname)
+    with wave.open(fname, "rb") as f:
+        nchannels, sampwidth, framerate, nframes, _, _ = f.getparams()
+        buffer = f.readframes(-1)
+
+    signed = sampwidth > 1  # 8 bit wavs are unsigned
+    byteorder = sys.byteorder  # wave module uses sys.byteorder for bytes
+    sz = sampwidth * nchannels
+    frames = (buffer[i * sz: (i + 1) * sz] for i in range(nframes))
+    values = []  # e.g. for stereo, values[i] = [left_val, right_val]
+    for frame in frames:
+        channel_vals = []  # mono has 1 channel, stereo 2, etc.
+        for channel in range(nchannels):
+            as_bytes = frame[channel * sampwidth: (channel + 1) * sampwidth]
+            as_int = int.from_bytes(as_bytes, byteorder, signed=signed)
+            channel_vals.append(as_int)
+        values.append(channel_vals)
+
+    nparray = np.array(values)
+    factor: float = 1. / (2 ** (sampwidth * 8 - 1))
+    nparray = nparray * factor
+    assert nparray.dtype == 'float64'
+    return nparray
+
+
+def write_wav(fname: str, sound: np.ndarray) -> None:
+    assert sound.ndim == 2 and sound.shape[1] in [1, 2]
+    with wave.open(fname, "w") as f:
+        f.setnchannels(sound.shape[1])
+        f.setsampwidth(sound.itemsize)
+        f.setframerate(SD_RATE)
+        f.writeframes(sound.tobytes())
+
+
+MAX_SD_TYPE = get_conversion_factor('float32', SD_TYPE)
+
+
+def vol_db(arr: np.ndarray) -> any:
+    ratio = max(0.0001, np.max(arr, initial=0) / MAX_SD_TYPE)
+    return round(20 * log10(ratio))

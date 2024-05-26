@@ -4,9 +4,9 @@ from typing import Union
 
 import rtmidi
 
-from utils.utillog import get_my_log
+from utils.utillog import MyLog
 
-my_log = get_my_log(__name__)
+my_log = MyLog()
 
 
 class _FakeMidiOut:

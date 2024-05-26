@@ -6,15 +6,16 @@ import traceback
 from multiprocessing import Queue
 
 from control.manyloopctrl import ManyLoopCtrl
+from drum.drumfactory import DrumFactory
 from song.song import Song
 from song.songpart import SongPart
-from utils.utilconfig import ConfigName, SD_RATE, MAX_LEN_SECONDS, load_ini_section, find_path, update_ini_section
-from utils.utilfactory import create_drum
-from utils.utillog import get_my_log
+from utils.utilaudio import SD_RATE
+from utils.utilconfig import ConfigName, load_ini_section, find_path, update_ini_section
+from utils.utillog import MyLog
 from utils.utilother import DrawInfo, FileFinder
 from utils.utilportout import MidiOutWrap
 
-my_log = get_my_log(__name__)
+my_log = MyLog()
 
 
 class Looper(ManyLoopCtrl):
@@ -43,7 +44,7 @@ class Looper(ManyLoopCtrl):
             draw_info.content = ""
         assert draw_info.content is not None
         length = self._song.get_item().length
-        draw_info.loop_seconds = MAX_LEN_SECONDS if self.get_stop_event().is_set() else length / SD_RATE
+        draw_info.loop_seconds = length / SD_RATE
         draw_info.loop_position = 0 if not length else (self.idx % length) / length
         draw_info.is_rec = self.get_is_rec()
         self._send_q.put([ConfigName.client_redraw, draw_info])
@@ -120,8 +121,6 @@ class Looper(ManyLoopCtrl):
                 part.loops.idx_from_item(deleted)
         elif params[0] == "delete" and part != loop:
             part.loops.delete_selected()
-        elif params[0] == "clear":
-            loop.clear_buffer()
 
     # ================= song methods =============================
 
@@ -133,7 +132,7 @@ class Looper(ManyLoopCtrl):
         kwargs = {"SongPart": self._song.item_from_idx(0)}
         drum_type = self._drum.get_class_name()
         config = self._drum.get_config()
-        self._drum = create_drum(drum_type, **kwargs)
+        self._drum = DrumFactory.create_drum(drum_type, **kwargs)
         self._drum.set_config(config)
 
     def _delete_song(self) -> None:
@@ -168,7 +167,7 @@ class Looper(ManyLoopCtrl):
             return
         self._stop_song()
         kwargs = {"SongPart": self._song.item_from_idx(0)}
-        self._drum = create_drum(drum_type, **kwargs)
+        self._drum = DrumFactory.create_drum(drum_type, **kwargs)
         self._drum.set_config()
         self._drum.set_bar_len(bar_len)
 

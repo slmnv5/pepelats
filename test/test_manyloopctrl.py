@@ -3,7 +3,8 @@ from threading import Timer
 
 from buffer.loopsimple import LoopSimple
 from control.manyloopctrl import ManyLoopCtrl
-from utils.utilalsa import make_sin_sound, correct_dtype
+from utils.utilalsa import make_sin_sound, correct_sound
+from utils.utilaudio import SD_TYPE, SD_CH
 
 
 def test_1():
@@ -19,7 +20,7 @@ def run_once(drum_type: str) -> None:
     ctrl.get_drum().start()
 
     sound = make_sin_sound(440, 7)
-    sound = correct_dtype(sound)
+    sound = correct_sound(sound, SD_CH, SD_TYPE)
 
     assert ctrl.get_drum().get_bar_len() == 100_000
     print(f"\n{drum_type}\n{ctrl}\n{ctrl.get_drum()}")

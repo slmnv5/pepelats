@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-from math import log10
-
 import numpy as np
-
-from utils.utilconfig import MAX_SD_TYPE
 
 
 def _calc_slices_lst(buff_len: int, data_len: int, idx: int) -> list[slice]:
@@ -53,8 +49,3 @@ def trim_buffer(buff: np.ndarray, new_len: int, new_start: int) -> np.ndarray:
         return buff[slice_lst[0]]
     else:
         return np.concatenate((buff[slice_lst[0]], buff[slice_lst[1]]), axis=0)
-
-
-def vol_db(arr: np.ndarray) -> any:
-    ratio = max(0.0001, np.max(arr, initial=0) / MAX_SD_TYPE)
-    return round(20 * log10(ratio))

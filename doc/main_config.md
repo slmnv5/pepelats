@@ -5,8 +5,7 @@ This INI file [main.ini](./../main.ini) has few sections that define main config
 Some of the options used in this INI file are:
 
 * max_len_seconds -- loop's max. length is in seconds (default is 60 seconds)
-* preffered_list -- list of names (or part of names) for USB audio devices to use. First found device form this list is
-  used.
+* device_name -- name (or part of name) for USB audio devices to use.
 * midi_in -- name (or part of name) of MIDI IN port to get looper control messages (default is BlueBoard)
 * midi_out -- name (or part of name) of MIDI OUT port to use with MIDI drum
 * kbd_notes_linux -- 6 keys on computer keyboard connected to linux (to use keyboard as foot controller)

@@ -4,13 +4,12 @@ from math import ceil
 
 import numpy as np
 
-from drum._sampleloader import ACCENT_FACTOR
 from drum.bufferdrum import BufferDrum
 from utils.utilalsa import make_zero_buffer
-from utils.utillog import get_my_log
+from utils.utillog import MyLog
 from utils.utilnumpy import record_buffer
 
-my_log = get_my_log(__name__)
+my_log = MyLog()
 
 
 class PatternDrum(BufferDrum):
@@ -51,8 +50,6 @@ class PatternDrum(BufferDrum):
                     chg = round(step_len * par * 0.25)
                     idx += chg
                 record_buffer(buff, sound_arr, idx)
-
-        my_log.debug(f"Converted all drum patterns: {len(result)}")
         return result
 
     def _intensity(self, ptn_dic: dict[str, str]) -> str:
@@ -64,6 +61,5 @@ class PatternDrum(BufferDrum):
                 if s not in "!":
                     continue
                 is_accent = accents[k] == '!'
-                factor = 1 if not is_accent else ACCENT_FACTOR * ACCENT_FACTOR
-                result += factor * self._sl.get_power(sname) / len(notes)
+                result += self._sl.get_energy(sname, is_accent) / len(notes)
         return f"{round(result, 1)}"

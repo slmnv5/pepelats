@@ -1,9 +1,9 @@
-from utils.utilconfig import SD_RATE
-from utils.utilfactory import create_drum
+from utils.utilaudio import SD_RATE
+from drum.drumfactory import DrumFactory
 
 
 def test_1():
-    drum = create_drum("MidiDrum")
+    drum = DrumFactory.create_drum("MidiDrum")
     drum.set_bar_len(SD_RATE * 2)
     config, bar_len = drum.get_config(), drum.get_bar_len()
     assert bar_len == SD_RATE * 2

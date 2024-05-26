@@ -1,35 +1,47 @@
 import logging
 import sys
 
-_fmt_str = "%(asctime)s;%(levelname)s;%(name)s>>>%(message)s"
 
+class MyLog:
+    __instance = None
+    __fmt_str = "%(asctime)s;%(levelname)s>>>%(message)s"
 
-def get_my_log(name: str, level: int = None) -> logging.Logger:
-    logger = logging.getLogger(name)
-    assert not logger.handlers
-    for h in logger.handlers:
-        logger.removeHandler(h)
+    def __new__(cls):
+        """ creates a singleton object, if it is not created, else returns existing """
+        if not cls.__instance:
+            cls.__instance = super(MyLog, cls).__new__(cls)
+            cls.__instance.__initialized = False
+        return cls.__instance
 
-    formatter = logging.Formatter(fmt=_fmt_str, datefmt="%Y-%m-%d %H:%M:%S")
-    fname: str = "./log.txt"
+    def __init__(self):
+        if self.__initialized:
+            return
+        self.__initialized = True
+        self._logger = logging.getLogger()
+        for h in self._logger.handlers:
+            self._logger.removeHandler(h)
+        formatter = logging.Formatter(fmt=self.__fmt_str, datefmt="%Y-%m-%d %H:%M:%S")
+        fname: str = "./log.txt"
 
-    handler_file = logging.FileHandler(fname, mode='a')
-    handler_file.setFormatter(formatter)
+        self._logger.addHandler(logging.FileHandler(fname, mode='a'))
+        self._logger.addHandler(logging.StreamHandler(sys.stderr))
+        for h in self._logger.handlers:
+            h.setFormatter(formatter)
 
-    handler_screen = logging.StreamHandler(sys.stderr)
-    handler_screen.setFormatter(formatter)
+        if "--debug" in sys.argv:
+            level = logging.DEBUG
+        elif "--info" in sys.argv:
+            level = logging.INFO
+        else:
+            level = logging.WARNING
 
-    logger.addHandler(handler_screen)
-    logger.addHandler(handler_file)
+        self._logger.setLevel(level)
 
-    if level is not None:
-        pass
-    elif "--debug" in sys.argv:
-        level = logging.DEBUG
-    elif "--info" in sys.argv:
-        level = logging.INFO
-    else:
-        level = logging.WARNING
+    def debug(self, msg: str):
+        self._logger.debug(msg)
 
-    logger.setLevel(level)
-    return logger
+    def info(self, msg: str):
+        self._logger.info(msg)
+
+    def error(self, msg: str):
+        self._logger.error(msg)

@@ -3,12 +3,12 @@ from threading import Timer
 
 from buffer.loopctrl import LoopCtrl
 from buffer.loopsimple import LoopSimple
-from utils.utilfactory import create_drum
+from drum.drumfactory import DrumFactory
 
 
 def test_1():
     queue = Queue()
-    drum = create_drum("PatternDrum")
+    drum = DrumFactory.create_drum("PatternDrum")
     drum.start()
     c1 = LoopCtrl(queue, drum)
     c1._set_is_rec(True)

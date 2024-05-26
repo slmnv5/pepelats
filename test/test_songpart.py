@@ -2,13 +2,13 @@ from multiprocessing import Queue
 from threading import Timer
 
 from buffer.loopctrl import LoopCtrl
+from drum.drumfactory import DrumFactory
 from song.songpart import SongPart
-from utils.utilfactory import create_drum
 
 
 def test_1():
     queue = Queue()
-    drum = create_drum("PatternDrum")
+    drum = DrumFactory.create_drum("PatternDrum")
     c1 = LoopCtrl(queue, drum)
     c1._set_is_rec(True)
     Timer(3, c1.stop_at_bound, args=[0]).start()

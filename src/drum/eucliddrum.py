@@ -2,14 +2,13 @@ from __future__ import annotations
 
 import numpy as np
 
-from drum._sampleloader import ACCENT_FACTOR
 from drum.bufferdrum import BufferDrum
 from utils.utilalsa import make_zero_buffer
-from utils.utillog import get_my_log
+from utils.utillog import MyLog
 from utils.utilnumpy import record_buffer
 from utils.utilother import EuclidSlicer
 
-my_log = get_my_log(__name__)
+my_log = MyLog()
 
 
 class EuclidDrum(BufferDrum):
@@ -43,7 +42,6 @@ class EuclidDrum(BufferDrum):
                 sound_arr = self._sl.get_sound(sname, s == "*")
                 record_buffer(buff, sound_arr, idx)
 
-        my_log.debug(f"Converted all drum patterns: {len(result)}")
         return result
 
     def _intensity(self, ptn_dic: dict[str, str]) -> str:
@@ -54,6 +52,5 @@ class EuclidDrum(BufferDrum):
                 if s not in "+*":
                     continue
                 is_accent = s == '*'
-                factor = 1 if not is_accent else ACCENT_FACTOR * ACCENT_FACTOR
-                result += factor * self._sl.get_power(sname) / len(notes)
+                result += self._sl.get_energy(sname, is_accent) / len(notes)
         return f"{round(result, 1)}"

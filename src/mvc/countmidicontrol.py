@@ -4,10 +4,10 @@ from threading import Timer
 import rtmidi.midiconstants
 
 from mvc.menuhost import MenuHost
-from utils.utilconfig import MIN_VELO, STD_VELO
-from utils.utillog import get_my_log
+from utils.utilmidi import MIN_VELO, STD_VELO
+from utils.utillog import MyLog
 
-my_log = get_my_log(__name__)
+my_log = MyLog()
 
 
 class MidiCcToNote:

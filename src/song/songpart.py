@@ -4,7 +4,7 @@ import numpy as np
 
 from buffer.loopctrl import LoopCtrl
 from buffer.loopsimple import LoopSimple
-from utils.utilconfig import MAX_LEN
+from utils.utilaudio import MAX_LEN
 from utils.utilother import CollectionOwner
 
 
@@ -15,6 +15,10 @@ class SongPart(LoopSimple):
         LoopSimple.__init__(self, sz)
         self.loops: CollectionOwner[LoopSimple] = CollectionOwner[LoopSimple](self)
         self.__undos: list[LoopSimple] = list()
+
+    def correct_buffer(self, channels: int, datatype: str) -> None:
+        for loop in [*self.loops, *self.__undos]:
+            loop.correct_buffer(channels, datatype)
 
     def trim_buffer(self, ctrl: LoopCtrl) -> None:
         loop: LoopSimple = self.loops.get_item()

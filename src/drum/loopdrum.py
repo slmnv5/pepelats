@@ -6,7 +6,7 @@ import numpy as np
 from buffer.wrapbuffer import WrapBuffer
 from drum.basedrum import BaseDrum
 from song.songpart import SongPart
-from utils.utilconfig import SD_RATE
+from utils.utilaudio import SD_RATE
 
 
 class LoopDrum(BaseDrum):

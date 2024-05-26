@@ -5,10 +5,10 @@ from multiprocessing import Process, Queue
 from control.looper import Looper
 from mvc.menuclient import MenuClient
 from mvc.pyscreen import PyScreen
-from utils.utillog import get_my_log
+from utils.utillog import MyLog
 from utils.utilportin import get_pedal_control
 
-my_log = get_my_log(__name__)
+my_log = MyLog()
 
 
 # noinspection PyBroadException

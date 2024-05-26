@@ -4,9 +4,9 @@ from typing import Callable
 
 import numpy as np
 
-from utils.utillog import get_my_log
+from utils.utillog import MyLog
 
-my_log = get_my_log(__name__)
+my_log = MyLog()
 
 
 class PatternLoader:
@@ -43,13 +43,14 @@ class PatternLoader:
         assert len(self.__str_patterns) > 0
         # sort INI patterns by intensity
         self.__str_patterns.sort(key=lambda x: x[2])
-        my_log.debug(f"Loaded from: {fname}:\npatterns: {self.__str_patterns}")
+        my_log.debug(f"Done loading from: {fname}")
 
     def prepare_patterns(self, bar_len: int, par: float) -> None:
         self.__snd_patterns.clear()
         # INI patterns are already sorted by intensity
         for ptn_dic, name, intensity in self.__str_patterns:
             self.__snd_patterns.append((self.__fn_convert(bar_len, par, ptn_dic), name, intensity))
+            my_log.debug(f"Converted pattern name: {name}, intensity: {intensity}")
         self.__split_id = round(len(self.__snd_patterns) * self.QUIET_PTRN_FRACTION)
 
     def get_quiet_patterns(self) -> list[tuple[list[np.ndarray], str, str]]:

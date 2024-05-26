@@ -1,11 +1,11 @@
 import sounddevice as sd
 
 from utils.utilalsa import make_zero_buffer
-from utils.utilfactory import create_drum
+from drum.drumfactory import DrumFactory
 
 
 def test_1():
-    drum = create_drum("PatternDrum")
+    drum = DrumFactory.create_drum("PatternDrum")
     drum.set_config("Test.ini")
     drum.set_bar_len(300_000)
 

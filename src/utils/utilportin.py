@@ -9,11 +9,11 @@ import rtmidi
 
 from mvc.countmidicontrol import CountMidiControl
 from mvc.menuhost import MenuHost
-from utils.utilconfig import KBD_NOTES, ConfigName, KBD_NOTES_LINUX, MIDI_NOTES
-from utils.utilconfig import find_path, load_ini_section
-from utils.utillog import get_my_log
+from utils.utilconfig import find_path, load_ini_section, ConfigName
+from utils.utillog import MyLog
+from utils.utilmidi import KBD_NOTES, MIDI_NOTES
 
-my_log = get_my_log(__name__)
+my_log = MyLog()
 
 _IS_LINUX = os.name == "posix"
 _HAS_KBD = os.environ.get('HAS_KBD', "").upper() in ["Y", "YES", "TRUE", "1"]
@@ -32,7 +32,7 @@ class _KbdMidiIn:
     """Using keyboard keys instead of MIDI notes"""
 
     def __init__(self):
-        self.__kbd_notes: dict[str, int] = dict(zip(KBD_NOTES_LINUX if _IS_LINUX else KBD_NOTES, MIDI_NOTES))
+        self.__kbd_notes: dict[str, int] = dict(zip(KBD_NOTES, MIDI_NOTES))
         self._func: Callable[[tuple[list, any]], None] = self._fake_callback
         self._data: any = None
         self._pressed_key = False

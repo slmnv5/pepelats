@@ -3,10 +3,10 @@ from abc import abstractmethod, ABC
 import numpy as np
 
 from buffer.wrapbuffer import WrapBuffer
-from utils.utilconfig import SD_RATE
-from utils.utillog import get_my_log
+from utils.utilaudio import SD_RATE
+from utils.utillog import MyLog
 
-my_log = get_my_log(__name__)
+my_log = MyLog()
 
 
 class BaseDrum(ABC):
@@ -19,6 +19,18 @@ class BaseDrum(ABC):
         self._volume: float = 0.5  # from 0 to 1
         # Fill/break can not be too short, if short is extended by half a bar
         self.SMALLEST_FILL_FRACTION: float = 0.1
+
+    def get_pickle(self) -> tuple[str, int, float, float]:
+        return self.get_config(), self._bar_len, self._volume, self._par
+
+    def set_pickle(self, info: tuple[str, int, float, float]) -> None:
+        if len(info) != 4:
+            my_log.error(f"set_picle() method incorrect parameter: {info}")
+            return
+        self.set_config(info[0])
+        self.set_bar_len(info[1])
+        self.set_volume(info[2])
+        self.set_par(info[3])
 
     def set_volume(self, volume: float) -> None:
         volume = min(1., volume)
@@ -53,10 +65,9 @@ class BaseDrum(ABC):
         pass
 
     def set_bar_len(self, bar_len: int) -> None:
-        assert bar_len > 0
         self.stop()
         self._bar_len = bar_len
-        self._bpm = 60 * 4 / (bar_len / SD_RATE)
+        self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / SD_RATE)
         my_log.info(f"Set bar len for: {self}")
 
     # noinspection PyUnusedLocal

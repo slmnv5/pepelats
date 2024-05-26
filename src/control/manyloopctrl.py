@@ -4,15 +4,15 @@ from threading import Event, Thread
 
 from buffer.loopctrl import LoopCtrl
 from buffer.loopsimple import LoopSimple
+from drum.drumfactory import DrumFactory
 from drum.loopdrum import LoopDrum
 from song.song import Song
 from song.songpart import SongPart
 from utils.utilconfig import ConfigName
-from utils.utilfactory import create_drum
-from utils.utillog import get_my_log
+from utils.utillog import MyLog
 from utils.utilother import CollectionOwner
 
-my_log = get_my_log(__name__)
+my_log = MyLog()
 
 
 class ManyLoopCtrl(LoopCtrl, ABC):
@@ -20,13 +20,13 @@ class ManyLoopCtrl(LoopCtrl, ABC):
      Song is collection of song parts with related methods"""
 
     def __init__(self, queue: Queue, drum_type: str):
-        drum = create_drum(drum_type)
-        drum.set_config()
-        LoopCtrl.__init__(self, queue, drum)
         tmp = [SongPart(), SongPart(), SongPart(), SongPart()]
         self._song: Song = Song(tmp)
+        kwargs = {"SongPart": tmp[0]}
+        drum = DrumFactory.create_drum(drum_type, **kwargs)
+        drum.set_config()
+        LoopCtrl.__init__(self, queue, drum)
         self.__next_id: int = 0
-        self.__rec_id: int = -1  # indicate which song part should start with recording
         self.__play_event: Event = Event()
         Thread(target=self.__play_loop, name="play_loop", daemon=True).start()
 
@@ -45,15 +45,8 @@ class ManyLoopCtrl(LoopCtrl, ABC):
             self.__play_event.wait()
             part = self._song.item_from_idx(self.__next_id)
             self.stop_never()
-            if part.is_empty:
-                self._set_is_rec(True)
-            elif self.__rec_id == self.__next_id:
-                part.loops.idx_from_item(LoopSimple(part.length))
-                part.clear_undo()
-                self._set_is_rec(True)
-            else:
-                self._set_is_rec(False)
-            self._start_rec_idx, self.idx, self.__rec_id = 0, 0, -1
+            self._set_is_rec(part.is_empty)
+            self._start_rec_idx, self.idx = 0, 0
             self.add_command([ConfigName.client_redraw, None])
             part.play_buffer(self)
             if not self.__play_event.is_set():
@@ -110,9 +103,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
 
     def _overdub_song_part(self) -> None:
         if self._song.get_idx() != self.__next_id:
-            self.__rec_id = self.__next_id
             return
-        self.__rec_id = -1
         part: SongPart = self._song.get_item()
         if part.is_empty:
             return

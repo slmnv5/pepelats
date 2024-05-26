@@ -4,10 +4,10 @@ import traceback
 from abc import abstractmethod
 from multiprocessing import Queue
 
-from utils.utillog import get_my_log
+from utils.utillog import MyLog
 from utils.utilother import DrawInfo
 
-my_log = get_my_log(__name__)
+my_log = MyLog()
 
 
 class MenuClient:

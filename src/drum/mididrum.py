@@ -7,10 +7,10 @@ import numpy as np
 from drum.basedrum import BaseDrum
 from utils.utilalsa import int_to_bytes
 from utils.utilconfig import load_ini_section, find_path, ConfigName
-from utils.utillog import get_my_log
+from utils.utillog import MyLog
 from utils.utilportout import MidiOutWrap
 
-my_log = get_my_log(__name__)
+my_log = MyLog()
 
 
 class MidiDrum(BaseDrum):

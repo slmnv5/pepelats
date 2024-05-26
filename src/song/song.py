@@ -3,15 +3,15 @@ import pickle
 from collections.abc import Iterable
 
 from buffer.loopctrl import LoopCtrl
+from drum.drumfactory import DrumFactory
 # noinspection PyUnresolvedReferences
 from song.songpart import SongPart
-from utils.utilconfig import find_path, OUT_CH
-from utils.utilfactory import create_drum
-from utils.utillog import get_my_log
+from utils.utilaudio import find_path, SD_CH, SD_TYPE
+from utils.utillog import MyLog
 from utils.utilname import generate_name
 from utils.utilother import FileFinder, CollectionOwner
 
-my_log = get_my_log(__name__)
+my_log = MyLog()
 
 
 class Song(CollectionOwner[SongPart]):
@@ -41,10 +41,11 @@ class Song(CollectionOwner[SongPart]):
         fname = self._ff.get_full_name()
         parts_lst = list()
         self.apply_to_each(lambda x: parts_lst.append(None if x.is_empty else x))
-        assert parts_lst
+        drum_type = drum.get_class_name()
+        drum_info = drum.get_pickle()
+        audio_info = f"{SD_TYPE}{SD_CH}"
         with open(fname, 'wb') as f:
-            pickle.dump((parts_lst, drum.get_class_name(), drum.get_config(),
-                         drum.get_bar_len(), drum.get_volume(), drum.get_par()), f)
+            pickle.dump((parts_lst, drum_type, drum_info, audio_info), f)
 
         my_log.info(f"Saved song file: {fname}")
 
@@ -56,23 +57,19 @@ class Song(CollectionOwner[SongPart]):
             return
 
         with open(fname, 'rb') as f:
-            parts_lst, drum_type, config, bar_len, volume, par = pickle.load(f)
+            parts_lst, drum_type, drum_info, audio_info = pickle.load(f)
 
-        parts_lst: list[SongPart] = [x if x is not None else SongPart() for x in parts_lst[0:4]]
+        # saved song may have different audio format and channels
+        need_fix: bool = f"{SD_TYPE}{SD_CH}" != audio_info
+        parts_lst: list[SongPart] = \
+            [(x.correct_buffer(SD_CH, SD_TYPE) if need_fix else x)
+             if x is not None else SongPart() for x in parts_lst[0:4]]
         assert parts_lst
-        assert isinstance(bar_len, int) and bar_len > 0, f"{bar_len}"
-        assert isinstance(volume, float) and 0 <= volume <= 1, f"{volume}"
-        assert isinstance(par, float) and 0 <= par <= 1, f"{par}"
-
         kwargs = {"SongPart": parts_lst[0]}
-        drum = create_drum(drum_type, **kwargs)
-        drum.set_config(config)
-        drum.set_bar_len(bar_len)
-        drum.set_volume(volume)
-        drum.set_par(par)
+        drum = DrumFactory.create_drum(drum_type, **kwargs)
         ctrl.set_drum(drum)
+        drum.set_pickle(drum_info)
         for part in parts_lst:
-            part.loops.apply_to_each(lambda x: x.set_channels(OUT_CH))
             self.idx_from_item(part)
 
         self.item_from_idx(0)

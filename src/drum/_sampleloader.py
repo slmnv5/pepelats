@@ -1,103 +1,77 @@
 import os
-import sys
-import wave
 
 import numpy as np
 
-from utils.utilconfig import SD_TYPE, find_path, MAX_SD_TYPE, SD_RATE, OUT_CH
-from utils.utillog import get_my_log
+from utils.utilalsa import read_wav_slow, correct_sound, MAX_SD_TYPE
+from utils.utilaudio import SD_TYPE, SD_RATE, SD_CH, DRUM_VOLUME
+from utils.utilconfig import find_path
+from utils.utillog import MyLog
 
-my_log = get_my_log(__name__)
-
-ACCENT_FACTOR = 1.2  # how much accent amplitude is bigger than non accent
-_INIT_AMPLITUDE: float = 0.7
-
-
-def _adjust_volume(vol: float, sounds: dict[str, np.ndarray]) -> dict[str, tuple[np.ndarray, np.ndarray]]:
-    """ Create sounds with specific volumes - normal and accented. Input suonds in dict. stay unchanged """
-    v1 = vol * MAX_SD_TYPE
-    v2 = v1 * ACCENT_FACTOR
-    return {k: ((v * v1).astype(SD_TYPE), (v * v2).astype(SD_TYPE)) for k, v in sounds.items()}
-
-
-def _read_wav_slow(fname):
-    """ slow reading using wave module, avoids import of specialized modules """
-    assert os.path.isfile(fname)
-    with wave.open(fname, "rb") as f:
-        nchannels, sampwidth, framerate, nframes, _, _ = f.getparams()
-        buffer = f.readframes(-1)
-    try:
-        signed = sampwidth > 1  # 8 bit wavs are unsigned
-        byteorder = sys.byteorder  # wave module uses sys.byteorder for bytes
-        sz = sampwidth * nchannels
-        frames = (buffer[i * sz: (i + 1) * sz] for i in range(nframes))
-        values = []  # e.g. for stereo, values[i] = [left_val, right_val]
-        for frame in frames:
-            channel_vals = []  # mono has 1 channel, stereo 2, etc.
-            for channel in range(nchannels):
-                as_bytes = frame[channel * sampwidth: (channel + 1) * sampwidth]
-                as_int = int.from_bytes(as_bytes, byteorder, signed=signed)
-                channel_vals.append(as_int)
-            values.append(channel_vals)
-
-        nparray = np.array(values)
-        factor: float = 1. / (2 ** (sampwidth * 8 - 1))
-        nparray = (nparray * factor)
-        if nparray.shape[1] < 2:
-            nparray = np.column_stack((nparray, nparray))
-        return nparray
-    except Exception as ex:
-        raise RuntimeError(f"Error: {ex} opening: {fname} params: {f.getparams()}")
-
-
-def _load_audio_samples(dname: str) -> dict[str, np.ndarray]:
-    """Loads WAV sounds, return dict of float samples from -1 to +1  """
-    assert os.path.isdir(dname), dname
-    result = dict()
-    for fname in [x for x in os.listdir(dname) if x.endswith('.wav')]:
-        full_fname = dname + os.sep + fname
-        assert os.path.isfile(full_fname)
-        sound = _read_wav_slow(full_fname)
-        assert sound.dtype == np.float64 and np.max(sound) < 1 and sound.shape[1] == 2
-        if OUT_CH == 1:
-            # mono output is set for mono input
-            sound = sound[:, :1]
-        result[fname[:-4]] = sound
-    my_log.info(f"Loaded samples from {len(result)} WAV files")
-    return result
+my_log = MyLog()
 
 
 class SampleLoader:
+    __instance = None
+    _ACNT_VOL = 1.2  # how much accent amplitude is bigger than non accent
+
+    def __new__(cls):
+        """ creates a singleton object, if it is not created, else returns existing """
+        if not cls.__instance:
+            cls.__instance = super(SampleLoader, cls).__new__(cls)
+            cls.__instance.__initialized = False
+        return cls.__instance
 
     def __init__(self):
+        if self.__initialized:
+            return
+        self.__initialized = True
         # sound names and loaded sound samples
-        self._sounds = _load_audio_samples(find_path("config/drum/wav"))
-        self._maxes: dict[str, float] = {k: round(v.max(initial=0.01), 2) for k, v in self._sounds.items()}
-        self._ampl_factor: float = _INIT_AMPLITUDE / ACCENT_FACTOR / max(self._maxes.values())
-        # normalize amplitudes so that when volume == 1 there is no clipping
-        for k, v in self._sounds.items():
-            self._sounds[k] = v * self._ampl_factor
-        self._variances: dict[str, float] = {k: round(1000 * v.var(), 2) for k, v in self._sounds.items()}
-        self._durations: dict[str, float] = {k: round(len(v) / SD_RATE, 2) for k, v in self._sounds.items()}
+        self._sounds: dict[str, np.ndarray] = self._load_audio_samples(find_path("config/drum/wav"))
+        maximum: dict[str, float] = {k: round(v.max() / MAX_SD_TYPE, 2) for k, v in self._sounds.items()}
+        variance: dict[str, float] = {k: round(1000 * v.var() / (MAX_SD_TYPE ** 2), 2) for k, v in self._sounds.items()}
+        duration: dict[str, float] = {k: round(len(v) / SD_RATE, 2) for k, v in self._sounds.items()}
 
-        # _adjusted are for changing volume up and down, _sounds do not change
-        self._adjusted = _adjust_volume(0.7, self._sounds)
-        my_log.debug(f"Loaded sounds:\nvariances:{self._variances}")
-        my_log.debug(f"Loaded sounds:\ndurations:{self._durations}")
-        my_log.debug(f"Loaded sounds:\nmaximums:{self._maxes}")
+        # _adjusted has normal and accented sound, used to change volume up/down, _sounds do not change
+        self._adjusted: dict[str, tuple[np.ndarray, np.ndarray]] = dict()
+        my_log.debug(f"Loaded sounds:\nvariance:{variance}")
+        my_log.debug(f"Loaded sounds:\nduration:{duration}")
+        my_log.debug(f"Loaded sounds:\nmaximum:{maximum}")
+        # _energy has energy of each drum sound = variance * duration
+        self._energy = {k: variance[k] * duration[k] for k in self._sounds}
 
-    def set_volume(self, volume: float) -> None:
-        self._adjusted = _adjust_volume(volume, self._sounds)
+    @staticmethod
+    def _load_audio_samples(dname: str) -> dict[str, np.ndarray]:
+        """Loads WAV sounds, return dict of float samples from -1 to +1  """
+        assert os.path.isdir(dname), dname
+        result = dict()
+        for fname in [x for x in os.listdir(dname) if x.endswith('.wav')]:
+            full_fname = dname + os.sep + fname
+            assert os.path.isfile(full_fname)
+            sound = read_wav_slow(full_fname)
+            sound = correct_sound(sound, SD_CH, SD_TYPE)
+            assert sound.dtype == SD_TYPE and sound.ndim == 2 and sound.shape[1] == SD_CH
+            result[fname[:-4]] = sound
+        my_log.info(f"Loaded samples from {len(result)} WAV files")
+        return result
+
+    def set_volume(self, vol: float) -> None:
+        """ Set SampleLoader._adjusted volumes - normal and accented. SampleLoader._sounds stay unchanged """
+        vol1 = vol * DRUM_VOLUME
+        vol2 = vol1 * self._ACNT_VOL
+        self._adjusted = {k: ((v * vol1).astype(SD_TYPE), (v * vol2).astype(SD_TYPE))
+                          for k, v in self._sounds.items()}
 
     def get_sound(self, sname: str, is_accent: bool) -> np.ndarray:
+
         if sname in self._adjusted:
             if is_accent:
                 return self._adjusted[sname][1]
             else:
                 return self._adjusted[sname][0]
 
-    def get_power(self, sname: str) -> float:
-        return self._variances.get(sname) * self._durations.get(sname)
+    def get_energy(self, sname: str, is_accent: bool) -> float:
+        factor = self._ACNT_VOL ** 2 if is_accent else 1
+        return self._energy[sname] * factor
 
     def get_sound_names(self) -> list[str]:
-        return list(self._adjusted.keys())
+        return list(self._sounds.keys())

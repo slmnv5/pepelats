@@ -6,10 +6,10 @@ from threading import Thread
 
 from mvc.menuclient import MenuClient
 from utils.utilconfig import KEEP_SCREEN
-from utils.utillog import get_my_log
+from utils.utillog import MyLog
 from utils.utilother import DrawInfo
 
-my_log = get_my_log(__name__)
+my_log = MyLog()
 
 if os.name == "posix":
     _UPDATES_PER_LOOP: float = 16

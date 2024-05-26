@@ -5,10 +5,10 @@ from multiprocessing import Queue
 from threading import Event
 
 from utils.utilconfig import ConfigName, find_path, load_ini_section
-from utils.utillog import get_my_log
+from utils.utillog import MyLog
 from utils.utilother import DrawInfo
 
-my_log = get_my_log(__name__)
+my_log = MyLog()
 
 
 class MenuHost:
@@ -82,9 +82,9 @@ class _MenuLoader:
         self._section: str = ConfigName.play_section
         assert os.path.isdir(dname)
         self._dic = dict()
-        files_lst = ["play.ini", "song.ini", "drum.ini", "serv.ini"]
-        for fname in files_lst:
-            fname1, fname2 = f"{dname}/navigate.ini", f"{dname}/{fname}"
+        fname1 = f"{dname}/navigate.ini"
+        for fname in ["play.ini", "song.ini", "drum.ini", "serv.ini"]:
+            fname2 = f"{dname}/{fname}"
             cfg = ConfigParser()
             read_lst = cfg.read([fname1, fname2])
             if len(read_lst) != 2:
