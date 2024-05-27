@@ -86,14 +86,6 @@ class Audio:
             raise RuntimeError(f"device_type in main.ini must be [in16, float32], found: {self.SD_TYPE}")
         sd.default.dtype = self.SD_TYPE
 
-        self.MAX_LEN = dic.get('max_len_seconds', '60')
-        if not self.MAX_LEN.isdigit():
-            self.MAX_LEN = 60
-        else:
-            self.MAX_LEN = int(self.MAX_LEN)
-
-        self.MAX_LEN = self.MAX_LEN * SD_RATE
-        assert self.MAX_LEN and isinstance(self.MAX_LEN, int)
         sd.default.latency = ('low', 'low')
 
         tmp = dic.get("drum_volume", "1.0")

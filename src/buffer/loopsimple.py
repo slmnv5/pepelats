@@ -2,7 +2,7 @@ import sounddevice as sd
 
 from buffer.loopctrl import LoopCtrl
 from buffer.wrapbuffer import WrapBuffer
-from utils.utilaudio import AUDIO
+from utils.utilconfig import MAX_LEN
 from utils.utillog import MyLog
 
 my_log = MyLog()
@@ -12,7 +12,7 @@ class LoopSimple(WrapBuffer):
     """Loop truncates itself to be multiple of bar length. Bar length is stored in a drum.
     Loop creates drum with proper bar length if drum is empty"""
 
-    def __init__(self, sz: int = AUDIO.MAX_LEN):
+    def __init__(self, sz: int = MAX_LEN):
         WrapBuffer.__init__(self, sz)
 
     def trim_buffer(self, ctrl: LoopCtrl) -> None:

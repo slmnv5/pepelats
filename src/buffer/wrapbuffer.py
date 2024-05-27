@@ -1,6 +1,7 @@
 import numpy as np
 
 from utils.utilaudio import AUDIO, correct_sound
+from utils.utilconfig import MAX_LEN
 from utils.utillog import MyLog
 from utils.utilnumpy import play_buffer, record_buffer, trim_buffer
 
@@ -10,7 +11,7 @@ my_log = MyLog()
 class WrapBuffer:
     """buffer that can wrap over the end when get/play and set/record samples """
 
-    def __init__(self, sz: int = AUDIO.MAX_LEN):
+    def __init__(self, sz: int = MAX_LEN):
         self.__len_ratio: float = 0
         self.__is_reverse: bool = False
         self.__is_silent: bool = False
@@ -43,7 +44,7 @@ class WrapBuffer:
             self.__buff = correct_sound(self.__buff, AUDIO.SD_CH, AUDIO.SD_TYPE)
 
     def max_buffer(self) -> None:
-        self.__buff = np.zeros((AUDIO.MAX_LEN, AUDIO.SD_CH), AUDIO.SD_TYPE)
+        self.__buff = np.zeros((MAX_LEN, AUDIO.SD_CH), AUDIO.SD_TYPE)
         self.__info_str, self.__len_ratio = "", 0
 
     def flip_reverse(self) -> None:
@@ -63,7 +64,7 @@ class WrapBuffer:
 
     @property
     def is_empty(self) -> bool:
-        return not (0 < len(self.__buff) < AUDIO.MAX_LEN)
+        return not (0 < len(self.__buff) < MAX_LEN)
 
     def record_samples(self, in_data: np.ndarray, idx: int) -> None:
         record_buffer(self.__buff, in_data, idx)

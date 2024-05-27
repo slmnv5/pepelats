@@ -5,7 +5,6 @@ from math import ceil
 import numpy as np
 
 from drum._bufferdrum import BufferDrum
-from utils.utilaudio import AUDIO
 from utils.utillog import MyLog
 from utils.utilnumpy import record_buffer
 
@@ -39,7 +38,7 @@ class PatternDrum(BufferDrum):
         step_len: float = bar_len / steps
         for sname, notes in [(k, v) for k, v in ptn_dic.items() if k != self.__ACNT]:
             assert steps == len(notes), f"steps: {steps}, notes: {notes}"
-            buff = np.zeros((bar_len, AUDIO.SD_CH), AUDIO.SD_TYPE)
+            buff = self.make_drum_buffer(bar_len)
             result.append(buff)
             for k, s in enumerate(notes):
                 if s not in "!":

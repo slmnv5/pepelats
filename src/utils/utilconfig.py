@@ -54,3 +54,12 @@ def update_ini_section(fname: str, sect: str, dic: dict[str, str]) -> None:
 
 KEEP_SCREEN: bool = "--keep_screen" in sys.argv
 SD_RATE: int = 44100
+
+try:
+    _max_sec = int(load_ini_section(find_path(ConfigName.main_ini), "AUDIO")['max_len_seconds'])
+except Exception as ex:
+    my_log.exception(ex)
+    _max_sec = 60
+
+MAX_LEN = _max_sec * SD_RATE
+my_log.warning(f"Set sampling rate: {SD_RATE}, max. loop length: {_max_sec} sec")
