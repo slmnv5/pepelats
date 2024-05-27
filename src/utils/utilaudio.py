@@ -107,6 +107,3 @@ class Audio:
     def vol_db(self, arr: np.ndarray) -> int:
         ratio = max(0.0001, np.max(arr, initial=0) / self.MAX_SD_TYPE)
         return round(20 * log10(ratio))
-
-
-AUDIO = Audio()
