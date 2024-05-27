@@ -20,12 +20,12 @@ class BaseDrum(ABC):
         # Fill/break can not be too short, if short is extended by half a bar
         self.SMALLEST_FILL_FRACTION: float = 0.1
 
-    def get_pickle(self) -> tuple[str, int, float, float]:
+    def get_pickle_info(self) -> tuple[str, int, float, float]:
         return self.get_config(), self._bar_len, self._volume, self._par
 
-    def set_pickle(self, info: tuple[str, int, float, float]) -> None:
+    def set_pickle_info(self, info: tuple[str, int, float, float]) -> None:
         if len(info) != 4:
-            my_log.error(f"set_picle() method incorrect parameter: {info}")
+            my_log.error(f"set_picle_info() method incorrect parameter: {info}")
             return
         self.set_config(info[0])
         self.set_bar_len(info[1])

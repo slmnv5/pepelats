@@ -16,9 +16,9 @@ class SongPart(LoopSimple):
         self.loops: CollectionOwner[LoopSimple] = CollectionOwner[LoopSimple](self)
         self.__undos: list[LoopSimple] = list()
 
-    def correct_buffer(self, channels: int, datatype: str) -> None:
+    def correct_buffer(self) -> None:
         for loop in [*self.loops, *self.__undos]:
-            loop.correct_buffer(channels, datatype)
+            loop.correct_buffer()
 
     def trim_buffer(self, ctrl: LoopCtrl) -> None:
         loop: LoopSimple = self.loops.get_item()
