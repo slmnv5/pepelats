@@ -13,11 +13,13 @@ class PatternLoader:
     """Load patterns from INI file. Logic to load, convert and calculate intensity is passed as 3 methods.
     Loaded patterns are converted to playable patterns - ready to play sound """
 
+    # patterns sorted by energy. Low enrgy patterns used for rythm, high enegry for drum fills/breaks
+    _QUIET_PTRN_FRACTION: float = 0.7
+
     def __init__(self, fn_load: Callable[[str, dict[str, str], dict[str, str]], None],
                  fn_convert: Callable[[int, float, dict[str, str]], list[np.ndarray]],
                  fn_intensity: Callable[[dict[str, str]], str]):
-        # patterns sorted by energy. Low enrgy patterns used for rythm, high enegry for drum fills/breaks
-        self.QUIET_PTRN_FRACTION: float = 0.7
+
         # split quiet and loud patterns based on intencity
         self.__split_id: int = 0
         self.__fn_load = fn_load
@@ -51,7 +53,7 @@ class PatternLoader:
         for ptn_dic, name, intensity in self.__str_patterns:
             self.__snd_patterns.append((self.__fn_convert(bar_len, par, ptn_dic), name, intensity))
             my_log.debug(f"Converted pattern name: {name}, intensity: {intensity}")
-        self.__split_id = round(len(self.__snd_patterns) * self.QUIET_PTRN_FRACTION)
+        self.__split_id = round(len(self.__snd_patterns) * self._QUIET_PTRN_FRACTION)
 
     def get_quiet_patterns(self) -> list[tuple[list[np.ndarray], str, str]]:
         return self.__snd_patterns[:self.__split_id]
