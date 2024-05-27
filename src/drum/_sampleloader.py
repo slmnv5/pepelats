@@ -4,7 +4,7 @@ import numpy as np
 
 from utils.utilalsa import read_wav_slow
 from utils.utilaudio import AUDIO, correct_sound
-from utils.utilconfig import find_path
+from utils.utilconfig import find_path, SD_RATE
 from utils.utillog import MyLog
 
 my_log = MyLog()
@@ -30,7 +30,7 @@ class SampleLoader:
         maximum: dict[str, float] = {k: round(v.max() / AUDIO.MAX_SD_TYPE, 2) for k, v in self._sounds.items()}
         variance: dict[str, float] = {k: round(1000 * v.var() / (AUDIO.MAX_SD_TYPE ** 2), 2) for k, v in
                                       self._sounds.items()}
-        duration: dict[str, float] = {k: round(len(v) / AUDIO.SD_RATE, 2) for k, v in self._sounds.items()}
+        duration: dict[str, float] = {k: round(len(v) / SD_RATE, 2) for k, v in self._sounds.items()}
 
         # _adjusted has normal and accented sound, used to change volume up/down, _sounds do not change
         self._adjusted: dict[str, tuple[np.ndarray, np.ndarray]] = dict()

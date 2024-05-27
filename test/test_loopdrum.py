@@ -1,8 +1,9 @@
+import numpy as np
 import sounddevice as sd
 
 from drum.drumfactory import create_drum
 from song.songpart import SongPart
-from utils.utilalsa import make_zero_buffer, make_sin_sound
+from utils.utilalsa import make_sin_sound
 from utils.utilaudio import AUDIO, correct_sound
 
 
@@ -15,6 +16,6 @@ def test_1():
     drum.songpart = sp
     drum.set_bar_len(100_000)
     drum.start()
-    arr = make_zero_buffer(120_000)
+    arr = np.zeros((120_000, AUDIO.SD_CH), AUDIO.SD_TYPE)
     drum.play(arr, 0)
     sd.play(arr, blocking=True)

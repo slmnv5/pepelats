@@ -52,4 +52,5 @@ def update_ini_section(fname: str, sect: str, dic: dict[str, str]) -> None:
         cfg.write(f)
 
 
-KEEP_SCREEN = "--keep_screen" in sys.argv
+KEEP_SCREEN: bool = "--keep_screen" in sys.argv
+SD_RATE: int = 44100

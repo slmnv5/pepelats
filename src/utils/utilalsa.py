@@ -7,25 +7,19 @@ from typing import Any
 import numpy as np
 from numpy import dtype, floating
 
-from utils.utilaudio import AUDIO
-
-
-def make_zero_buffer(buff_len: int) -> np.ndarray:
-    if buff_len < 0 or buff_len > AUDIO.MAX_LEN:
-        raise RuntimeError(f"make_zero_buffer: incorrect buffer size: {buff_len}")
-    return np.zeros((buff_len, AUDIO.SD_CH), AUDIO.SD_TYPE)
+from utils.utilconfig import SD_RATE
 
 
 def make_sin_sound(sound_freq: int, duration_sec: float, amplitude: float = 0.25) -> np.ndarray:
     assert 0 <= amplitude < 1 and sound_freq > 0 and duration_sec > 0
-    points_in_array: int = int(AUDIO.SD_RATE * duration_sec)
+    points_in_array: int = int(SD_RATE * duration_sec)
     t = np.linspace(0, duration_sec, points_in_array)
     x = amplitude * np.sin(2 * np.pi * sound_freq * t)
     return x
 
 
 def make_noise(duration_sec: float, amplitude: float = 0.25):
-    points_in_array: int = int(AUDIO.SD_RATE * duration_sec)
+    points_in_array: int = int(SD_RATE * duration_sec)
     x = np.random.standard_normal(points_in_array)
     max_value = np.max(x)
     x = x * (amplitude / max_value)
@@ -87,5 +81,5 @@ def write_wav(fname: str, sound: np.ndarray) -> None:
     with wave.open(fname, "w") as f:
         f.setnchannels(sound.shape[1])
         f.setsampwidth(sound.itemsize)
-        f.setframerate(AUDIO.SD_RATE)
+        f.setframerate(SD_RATE)
         f.writeframes(sound.tobytes())

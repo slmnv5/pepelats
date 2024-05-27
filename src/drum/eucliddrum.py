@@ -3,7 +3,7 @@ from __future__ import annotations
 import numpy as np
 
 from drum._bufferdrum import BufferDrum
-from utils.utilalsa import make_zero_buffer
+from utils.utilaudio import AUDIO
 from utils.utillog import MyLog
 from utils.utilnumpy import record_buffer
 from utils.utilother import EuclidSlicer
@@ -29,7 +29,7 @@ class EuclidDrum(BufferDrum):
         result = list()
         for sname, notes in ptn_dic.items():
             new_len = round(bar_len * len(notes) / EuclidDrum._DRUM_STEPS)
-            buff = make_zero_buffer(new_len)
+            buff = np.zeros((new_len, AUDIO.SD_CH), AUDIO.SD_TYPE)
             result.append(buff)
             step_len: float = new_len / len(notes)
             for k, s in enumerate(notes):

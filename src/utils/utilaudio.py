@@ -3,7 +3,7 @@ from math import log10
 import numpy as np
 import sounddevice as sd
 
-from utils.utilconfig import load_ini_section, find_path, ConfigName
+from utils.utilconfig import load_ini_section, find_path, ConfigName, SD_RATE
 from utils.utillog import MyLog
 
 my_log = MyLog()
@@ -79,12 +79,8 @@ class Audio:
         self.SD_CH = min(self.DEV_IN["max_input_channels"], self.DEV_OUT["max_output_channels"])
         sd.default.channels = self.SD_CH, self.SD_CH
 
-        self.SD_RATE: int = sd.default.samplerate
-        if not self.SD_RATE:
-            self.SD_RATE = 44100
-            sd.default.samplerate = self.SD_RATE
+        sd.default.samplerate = SD_RATE
 
-        # =============================================
         self.SD_TYPE: str = dic.get("device_type", "int16").strip()
         if self.SD_TYPE not in ['int16', 'float32']:
             raise RuntimeError(f"device_type in main.ini must be [in16, float32], found: {self.SD_TYPE}")
@@ -96,7 +92,7 @@ class Audio:
         else:
             self.MAX_LEN = int(self.MAX_LEN)
 
-        self.MAX_LEN = self.MAX_LEN * self.SD_RATE
+        self.MAX_LEN = self.MAX_LEN * SD_RATE
         assert self.MAX_LEN and isinstance(self.MAX_LEN, int)
         sd.default.latency = ('low', 'low')
 
@@ -112,9 +108,9 @@ class Audio:
 
         self.MAX_SD_TYPE = get_conversion_factor('float32', self.SD_TYPE)
 
-        my_log.warning(f"Using IN/OUT channels: {self.SD_CH}, sample rate: {self.SD_RATE}, data type: {self.SD_TYPE}")
-        sd.check_output_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
-        sd.check_input_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
+        my_log.warning(f"Using IN/OUT channels: {self.SD_CH}, sample rate: {SD_RATE}, data type: {self.SD_TYPE}")
+        sd.check_output_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=SD_RATE)
+        sd.check_input_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=SD_RATE)
 
     def vol_db(self, arr: np.ndarray) -> int:
         ratio = max(0.0001, np.max(arr, initial=0) / self.MAX_SD_TYPE)
