@@ -10,7 +10,7 @@ import numpy as np
 from drum._patternloader import PatternLoader
 from drum._sampleloader import SampleLoader
 from drum.basedrum import BaseDrum
-from utils.utilaudio import SD_RATE
+from utils.utilaudio import AUDIO
 from utils.utilconfig import find_path
 from utils.utillog import MyLog
 from utils.utilnumpy import play_buffer
@@ -122,4 +122,4 @@ class BufferDrum(BaseDrum, ABC):
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2
         # return to normal level
-        Timer(tmp / SD_RATE, self.randomize).start()
+        Timer(tmp / AUDIO.SD_RATE, self.randomize).start()

@@ -6,7 +6,8 @@ from drum.drumfactory import create_drum
 from drum.loopdrum import LoopDrum
 # noinspection PyUnresolvedReferences
 from song.songpart import SongPart
-from utils.utilaudio import find_path, SD_CH, SD_TYPE
+from utils.utilaudio import AUDIO
+from utils.utilconfig import find_path
 from utils.utillog import MyLog
 from utils.utilname import generate_name
 from utils.utilother import FileFinder, CollectionOwner
@@ -49,7 +50,7 @@ class Song(CollectionOwner[SongPart]):
         self.apply_to_each(lambda x: parts_lst.append(None if x.is_empty else x))
         drum_type = drum.get_class_name()
         drum_info = drum.get_pickle()
-        audio_info = f"{SD_TYPE}{SD_CH}"
+        audio_info = f"{AUDIO.SD_TYPE}{AUDIO.SD_CH}"
         with open(fname, 'wb') as f:
             pickle.dump((parts_lst, drum_type, drum_info, audio_info), f)
 
@@ -66,9 +67,9 @@ class Song(CollectionOwner[SongPart]):
             parts_lst, drum_type, drum_info, audio_info = pickle.load(f)
 
         # saved song may have different audio format and channels
-        need_fix: bool = f"{SD_TYPE}{SD_CH}" != audio_info
+        need_fix: bool = f"{AUDIO.SD_TYPE}{AUDIO.SD_CH}" != audio_info
         parts_lst: list[SongPart] = \
-            [(x.correct_buffer(SD_CH, SD_TYPE) if need_fix else x)
+            [(x.correct_buffer(AUDIO.SD_CH, AUDIO.SD_TYPE) if need_fix else x)
              if x is not None else SongPart() for x in parts_lst[0:4]]
         assert parts_lst
         drum = create_drum(drum_type)

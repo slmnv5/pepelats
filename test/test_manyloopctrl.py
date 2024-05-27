@@ -4,8 +4,8 @@ from threading import Timer
 from buffer.loopsimple import LoopSimple
 from control.manyloopctrl import ManyLoopCtrl
 from drum.drumfactory import create_drum
-from utils.utilalsa import make_sin_sound, correct_sound
-from utils.utilaudio import SD_TYPE, SD_CH
+from utils.utilalsa import make_sin_sound
+from utils.utilaudio import AUDIO, correct_sound
 
 
 def test_1() -> None:
@@ -16,7 +16,7 @@ def test_1() -> None:
     ctrl.get_drum().start()
 
     sound = make_sin_sound(440, 7)
-    sound = correct_sound(sound, SD_CH, SD_TYPE)
+    sound = correct_sound(sound, AUDIO.SD_CH, AUDIO.SD_TYPE)
 
     assert ctrl.get_drum().get_bar_len() == 100_000
 

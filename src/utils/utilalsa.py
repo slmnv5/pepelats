@@ -7,63 +7,25 @@ from typing import Any
 import numpy as np
 from numpy import dtype, floating
 
-from utils.utilaudio import SD_TYPE, MAX_LEN, SD_CH, SD_RATE
+from utils.utilaudio import AUDIO
 
 
 def make_zero_buffer(buff_len: int) -> np.ndarray:
-    if buff_len < 0 or buff_len > MAX_LEN:
+    if buff_len < 0 or buff_len > AUDIO.MAX_LEN:
         raise RuntimeError(f"make_zero_buffer: incorrect buffer size: {buff_len}")
-    return np.zeros((buff_len, SD_CH), SD_TYPE)
-
-
-def line_ndarray(slope: float, offset: float, duration_sec: float) -> np.ndarray:
-    """ Makes numpy array with linear function: y = slope * t + offset """
-    points_in_array: int = int(SD_RATE * duration_sec)
-    t = np.linspace(0, duration_sec, points_in_array)
-    return slope * t + offset
-
-
-def correct_sound(x: np.ndarray, channels: int, datatype: str) -> np.ndarray:
-    """ Convert numpy array to datatype amd channels """
-    assert x.ndim in [1, 2]
-    assert channels in [1, 2]
-    factor = get_conversion_factor(x.dtype, datatype)
-    x = (x * factor).astype(datatype)
-    if x.ndim == 1:
-        x = x.reshape(-1, 1)
-    if x.shape[1] < channels:
-        x = np.column_stack((x, x))
-    elif x.shape[1] > channels:
-        x = x[:, :1]
-    return x
-
-
-def get_conversion_factor(type_src: str, type_dst: str) -> float | int:
-    """ returns conversion factor when changing dtype in numpy array with sound """
-    src_float = np.issubdtype(type_src, np.floating)
-    dst_float = np.issubdtype(type_dst, np.floating)
-    if src_float:
-        if dst_float:
-            return 1
-        else:
-            return float(np.iinfo(type_dst).max)
-    else:
-        if dst_float:
-            return 1 / float(np.iinfo(type_src).max)
-        else:
-            return float(np.iinfo(type_dst).max) / float(np.iinfo(type_src).max)
+    return np.zeros((buff_len, AUDIO.SD_CH), AUDIO.SD_TYPE)
 
 
 def make_sin_sound(sound_freq: int, duration_sec: float, amplitude: float = 0.25) -> np.ndarray:
     assert 0 <= amplitude < 1 and sound_freq > 0 and duration_sec > 0
-    points_in_array: int = int(SD_RATE * duration_sec)
+    points_in_array: int = int(AUDIO.SD_RATE * duration_sec)
     t = np.linspace(0, duration_sec, points_in_array)
     x = amplitude * np.sin(2 * np.pi * sound_freq * t)
     return x
 
 
 def make_noise(duration_sec: float, amplitude: float = 0.25):
-    points_in_array: int = int(SD_RATE * duration_sec)
+    points_in_array: int = int(AUDIO.SD_RATE * duration_sec)
     x = np.random.standard_normal(points_in_array)
     max_value = np.max(x)
     x = x * (amplitude / max_value)
@@ -125,13 +87,5 @@ def write_wav(fname: str, sound: np.ndarray) -> None:
     with wave.open(fname, "w") as f:
         f.setnchannels(sound.shape[1])
         f.setsampwidth(sound.itemsize)
-        f.setframerate(SD_RATE)
+        f.setframerate(AUDIO.SD_RATE)
         f.writeframes(sound.tobytes())
-
-
-MAX_SD_TYPE = get_conversion_factor('float32', SD_TYPE)
-
-
-def vol_db(arr: np.ndarray) -> any:
-    ratio = max(0.0001, np.max(arr, initial=0) / MAX_SD_TYPE)
-    return round(20 * log10(ratio))

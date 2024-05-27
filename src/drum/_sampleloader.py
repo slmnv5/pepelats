@@ -2,8 +2,8 @@ import os
 
 import numpy as np
 
-from utils.utilalsa import read_wav_slow, correct_sound, MAX_SD_TYPE
-from utils.utilaudio import SD_TYPE, SD_RATE, SD_CH, DRUM_VOLUME
+from utils.utilalsa import read_wav_slow
+from utils.utilaudio import AUDIO, correct_sound
 from utils.utilconfig import find_path
 from utils.utillog import MyLog
 
@@ -27,9 +27,10 @@ class SampleLoader:
         self.__initialized = True
         # sound names and loaded sound samples
         self._sounds: dict[str, np.ndarray] = self._load_audio_samples(find_path("config/drum/wav"))
-        maximum: dict[str, float] = {k: round(v.max() / MAX_SD_TYPE, 2) for k, v in self._sounds.items()}
-        variance: dict[str, float] = {k: round(1000 * v.var() / (MAX_SD_TYPE ** 2), 2) for k, v in self._sounds.items()}
-        duration: dict[str, float] = {k: round(len(v) / SD_RATE, 2) for k, v in self._sounds.items()}
+        maximum: dict[str, float] = {k: round(v.max() / AUDIO.MAX_SD_TYPE, 2) for k, v in self._sounds.items()}
+        variance: dict[str, float] = {k: round(1000 * v.var() / (AUDIO.MAX_SD_TYPE ** 2), 2) for k, v in
+                                      self._sounds.items()}
+        duration: dict[str, float] = {k: round(len(v) / AUDIO.SD_RATE, 2) for k, v in self._sounds.items()}
 
         # _adjusted has normal and accented sound, used to change volume up/down, _sounds do not change
         self._adjusted: dict[str, tuple[np.ndarray, np.ndarray]] = dict()
@@ -48,17 +49,17 @@ class SampleLoader:
             full_fname = dname + os.sep + fname
             assert os.path.isfile(full_fname)
             sound = read_wav_slow(full_fname)
-            sound = correct_sound(sound, SD_CH, SD_TYPE)
-            assert sound.dtype == SD_TYPE and sound.ndim == 2 and sound.shape[1] == SD_CH
+            sound = correct_sound(sound, AUDIO.SD_CH, AUDIO.SD_TYPE)
+            assert sound.dtype == AUDIO.SD_TYPE and sound.ndim == 2 and sound.shape[1] == AUDIO.SD_CH
             result[fname[:-4]] = sound
         my_log.info(f"Loaded samples from {len(result)} WAV files")
         return result
 
     def set_volume(self, vol: float) -> None:
         """ Set SampleLoader._adjusted volumes - normal and accented. SampleLoader._sounds stay unchanged """
-        vol1 = vol * DRUM_VOLUME
+        vol1 = vol * AUDIO.DRUM_VOLUME
         vol2 = vol1 * self._ACNT_VOL
-        self._adjusted = {k: ((v * vol1).astype(SD_TYPE), (v * vol2).astype(SD_TYPE))
+        self._adjusted = {k: ((v * vol1).astype(AUDIO.SD_TYPE), (v * vol2).astype(AUDIO.SD_TYPE))
                           for k, v in self._sounds.items()}
 
     def get_sound(self, sname: str, is_accent: bool) -> np.ndarray:

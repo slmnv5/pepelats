@@ -3,7 +3,7 @@ from abc import abstractmethod, ABC
 import numpy as np
 
 from buffer.wrapbuffer import WrapBuffer
-from utils.utilaudio import SD_RATE
+from utils.utilaudio import AUDIO
 from utils.utillog import MyLog
 
 my_log = MyLog()
@@ -68,7 +68,7 @@ class BaseDrum(ABC):
     def set_bar_len(self, bar_len: int) -> None:
         self.stop()
         self._bar_len = bar_len
-        self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / SD_RATE)
+        self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / AUDIO.SD_RATE)
         my_log.info(f"Set bar len for: {self}")
 
     # noinspection PyUnusedLocal

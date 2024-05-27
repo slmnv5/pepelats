@@ -1,3 +1,6 @@
+from math import log10
+
+import numpy as np
 import sounddevice as sd
 
 from utils.utilconfig import load_ini_section, find_path, ConfigName
@@ -5,73 +8,125 @@ from utils.utillog import MyLog
 
 my_log = MyLog()
 
-_audio: dict[str, str] = load_ini_section(find_path(ConfigName.main_ini), "AUDIO")
-SD_NAME: str = _audio.get("device_name", "USB Audio").strip()
-assert SD_NAME
-# noinspection PyBroadException
-try:
-    dev_in: dict[str, any] = sd.query_devices(SD_NAME, kind='input')
-    dev_out: dict[str, any] = sd.query_devices(SD_NAME, kind='output')
-    sd.default.device = SD_NAME
-    my_log.info(f"Found device matching name: {SD_NAME}")
-except Exception:
-    my_log.error(f"No device matching name: {SD_NAME}, using default audio device instead")
-    dev_in: dict[str, any] = sd.query_devices(None, kind='input')
-    dev_out: dict[str, any] = sd.query_devices(None, kind='output')
 
-my_log.debug(f"Using IN/OUT devices:\n{dev_in}\n\n{dev_out}")
+def correct_sound(x: np.ndarray, channels: int, datatype: str) -> np.ndarray:
+    """ Convert numpy array to given channels and datatype """
+    assert x.ndim in [1, 2]
+    assert channels in [1, 2]
+    factor = get_conversion_factor(x.dtype, datatype)
+    x = (x * factor).astype(datatype)
+    if x.ndim == 1:
+        x = x.reshape(-1, 1)
+    if x.shape[1] < channels:
+        x = np.column_stack((x, x))
+    elif x.shape[1] > channels:
+        x = x[:, :1]
+    return x
 
-# =======================================
-if dev_in["max_input_channels"] not in [1, 2]:
-    raise RuntimeError(f"ALSA IN device must have 1 or 2 channels, got {dev_in['max_input_channels']}")
-if dev_out["max_output_channels"] not in [1, 2]:
-    raise RuntimeError(f"ALSA OUT device must have 1 or 2 channels, got {dev_out['max_output_channels']}")
-# make all mono if IN or OUT is mono
-SD_CH = min(dev_in["max_input_channels"], dev_out["max_output_channels"])
-sd.default.channels = SD_CH, SD_CH
 
-# ===============================================
+def get_conversion_factor(type_src: str, type_dst: str) -> float | int:
+    """ returns conversion factor when changing dtype in numpy array with sound """
+    src_float = np.issubdtype(type_src, np.floating)
+    dst_float = np.issubdtype(type_dst, np.floating)
+    if src_float:
+        if dst_float:
+            return 1
+        else:
+            return float(np.iinfo(type_dst).max)
+    else:
+        if dst_float:
+            return 1 / float(np.iinfo(type_src).max)
+        else:
+            return float(np.iinfo(type_dst).max) / float(np.iinfo(type_src).max)
 
-SD_RATE: int = sd.default.samplerate
-if not SD_RATE:
-    SD_RATE = 44100
-    sd.default.samplerate = SD_RATE
 
-# =============================================
-SD_TYPE: str = _audio.get("device_type", "float32").strip()
-assert SD_TYPE
-if SD_TYPE not in ['int16', 'float32']:
-    raise RuntimeError(f"ALSA device must have data type in16 or float32, got {SD_TYPE}")
-# noinspection PyBroadException
-if sd.default.dtype != (SD_TYPE, SD_TYPE):
-    sd.default.dtype = (SD_TYPE, SD_TYPE)
+class Audio:
+    __instance = None
 
-my_log.info(f"Had set device type: {SD_TYPE}")
-# =========================================
-MAX_LEN = _audio.get('max_len_seconds', '60')
-if not MAX_LEN.isdigit():
-    MAX_LEN = 60
-else:
-    MAX_LEN = int(MAX_LEN)
+    def __new__(cls):
+        """ creates a singleton object, if it is not created, else returns existing """
+        if not cls.__instance:
+            cls.__instance = super(Audio, cls).__new__(cls)
+            cls.__instance.__initialized = False
+        return cls.__instance
 
-assert MAX_LEN and isinstance(MAX_LEN, int)
-MAX_LEN = MAX_LEN * SD_RATE
-# =========================================
+    def __init__(self):
+        if self.__initialized:
+            return
+        self.__initialized = True
 
-sd.default.latency = ('low', 'low')
-my_log.info(f"Using IN/OUT channels: {SD_CH}, sample rate: {SD_RATE}")
+        dic: dict[str, str] = load_ini_section(find_path(ConfigName.main_ini), "AUDIO")
+        self.SD_NAME: str = dic.get("device_name", "USB Audio").strip()
+        # noinspection PyBroadException
+        try:
+            dev_in: dict[str, any] = sd.query_devices(self.SD_NAME, kind='input')
+            dev_out: dict[str, any] = sd.query_devices(self.SD_NAME, kind='output')
+            sd.default.device = self.SD_NAME
+            my_log.info(f"Found device matching main.ini name: {self.SD_NAME}")
+        except Exception:
+            my_log.error(f"No device matching main.ini name: {self.SD_NAME}, using default audio device instead")
+            dev_in: dict[str, any] = sd.query_devices(None, kind='input')
+            dev_out: dict[str, any] = sd.query_devices(None, kind='output')
 
-sd.check_output_settings(channels=SD_CH, dtype=SD_TYPE, samplerate=SD_RATE)
-sd.check_input_settings(channels=SD_CH, dtype=SD_TYPE, samplerate=SD_RATE)
+        my_log.debug(f"Using IN/OUT devices:\n{dev_in}\n\n{dev_out}\n\n")
 
-# =============================================
+        # =======================================
+        if dev_in["max_input_channels"] not in [1, 2]:
+            raise RuntimeError(f"ALSA IN device must have 1 or 2 channels, got {dev_in['max_input_channels']}")
+        if dev_out["max_output_channels"] not in [1, 2]:
+            raise RuntimeError(f"ALSA OUT device must have 1 or 2 channels, got {dev_out['max_output_channels']}")
+        # make all mono if IN or OUT is mono
+        self.SD_CH = min(dev_in["max_input_channels"], dev_out["max_output_channels"])
+        sd.default.channels = self.SD_CH, self.SD_CH
 
-tmp = _audio.get("drum_volume", "1.0")
-DRUM_VOLUME: float = 1.0
-# noinspection PyBroadException
-try:
-    DRUM_VOLUME = float(tmp)
-    DRUM_VOLUME = min(DRUM_VOLUME, 1.0)
-    DRUM_VOLUME = max(DRUM_VOLUME, 0.1)
-except Exception:
-    my_log.error(f"Value of drum_volume is incorrect in main.ini file: {tmp}, using value of 1.0")
+        # ===============================================
+
+        self.SD_RATE: int = sd.default.samplerate
+        if not self.SD_RATE:
+            self.SD_RATE = 44100
+            sd.default.samplerate = self.SD_RATE
+
+        # =============================================
+        self.SD_TYPE: str = dic.get("device_type", "int16").strip()
+        if self.SD_TYPE not in ['int16', 'float32']:
+            raise RuntimeError(f"device_type in main.ini must be [in16, float32], found: {self.SD_TYPE}")
+        sd.default.dtype = self.SD_TYPE
+
+        my_log.info(f"Had set device type: {self.SD_TYPE}")
+        # =========================================
+        self.MAX_LEN = dic.get('max_len_seconds', '60')
+        if not self.MAX_LEN.isdigit():
+            self.MAX_LEN = 60
+        else:
+            self.MAX_LEN = int(self.MAX_LEN)
+
+        self.MAX_LEN = self.MAX_LEN * self.SD_RATE
+        assert self.MAX_LEN and isinstance(self.MAX_LEN, int)
+        # =========================================
+
+        sd.default.latency = ('low', 'low')
+
+        # =============================================
+
+        tmp = dic.get("drum_volume", "1.0")
+        self.DRUM_VOLUME: float = 1.0
+        # noinspection PyBroadException
+        try:
+            self.DRUM_VOLUME = float(tmp)
+            self.DRUM_VOLUME = min(self.DRUM_VOLUME, 1.0)
+            self.DRUM_VOLUME = max(self.DRUM_VOLUME, 0.1)
+        except Exception:
+            my_log.warning(f"Value of drum_volume is incorrect in main.ini file: {tmp}, using value of 1.0")
+
+        my_log.warning(f"Using IN/OUT channels: {self.SD_CH}, sample rate: {self.SD_RATE}")
+        sd.check_output_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
+        sd.check_input_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
+
+        self.MAX_SD_TYPE = get_conversion_factor('float32', self.SD_TYPE)
+
+    def vol_db(self, arr: np.ndarray) -> int:
+        ratio = max(0.0001, np.max(arr, initial=0) / self.MAX_SD_TYPE)
+        return round(20 * log10(ratio))
+
+
+AUDIO = Audio()

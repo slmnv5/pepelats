@@ -3,9 +3,9 @@ import os
 import numpy as np
 import sounddevice as sd
 
-from utils.utilalsa import make_noise, correct_sound, int_to_bytes, bytes_to_int, make_sin_sound, write_wav, \
-    read_wav_slow, get_conversion_factor
-from utils.utilaudio import SD_RATE
+from utils.utilalsa import make_noise, int_to_bytes, bytes_to_int, make_sin_sound, write_wav, \
+    read_wav_slow
+from utils.utilaudio import AUDIO, correct_sound, get_conversion_factor
 from utils.utilconfig import find_path
 
 
@@ -28,14 +28,14 @@ def test_2():
 
 
 def test_3() -> None:
-    sound: np.ndarray = sd.rec(SD_RATE, dtype='int16', blocking=True)
+    sound: np.ndarray = sd.rec(AUDIO.SD_RATE, dtype='int16', blocking=True)
 
     for _ in range(3):
         sd.play(sound, blocking=True)
 
 
 def test_4() -> None:
-    sound: np.ndarray = sd.rec(SD_RATE, dtype='float32', blocking=True)
+    sound: np.ndarray = sd.rec(AUDIO.SD_RATE, dtype='float32', blocking=True)
 
     for _ in range(3):
         sd.play(sound, blocking=True)
@@ -48,12 +48,12 @@ def test_5() -> None:
     sound1 = correct_sound(sound1, 1, 'int16')
     write_wav(fname, sound1)
     sound2: np.ndarray = read_wav_slow(fname)
-    assert sound2.shape == (SD_RATE, 1)
+    assert sound2.shape == (AUDIO.SD_RATE, 1)
 
     sound1 = correct_sound(sound1, 2, 'float32')
     write_wav(fname, sound1)
     sound2: np.ndarray = read_wav_slow(fname)
-    assert sound2.shape == (SD_RATE, 2)
+    assert sound2.shape == (AUDIO.SD_RATE, 2)
     # noinspection PyBroadException
     try:
         os.remove(fname)

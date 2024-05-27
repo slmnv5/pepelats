@@ -4,14 +4,14 @@ import numpy as np
 
 from buffer.loopctrl import LoopCtrl
 from buffer.loopsimple import LoopSimple
-from utils.utilaudio import MAX_LEN
+from utils.utilaudio import AUDIO
 from utils.utilother import CollectionOwner
 
 
 class SongPart(LoopSimple):
     """SongPart includes many simple loops to play together"""
 
-    def __init__(self, sz: int = MAX_LEN):
+    def __init__(self, sz: int = AUDIO.MAX_LEN):
         LoopSimple.__init__(self, sz)
         self.loops: CollectionOwner[LoopSimple] = CollectionOwner[LoopSimple](self)
         self.__undos: list[LoopSimple] = list()

@@ -37,11 +37,17 @@ class MyLog:
 
         self._logger.setLevel(level)
 
-    def debug(self, msg: str):
+    def debug(self, msg):
         self._logger.debug(msg)
 
-    def info(self, msg: str):
+    def info(self, msg):
         self._logger.info(msg)
 
-    def error(self, msg: str):
+    def warning(self, msg):
+        self._logger.warning(msg)
+
+    def error(self, msg):
         self._logger.error(msg)
+
+    def exception(self, msg):
+        self._logger.exception(msg)

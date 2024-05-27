@@ -9,7 +9,7 @@ from control.manyloopctrl import ManyLoopCtrl
 from drum.drumfactory import create_drum
 from drum.loopdrum import LoopDrum
 from song.song import Song
-from utils.utilaudio import SD_RATE
+from utils.utilaudio import AUDIO
 from utils.utilconfig import ConfigName, load_ini_section, find_path, update_ini_section
 from utils.utillog import MyLog
 from utils.utilother import DrawInfo, FileFinder
@@ -44,7 +44,7 @@ class Looper(ManyLoopCtrl):
             draw_info.content = ""
         assert draw_info.content is not None
         length = self._song.get_item().length
-        draw_info.loop_seconds = length / SD_RATE
+        draw_info.loop_seconds = length / AUDIO.SD_RATE
         draw_info.loop_position = 0 if not length else (self.idx % length) / length
         draw_info.is_rec = self.get_is_rec()
         self._send_q.put([ConfigName.client_redraw, draw_info])

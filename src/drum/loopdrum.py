@@ -6,7 +6,7 @@ import numpy as np
 from buffer.wrapbuffer import WrapBuffer
 from drum.basedrum import BaseDrum
 from song.songpart import SongPart
-from utils.utilaudio import SD_RATE
+from utils.utilaudio import AUDIO
 
 
 class LoopDrum(BaseDrum):
@@ -37,7 +37,7 @@ class LoopDrum(BaseDrum):
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2
         # return to normal level
-        Timer(tmp / SD_RATE, self.randomize).start()
+        Timer(tmp / AUDIO.SD_RATE, self.randomize).start()
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
         if self._is_stopped or not self._bar_len or not self.songpart:
