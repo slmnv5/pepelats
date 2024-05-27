@@ -1,4 +1,3 @@
-import os.path
 import pickle
 
 from buffer.loopctrl import LoopCtrl
@@ -18,16 +17,20 @@ my_log = MyLog()
 class Song(CollectionOwner[SongPart]):
     """Song keeps SongParts as CollectionOwner, can save and load from file"""
 
-    def __init__(self, ctrl: LoopCtrl, load_song: bool = False):
+    def __init__(self, ctrl: LoopCtrl, load_song: bool):
         CollectionOwner.__init__(self, SongPart())
         self._name: str = ""
         self._ctrl: LoopCtrl = ctrl
         self._ff = FileFinder(find_path(".save_song"), True, "")
-        if not load_song or not self._ff.item_from_idx(-1):  # no saved song
-            while self.item_count() < 4:
-                self.idx_from_item(SongPart())
-        else:
-            self.load_song()  # there is latest song saved
+        if load_song and self._ff.item_from_idx(-1):  # there is saved song
+            try:
+                self.load_song()
+                return  # loaded latest saved song
+            except Exception as ex:
+                my_log.exception(ex)
+
+        while self.item_count() < 4:
+            self.idx_from_item(SongPart())
 
     def get_name(self) -> str:
         if not self._name:
@@ -59,9 +62,7 @@ class Song(CollectionOwner[SongPart]):
     def load_song(self) -> None:
         self._name = self._ff.get_item().split(".")[0]
         fname = self._ff.get_full_name()
-        if not os.path.isfile(fname):
-            my_log.error(f"Song file not found: {fname}")
-            return
+        my_log.info(f"Loading song file: {fname}")
 
         with open(fname, 'rb') as f:
             parts_lst, drum_type, drum_info, audio_info = pickle.load(f)
@@ -84,8 +85,6 @@ class Song(CollectionOwner[SongPart]):
 
         if isinstance(drum, LoopDrum) and not drum.songpart:
             drum.songpart = self.item_from_idx(0)
-
-        my_log.info(f"Loaded song file: {fname}")
 
     def save_new_song(self) -> None:
         self._name = ""

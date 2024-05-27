@@ -131,7 +131,7 @@ class Looper(ManyLoopCtrl):
         config = self._drum.get_config()
         self._drum = create_drum(drum_type)
         self._drum.set_config(config)
-        self._song = Song(self)
+        self._song = Song(self, False)
 
     def _delete_song(self) -> None:
         self._stop_song()
