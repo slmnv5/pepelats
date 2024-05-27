@@ -22,4 +22,4 @@ print("Loop", loop)
 def test_1():
     Timer(3, ctrl.stop_at_bound, args=[0]).start()
     ctrl.stop_never()
-    loop.play_buffer(ctrl)
+    loop.play(ctrl)

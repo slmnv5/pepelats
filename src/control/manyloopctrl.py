@@ -43,7 +43,7 @@ class ManyLoopCtrl(LoopCtrl, ABC):
             self._set_is_rec(part.is_empty)
             self._start_rec_idx, self.idx = 0, 0
             self.add_command([ConfigName.client_redraw, None])
-            part.play_buffer(self)
+            part.play(self)
             if not self.__play_event.is_set():
                 self.add_command(["_stop_drum"])
 
