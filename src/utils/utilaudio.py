@@ -59,27 +59,25 @@ class Audio:
         self.SD_NAME: str = dic.get("device_name", "USB Audio").strip()
         # noinspection PyBroadException
         try:
-            dev_in: dict[str, any] = sd.query_devices(self.SD_NAME, kind='input')
-            dev_out: dict[str, any] = sd.query_devices(self.SD_NAME, kind='output')
+            self.DEV_IN: dict[str, any] = sd.query_devices(self.SD_NAME, kind='input')
+            self.DEV_OUT: dict[str, any] = sd.query_devices(self.SD_NAME, kind='output')
             sd.default.device = self.SD_NAME
             my_log.info(f"Found device matching main.ini name: {self.SD_NAME}")
         except Exception:
             my_log.error(f"No device matching main.ini name: {self.SD_NAME}, using default audio device instead")
-            dev_in: dict[str, any] = sd.query_devices(None, kind='input')
-            dev_out: dict[str, any] = sd.query_devices(None, kind='output')
+            self.DEV_IN: dict[str, any] = sd.query_devices(None, kind='input')
+            self.DEV_OUT: dict[str, any] = sd.query_devices(None, kind='output')
 
-        my_log.debug(f"Using IN/OUT devices:\n{dev_in}\n\n{dev_out}\n\n")
+        my_log.debug(f"Using IN/OUT devices:\n{self.DEV_IN}\n\n{self.DEV_OUT}\n\n")
 
         # =======================================
-        if dev_in["max_input_channels"] not in [1, 2]:
-            raise RuntimeError(f"ALSA IN device must have 1 or 2 channels, got {dev_in['max_input_channels']}")
-        if dev_out["max_output_channels"] not in [1, 2]:
-            raise RuntimeError(f"ALSA OUT device must have 1 or 2 channels, got {dev_out['max_output_channels']}")
+        if self.DEV_IN["max_input_channels"] not in [1, 2]:
+            raise RuntimeError(f"ALSA IN device must have 1 or 2 channels, got {self.DEV_IN['max_input_channels']}")
+        if self.DEV_OUT["max_output_channels"] not in [1, 2]:
+            raise RuntimeError(f"ALSA OUT device must have 1 or 2 channels, got {self.DEV_OUT['max_output_channels']}")
         # make all mono if IN or OUT is mono
-        self.SD_CH = min(dev_in["max_input_channels"], dev_out["max_output_channels"])
+        self.SD_CH = min(self.DEV_IN["max_input_channels"], self.DEV_OUT["max_output_channels"])
         sd.default.channels = self.SD_CH, self.SD_CH
-
-        # ===============================================
 
         self.SD_RATE: int = sd.default.samplerate
         if not self.SD_RATE:
@@ -92,8 +90,6 @@ class Audio:
             raise RuntimeError(f"device_type in main.ini must be [in16, float32], found: {self.SD_TYPE}")
         sd.default.dtype = self.SD_TYPE
 
-        my_log.info(f"Had set device type: {self.SD_TYPE}")
-        # =========================================
         self.MAX_LEN = dic.get('max_len_seconds', '60')
         if not self.MAX_LEN.isdigit():
             self.MAX_LEN = 60
@@ -102,11 +98,7 @@ class Audio:
 
         self.MAX_LEN = self.MAX_LEN * self.SD_RATE
         assert self.MAX_LEN and isinstance(self.MAX_LEN, int)
-        # =========================================
-
         sd.default.latency = ('low', 'low')
-
-        # =============================================
 
         tmp = dic.get("drum_volume", "1.0")
         self.DRUM_VOLUME: float = 1.0
@@ -118,11 +110,11 @@ class Audio:
         except Exception:
             my_log.warning(f"Value of drum_volume is incorrect in main.ini file: {tmp}, using value of 1.0")
 
-        my_log.warning(f"Using IN/OUT channels: {self.SD_CH}, sample rate: {self.SD_RATE}")
+        self.MAX_SD_TYPE = get_conversion_factor('float32', self.SD_TYPE)
+
+        my_log.warning(f"Using IN/OUT channels: {self.SD_CH}, sample rate: {self.SD_RATE}, data type: {self.SD_TYPE}")
         sd.check_output_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
         sd.check_input_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
-
-        self.MAX_SD_TYPE = get_conversion_factor('float32', self.SD_TYPE)
 
     def vol_db(self, arr: np.ndarray) -> int:
         ratio = max(0.0001, np.max(arr, initial=0) / self.MAX_SD_TYPE)
