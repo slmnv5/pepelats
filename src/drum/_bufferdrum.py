@@ -13,7 +13,7 @@ from drum.basedrum import BaseDrum
 from utils.utilaudio import AUDIO
 from utils.utilconfig import find_path, SD_RATE
 from utils.utillog import MyLog
-from utils.utilnumpy import play_buffer
+from utils.utilnumpy import from_buff_to_data
 from utils.utilother import FileFinder
 
 my_log = MyLog()
@@ -100,7 +100,7 @@ class BufferDrum(BaseDrum, ABC):
             if random() < self._DR_MODIF_PROB:
                 self.modify()
         for buff in self.__modif_lst:
-            play_buffer(buff, out_data, idx)
+            from_buff_to_data(buff, out_data, idx)
 
     def __str__(self) -> str:
         return f"{super().__str__()}:{self.__name}"

@@ -4,7 +4,7 @@ import numpy as np
 
 from drum._bufferdrum import BufferDrum
 from utils.utillog import MyLog
-from utils.utilnumpy import record_buffer
+from utils.utilnumpy import from_data_to_buff
 from utils.utilother import EuclidSlicer
 
 my_log = MyLog()
@@ -39,7 +39,7 @@ class EuclidDrum(BufferDrum):
                     chg = round(step_len * par * 0.25)
                     idx += chg
                 sound_arr = self._sl.get_sound(sname, s == "*")
-                record_buffer(buff, sound_arr, idx)
+                from_data_to_buff(buff, sound_arr, idx)
 
         return result
 

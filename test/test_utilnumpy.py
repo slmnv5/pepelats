@@ -3,7 +3,7 @@ import random
 import numpy as np
 
 from utils.utilaudio import AUDIO
-from utils.utilnumpy import play_buffer, record_buffer, trim_buffer
+from utils.utilnumpy import from_buff_to_data, from_data_to_buff, trim_buffer
 
 
 def _record(buff_len, data_len, idx):
@@ -13,7 +13,7 @@ def _record(buff_len, data_len, idx):
     data[:] = 2
     original = data.copy()
 
-    record_buffer(buff, data, idx)
+    from_data_to_buff(buff, data, idx)
     assert np.array_equal(original, data)
     if data_len == 0 or buff_len == 0:
         is_good = np.all(np.unique(buff) == [1])
@@ -33,7 +33,7 @@ def _play(buff_len, data_len, idx):
     data[:] = 2
     original = buff.copy()
 
-    play_buffer(buff, data, idx)
+    from_buff_to_data(buff, data, idx)
     assert np.array_equal(original, buff)
 
     if data_len == 0 or buff_len == 0:

@@ -66,12 +66,11 @@ class Song(CollectionOwner[SongPart]):
             parts_lst, drum_type, drum_info = pickle.load(f)
 
         # saved song may have different audio format and channels
-        parts_lst: list[SongPart] = \
-            [x.correct_buffer() if x is not None else SongPart() for x in parts_lst]
-        assert parts_lst
+        parts_lst = [(x.correct_buffer() if x else SongPart()) for x in parts_lst]
         drum = create_drum(drum_type)
-        self._ctrl.set_drum(drum)
         drum.set_pickle_info(drum_info)
+        self._ctrl.set_drum(drum)
+
         for part in parts_lst:
             self.idx_from_item(part)
 

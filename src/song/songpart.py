@@ -17,8 +17,9 @@ class SongPart(LoopSimple):
         self.__undos: list[LoopSimple] = list()
 
     def correct_buffer(self) -> None:
-        for loop in [*self.loops, *self.__undos]:
+        for loop in self.__undos:
             loop.correct_buffer()
+        self.loops.apply_to_each(lambda x: LoopSimple.correct_buffer(x))
 
     def trim_buffer(self, ctrl: LoopCtrl) -> None:
         loop: LoopSimple = self.loops.get_item()

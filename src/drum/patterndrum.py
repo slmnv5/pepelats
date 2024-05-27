@@ -6,7 +6,7 @@ import numpy as np
 
 from drum._bufferdrum import BufferDrum
 from utils.utillog import MyLog
-from utils.utilnumpy import record_buffer
+from utils.utilnumpy import from_data_to_buff
 
 my_log = MyLog()
 
@@ -48,7 +48,7 @@ class PatternDrum(BufferDrum):
                 if k % 2 != 0:
                     chg = round(step_len * par * 0.25)
                     idx += chg
-                record_buffer(buff, sound_arr, idx)
+                from_data_to_buff(buff, sound_arr, idx)
         return result
 
     def _intensity(self, ptn_dic: dict[str, str]) -> str:

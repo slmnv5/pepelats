@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import TypeVar, Generic, Iterable
+from typing import TypeVar, Generic, Iterable, Callable
 
 T = TypeVar('T')
 
@@ -71,7 +71,7 @@ class CollectionOwner(Generic[T]):
     def item_count(self) -> int:
         return len(self.__items)
 
-    def apply_to_each(self, method) -> None:
+    def apply_to_each(self, method: Callable) -> None:
         for x in self.__items:
             method(x)
 

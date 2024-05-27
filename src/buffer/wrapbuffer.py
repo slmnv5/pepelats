@@ -3,7 +3,7 @@ import numpy as np
 from utils.utilaudio import AUDIO, correct_sound
 from utils.utilconfig import MAX_LEN
 from utils.utillog import MyLog
-from utils.utilnumpy import play_buffer, record_buffer, trim_buffer
+from utils.utilnumpy import from_buff_to_data, from_data_to_buff, trim_buffer
 
 my_log = MyLog()
 
@@ -67,13 +67,13 @@ class WrapBuffer:
         return not (0 < len(self.__buff) < MAX_LEN)
 
     def record_samples(self, in_data: np.ndarray, idx: int) -> None:
-        record_buffer(self.__buff, in_data, idx)
+        from_data_to_buff(self.__buff, in_data, idx)
 
     def play_samples(self, out_data: np.ndarray, idx: int) -> None:
         if self.__is_silent:
             return
         tmp = self.__buff[::-1] if self.__is_reverse else self.__buff
-        play_buffer(tmp, out_data, idx)
+        from_buff_to_data(tmp, out_data, idx)
 
     def finalize(self, idx: int, base_len: int, start_rec_idx: int) -> None:
         """Trim is done only once to fix buffer length for empty loop.
