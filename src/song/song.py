@@ -20,7 +20,7 @@ class Song(CollectionOwner[SongPart]):
         CollectionOwner.__init__(self, SongPart())
         self._name: str = ""
         self._ctrl: LoopCtrl = ctrl
-        self._ff = FileFinder(find_path(".save_song"), True, "")
+        self._ff = FileFinder(find_path(".save_song"), True, ".sng")
         if load_song and self._ff.item_from_idx(-1):  # there is saved song
             try:
                 self.load_song()
@@ -42,7 +42,8 @@ class Song(CollectionOwner[SongPart]):
         drum = self._ctrl.get_drum()
         cls = drum.get_class_name()[0]
         cfg = drum.get_config()[:-4]
-        return f"{self.get_name()}.{cls}.{cfg}"
+        cfg = '-' if not cfg else cfg
+        return f"{self.get_name()}.{cls}.{cfg}.sng"
 
     def save_song(self) -> None:
         drum = self._ctrl.get_drum()
@@ -61,12 +62,15 @@ class Song(CollectionOwner[SongPart]):
         self._name = self._ff.get_item().split(".")[0]
         fname = self._ff.get_full_name()
         my_log.info(f"Loading song file: {fname}")
-
+        part_lst: list[SongPart | None]
         with open(fname, 'rb') as f:
             parts_lst, drum_type, drum_info = pickle.load(f)
 
         # saved song may have different audio format and channels
-        parts_lst = [(x.correct_buffer() if x else SongPart()) for x in parts_lst]
+        for part in [x for x in parts_lst if x]:
+            part.correct_buffer()
+
+        parts_lst = [x if x else SongPart() for x in parts_lst]
         drum = create_drum(drum_type)
         drum.set_pickle_info(drum_info)
         self._ctrl.set_drum(drum)
