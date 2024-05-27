@@ -13,6 +13,7 @@ drum.set_par(0)
 drum.start()
 
 ctrl = LoopCtrl(queue)
+
 l1 = LoopSimple()
 print("LooCtl", ctrl)
 print("Loop", l1)

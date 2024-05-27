@@ -21,8 +21,8 @@ my_log = MyLog()
 
 class BufferDrum(BaseDrum, ABC):
     # Used to skip some drum sounds
-    _DR_COUNT_LST: list[int] = [2, 3, 4, 5]
-    _DR_COUNT_WGHT: list[int] = [1, 5, 5, 2]
+    _COUNT_LST: list[int] = [2, 3, 4, 5]
+    _COUNT_WGHT: list[int] = [1, 5, 5, 2]
     _DR_MODIF_PROB: float = 0.2
 
     def __init__(self, ptnrn_dir: str):
@@ -107,12 +107,12 @@ class BufferDrum(BaseDrum, ABC):
         self.__modif_lst = self.__play_lst
 
     def modify(self) -> None:
-        dr_count: int = choices(self._DR_COUNT_LST, weights=self._DR_COUNT_WGHT, k=1)[0]
+        play_count: int = choices(self._COUNT_LST, weights=self._COUNT_WGHT, k=1)[0]
         max_count: int = len(self.__play_lst)
-        if dr_count >= max_count:
+        if play_count >= max_count:
             self.__modif_lst = self.__play_lst
         else:
-            idx_lst: list[int] = sample(range(max_count), k=dr_count)
+            idx_lst: list[int] = sample(range(max_count), k=play_count)
             self.__modif_lst = [self.__play_lst[x] for x in idx_lst]
 
     def play_fill(self, idx: int) -> None:

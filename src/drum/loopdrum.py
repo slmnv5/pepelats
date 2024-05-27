@@ -1,4 +1,4 @@
-from random import random, choices
+from random import random, sample, choices
 from threading import Timer
 
 import numpy as np
@@ -14,7 +14,8 @@ class LoopDrum(BaseDrum):
     """ Drum using song part as it's base.
     The song part will record real drum sounds and play along with other parts. """
 
-    _LOOP_PLAY_WGHT: list[int] = [7, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1]
+    _COUNT_LST: list[int] = [1, 2, 3, 4, 5]
+    _COUNT_WGHT: list[int] = [1, 5, 5, 3, 1]
 
     def __init__(self):
         BaseDrum.__init__(self)
@@ -35,9 +36,12 @@ class LoopDrum(BaseDrum):
             return
         self.__play_lst.clear()
         self.songpart.loops.apply_to_each(lambda x: self.__play_lst.append(x))
-        max_len = self.songpart.loops.item_count()
-        play_len = min(3, max_len)
-        self.__play_lst = choices(self.__play_lst, weights=self._LOOP_PLAY_WGHT[:max_len], k=play_len)
+        play_count: int = choices(self._COUNT_LST, weights=self._COUNT_WGHT, k=1)[0]
+        max_count: int = len(self.__play_lst)
+        if play_count >= max_count:
+            return
+        else:
+            self.__play_lst = sample(self.__play_lst, k=play_count)
 
     def play_fill(self, idx: int) -> None:
         if not self.songpart:
