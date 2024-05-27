@@ -5,10 +5,8 @@ from math import ceil
 import numpy as np
 
 from drum._bufferdrum import BufferDrum
-from utils.utillog import MyLog
+from utils.utillog import MYLOG
 from utils.utilnumpy import from_data_to_buff
-
-my_log = MyLog()
 
 
 class PatternDrum(BufferDrum):
@@ -29,7 +27,7 @@ class PatternDrum(BufferDrum):
             assert isinstance(notes, str) and len(notes) > 0
             notes = (notes * ceil(max_steps / len(notes)))[:max_steps]
             ptn_dic[sname] = notes
-        my_log.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
+        MYLOG.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
 
     def _convert(self, bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
         result = list()

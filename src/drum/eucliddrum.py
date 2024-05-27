@@ -3,11 +3,9 @@ from __future__ import annotations
 import numpy as np
 
 from drum._bufferdrum import BufferDrum
-from utils.utillog import MyLog
+from utils.utillog import MYLOG
 from utils.utilnumpy import from_data_to_buff
 from utils.utilother import EuclidSlicer
-
-my_log = MyLog()
 
 
 class EuclidDrum(BufferDrum):
@@ -22,7 +20,7 @@ class EuclidDrum(BufferDrum):
             ptn_lst = [int(x) for x in euclid_str.split(",")]
             if ptn_lst[0] and ptn_lst[1]:
                 ptn_dic[sname] = EuclidSlicer(ptn_lst[0], ptn_lst[1], ptn_lst[2], ptn_lst[3]).get_ptrn_str()
-        my_log.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
+        MYLOG.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
 
     def _convert(self, bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
         result = list()

@@ -16,6 +16,7 @@ class MyLog:
     def __init__(self):
         if self.__initialized:
             return
+        print(111111111111111111111111111)
         self.__initialized = True
         self._logger = logging.getLogger()
         for h in self._logger.handlers:
@@ -51,3 +52,6 @@ class MyLog:
 
     def exception(self, msg):
         self._logger.exception(msg)
+
+
+MYLOG = MyLog()

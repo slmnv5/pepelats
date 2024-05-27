@@ -4,10 +4,8 @@ from threading import Timer
 import rtmidi.midiconstants
 
 from mvc.menuhost import MenuHost
+from utils.utillog import MYLOG
 from utils.utilmidi import MIN_VELO, STD_VELO
-from utils.utillog import MyLog
-
-my_log = MyLog()
 
 
 class MidiCcToNote:
@@ -79,7 +77,7 @@ class CountMidiControl(MenuHost):
 
         if note_on and self.__past_note != note:
             # do not send same note many times, we count it below
-            my_log.debug(f"Sending non-counted note: {str_note}")
+            MYLOG.debug(f"Sending non-counted note: {str_note}")
             self._menuhost_send(str_note)
 
         if self.__past_note != note:

@@ -6,11 +6,9 @@ from drum.loopdrum import LoopDrum
 # noinspection PyUnresolvedReferences
 from song.songpart import SongPart
 from utils.utilconfig import find_path
-from utils.utillog import MyLog
+from utils.utillog import MYLOG
 from utils.utilname import generate_name
 from utils.utilother import FileFinder, CollectionOwner
-
-my_log = MyLog()
 
 
 class Song(CollectionOwner[SongPart]):
@@ -26,7 +24,7 @@ class Song(CollectionOwner[SongPart]):
                 self.load_song()
                 return  # loaded latest saved song
             except Exception as ex:
-                my_log.exception(ex)
+                MYLOG.exception(ex)
 
         while self.item_count() < 4:
             self.idx_from_item(SongPart())
@@ -56,12 +54,12 @@ class Song(CollectionOwner[SongPart]):
         with open(fname, 'wb') as f:
             pickle.dump((parts_lst, drum_type, drum_info), f)
 
-        my_log.info(f"Saved song file: {fname}")
+        MYLOG.info(f"Saved song file: {fname}")
 
     def load_song(self) -> None:
         self._name = self._ff.get_item().split(".")[0]
         fname = self._ff.get_full_name()
-        my_log.info(f"Loading song file: {fname}")
+        MYLOG.info(f"Loading song file: {fname}")
         part_lst: list[SongPart | None]
         with open(fname, 'rb') as f:
             parts_lst, drum_type, drum_info = pickle.load(f)

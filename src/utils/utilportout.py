@@ -4,9 +4,7 @@ from typing import Union
 
 import rtmidi
 
-from utils.utillog import MyLog
-
-my_log = MyLog()
+from utils.utillog import MYLOG
 
 
 class _FakeMidiOut:
@@ -26,7 +24,7 @@ class _FakeMidiOut:
         if not msg or msg[0] == 0xF8 or msg[0] == 0xFE:
             return  # do not log too much
 
-        my_log.info(f"~~~~~~~~~~~~Send MIDI message: {msg}")
+        MYLOG.info(f"~~~~~~~~~~~~Send MIDI message: {msg}")
 
 
 TYPE_MIDI_OUT = Union[rtmidi.MidiOut, _FakeMidiOut]
@@ -49,7 +47,7 @@ class MidiOutWrap:
                 break
 
         if not self.name or not self.port.is_port_open():
-            my_log.error(f"MIDI OUT port is not open: {pname}, using fake port")
+            MYLOG.error(f"MIDI OUT port is not open: {pname}, using fake port")
             self.port, self.name = _FakeMidiOut(), "FakeMidiOut"
 
     def show(self) -> str:

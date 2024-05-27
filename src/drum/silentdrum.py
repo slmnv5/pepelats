@@ -1,9 +1,6 @@
 import numpy as np
 
 from drum.basedrum import BaseDrum
-from utils.utillog import MyLog
-
-my_log = MyLog()
 
 
 class SilentDrum(BaseDrum):

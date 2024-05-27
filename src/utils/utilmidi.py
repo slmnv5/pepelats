@@ -1,9 +1,6 @@
 import os
 
 from utils.utilconfig import load_ini_section, find_path, ConfigName
-from utils.utillog import MyLog
-
-my_log = MyLog()
 
 _keyboard = load_ini_section(find_path(ConfigName.main_ini), "KEYBOARD")
 _option_name = "kbd_notes_windows" if os.name != 'posix' else 'kbd_notes_linux'

@@ -4,13 +4,11 @@ from drum.loopdrum import LoopDrum
 from drum.mididrum import MidiDrum
 from drum.patterndrum import PatternDrum
 from drum.silentdrum import SilentDrum
-from utils.utillog import MyLog
-
-my_log = MyLog()
+from utils.utillog import MYLOG
 
 
 def create_drum(drum_type: str) -> BaseDrum:
-    my_log.info(f"Creating drum: {drum_type}")
+    MYLOG.info(f"Creating drum: {drum_type}")
     if drum_type == "EuclidDrum":
         return EuclidDrum()
     elif drum_type == "PatternDrum":

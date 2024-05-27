@@ -6,10 +6,8 @@ from threading import Thread
 
 from mvc.menuclient import MenuClient
 from utils.utilconfig import KEEP_SCREEN
-from utils.utillog import MyLog
+from utils.utillog import MYLOG
 from utils.utilother import DrawInfo
-
-my_log = MyLog()
 
 if os.name == "posix":
     _UPDATES_PER_LOOP: float = 16
@@ -21,7 +19,7 @@ try:
 except OSError:
     _COLS, _ROWS = 30, 10
 
-my_log.info(f"Text screen size: cols={_COLS} rows={_ROWS}")
+MYLOG.info(f"Text screen size: cols={_COLS} rows={_ROWS}")
 
 # foreground, background ends with '40m'
 _END_COLOR: str = '\x1b[0m'

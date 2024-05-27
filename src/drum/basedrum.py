@@ -4,9 +4,7 @@ import numpy as np
 
 from buffer.wrapbuffer import WrapBuffer
 from utils.utilconfig import SD_RATE
-from utils.utillog import MyLog
-
-my_log = MyLog()
+from utils.utillog import MYLOG
 
 
 class BaseDrum(ABC):
@@ -25,7 +23,7 @@ class BaseDrum(ABC):
 
     def set_pickle_info(self, info: tuple[str, int, float, float]) -> None:
         if len(info) != 4:
-            my_log.error(f"set_picle_info() method incorrect parameter: {info}")
+            MYLOG.error(f"set_picle_info() method incorrect parameter: {info}")
             return
         self.set_config(info[0])
         self.set_bar_len(info[1])
@@ -69,7 +67,7 @@ class BaseDrum(ABC):
         self.stop()
         self._bar_len = bar_len
         self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / SD_RATE)
-        my_log.info(f"Set bar len for: {self}")
+        MYLOG.info(f"Set bar len for: {self}")
 
     # noinspection PyUnusedLocal
     # noinspection PyMethodMayBeStatic

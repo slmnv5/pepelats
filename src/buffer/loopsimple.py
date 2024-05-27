@@ -3,9 +3,6 @@ import sounddevice as sd
 from buffer.loopctrl import LoopCtrl
 from buffer.wrapbuffer import WrapBuffer
 from utils.utilconfig import MAX_LEN
-from utils.utillog import MyLog
-
-my_log = MyLog()
 
 
 class LoopSimple(WrapBuffer):

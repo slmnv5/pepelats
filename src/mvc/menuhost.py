@@ -5,10 +5,8 @@ from multiprocessing import Queue
 from threading import Event
 
 from utils.utilconfig import ConfigName, find_path, load_ini_section
-from utils.utillog import MyLog
+from utils.utillog import MYLOG
 from utils.utilother import DrawInfo
-
-my_log = MyLog()
 
 
 class MenuHost:
@@ -27,7 +25,7 @@ class MenuHost:
 
     @abstractmethod
     def start(self) -> None:
-        my_log.info(f"{self.__class__.__name__} working as MenuHost")
+        MYLOG.info(f"{self.__class__.__name__} working as MenuHost")
         Event().wait()
 
     def _update_menu(self, fname: str):
@@ -69,7 +67,7 @@ class MenuHost:
                 elif cmd[k].strip('+-').replace('.', '', 1).isdigit():
                     cmd[k] = float(cmd[k])
 
-            my_log.debug(f"{self.__class__.__name__} send command: {cmd}")
+            MYLOG.debug(f"{self.__class__.__name__} send command: {cmd}")
             self.__queue.put(cmd)
 
 
@@ -98,7 +96,7 @@ class _MenuLoader:
         if key in sect_dic:
             return sect_dic[key]
 
-        my_log.debug(f"Did not find key: {key} in menu: {sect_name}")
+        MYLOG.debug(f"Did not find key: {key} in menu: {sect_name}")
         return ""
 
     def update_menu(self, section: str) -> None:

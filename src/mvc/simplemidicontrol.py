@@ -3,10 +3,7 @@ from multiprocessing import Queue
 import rtmidi.midiconstants
 
 from mvc.menuhost import MenuHost
-from utils.utillog import MyLog
 from utils.utilmidi import MIN_VELO, STD_VELO
-
-my_log = MyLog()
 
 
 class SimpleMidiControl(MenuHost):

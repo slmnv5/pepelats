@@ -5,10 +5,8 @@ from multiprocessing import Process, Queue
 from control.looper import Looper
 from mvc.menuclient import MenuClient
 from mvc.pyscreen import PyScreen
-from utils.utillog import MyLog
+from utils.utillog import MYLOG
 from utils.utilportin import get_pedal_control
-
-my_log = MyLog()
 
 
 # noinspection PyBroadException
@@ -18,7 +16,7 @@ def do_looper(q_looper: Queue, q_screen: Queue) -> None:
         looper = Looper(q_looper, q_screen)
         looper.start()
     except Exception:
-        my_log.error(f"============Error: {traceback.format_exc()}")
+        MYLOG.error(f"============Error: {traceback.format_exc()}")
         os.system("killall -9 python")
 
 
@@ -29,7 +27,7 @@ def do_screen(q_screen: Queue) -> None:
         scr_view: MenuClient = PyScreen(q_screen)
         scr_view.start()
     except Exception:
-        my_log.error(f"============Error: {traceback.format_exc()}")
+        MYLOG.error(f"============Error: {traceback.format_exc()}")
         os.system("killall -9 python")
 
 
@@ -46,7 +44,7 @@ def go() -> None:
     try:
         get_pedal_control(q_looper).start()
     except Exception as ex:
-        my_log.error(f"Error: {ex}\n{traceback.format_exc()}")
+        MYLOG.error(f"Error: {ex}\n{traceback.format_exc()}")
         os.system("killall -9 python")
     finally:
         os.kill(p1.pid, 9)

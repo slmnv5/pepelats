@@ -1,11 +1,10 @@
 import numpy as np
 
-from utils.utilaudio import correct_sound, Audio
+from utils.utilaudio import correct_sound, Audio, AUDIO
 from utils.utilconfig import MAX_LEN
-from utils.utillog import MyLog
+from utils.utillog import MYLOG
 from utils.utilnumpy import from_buff_to_data, from_data_to_buff, trim_buffer
 
-my_log = MyLog()
 audio = Audio()
 
 
@@ -16,7 +15,7 @@ class WrapBuffer:
         self.__len_ratio: float = 0
         self.__is_reverse: bool = False
         self.__is_silent: bool = False
-        self.__buff: np.ndarray = np.zeros((sz, audio.SD_CH), audio.SD_TYPE)
+        self.__buff: np.ndarray = np.zeros((sz, AUDIO.SD_CH), AUDIO.SD_TYPE)
         self.__info_str: str = ""
         self.__props_str: str = ""
 
@@ -24,7 +23,7 @@ class WrapBuffer:
         if self.is_empty:
             return "---------------"
         if not self.__info_str:
-            self.__info_str = f"V:{audio.vol_db(self.__buff):03}db"
+            self.__info_str = f"V:{AUDIO.vol_db(self.__buff):03}db"
             tmp: str
             if self.__len_ratio == 0:
                 tmp = " L:    "
@@ -41,11 +40,11 @@ class WrapBuffer:
         return self.__info_str + self.__props_str
 
     def correct_buffer(self) -> None:
-        if self.__buff.shape[1] != audio.SD_CH or self.__buff.dtype != audio.SD_TYPE:
-            self.__buff = correct_sound(self.__buff, audio.SD_CH, audio.SD_TYPE)
+        if self.__buff.shape[1] != AUDIO.SD_CH or self.__buff.dtype != AUDIO.SD_TYPE:
+            self.__buff = correct_sound(self.__buff, AUDIO.SD_CH, AUDIO.SD_TYPE)
 
     def max_buffer(self) -> None:
-        self.__buff = np.zeros((MAX_LEN, audio.SD_CH), audio.SD_TYPE)
+        self.__buff = np.zeros((MAX_LEN, AUDIO.SD_CH), AUDIO.SD_TYPE)
         self.__info_str, self.__len_ratio = "", 0
 
     def flip_reverse(self) -> None:
@@ -101,4 +100,4 @@ class WrapBuffer:
             offset = start_rec_idx % tmp
             self.__buff = trim_buffer(self.__buff, rec_len, start_rec_idx - offset)
 
-        my_log.info(f"After trim length ratio: {self.__len_ratio}")
+        MYLOG.info(f"After trim length ratio: {self.__len_ratio}")

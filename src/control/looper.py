@@ -10,11 +10,9 @@ from drum.drumfactory import create_drum
 from drum.loopdrum import LoopDrum
 from song.song import Song
 from utils.utilconfig import ConfigName, load_ini_section, find_path, update_ini_section, SD_RATE
-from utils.utillog import MyLog
+from utils.utillog import MYLOG
 from utils.utilother import DrawInfo, FileFinder
 from utils.utilportout import MidiOutWrap
-
-my_log = MyLog()
 
 
 class Looper(ManyLoopCtrl):
@@ -38,7 +36,7 @@ class Looper(ManyLoopCtrl):
                 method = getattr(self, draw_info.update_method)
                 draw_info.content = method()
             except Exception:
-                my_log.error(f"Error: {traceback.format_exc()}")
+                MYLOG.error(f"Error: {traceback.format_exc()}")
         else:
             draw_info.content = ""
         assert draw_info.content is not None

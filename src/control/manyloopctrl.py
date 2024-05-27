@@ -8,10 +8,7 @@ from drum.loopdrum import LoopDrum
 from song.song import Song
 from song.songpart import SongPart
 from utils.utilconfig import ConfigName
-from utils.utillog import MyLog
 from utils.utilother import CollectionOwner
-
-my_log = MyLog()
 
 
 class ManyLoopCtrl(LoopCtrl, ABC):

@@ -4,9 +4,7 @@ import numpy as np
 import sounddevice as sd
 
 from utils.utilconfig import load_ini_section, find_path, ConfigName, SD_RATE
-from utils.utillog import MyLog
-
-my_log = MyLog()
+from utils.utillog import MYLOG
 
 
 def correct_sound(x: np.ndarray, channels: int, datatype: str) -> np.ndarray:
@@ -62,13 +60,13 @@ class Audio:
             self.DEV_IN: dict[str, any] = sd.query_devices(self.SD_NAME, kind='input')
             self.DEV_OUT: dict[str, any] = sd.query_devices(self.SD_NAME, kind='output')
             sd.default.device = self.SD_NAME
-            my_log.info(f"Found device matching main.ini name: {self.SD_NAME}")
+            MYLOG.info(f"Found device matching main.ini name: {self.SD_NAME}")
         except Exception:
-            my_log.error(f"No device matching main.ini name: {self.SD_NAME}, using default audio device instead")
+            MYLOG.error(f"No device matching main.ini name: {self.SD_NAME}, using default audio device instead")
             self.DEV_IN: dict[str, any] = sd.query_devices(None, kind='input')
             self.DEV_OUT: dict[str, any] = sd.query_devices(None, kind='output')
 
-        my_log.debug(f"Using IN/OUT devices:\n{self.DEV_IN}\n\n{self.DEV_OUT}\n\n")
+        MYLOG.debug(f"Using IN/OUT devices:\n{self.DEV_IN}\n\n{self.DEV_OUT}\n\n")
 
         # =======================================
         if self.DEV_IN["max_input_channels"] not in [1, 2]:
@@ -96,14 +94,17 @@ class Audio:
             self.DRUM_VOLUME = min(self.DRUM_VOLUME, 1.0)
             self.DRUM_VOLUME = max(self.DRUM_VOLUME, 0.1)
         except Exception:
-            my_log.warning(f"Value of drum_volume is incorrect in main.ini file: {tmp}, using value of 1.0")
+            MYLOG.warning(f"Value of drum_volume is incorrect in main.ini file: {tmp}, using value of 1.0")
 
         self.MAX_SD_TYPE = get_conversion_factor('float32', self.SD_TYPE)
 
-        my_log.warning(f"Using IN/OUT channels: {self.SD_CH}, sample rate: {SD_RATE}, data type: {self.SD_TYPE}")
+        MYLOG.warning(f"Using IN/OUT channels: {self.SD_CH}, sample rate: {SD_RATE}, data type: {self.SD_TYPE}")
         sd.check_output_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=SD_RATE)
         sd.check_input_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=SD_RATE)
 
     def vol_db(self, arr: np.ndarray) -> int:
         ratio = max(0.0001, np.max(arr, initial=0) / self.MAX_SD_TYPE)
         return round(20 * log10(ratio))
+
+
+AUDIO = Audio()

@@ -4,10 +4,8 @@ import traceback
 from abc import abstractmethod
 from multiprocessing import Queue
 
-from utils.utillog import MyLog
+from utils.utillog import MYLOG
 from utils.utilother import DrawInfo
-
-my_log = MyLog()
 
 
 class MenuClient:
@@ -23,7 +21,7 @@ class MenuClient:
                 method = getattr(self, method_name)
                 method(*params)
             except Exception:
-                my_log.error(f"Error: {traceback.format_exc()} command: {command}")
+                MYLOG.error(f"Error: {traceback.format_exc()} command: {command}")
 
     @abstractmethod
     def _redraw(self, draw_info: DrawInfo | None) -> None:
@@ -31,4 +29,4 @@ class MenuClient:
 
     def add_command(self, command: list) -> None:
         self.__queue.put(command)
-        my_log.debug(f"Added command: {command}")
+        MYLOG.debug(f"Added command: {command}")

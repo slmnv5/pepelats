@@ -10,10 +10,8 @@ import rtmidi
 from mvc.countmidicontrol import CountMidiControl
 from mvc.menuhost import MenuHost
 from utils.utilconfig import find_path, load_ini_section, ConfigName
-from utils.utillog import MyLog
+from utils.utillog import MYLOG
 from utils.utilmidi import KBD_NOTES, MIDI_NOTES
-
-my_log = MyLog()
 
 _IS_LINUX = os.name == "posix"
 _HAS_KBD = os.environ.get('HAS_KBD', "").upper() in ["Y", "YES", "TRUE", "1"]
@@ -55,7 +53,7 @@ class _KbdMidiIn:
     def on_press(self, kbd_event):
         if kbd_event.name == "esc":
             keyboard.unhook_all()
-            my_log.debug("Done unhook_all and exit !")
+            MYLOG.debug("Done unhook_all and exit !")
             # noinspection PyProtectedMember
             os._exit(1)
             return

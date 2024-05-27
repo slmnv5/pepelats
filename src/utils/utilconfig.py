@@ -2,11 +2,9 @@ import os
 import sys
 from configparser import ConfigParser
 
-from utils.utillog import MyLog
+from utils.utillog import MYLOG
 
 APPDIR = os.sep + 'pepelats'
-
-my_log = MyLog()
 
 
 class ConfigName:
@@ -30,7 +28,7 @@ def find_path(path_end: str) -> str:
     if pos >= 0:
         return tmp1[:pos + len(APPDIR)] + os.sep + path_end
     else:
-        my_log.error(f"Path not found: {path_end}")
+        MYLOG.error(f"Path not found: {path_end}")
         return path_end
 
 
@@ -58,8 +56,8 @@ SD_RATE: int = 44100
 try:
     _max_sec = int(load_ini_section(find_path(ConfigName.main_ini), "AUDIO")['max_len_seconds'])
 except Exception as ex:
-    my_log.exception(ex)
+    MYLOG.exception(ex)
     _max_sec = 60
 
 MAX_LEN = _max_sec * SD_RATE
-my_log.warning(f"Set sampling rate: {SD_RATE}, max. loop length: {_max_sec} sec")
+MYLOG.warning(f"Set sampling rate: {SD_RATE}, max. loop length: {_max_sec} sec")
