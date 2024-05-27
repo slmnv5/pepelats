@@ -1,8 +1,9 @@
-from random import random
+from random import random, choices
 from threading import Timer
 
 import numpy as np
 
+from buffer.loopsimple import LoopSimple
 from buffer.wrapbuffer import WrapBuffer
 from drum.basedrum import BaseDrum
 from song.songpart import SongPart
@@ -11,28 +12,38 @@ from utils.utilaudio import AUDIO
 
 class LoopDrum(BaseDrum):
     """ Drum using song part as it's base.
-    The song part will record real drum sounds and play along with other parts.
-    Loop #0 always plays, other loops may be added randomly if drum level > 0
-    Random shift is applied to drum loops """
+    The song part will record real drum sounds and play along with other parts. """
+
+    _LOOP_PLAY_WGHT: list[int] = [7, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1]
 
     def __init__(self):
         BaseDrum.__init__(self)
-        self.DRUM_SKIP_PROB: float = 0.3
-        self.__drum_skip_lst: list[int] = list()
+        self.__play_lst: list[LoopSimple] = list()  # list to play sounds, changed by randomizes
         self.songpart: SongPart | None = None
+        self._par = 0.2  # for this drum - probability to randomize at bar start
+
+    def start(self) -> None:
+        if not self.songpart:
+            return
+        self._is_stopped = False
 
     def is_playable(self, buff: WrapBuffer) -> bool:
         return id(self.songpart) != id(buff)
 
     def randomize(self) -> None:
-        self.__drum_skip_lst.clear()
         if not self.songpart:
             return
-        self.songpart.loops.apply_to_each(lambda x:
-                                          self.__drum_skip_lst.append(id(x)) if random() < self.DRUM_SKIP_PROB else 0)
+        self.__play_lst.clear()
+        self.songpart.loops.apply_to_each(lambda x: self.__play_lst.append(x))
+        max_len = self.songpart.loops.item_count()
+        play_len = min(3, max_len)
+        self.__play_lst = choices(self.__play_lst, weights=self._LOOP_PLAY_WGHT[:max_len], k=play_len)
 
     def play_fill(self, idx: int) -> None:
-        self.__drum_skip_lst.clear()
+        if not self.songpart:
+            return
+        self.__play_lst.clear()
+        self.songpart.loops.apply_to_each(lambda x: self.__play_lst.append(x))
         tmp: int = idx % self._bar_len
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2
@@ -40,14 +51,13 @@ class LoopDrum(BaseDrum):
         Timer(tmp / AUDIO.SD_RATE, self.randomize).start()
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
-        if self._is_stopped or not self._bar_len or not self.songpart:
+        if self._is_stopped or not self._bar_len:
             return
         if idx % self._bar_len == 0:
             if random() < self._par:
                 self.randomize()
-        loops = self.songpart.loops
-        loops.apply_to_each(lambda x:
-                            WrapBuffer.play_samples(x, out_data, idx) if id(x) not in self.__drum_skip_lst else None)
+        for loop in self.__play_lst:
+            loop.play_samples(out_data, idx)
 
     def iterate_config(self, steps: int) -> None:
         pass

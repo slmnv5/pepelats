@@ -20,19 +20,20 @@ my_log = MyLog()
 
 
 class BufferDrum(BaseDrum, ABC):
+    # Used to skip some drum sounds
+    _DR_COUNT_LST: list[int] = [2, 3, 4, 5]
+    _DR_COUNT_WGHT: list[int] = [1, 5, 5, 2]
+    _DR_MODIF_PROB: float = 0.2
 
     def __init__(self, ptnrn_dir: str):
         BaseDrum.__init__(self)
         self._sl = SampleLoader()
         self._sl.set_volume(self._volume)
-        self.__drum_play_lst: list[np.ndarray] = list()  # play patterns
-        self.__drum_modif_lst = self.__drum_play_lst  # midified patterns
-        self.__drum_name: str = ""
-        self.__drum_intensity: str = ""
-        # Used to skip some drum sounds from patterns
-        self._DR_COUNT_LST: list[int] = [2, 3, 4, 5]
-        self._DR_COUNT_WGHT: list[int] = [1, 5, 5, 2]
-        self._DR_MODIF_PROB: float = 0.2
+        self.__play_lst: list[np.ndarray] = list()  # list to play sounds, changed by randomizes
+        self.__modif_lst = self.__play_lst  # midified with some sounds removed
+        self.__name: str = ""
+        self.__intensity: str = ""
+        self._par = 0.5  # for this drum it controls swing
 
         tmp: str = find_path(ptnrn_dir)
         assert os.path.isdir(tmp)
@@ -43,7 +44,7 @@ class BufferDrum(BaseDrum, ABC):
 
     def show_param(self) -> str:
         base_info = super().show_param()
-        return f"{base_info}\nintensity: {self.__drum_intensity}\nname: {self.__drum_name}"
+        return f"{base_info}\nintensity: {self.__intensity}\nname: {self.__name}"
 
     def get_config(self) -> str:
         return self._ff.get_item()
@@ -94,30 +95,30 @@ class BufferDrum(BaseDrum, ABC):
         if idx % self._bar_len == 0:
             if random() < self._DR_MODIF_PROB:
                 self.modify()
-        for buff in self.__drum_modif_lst:
+        for buff in self.__modif_lst:
             play_buffer(buff, out_data, idx)
 
     def __str__(self) -> str:
-        return f"{super().__str__()}:{self.__drum_name}"
+        return f"{super().__str__()}:{self.__name}"
 
     def randomize(self) -> None:
-        self.__drum_play_lst, self.__drum_name, self.__drum_intensity \
+        self.__play_lst, self.__name, self.__intensity \
             = choice(self._pl.get_quiet_patterns())
-        self.__drum_modif_lst = self.__drum_play_lst
+        self.__modif_lst = self.__play_lst
 
     def modify(self) -> None:
         dr_count: int = choices(self._DR_COUNT_LST, weights=self._DR_COUNT_WGHT, k=1)[0]
-        max_count: int = len(self.__drum_play_lst)
+        max_count: int = len(self.__play_lst)
         if dr_count >= max_count:
-            self.__drum_modif_lst = self.__drum_play_lst
+            self.__modif_lst = self.__play_lst
         else:
             idx_lst: list[int] = sample(range(max_count), k=dr_count)
-            self.__drum_modif_lst = [self.__drum_play_lst[x] for x in idx_lst]
+            self.__modif_lst = [self.__play_lst[x] for x in idx_lst]
 
     def play_fill(self, idx: int) -> None:
-        self.__drum_play_lst, self.__drum_name, self.__drum_intensity \
+        self.__play_lst, self.__name, self.__intensity \
             = choice(self._pl.get_loud_patterns())
-        self.__drum_modif_lst = self.__drum_play_lst
+        self.__modif_lst = self.__play_lst
         tmp: int = idx % self._bar_len
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2
