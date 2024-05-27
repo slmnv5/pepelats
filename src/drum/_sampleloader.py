@@ -3,11 +3,9 @@ import os
 import numpy as np
 
 from utils.utilalsa import read_wav_slow
-from utils.utilaudio import correct_sound, Audio, AUDIO
+from utils.utilaudio import correct_sound, AUDIO
 from utils.utilconfig import find_path, SD_RATE
 from utils.utillog import MYLOG
-
-audio = Audio()
 
 
 class SampleLoader:

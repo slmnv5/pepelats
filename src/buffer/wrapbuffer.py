@@ -1,11 +1,9 @@
 import numpy as np
 
-from utils.utilaudio import correct_sound, Audio, AUDIO
+from utils.utilaudio import correct_sound, AUDIO
 from utils.utilconfig import MAX_LEN
 from utils.utillog import MYLOG
 from utils.utilnumpy import from_buff_to_data, from_data_to_buff, trim_buffer
-
-audio = Audio()
 
 
 class WrapBuffer:

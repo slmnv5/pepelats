@@ -10,12 +10,10 @@ import numpy as np
 from drum._patternloader import PatternLoader
 from drum._sampleloader import SampleLoader
 from drum.basedrum import BaseDrum
-from utils.utilaudio import Audio, AUDIO
+from utils.utilaudio import AUDIO
 from utils.utilconfig import find_path, SD_RATE
 from utils.utilnumpy import from_buff_to_data
 from utils.utilother import FileFinder
-
-audio = Audio()
 
 
 class BufferDrum(BaseDrum, ABC):
