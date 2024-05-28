@@ -64,10 +64,10 @@ class WrapBuffer:
     def is_empty(self) -> bool:
         return not (0 < len(self.__buff) < MAX_LEN)
 
-    def record_samples(self, in_data: np.ndarray, idx: int) -> None:
+    def record(self, in_data: np.ndarray, idx: int) -> None:
         from_data_to_buff(self.__buff, in_data, idx)
 
-    def play_samples(self, out_data: np.ndarray, idx: int) -> None:
+    def play(self, out_data: np.ndarray, idx: int) -> None:
         if self.__is_silent:
             return
         tmp = self.__buff[::-1] if self.__is_reverse else self.__buff

@@ -21,7 +21,7 @@ def test_1() -> None:
     assert ctrl.get_drum().get_bar_len() == 100_000
 
     loop = LoopSimple()
-    loop.record_samples(sound, 0)
+    loop.record(sound, 0)
     ctrl.idx = len(sound)
 
     loop.trim_buffer(ctrl)

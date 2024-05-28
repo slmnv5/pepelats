@@ -29,10 +29,10 @@ class LoopSimple(WrapBuffer):
         def callback(in_data, out_data, frame_count, time_info, status):
             out_data[:] = 0
             drum.play(out_data, ctrl.idx)
-            self.play_samples(out_data, ctrl.idx)
+            self.play(out_data, ctrl.idx)
 
             if ctrl.get_is_rec():
-                self.record_samples(in_data, ctrl.idx)
+                self.record(in_data, ctrl.idx)
 
             ctrl.idx += frame_count
             if ctrl.idx >= ctrl.get_stop_len():

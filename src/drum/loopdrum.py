@@ -61,4 +61,4 @@ class LoopDrum(BaseDrum):
             return
         if not self.__is_fill and idx % self._bar_len == 0 and random() < self._par:
             self.randomize()
-        self.songpart.play_samples(out_data, idx)
+        self.songpart.play(out_data, idx)

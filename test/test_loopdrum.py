@@ -11,7 +11,7 @@ def test_1():
     sound = make_sin_sound(440, 7)
     sound = correct_sound(sound, AINFO.SD_CH, AINFO.SD_TYPE)
     sp = SongPart()
-    sp.record_samples(sound, 0)
+    sp.record(sound, 0)
     drum = create_drum("LoopDrum")
     drum.songpart = sp
     drum.set_bar_len(100_000)

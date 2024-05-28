@@ -34,12 +34,12 @@ class SongPart(LoopSimple):
         if not bar_len:
             ctrl.add_command(["_init_drum", ctrl.idx])
 
-    def play_samples(self, out_data: np.ndarray, idx: int) -> None:
-        self.loops.apply_to_each(lambda x: LoopSimple.play_samples(x, out_data, idx))
+    def play(self, out_data: np.ndarray, idx: int) -> None:
+        self.loops.apply_to_each(lambda x: LoopSimple.play(x, out_data, idx))
 
-    def record_samples(self, in_data: np.ndarray, idx: int) -> None:
+    def record(self, in_data: np.ndarray, idx: int) -> None:
         loop = self.loops.get_item()
-        LoopSimple.record_samples(loop, in_data, idx)
+        LoopSimple.record(loop, in_data, idx)
 
     def redo(self) -> bool:
         if not self.__undos:
