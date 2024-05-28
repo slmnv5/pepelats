@@ -11,7 +11,7 @@ from utils.utillog import MYLOG
 from utils.utilnumpy import from_data_to_buff
 
 
-class NormalPtrnLoader(DrumLoader):
+class OldPtrnLoader(DrumLoader):
     """Pattern based drum"""
 
     def __init__(self):

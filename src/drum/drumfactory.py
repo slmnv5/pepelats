@@ -3,7 +3,7 @@ from drum.basedrum import BaseDrum
 from drum._eucliddrum import EuclidPtrnLoader
 from drum.loopdrum import LoopDrum
 from drum._mididrum import MidiDrum
-from drum._patterndrum import NormalPtrnLoader
+from drum._patterndrum import OldPtrnLoader
 from drum.silentdrum import SilentDrum
 from utils.utillog import MYLOG
 
@@ -13,7 +13,7 @@ def create_drum(drum_type: str) -> BaseDrum:
     if drum_type == "EuclidDrum":
         return BufferDrum(EuclidPtrnLoader())
     elif drum_type == "PatternDrum":
-        return BufferDrum(NormalPtrnLoader())
+        return BufferDrum(OldPtrnLoader())
     elif drum_type == "MidiDrum":
         return MidiDrum()
     elif drum_type == "LoopDrum":

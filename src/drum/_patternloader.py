@@ -100,5 +100,5 @@ class PatternLoader:
 
     def rand_loud_ptn(self) -> tuple[list[np.ndarray], str]:
         """ random loud sound and its ptn name """
-        k = randrange(self._loud_slice.stop, self._loud_slice.stop)
+        k = randrange(self._loud_slice.start, self._loud_slice.stop)
         return self.__snd_ptn[k], self.__ptn[k][1]
