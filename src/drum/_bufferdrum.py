@@ -11,7 +11,7 @@ from audio.audioinfo import AINFO
 from audio.sampleloader import SampleLoader
 from drum._patternloader import PatternLoader
 from drum.basedrum import BaseDrum
-from utils.utilconfig import find_path, SD_RATE
+from utils.utilconfig import find_path, SD_RATE, HUGE_INT
 from utils.utilnumpy import from_buff_to_data
 from utils.utilother import FileFinder
 
@@ -27,7 +27,8 @@ class BufferDrum(BaseDrum, ABC):
         self.__is_fill: bool = False  # playing drum fill now
         self._sl = SampleLoader()
         self._sl.set_volume(self._volume)
-        self.__play_lst: list[np.ndarray] = list()  # list to play sounds, changed by randomizes
+        self.__play_lst: list[np.ndarray] = list()  # list to play sounds, changed by randomize
+        self.__play_count: int = HUGE_INT  # how many arrays will play in the play list, changed by modify
         self.__name: str = ""
         self.__intensity: str = ""
         self._par = 0.5  # for this drum it controls swing
@@ -97,13 +98,16 @@ class BufferDrum(BaseDrum, ABC):
         self.__is_fill = False
         self.__play_lst, self.__name, self.__intensity \
             = choice(self._pl.get_quiet_patterns())
-        play_count: int = choices(self._COUNT_LST, weights=self._COUNT_WGHT, k=1)[0]
-        self.__play_lst = self.__play_lst[:play_count]
+        self._modify()
+
+    def _modify(self) -> None:
+        self.__play_count = choices(self._COUNT_LST, weights=self._COUNT_WGHT, k=1)[0]
 
     def play_fill(self, idx: int) -> None:
+        self.__is_fill = True
         self.__play_lst, self.__name, self.__intensity \
             = choice(self._pl.get_loud_patterns())
-        self.__is_fill = True
+        self.__play_count = HUGE_INT
         tmp: int = idx % self._bar_len
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2
@@ -114,6 +118,6 @@ class BufferDrum(BaseDrum, ABC):
         if self._is_stopped or not self._bar_len:
             return
         if not self.__is_fill and idx % self._bar_len == 0 and random() < self._DR_MODIF_PROB:
-            self.randomize()
-        for buff in self.__play_lst:
+            self._modify()
+        for buff in self.__play_lst[:self.__play_count]:
             from_buff_to_data(buff, out_data, idx)

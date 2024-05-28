@@ -52,6 +52,7 @@ def update_ini_section(fname: str, sect: str, dic: dict[str, str]) -> None:
 
 KEEP_SCREEN: bool = "--keep_screen" in sys.argv
 SD_RATE: int = 44100
+HUGE_INT = 2 ** 32 - 1
 
 try:
     _max_sec = int(load_ini_section(find_path(ConfigName.main_ini), "AUDIO")['max_len_seconds'])

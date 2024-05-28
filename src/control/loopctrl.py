@@ -5,6 +5,7 @@ from threading import Event
 from drum.basedrum import BaseDrum
 from drum.silentdrum import SilentDrum
 from mvc.menuclient import MenuClient
+from utils.utilconfig import HUGE_INT
 
 
 class LoopCtrl(MenuClient, ABC):
@@ -12,7 +13,6 @@ class LoopCtrl(MenuClient, ABC):
 
     # 5k is about 0.1 second. May be late by this time without going to next full cycle
     _LATE_SAMPLES: int = 5000
-    _HUGE_INT = 2 ** 30
 
     def __init__(self, queue: Queue):
         super().__init__(queue)
@@ -46,7 +46,7 @@ class LoopCtrl(MenuClient, ABC):
         return self.__stop_event
 
     def stop_never(self) -> None:
-        self.__stop_len = LoopCtrl._HUGE_INT
+        self.__stop_len = HUGE_INT
         self.__stop_event.clear()
 
     def stop_at_bound(self, bound_value: int) -> None:
