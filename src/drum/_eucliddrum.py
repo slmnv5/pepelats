@@ -9,7 +9,7 @@ from utils.utilother import EuclidSlicer
 
 
 class EuclidDrum(BufferDrum):
-    _DRUM_STEPS: int = 16
+    _BAR_STEPS: int = 16  # each bar has so many steps
 
     def __init__(self):
         BufferDrum.__init__(self, "config/drum/euclid")
@@ -25,7 +25,7 @@ class EuclidDrum(BufferDrum):
     def _convert(self, bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
         result = list()
         for sname, notes in ptn_dic.items():
-            new_len = round(bar_len * len(notes) / EuclidDrum._DRUM_STEPS)
+            new_len = round(bar_len * len(notes) / EuclidDrum._BAR_STEPS)
             buff = self.make_drum_buffer(new_len)
             result.append(buff)
             step_len: float = new_len / len(notes)

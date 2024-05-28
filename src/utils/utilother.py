@@ -3,6 +3,8 @@ from __future__ import annotations
 import os
 from typing import TypeVar, Generic, Iterable, Callable
 
+from utils.utilconfig import HUGE_INT
+
 T = TypeVar('T')
 
 
@@ -138,25 +140,26 @@ class FileFinder(CollectionOwner[str]):
 
 
 class EuclidSlicer:
-    """ Spaces beats in steps in most even way.
-    Used in Euclid drum patterns or when need to divide list almost evely into sub lists """
+    """ Arrange beats in given number of steps in most even way.
+    Used in Euclid drum patterns or when dividing list most evenly into sub lists """
 
-    def __init__(self, steps: int, beats: int, shift: int, accent: int = 0):
+    def __init__(self, steps: int, beats: int, shift: int, accent: int):
         assert steps and beats
         beats = min(beats, steps)
         shift %= steps
-        dist: float = steps / beats  # exact distance between beats
-        self._beat_steps: list[int] = [round(k * dist) for k in range(beats)]
+        # array of steps with beats
+        self._beat_steps: list[int] = [round(k * steps / beats) for k in range(beats)]
+        # same array shifted
         self._beat_steps = [(-shift + k) % steps for k in self._beat_steps]
-        self._beats: int = beats
-        self._steps: int = steps
-        self._shift: int = shift
-        self._accent: int = accent
+        self._steps: int = steps  # steps in pattern
+        self._beats: int = beats  # beats in pattern
+        self._shift: int = shift  # shift of 1-st beat
+        self._accent: int = accent if accent > 0 else HUGE_INT  # every N-th step is accented
 
     def get_ptrn_str(self) -> str:
         pattern_lst = ['.'] * self._steps
         for k in self._beat_steps:
-            is_accent = self._accent > 0 and k % self._accent == 0
+            is_accent = k % self._accent == 0
             pattern_lst[k] = '*' if is_accent else '+'
         return ''.join(pattern_lst)
 
@@ -164,15 +167,18 @@ class EuclidSlicer:
         return self._beat_steps
 
     def sub_list_by_idx(self, idx: int) -> list[int]:
-        return list(range(self._steps))[self.slice_by_idx(idx)]
+        """ get sub list that contains idx """
+        sl: slice = self.slice_by_idx(idx)
+        return list(range(sl.start, sl.stop))
 
     def slice_by_idx(self, idx: int) -> slice:
+        """ find slice for sub list that contains idx """
         idx %= self._beats
         idx_nxt = (idx + 1) % self._beats
         if self._beat_steps[idx] > self._beat_steps[idx_nxt]:
-            return slice(self._beat_steps[idx], None)
+            return slice(self._beat_steps[idx], self._steps, 1)
         else:
-            return slice(self._beat_steps[idx], self._beat_steps[idx_nxt])
+            return slice(self._beat_steps[idx], self._beat_steps[idx_nxt], 1)
 
     def __str__(self):
         return f"{self._steps},{self._beats},{self._shift}: {self.get_ptrn_str()}"

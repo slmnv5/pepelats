@@ -37,39 +37,39 @@ def test_3():
 
 
 def test_4():
-    assert EuclidSlicer(13, 5, 0).beat_steps() == [0, 3, 5, 8, 10]
-    assert EuclidSlicer(13, 5, 5).beat_steps() == [8, 11, 0, 3, 5]
+    assert EuclidSlicer(13, 5, 0, 0).beat_steps() == [0, 3, 5, 8, 10]
+    assert EuclidSlicer(13, 5, 5, 0).beat_steps() == [8, 11, 0, 3, 5]
 
-    assert EuclidSlicer(4, 5, 0).beat_steps() == [0, 1, 2, 3]
-    assert EuclidSlicer(2, 8, 0).beat_steps() == [0, 1]
+    assert EuclidSlicer(4, 5, 0, 0).beat_steps() == [0, 1, 2, 3]
+    assert EuclidSlicer(2, 8, 0, 0).beat_steps() == [0, 1]
 
 
 def test_6():
-    assert EuclidSlicer(10, 3, 0).sub_list_by_idx(0) == [0, 1, 2]
-    assert EuclidSlicer(10, 3, 0).sub_list_by_idx(1) == [3, 4, 5, 6]
-    assert EuclidSlicer(10, 3, 0).sub_list_by_idx(2) == [7, 8, 9]
+    assert EuclidSlicer(10, 3, 0, 0).sub_list_by_idx(0) == [0, 1, 2]
+    assert EuclidSlicer(10, 3, 0, 0).sub_list_by_idx(1) == [3, 4, 5, 6]
+    assert EuclidSlicer(10, 3, 0, 0).sub_list_by_idx(2) == [7, 8, 9]
 
-    assert EuclidSlicer(3, 3, 0).sub_list_by_idx(0) == [0]
-    assert EuclidSlicer(3, 3, 0).sub_list_by_idx(1) == [1]
-    assert EuclidSlicer(3, 3, 0).sub_list_by_idx(2) == [2]
+    assert EuclidSlicer(3, 3, 0, 0).sub_list_by_idx(0) == [0]
+    assert EuclidSlicer(3, 3, 0, 0).sub_list_by_idx(1) == [1]
+    assert EuclidSlicer(3, 3, 0, 0).sub_list_by_idx(2) == [2]
 
-    assert EuclidSlicer(2, 3, 0).sub_list_by_idx(0) == [0]
-    assert EuclidSlicer(2, 2, 0).sub_list_by_idx(1) == [1]
-    assert EuclidSlicer(2, 3, 0).sub_list_by_idx(1) == [1]
+    assert EuclidSlicer(2, 3, 0, 0).sub_list_by_idx(0) == [0]
+    assert EuclidSlicer(2, 2, 0, 0).sub_list_by_idx(1) == [1]
+    assert EuclidSlicer(2, 3, 0, 0).sub_list_by_idx(1) == [1]
 
-    assert EuclidSlicer(5, 30, 0).sub_list_by_idx(0) == [0]
-    assert EuclidSlicer(5, 30, 0).sub_list_by_idx(6) == [1]
-    assert EuclidSlicer(5, 30, 0).sub_list_by_idx(7) == [2]
+    assert EuclidSlicer(5, 30, 0, 0).sub_list_by_idx(0) == [0]
+    assert EuclidSlicer(5, 30, 0, 0).sub_list_by_idx(6) == [1]
+    assert EuclidSlicer(5, 30, 0, 0).sub_list_by_idx(7) == [2]
 
-    assert EuclidSlicer(5, 3, 0).sub_list_by_idx(1) == [2]
+    assert EuclidSlicer(5, 3, 0, 0).sub_list_by_idx(1) == [2]
 
-    assert EuclidSlicer(30, 5, 0).sub_list_by_idx(0) == [0, 1, 2, 3, 4, 5]
-    assert EuclidSlicer(30, 5, 0).sub_list_by_idx(3) == [18, 19, 20, 21, 22, 23]
+    assert EuclidSlicer(30, 5, 0, 0).sub_list_by_idx(0) == [0, 1, 2, 3, 4, 5]
+    assert EuclidSlicer(30, 5, 0, 0).sub_list_by_idx(3) == [18, 19, 20, 21, 22, 23]
 
 
 def test_7():
     lst = [1, 2]
-    es = EuclidSlicer(len(lst), 12, 0)
+    es = EuclidSlicer(len(lst), 12, 0, 0)
     sl: slice = es.slice_by_idx(0)
     lst = lst[sl]
     idx = sl.start + random.randrange(len(lst))
