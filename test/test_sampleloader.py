@@ -1,7 +1,7 @@
 import sounddevice as sd
 
 # noinspection PyProtectedMember
-from drum._sampleloader import SampleLoader
+from audio.sampleloader import SampleLoader
 
 
 def test_1():

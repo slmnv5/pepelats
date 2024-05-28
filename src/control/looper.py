@@ -5,7 +5,7 @@ import time
 import traceback
 from multiprocessing import Queue
 
-from control.manyloopctrl import ManyLoopCtrl
+from control.songctrl import SongCtrl
 from drum.drumfactory import create_drum
 from drum.loopdrum import LoopDrum
 from song.song import Song
@@ -15,11 +15,11 @@ from utils.utilother import DrawInfo, FileFinder
 from utils.utilportout import MidiOutWrap
 
 
-class Looper(ManyLoopCtrl):
+class Looper(SongCtrl):
     """Adds screen connection, Mixer, looper commands"""
 
     def __init__(self, recv_q: Queue, send_q: Queue):
-        ManyLoopCtrl.__init__(self, recv_q)
+        SongCtrl.__init__(self, recv_q)
         self._send_q = send_q
         self._saved_draw_info = DrawInfo()
 

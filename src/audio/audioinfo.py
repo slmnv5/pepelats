@@ -38,13 +38,13 @@ def get_conversion_factor(type_src: str, type_dst: str) -> float | int:
             return float(np.iinfo(type_dst).max) / float(np.iinfo(type_src).max)
 
 
-class Audio:
+class AudioInfo:
     __instance = None
 
     def __new__(cls):
         """ creates a singleton object, if it is not created, else returns existing """
         if not cls.__instance:
-            cls.__instance = super(Audio, cls).__new__(cls)
+            cls.__instance = super(AudioInfo, cls).__new__(cls)
             cls.__instance.__initialized = False
         return cls.__instance
 
@@ -53,7 +53,7 @@ class Audio:
             return
         self.__initialized = True
 
-        dic: dict[str, str] = load_ini_section(find_path(ConfigName.main_ini), "AUDIO")
+        dic: dict[str, str] = load_ini_section(find_path(ConfigName.main_ini), "AINFO")
         self.SD_NAME: str = dic.get("device_name", "USB Audio").strip()
         # noinspection PyBroadException
         try:
@@ -107,4 +107,4 @@ class Audio:
         return round(20 * log10(ratio))
 
 
-AUDIO = Audio()
+AINFO = AudioInfo()

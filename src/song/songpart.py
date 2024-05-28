@@ -2,8 +2,8 @@ from threading import Thread
 
 import numpy as np
 
-from buffer.loopctrl import LoopCtrl
-from buffer.loopsimple import LoopSimple
+from control.loopctrl import LoopCtrl
+from song.loopsimple import LoopSimple
 from utils.utilconfig import MAX_LEN
 from utils.utilother import CollectionOwner
 

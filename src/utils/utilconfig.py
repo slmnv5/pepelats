@@ -54,7 +54,7 @@ KEEP_SCREEN: bool = "--keep_screen" in sys.argv
 SD_RATE: int = 44100
 
 try:
-    _max_sec = int(load_ini_section(find_path(ConfigName.main_ini), "AUDIO")['max_len_seconds'])
+    _max_sec = int(load_ini_section(find_path(ConfigName.main_ini), "AINFO")['max_len_seconds'])
 except Exception as ex:
     MYLOG.exception(ex)
     _max_sec = 60

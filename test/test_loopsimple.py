@@ -1,8 +1,8 @@
 from multiprocessing import Queue
 from threading import Timer
 
-from buffer.loopctrl import LoopCtrl
-from buffer.loopsimple import LoopSimple
+from control.loopctrl import LoopCtrl
+from song.loopsimple import LoopSimple
 from drum.drumfactory import create_drum
 
 

@@ -7,10 +7,10 @@ from threading import Timer
 
 import numpy as np
 
+from audio.audioinfo import AINFO
+from audio.sampleloader import SampleLoader
 from drum._patternloader import PatternLoader
-from drum._sampleloader import SampleLoader
 from drum.basedrum import BaseDrum
-from utils.utilaudio import AUDIO
 from utils.utilconfig import find_path, SD_RATE
 from utils.utilnumpy import from_buff_to_data
 from utils.utilother import FileFinder
@@ -41,7 +41,7 @@ class BufferDrum(BaseDrum, ABC):
 
     @staticmethod
     def make_drum_buffer(bar_len) -> np.ndarray:
-        return np.zeros((bar_len, AUDIO.SD_CH), AUDIO.SD_TYPE)
+        return np.zeros((bar_len, AINFO.SD_CH), AINFO.SD_TYPE)
 
     def show_param(self) -> str:
         base_info = super().show_param()

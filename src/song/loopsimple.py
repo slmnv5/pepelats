@@ -1,7 +1,7 @@
 import sounddevice as sd
 
-from buffer.loopctrl import LoopCtrl
-from buffer.wrapbuffer import WrapBuffer
+from control.loopctrl import LoopCtrl
+from audio.wrapbuffer import WrapBuffer
 from utils.utilconfig import MAX_LEN
 
 

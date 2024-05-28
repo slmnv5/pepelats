@@ -5,7 +5,7 @@ import sounddevice as sd
 
 from utils.utilalsa import make_noise, int_to_bytes, bytes_to_int, make_sin_sound, write_wav, \
     read_wav_slow
-from utils.utilaudio import correct_sound, get_conversion_factor
+from audio.audioinfo import correct_sound, get_conversion_factor
 from utils.utilconfig import find_path, SD_RATE
 
 

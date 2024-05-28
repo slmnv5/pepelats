@@ -3,8 +3,8 @@ from threading import Timer
 
 import numpy as np
 
-from buffer.loopsimple import LoopSimple
-from buffer.wrapbuffer import WrapBuffer
+from song.loopsimple import LoopSimple
+from audio.wrapbuffer import WrapBuffer
 from drum.basedrum import BaseDrum
 from song.songpart import SongPart
 from utils.utilconfig import SD_RATE

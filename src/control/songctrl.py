@@ -2,8 +2,8 @@ from abc import ABC
 from multiprocessing import Queue
 from threading import Event, Thread
 
-from buffer.loopctrl import LoopCtrl
-from buffer.loopsimple import LoopSimple
+from control.loopctrl import LoopCtrl
+from song.loopsimple import LoopSimple
 from drum.loopdrum import LoopDrum
 from song.song import Song
 from song.songpart import SongPart
@@ -11,7 +11,7 @@ from utils.utilconfig import ConfigName
 from utils.utilother import CollectionOwner
 
 
-class ManyLoopCtrl(LoopCtrl, ABC):
+class SongCtrl(LoopCtrl, ABC):
     """added playback thread and Song.
      Song is collection of song parts with related methods"""
 

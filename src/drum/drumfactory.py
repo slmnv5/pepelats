@@ -1,8 +1,8 @@
 from drum.basedrum import BaseDrum
-from drum.eucliddrum import EuclidDrum
+from drum._eucliddrum import EuclidDrum
 from drum.loopdrum import LoopDrum
-from drum.mididrum import MidiDrum
-from drum.patterndrum import PatternDrum
+from drum._mididrum import MidiDrum
+from drum._patterndrum import PatternDrum
 from drum.silentdrum import SilentDrum
 from utils.utillog import MYLOG
 

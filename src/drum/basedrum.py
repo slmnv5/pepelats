@@ -2,7 +2,7 @@ from abc import abstractmethod, ABC
 
 import numpy as np
 
-from buffer.wrapbuffer import WrapBuffer
+from audio.wrapbuffer import WrapBuffer
 from utils.utilconfig import SD_RATE
 from utils.utillog import MYLOG
 
