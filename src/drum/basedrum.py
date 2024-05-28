@@ -66,7 +66,7 @@ class BaseDrum(ABC):
         self.stop()
         self._bar_len = bar_len
         self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / SD_RATE)
-        MYLOG.info(f"Set bar len for: {self}")
+        MYLOG.info(f"Set bar len for drum: {self}")
 
     @abstractmethod
     def play(self, out_data: np.ndarray, idx: int) -> None:
