@@ -11,14 +11,20 @@ def correct_sound(x: np.ndarray, channels: int, datatype: str) -> np.ndarray:
     """ Convert numpy array to given channels and datatype """
     assert x.ndim in [1, 2]
     assert channels in [1, 2]
-    factor = get_conversion_factor(x.dtype, datatype)
-    x = (x * factor).astype(datatype)
     if x.ndim == 1:
+        MYLOG.error(f"Re-shaping one dimentional array, shape: {x.shape}")
         x = x.reshape(-1, 1)
-    if x.shape[1] < channels:
-        x = np.column_stack((x, x))
-    elif x.shape[1] > channels:
-        x = x[:, :1]
+    if x.dtype != AINFO.SD_TYPE:
+        MYLOG.warning(f"Correcting array type: {x.dtype} to {AINFO.SD_TYPE}")
+        factor = get_conversion_factor(x.dtype, datatype)
+        x = (x * factor).astype(datatype)
+
+    if x.shape[1] != AINFO.SD_CH:
+        MYLOG.warning(f"Correcting audio channels: {x.shape[1]} to {AINFO.SD_CH}")
+        if x.shape[1] < channels:
+            x = np.column_stack((x, x))
+        elif x.shape[1] > channels:
+            x = x[:, :1]
     return x
 
 

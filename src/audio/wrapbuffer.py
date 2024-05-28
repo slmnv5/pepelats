@@ -38,8 +38,7 @@ class WrapBuffer:
         return self.__info_str + self.__props_str
 
     def correct_buffer(self) -> None:
-        if self.__buff.shape[1] != AINFO.SD_CH or self.__buff.dtype != AINFO.SD_TYPE:
-            self.__buff = correct_sound(self.__buff, AINFO.SD_CH, AINFO.SD_TYPE)
+        self.__buff = correct_sound(self.__buff, AINFO.SD_CH, AINFO.SD_TYPE)
 
     def max_buffer(self) -> None:
         self.__buff = np.zeros((MAX_LEN, AINFO.SD_CH), AINFO.SD_TYPE)
