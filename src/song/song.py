@@ -1,3 +1,4 @@
+import os
 import pickle
 
 from control.loopctrl import LoopCtrl
@@ -25,6 +26,11 @@ class Song(CollectionOwner[SongPart]):
                 return  # loaded latest saved song
             except Exception as ex:
                 MYLOG.exception(ex)
+                song_dir = find_path(".save_song")
+                fname = self._ff.get_item()
+                os.system(f"mkdir {song_dir}/bad")
+                os.system(f"mv -v {song_dir}/{fname} {song_dir}/bad/")
+                MYLOG.error(f"Moved song to 'bad' sub directory: {fname}")
 
         while self.item_count() < 4:
             self.idx_from_item(SongPart())
