@@ -22,7 +22,7 @@ class LoopSimple(WrapBuffer):
         if not bar_len:
             ctrl.add_command(["_init_drum", ctrl.idx])
 
-    def play(self, ctrl: LoopCtrl):
+    def play_loop(self, ctrl: LoopCtrl):
         drum = ctrl.get_drum()
         play_samples = drum.is_playable(self)  # drum and loop may be the same, avoid double play
 

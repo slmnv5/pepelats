@@ -26,4 +26,4 @@ def test_1() -> None:
 
     loop.trim_buffer(ctrl)
     Timer(5, ctrl.stop_at_bound, [0]).start()
-    loop.play(ctrl)
+    loop.play_loop(ctrl)
