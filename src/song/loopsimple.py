@@ -1,7 +1,7 @@
 import sounddevice as sd
 
-from control.loopctrl import LoopCtrl
 from audio.wrapbuffer import WrapBuffer
+from control.loopctrl import LoopCtrl
 from utils.utilconfig import MAX_LEN
 
 
@@ -24,14 +24,12 @@ class LoopSimple(WrapBuffer):
 
     def play_loop(self, ctrl: LoopCtrl):
         drum = ctrl.get_drum()
-        play_samples = drum.is_playable(self)  # drum and loop may be the same, avoid double play
 
         # noinspection PyUnusedLocal
         def callback(in_data, out_data, frame_count, time_info, status):
             out_data[:] = 0
             drum.play(out_data, ctrl.idx)
-            if play_samples:
-                self.play_samples(out_data, ctrl.idx)
+            self.play_samples(out_data, ctrl.idx)
 
             if ctrl.get_is_rec():
                 self.record_samples(in_data, ctrl.idx)

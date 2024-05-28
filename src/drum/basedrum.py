@@ -2,7 +2,6 @@ from abc import abstractmethod, ABC
 
 import numpy as np
 
-from audio.wrapbuffer import WrapBuffer
 from utils.utilconfig import SD_RATE
 from utils.utillog import MYLOG
 
@@ -68,12 +67,6 @@ class BaseDrum(ABC):
         self._bar_len = bar_len
         self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / SD_RATE)
         MYLOG.info(f"Set bar len for: {self}")
-
-    # noinspection PyUnusedLocal
-    # noinspection PyMethodMayBeStatic
-    def is_playable(self, buff: WrapBuffer) -> bool:
-        """ drum and loop may be the same, avoid double play """
-        return True
 
     @abstractmethod
     def play(self, out_data: np.ndarray, idx: int) -> None:

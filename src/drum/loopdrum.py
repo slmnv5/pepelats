@@ -3,7 +3,6 @@ from threading import Timer
 
 import numpy as np
 
-from audio.wrapbuffer import WrapBuffer
 from drum.basedrum import BaseDrum
 from song.songpart import SongPart
 from utils.utilconfig import SD_RATE
@@ -26,9 +25,6 @@ class LoopDrum(BaseDrum):
         if not self.songpart:
             return
         self._is_stopped = False
-
-    def is_playable(self, buff: WrapBuffer) -> bool:
-        return id(self.songpart) != id(buff)
 
     def iterate_config(self, steps: int) -> None:
         pass

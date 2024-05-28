@@ -3,8 +3,8 @@ from multiprocessing import Queue
 from threading import Event, Thread
 
 from control.loopctrl import LoopCtrl
-from song.loopsimple import LoopSimple
 from drum.loopdrum import LoopDrum
+from song.loopsimple import LoopSimple
 from song.song import Song
 from song.songpart import SongPart
 from utils.utilconfig import ConfigName
@@ -125,8 +125,6 @@ class SongCtrl(LoopCtrl, ABC):
         self.__next_id = selected
         self.stop_never()
         self._song.item_from_idx(selected)
-        if not self._drum.is_playable(part):
-            return  # loop drum uses this part, can not delete it
         if not part.is_empty:
             part.max_buffer()
             part.loops = CollectionOwner[LoopSimple](part)
