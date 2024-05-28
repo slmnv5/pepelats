@@ -17,7 +17,6 @@ class LoopDrum(BaseDrum):
 
     def __init__(self):
         BaseDrum.__init__(self)
-        self.__is_fill: bool = False  # playing drum fill now
         self.songpart: SongPart | None = None
         self._par = 0.2  # for this drum - probability to randomize at bar start
 
@@ -42,13 +41,13 @@ class LoopDrum(BaseDrum):
         pass
 
     def randomize(self) -> None:
-        self.__is_fill = False
+        self._is_fill = False
         play_count: int = choices(self._COUNT_LST, weights=self._COUNT_WGHT, k=1)[0]
         loops = self.songpart.loops
         loops.apply_to_each(lambda x: x.set_silent(loops.idx_from_item(x) >= play_count))
 
     def play_fill(self, idx: int) -> None:
-        self.__is_fill = True
+        self._is_fill = True
         self.songpart.loops.apply_to_each(lambda x: x.set_silent(False))
         tmp: int = idx % self._bar_len
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
@@ -59,6 +58,6 @@ class LoopDrum(BaseDrum):
     def play(self, out_data: np.ndarray, idx: int) -> None:
         if self._is_stopped or not self._bar_len:
             return
-        if not self.__is_fill and idx % self._bar_len == 0 and random() < self._par:
+        if not self._is_fill and idx % self._bar_len == 0 and random() < self._par:
             self.randomize()
         self.songpart.play(out_data, idx)

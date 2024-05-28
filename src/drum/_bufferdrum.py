@@ -64,7 +64,7 @@ class BufferDrum(BaseDrum, ABC):
         return f"{super().__str__()}:{self.__name}"
 
     def randomize(self) -> None:
-        self.__is_fill = False
+        self._is_fill = False
         self.__play_lst, self.__name = self._pl.rand_quiet_ptn()
         self._modify()
 
@@ -72,7 +72,7 @@ class BufferDrum(BaseDrum, ABC):
         self.__play_count = choices(self._COUNT_LST, weights=self._COUNT_WGHT, k=1)[0]
 
     def play_fill(self, idx: int) -> None:
-        self.__is_fill = True
+        self._is_fill = True
         self.__play_lst, self.__name = self._pl.rand_loud_ptn()
         self.__play_count = HUGE_INT
         tmp: int = idx % self._bar_len
@@ -84,7 +84,7 @@ class BufferDrum(BaseDrum, ABC):
     def play(self, out_data: np.ndarray, idx: int) -> None:
         if self._is_stopped or not self._bar_len:
             return
-        if not self.__is_fill and idx % self._bar_len == 0 and random() < self._DR_MODIF_PROB:
+        if not self._is_fill and idx % self._bar_len == 0 and random() < self._DR_MODIF_PROB:
             self._modify()
         for buff in self.__play_lst[:self.__play_count]:
             from_buff_to_data(buff, out_data, idx)

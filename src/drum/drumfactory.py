@@ -1,9 +1,9 @@
 from drum._bufferdrum import BufferDrum
 from drum.basedrum import BaseDrum
-from drum._eucliddrum import EuclidPtrnLoader
+from drum._euclidptrnloader import EuclidPtrnLoader
 from drum.loopdrum import LoopDrum
 from drum._mididrum import MidiDrum
-from drum._patterndrum import OldPtrnLoader
+from drum._oldptrnloader import OldPtrnLoader
 from drum.silentdrum import SilentDrum
 from utils.utillog import MYLOG
 
