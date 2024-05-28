@@ -2,8 +2,8 @@ import os
 
 import numpy as np
 
-from utils.utilalsa import read_wav_slow
 from audio.audioinfo import correct_sound, AINFO
+from utils.utilalsa import read_wav_slow
 from utils.utilconfig import find_path, SD_RATE
 from utils.utillog import MYLOG
 
@@ -74,3 +74,5 @@ class SampleLoader:
 
     def get_sound_names(self) -> list[str]:
         return list(self._sounds.keys())
+
+

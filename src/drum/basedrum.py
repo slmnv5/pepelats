@@ -7,15 +7,16 @@ from utils.utillog import MYLOG
 
 
 class BaseDrum(ABC):
+    # when plpaying drum fill it may not be too short and is extended
+    SMALLEST_FILL_FRACTION: float = 0.1
 
     def __init__(self):
         self._is_stopped: bool = True
+        self.__is_fill: bool = False  # playing drum fill now
         self._bar_len: int = 0
         self._bpm: float = 0
         self._par: float = 0.5  # from 0 to 1,  swing, used by some drum types
         self._volume: float = 0.5  # from 0 to 1
-        # Fill/break can not be too short, if short is extended by half a bar
-        self.SMALLEST_FILL_FRACTION: float = 0.1
 
     def get_pickle_info(self) -> tuple[str, int, float, float]:
         return self.get_config(), self._bar_len, self._volume, self._par

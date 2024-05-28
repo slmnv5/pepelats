@@ -1,8 +1,9 @@
+from drum._bufferdrum import BufferDrum
 from drum.basedrum import BaseDrum
-from drum._eucliddrum import EuclidDrum
+from drum._eucliddrum import EuclidPtrnLoader
 from drum.loopdrum import LoopDrum
 from drum._mididrum import MidiDrum
-from drum._patterndrum import PatternDrum
+from drum._patterndrum import NormalPtrnLoader
 from drum.silentdrum import SilentDrum
 from utils.utillog import MYLOG
 
@@ -10,9 +11,9 @@ from utils.utillog import MYLOG
 def create_drum(drum_type: str) -> BaseDrum:
     MYLOG.info(f"Creating drum: {drum_type}")
     if drum_type == "EuclidDrum":
-        return EuclidDrum()
+        return BufferDrum(EuclidPtrnLoader())
     elif drum_type == "PatternDrum":
-        return PatternDrum()
+        return BufferDrum(NormalPtrnLoader())
     elif drum_type == "MidiDrum":
         return MidiDrum()
     elif drum_type == "LoopDrum":

@@ -7,6 +7,10 @@ from utils.utilconfig import load_ini_section, find_path, ConfigName, SD_RATE
 from utils.utillog import MYLOG
 
 
+def make_buffer(sz: int) -> np.ndarray:
+    return np.zeros((sz, AINFO.SD_CH), AINFO.SD_TYPE)
+
+
 def correct_sound(x: np.ndarray, channels: int, datatype: str) -> np.ndarray:
     """ Convert numpy array to given channels and datatype """
     assert x.ndim in [1, 2]

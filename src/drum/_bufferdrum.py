@@ -1,19 +1,15 @@
 from __future__ import annotations
 
-import os
-from abc import ABC, abstractmethod
-from random import choice, choices, random
+from abc import ABC
+from random import choices, random
 from threading import Timer
 
 import numpy as np
 
-from audio.audioinfo import AINFO
-from audio.sampleloader import SampleLoader
-from drum._patternloader import PatternLoader
+from drum._patternloader import PatternLoader, DrumLoader
 from drum.basedrum import BaseDrum
-from utils.utilconfig import find_path, SD_RATE, HUGE_INT
+from utils.utilconfig import SD_RATE, HUGE_INT
 from utils.utilnumpy import from_buff_to_data
-from utils.utilother import FileFinder
 
 
 class BufferDrum(BaseDrum, ABC):
@@ -22,27 +18,16 @@ class BufferDrum(BaseDrum, ABC):
     _COUNT_WGHT: list[int] = [1, 5, 5, 2]
     _DR_MODIF_PROB: float = 0.2
 
-    def __init__(self, ptnrn_dir: str):
+    def __init__(self, drum_loader: DrumLoader):
         BaseDrum.__init__(self)
-        self.__is_fill: bool = False  # playing drum fill now
-        self._sl = SampleLoader()
-        self._sl.set_volume(self._volume)
+        self._pl = PatternLoader(drum_loader)
+        self._ff = drum_loader.ff
         self.__play_lst: list[np.ndarray] = list()  # list to play sounds, changed by randomize
         self.__play_count: int = HUGE_INT  # how many arrays will play in the play list, changed by modify
         self.__name: str = ""
         self.__intensity: str = ""
         self._par = 0.5  # for this drum it controls swing
-
-        tmp: str = find_path(ptnrn_dir)
-        assert os.path.isdir(tmp)
-        self._ff = FileFinder(tmp, True, ".ini")
-        assert self._ff.get_item()
-        self._pl: PatternLoader \
-            = PatternLoader(self._load, self._convert, self._intensity)
-
-    @staticmethod
-    def make_drum_buffer(bar_len) -> np.ndarray:
-        return np.zeros((bar_len, AINFO.SD_CH), AINFO.SD_TYPE)
+        self.set_config()
 
     def show_param(self) -> str:
         base_info = super().show_param()
@@ -58,7 +43,7 @@ class BufferDrum(BaseDrum, ABC):
 
     def set_bar_len(self, bar_len: int) -> None:
         super().set_bar_len(bar_len)
-        self._pl.prepare_patterns(self._bar_len, self._par)
+        self._pl.prepare_patterns(self._bar_len, self._volume, self._par)
         self.randomize()
 
     def show_config(self) -> str:
@@ -69,35 +54,18 @@ class BufferDrum(BaseDrum, ABC):
 
     def set_volume(self, volume: float) -> None:
         super().set_volume(volume)
-        self._sl.set_volume(self._volume)  # change all sound samples
-        self._pl.prepare_patterns(self._bar_len, self._par)
+        self._pl.prepare_patterns(self._bar_len, self._volume, self._par)
 
     def set_par(self, par: float) -> None:
         super().set_par(par)
-        self._pl.prepare_patterns(self._bar_len, self._par)
-
-    @abstractmethod
-    def _load(self, ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
-        """One Drum pattern put into dictionary"""
-        return
-
-    @abstractmethod
-    def _convert(self, bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
-        """All Drum patterns converted into play list """
-        return list()
-
-    @abstractmethod
-    def _intensity(self, ptn_dic: dict[str, str]) -> str:
-        """ Calculate pattern intensity """
-        return "0.0"
+        self._pl.prepare_patterns(self._bar_len, self._volume, self._par)
 
     def __str__(self) -> str:
         return f"{super().__str__()}:{self.__name}"
 
     def randomize(self) -> None:
         self.__is_fill = False
-        self.__play_lst, self.__name, self.__intensity \
-            = choice(self._pl.get_quiet_patterns())
+        self.__play_lst, self.__name = self._pl.rand_quiet_ptn()
         self._modify()
 
     def _modify(self) -> None:
@@ -105,8 +73,7 @@ class BufferDrum(BaseDrum, ABC):
 
     def play_fill(self, idx: int) -> None:
         self.__is_fill = True
-        self.__play_lst, self.__name, self.__intensity \
-            = choice(self._pl.get_loud_patterns())
+        self.__play_lst, self.__name = self._pl.rand_loud_ptn()
         self.__play_count = HUGE_INT
         tmp: int = idx % self._bar_len
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
