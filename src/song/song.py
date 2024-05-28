@@ -25,21 +25,28 @@ class Song(CollectionOwner[SongPart]):
                 self.load_song()
                 return  # loaded latest saved song
             except Exception as ex:
-                MYLOG.exception(ex)
-                song_dir = find_path(".save_song")
-                fname = self._ff.get_item()
-                os.system(f"mkdir {song_dir}/bad")
-                os.system(f"mv -v {song_dir}/{fname} {song_dir}/bad/")
-                MYLOG.error(f"Moved song to 'bad' sub directory: {fname}")
+                MYLOG.error(f"Error while loading song {self._ff.get_item()}: {ex}")
+                self._mv_failed_song()
 
         while self.item_count() < 4:
             self.idx_from_item(SongPart())
 
+    def _mv_failed_song(self) -> None:
+        fname = self._ff.get_full_name()
+        fdir = self._ff.get_dir() + os.sep + 'bad' + os.sep
+        command1 = f"mkdir {fdir}"
+        command2 = f"{'mv' if os.name == 'posix' else 'move'} {fname} {fdir}"
+        os.system(f"{command1}")
+        os.system(f"{command2}")
+        assert os.path.isdir(fdir)
+        assert not os.path.isfile(fname)
+        if not os.path.isfile(fname):
+            self._ff.delete_selected()
+            MYLOG.error(f"Failed to load song moved to 'bad' sub directory: {fname}")
+
     def get_name(self) -> str:
         if not self._name:
             self._name = generate_name()
-        assert self._name.count(".") == 0
-        assert self._name.count("_") == 1
         return self._name
 
     def get_complete_name(self) -> str:
