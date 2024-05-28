@@ -9,8 +9,9 @@ from audio.audioinfo import AINFO, correct_sound
 
 
 def test_1() -> None:
-    drum = create_drum('MidiDrum')
+    drum = create_drum('EuclidDrum')
     ctrl = SongCtrl(Queue())
+
     ctrl.set_drum(drum)
     ctrl.get_drum().set_bar_len(100_000)
     ctrl.get_drum().start()
