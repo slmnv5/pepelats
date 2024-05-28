@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from abc import ABC, abstractmethod
-from random import choice, choices, sample, random
+from random import choice, choices, random
 from threading import Timer
 
 import numpy as np
@@ -24,10 +24,10 @@ class BufferDrum(BaseDrum, ABC):
 
     def __init__(self, ptnrn_dir: str):
         BaseDrum.__init__(self)
+        self.__is_fill: bool = False  # playing drum fill now
         self._sl = SampleLoader()
         self._sl.set_volume(self._volume)
         self.__play_lst: list[np.ndarray] = list()  # list to play sounds, changed by randomizes
-        self.__modif_lst = self.__play_lst  # midified with some sounds removed
         self.__name: str = ""
         self.__intensity: str = ""
         self._par = 0.5  # for this drum it controls swing
@@ -90,38 +90,30 @@ class BufferDrum(BaseDrum, ABC):
         """ Calculate pattern intensity """
         return "0.0"
 
-    def play(self, out_data: np.ndarray, idx: int) -> None:
-        if self._is_stopped or not self._bar_len:
-            return
-        if idx % self._bar_len == 0:
-            if random() < self._DR_MODIF_PROB:
-                self.modify()
-        for buff in self.__modif_lst:
-            from_buff_to_data(buff, out_data, idx)
-
     def __str__(self) -> str:
         return f"{super().__str__()}:{self.__name}"
 
     def randomize(self) -> None:
+        self.__is_fill = False
         self.__play_lst, self.__name, self.__intensity \
             = choice(self._pl.get_quiet_patterns())
-        self.__modif_lst = self.__play_lst
-
-    def modify(self) -> None:
         play_count: int = choices(self._COUNT_LST, weights=self._COUNT_WGHT, k=1)[0]
-        max_count: int = len(self.__play_lst)
-        if play_count >= max_count:
-            self.__modif_lst = self.__play_lst
-        else:
-            idx_lst: list[int] = sample(range(max_count), k=play_count)
-            self.__modif_lst = [self.__play_lst[x] for x in idx_lst]
+        self.__play_lst = self.__play_lst[:play_count]
 
     def play_fill(self, idx: int) -> None:
         self.__play_lst, self.__name, self.__intensity \
             = choice(self._pl.get_loud_patterns())
-        self.__modif_lst = self.__play_lst
+        self.__is_fill = True
         tmp: int = idx % self._bar_len
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2
         # return to normal level
         Timer(tmp / SD_RATE, self.randomize).start()
+
+    def play(self, out_data: np.ndarray, idx: int) -> None:
+        if self._is_stopped or not self._bar_len:
+            return
+        if not self.__is_fill and idx % self._bar_len == 0 and random() < self._DR_MODIF_PROB:
+            self.randomize()
+        for buff in self.__play_lst:
+            from_buff_to_data(buff, out_data, idx)
