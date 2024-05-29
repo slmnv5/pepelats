@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import traceback
 from abc import abstractmethod
 from multiprocessing import Queue
 
@@ -20,8 +19,8 @@ class MenuClient:
             try:
                 method = getattr(self, method_name)
                 method(*params)
-            except Exception:
-                MYLOG.error(f"Error: {traceback.format_exc()} command: {command}")
+            except Exception as ex:
+                MYLOG.exception(ex)
 
     @abstractmethod
     def _redraw(self, draw_info: DrawInfo | None) -> None:

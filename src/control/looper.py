@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import os
 import time
-import traceback
 from multiprocessing import Queue
 
 from control.songctrl import SongCtrl
@@ -35,8 +34,8 @@ class Looper(SongCtrl):
             try:
                 method = getattr(self, draw_info.update_method)
                 draw_info.content = method()
-            except Exception:
-                MYLOG.error(f"Error: {traceback.format_exc()}")
+            except Exception as ex:
+                MYLOG.exception(ex)
         else:
             draw_info.content = ""
         assert draw_info.content is not None

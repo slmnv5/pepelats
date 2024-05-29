@@ -1,5 +1,4 @@
 import os
-import traceback
 from multiprocessing import Process, Queue
 
 from control.looper import Looper
@@ -15,8 +14,8 @@ def do_looper(q_looper: Queue, q_screen: Queue) -> None:
     try:
         looper = Looper(q_looper, q_screen)
         looper.start()
-    except Exception:
-        MYLOG.error(f"============Error: {traceback.format_exc()}")
+    except Exception as ex:
+        MYLOG.exception(ex)
         os.system("killall -9 python")
 
 
@@ -26,8 +25,8 @@ def do_screen(q_screen: Queue) -> None:
     try:
         scr_view: MenuClient = PyScreen(q_screen)
         scr_view.start()
-    except Exception:
-        MYLOG.error(f"============Error: {traceback.format_exc()}")
+    except Exception as ex:
+        MYLOG.exception(ex)
         os.system("killall -9 python")
 
 
@@ -44,7 +43,7 @@ def go() -> None:
     try:
         get_pedal_control(q_looper).start()
     except Exception as ex:
-        MYLOG.error(f"Error: {ex}\n{traceback.format_exc()}")
+        MYLOG.exception(ex)
         os.system("killall -9 python")
     finally:
         os.kill(p1.pid, 9)
