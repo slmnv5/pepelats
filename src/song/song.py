@@ -32,7 +32,6 @@ class Song(CollectionOwner[SongPart]):
         while self.item_count() > self.SONG_PARTS:
             self.delete_selected()
         self.apply_to_each(lambda x: x.clear())
-        self._ctrl.set_drum(create_drum('SilentDrum'))
 
     def get_name(self) -> str:
         if not self._name:
