@@ -89,4 +89,4 @@ class BufferDrum(BaseDrum, ABC):
             from_buff_to_data(buff, out_data, idx)
 
     def __str__(self):
-        return f"{self._name}:{self._bpm}:{self._intens}"
+        return f"{self._name}:{self._intens}:{self._bpm}"
