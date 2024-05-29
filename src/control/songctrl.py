@@ -8,7 +8,6 @@ from song.loopsimple import LoopSimple
 from song.song import Song
 from song.songpart import SongPart
 from utils.utilconfig import ConfigName
-from utils.utilother import CollectionOwner
 
 
 class SongCtrl(LoopCtrl, ABC):
@@ -17,7 +16,7 @@ class SongCtrl(LoopCtrl, ABC):
 
     def __init__(self, queue: Queue):
         LoopCtrl.__init__(self, queue)
-        self._song: Song = Song(self, True)
+        self._song: Song = Song(self)
         self.__next_id: int = 0
         self.__play_event: Event = Event()
         Thread(target=self.__play_loop, name="play_loop", daemon=True).start()
@@ -121,13 +120,10 @@ class SongCtrl(LoopCtrl, ABC):
         selected: int = self._song.get_idx()
         if self.__next_id == selected:
             return  # can not clear active part
-        part = self._song.item_from_idx(self.__next_id)
+        self._song.item_from_idx(self.__next_id).clear()
         self.__next_id = selected
         self.stop_never()
         self._song.item_from_idx(selected)
-        if not part.is_empty:
-            part.max_buffer()
-            part.loops = CollectionOwner[LoopSimple](part)
 
     def _redo_all(self) -> None:
         if self._song.get_idx() == self.__next_id:

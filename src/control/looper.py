@@ -7,7 +7,6 @@ from multiprocessing import Queue
 from control.songctrl import SongCtrl
 from drum.drumfactory import create_drum
 from drum.loopdrum import LoopDrum
-from song.song import Song
 from utils.utilconfig import ConfigName, load_ini_section, find_path, update_ini_section, SD_RATE
 from utils.utillog import MYLOG
 from utils.utilother import DrawInfo, FileFinder
@@ -127,7 +126,7 @@ class Looper(SongCtrl):
         config = self._drum.get_config()
         self._drum = create_drum(drum_type)
         self._drum.set_config(config)
-        self._song = Song(self, False)
+        self._song.clear()
 
     def _delete_song(self) -> None:
         self._stop_song()

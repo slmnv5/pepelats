@@ -7,6 +7,6 @@ def test_1():
     drum.set_bar_len(SD_RATE * 2)
     config, bar_len = drum.get_config(), drum.get_bar_len()
     assert bar_len == SD_RATE * 2
-    assert "" == config
+    assert "Midi" == config
     drum.start()
     drum.stop()

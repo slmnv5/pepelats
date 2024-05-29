@@ -14,17 +14,22 @@ from utils.utilother import FileFinder, CollectionOwner
 class Song(CollectionOwner[SongPart]):
     """Song keeps SongParts as CollectionOwner, can save and load from file"""
 
-    def __init__(self, ctrl: LoopCtrl, load_song: bool):
+    def __init__(self, ctrl: LoopCtrl):
         CollectionOwner.__init__(self, SongPart())
         self._name: str = ""
         self._ctrl: LoopCtrl = ctrl
         self._ff = FileFinder(find_path(".save_song"), True, ".sng")
-        if load_song and self._ff.item_from_idx(-1):  # there is saved song
-            if self.load_song():
-                return  # loaded latest saved song
-        else:
-            while self.item_count() < 4:
-                self.idx_from_item(SongPart())
+        if self._ff.item_from_idx(-1):  # select latest song
+            self.load_song()
+
+    def clear(self) -> None:
+        while self.item_count() < 4:
+            self.idx_from_item(SongPart())
+        self.item_from_idx(0)
+        while self.item_count() > 4:
+            self.delete_selected()
+        self.apply_to_each(lambda x: x.clear())
+        self._ctrl.set_drum(create_drum('SilentDrum'))
 
     def get_name(self) -> str:
         if not self._name:
@@ -51,14 +56,14 @@ class Song(CollectionOwner[SongPart]):
 
         MYLOG.info(f"Saved song file: {fname}")
 
-    def load_song(self) -> bool:
+    def load_song(self) -> None:
+        """ Load song or create new """
         try:
             self._unsafe_load_song()
-            return True
         except Exception as ex:
             MYLOG.exception(ex)
             self._disable_failed_song()
-            return False
+            self.clear()
 
     def _unsafe_load_song(self) -> None:
         self._name = self._ff.get_item().split(".")[0]
