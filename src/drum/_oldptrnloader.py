@@ -52,7 +52,7 @@ class OldPtrnLoader(DrumLoader):
                 from_data_to_buff(buff, sound_arr, idx)
         return result
 
-    def fn_intensity(self, ptn_dic: dict[str, str]) -> str:
+    def fn_intensity(self, ptn_dic: dict[str, str]) -> float:
         """ Calculate pattern intensity """
         sl = SampleLoader()
         result: float = 0.0
@@ -63,4 +63,4 @@ class OldPtrnLoader(DrumLoader):
                     continue
                 is_accent = accents[k] == '!'
                 result += sl.get_energy(sname, is_accent) / len(notes)
-        return f"{round(result, 1)}"
+        return result

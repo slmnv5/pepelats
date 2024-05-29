@@ -33,9 +33,9 @@ class DrumLoader:
         return list()
 
     @abstractmethod
-    def fn_intensity(self, ptn_dic: dict[str, str]) -> str:
+    def fn_intensity(self, ptn_dic: dict[str, str]) -> float:
         """ Calculate pattern intensity """
-        return "0.0"
+        return 0.0
 
 
 class PatternLoader:
@@ -51,7 +51,7 @@ class PatternLoader:
         self._quiet_slice: slice = slice(None, None)
         self._loud_slice: slice = slice(None, None)
         # dict of patterns from INI file. It has ptn dict, name, intensity. Sorted by intensity
-        self.__ptn: list[tuple[dict[str, str], str, str]] = list()
+        self.__ptn: list[tuple[dict[str, str], str, float]] = list()
         # list of patterns as sounds, sorted by intensity
         self.__snd_ptn: list[list[np.ndarray]] = list()
 
@@ -62,7 +62,9 @@ class PatternLoader:
         dic: dict[str, dict[str, str]] = {s: dict(cfg.items(s)) for s in cfg.sections()}
         assert dic, f"Empty INI file: {fname}"
         self.__ptn.clear()
-        l1, l2, l3 = [], [], []
+        l1: list[dict[str, str]] = []
+        l2: list[str] = []
+        l3: list[float] = []
         for ptn_name in dic:
             ptn_dic: dict[str, str] = dict()
             self._dl.fn_load(ptn_name, dic[ptn_name], ptn_dic)
@@ -93,12 +95,12 @@ class PatternLoader:
             self.__snd_ptn.append(self._dl.fn_convert(bar_len, par, ptn_dic))
             MYLOG.debug(f"Converted pattern name: {name}, intensity: {intens}")
 
-    def rand_quiet_ptn(self) -> tuple[list[np.ndarray], str, str]:
+    def rand_quiet_ptn(self) -> tuple[list[np.ndarray], str, float]:
         """ sounds quiet sound and its ptn name """
         k = randrange(self._quiet_slice.start, self._quiet_slice.stop)
         return self.__snd_ptn[k], self.__ptn[k][1], self.__ptn[k][2]
 
-    def rand_loud_ptn(self) -> tuple[list[np.ndarray], str, str]:
+    def rand_loud_ptn(self) -> tuple[list[np.ndarray], str, float]:
         """ random loud sound and its ptn name """
         k = randrange(self._loud_slice.start, self._loud_slice.stop)
         return self.__snd_ptn[k], self.__ptn[k][1], self.__ptn[k][2]

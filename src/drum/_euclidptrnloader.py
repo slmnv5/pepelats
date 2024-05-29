@@ -44,7 +44,7 @@ class EuclidPtrnLoader(DrumLoader):
 
         return result
 
-    def fn_intensity(self, ptn_dic: dict[str, str]) -> str:
+    def fn_intensity(self, ptn_dic: dict[str, str]) -> float:
         """ Calculate pattern intensity """
         sl = SampleLoader()
         result: float = 0.0
@@ -54,4 +54,4 @@ class EuclidPtrnLoader(DrumLoader):
                     continue
                 is_accent = s == '*'
                 result += sl.get_energy(sname, is_accent) / len(notes)
-        return f"{round(result, 1)}"
+        return result

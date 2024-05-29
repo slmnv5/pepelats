@@ -25,13 +25,13 @@ class BufferDrum(BaseDrum, ABC):
         self._play_lst: list[np.ndarray] = list()  # list to play sounds, changed by randomize
         self._play_count: int = HUGE_INT  # how many arrays will play in the play list, changed by modify
         self._name: str = ""
-        self._intens: str = ""
+        self._intens: float = 0
         self._par = 0.5  # for this drum it controls swing
         self.set_config()
 
     def show_param(self) -> str:
         base_info = super().show_param()
-        return f"{base_info}\nintensity: {self._intens}\nname: {self._name}"
+        return f"{base_info}\nintensity: {self._intens:.2F}\nname: {self._name}"
 
     def get_config(self) -> str:
         return self._ff.get_item()
@@ -89,4 +89,4 @@ class BufferDrum(BaseDrum, ABC):
             from_buff_to_data(buff, out_data, idx)
 
     def __str__(self):
-        return f"{self._name}:{self._intens}:{self._bpm}"
+        return f"{self._name}:{self._intens:.2F}:{self._bpm:.2F}"
