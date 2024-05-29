@@ -60,7 +60,7 @@ class MidiDrum(BaseDrum):
         return f"{base_info}\nport OK: {is_ok}/{port}\nconfig: {config}"
 
     def get_config(self) -> str:
-        return ""
+        return "Midi"
 
     def set_config(self, config: str = None) -> None:
         pass

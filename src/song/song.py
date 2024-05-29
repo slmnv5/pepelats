@@ -33,10 +33,10 @@ class Song(CollectionOwner[SongPart]):
 
     def get_complete_name(self) -> str:
         drum = self._ctrl.get_drum()
-        cls = drum.get_class_name()[0]
-        cfg = drum.get_config()[:-4]
-        cfg = '-' if not cfg else cfg
-        return f"{self.get_name()}.{cls}.{cfg}.sng"
+        cfg = drum.get_config()
+        if cfg[-4:].lower() == ".ini":
+            cfg = cfg[:-4]
+        return f"{self.get_name()}.{cfg}.sng"
 
     def save_song(self) -> None:
         drum = self._ctrl.get_drum()

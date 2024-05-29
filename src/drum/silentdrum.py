@@ -10,7 +10,7 @@ class SilentDrum(BaseDrum):
         BaseDrum.__init__(self)
 
     def get_config(self) -> str:
-        return ""
+        return "Silent"
 
     def set_config(self, config: str = None) -> None:
         pass

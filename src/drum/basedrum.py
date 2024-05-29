@@ -54,14 +54,6 @@ class BaseDrum(ABC):
     def get_bar_len(self) -> int:
         return self._bar_len
 
-    @abstractmethod
-    def get_config(self) -> str:
-        pass
-
-    @abstractmethod
-    def set_config(self, config: str = None) -> None:
-        pass
-
     def set_bar_len(self, bar_len: int) -> None:
         self.stop()
         self._bar_len = bar_len
@@ -98,6 +90,13 @@ class BaseDrum(ABC):
     def show_param(self) -> str:
         return f"vol:{self._volume:.2F} par:{self._par:.2F}"
 
+    @abstractmethod
+    def get_config(self) -> str:
+        pass
+
+    @abstractmethod
+    def set_config(self, config: str = None) -> None:
+        pass
+
     def __str__(self) -> str:
-        cls_name = self.__class__.__name__[0]
-        return f"{cls_name}:{self._bpm:.2F}"
+        return f"{self.get_config()}:{self._bpm:.2F}"

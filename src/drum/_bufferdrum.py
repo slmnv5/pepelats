@@ -64,9 +64,6 @@ class BufferDrum(BaseDrum, ABC):
         self._pl.prepare_patterns(self._bar_len, self._volume, self._par)
         self.randomize()
 
-    def __str__(self) -> str:
-        return f"{super().__str__()}:{self._name}"
-
     def randomize(self) -> None:
         self._play_lst, self._name, self._intens = self._pl.rand_quiet_ptn()
         self._modify()
