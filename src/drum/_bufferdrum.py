@@ -87,3 +87,6 @@ class BufferDrum(BaseDrum, ABC):
             self._modify()
         for buff in self._play_lst[:self._play_count]:
             from_buff_to_data(buff, out_data, idx)
+
+    def __str__(self):
+        return f"{self._name}:{self._bpm}:{self._intens}"
