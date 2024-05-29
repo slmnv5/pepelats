@@ -21,28 +21,11 @@ class Song(CollectionOwner[SongPart]):
         self._ctrl: LoopCtrl = ctrl
         self._ff = FileFinder(find_path(".save_song"), True, ".sng")
         if load_song and self._ff.item_from_idx(-1):  # there is saved song
-            try:
-                self.load_song()
+            if self.load_song():
                 return  # loaded latest saved song
-            except Exception as ex:
-                MYLOG.error(f"Error while loading song {self._ff.get_item()}: {ex}")
-                self._mv_failed_song()
-
-        while self.item_count() < 4:
-            self.idx_from_item(SongPart())
-
-    def _mv_failed_song(self) -> None:
-        fname = self._ff.get_full_name()
-        fdir = self._ff.get_dir() + os.sep + 'bad' + os.sep
-        command1 = f"mkdir {fdir}"
-        command2 = f"{'mv' if os.name == 'posix' else 'move'} {fname} {fdir}"
-        os.system(f"{command1}")
-        os.system(f"{command2}")
-        assert os.path.isdir(fdir)
-        assert not os.path.isfile(fname)
-        if not os.path.isfile(fname):
-            self._ff.delete_selected()
-            MYLOG.error(f"Failed to load song moved to 'bad' sub directory: {fname}")
+        else:
+            while self.item_count() < 4:
+                self.idx_from_item(SongPart())
 
     def get_name(self) -> str:
         if not self._name:
@@ -69,7 +52,16 @@ class Song(CollectionOwner[SongPart]):
 
         MYLOG.info(f"Saved song file: {fname}")
 
-    def load_song(self) -> None:
+    def load_song(self) -> bool:
+        try:
+            self._unsafe_load_song()
+            return True
+        except Exception as ex:
+            MYLOG.exception(ex)
+            self._disable_failed_song()
+            return False
+
+    def _unsafe_load_song(self) -> None:
         self._name = self._ff.get_item().split(".")[0]
         fname = self._ff.get_full_name()
         MYLOG.info(f"Loading song file: {fname}")
@@ -108,3 +100,11 @@ class Song(CollectionOwner[SongPart]):
 
     def iterate_song(self, steps: int) -> None:
         self._ff.iterate(steps=steps)
+
+    def _disable_failed_song(self) -> None:
+        fname = self._ff.get_full_name()
+        cmd = f"{'mv' if os.name == 'posix' else 'move'} {fname} {fname}.bad"
+        os.system(f"{cmd}")
+        if not os.path.isfile(fname):
+            self._ff.delete_selected()
+            MYLOG.error(f"Failed to load and disabled song: {fname}.bad")
