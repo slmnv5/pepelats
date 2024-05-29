@@ -161,7 +161,7 @@ class Looper(SongCtrl):
         self._stop_song()
         self._drum = create_drum(drum_type)
         self._drum.set_config()
-        self._init_drum(bar_len)
+        self._set_bar_len(bar_len)
 
     def _load_drum_config(self) -> None:
         self._drum.set_config()
@@ -169,8 +169,8 @@ class Looper(SongCtrl):
         if bar_len:
             self._drum.set_bar_len(bar_len)
 
-    def _init_drum(self, bar_len: int) -> None:
-        if isinstance(self._drum, LoopDrum) and not self._drum.songpart:
-            self._drum.songpart = self._song.item_from_idx(0)
+    def _set_bar_len(self, bar_len: int) -> None:
+        if isinstance(self._drum, LoopDrum):
+            self._drum.set_songpart(self._song.item_from_idx(0))
 
         self._drum.set_bar_len(bar_len)

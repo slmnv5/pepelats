@@ -39,7 +39,7 @@ class SongPart(LoopSimple):
         start_rec_idx = ctrl.get_start_rec_idx()
         Thread(target=loop.finalize, args=(ctrl.idx, base_len, start_rec_idx)).start()
         if not bar_len:
-            ctrl.add_command(["_init_drum", ctrl.idx])
+            ctrl.add_command(["_set_bar_len", ctrl.idx])
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
         self.loops.apply_to_each(lambda x: LoopSimple.play(x, out_data, idx))

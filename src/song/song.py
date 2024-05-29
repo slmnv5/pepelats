@@ -93,7 +93,7 @@ class Song(CollectionOwner[SongPart]):
             self.delete_selected()
 
         if isinstance(drum, LoopDrum):
-            drum.songpart = self.item_from_idx(0)
+            drum._songpart = self.item_from_idx(0)
 
     def save_new_song(self) -> None:
         self._name = ""
