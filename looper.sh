@@ -15,12 +15,14 @@ if [ ! -d ".save_song" ]; then mkdir -p ".save_song"; fi
 
 cd "./src" || exit 1
 
+sudo chmod a+rw ./.save_song/*
 touch log.txt
 chmod a+rw log.txt
 cp log.txt log.bak
 tail -n 1000 log.bak > log.txt
 echo "===========================" >> log.txt
 date >> log.txt
+
 
 # disable assert
 CODE_OPTIMIZE="-O"
