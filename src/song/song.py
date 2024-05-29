@@ -4,7 +4,6 @@ import pickle
 from control.loopctrl import LoopCtrl
 from drum.drumfactory import create_drum
 from drum.loopdrum import LoopDrum
-# noinspection PyUnresolvedReferences
 from song.songpart import SongPart
 from utils.utilconfig import find_path
 from utils.utillog import MYLOG
