@@ -22,16 +22,16 @@ class BufferDrum(BaseDrum, ABC):
         BaseDrum.__init__(self)
         self._pl = PatternLoader(drum_loader)
         self._ff = drum_loader.ff
-        self.__play_lst: list[np.ndarray] = list()  # list to play sounds, changed by randomize
-        self.__play_count: int = HUGE_INT  # how many arrays will play in the play list, changed by modify
-        self.__name: str = ""
-        self.__intensity: str = ""
+        self._play_lst: list[np.ndarray] = list()  # list to play sounds, changed by randomize
+        self._play_count: int = HUGE_INT  # how many arrays will play in the play list, changed by modify
+        self._name: str = ""
+        self._intens: str = ""
         self._par = 0.5  # for this drum it controls swing
         self.set_config()
 
     def show_param(self) -> str:
         base_info = super().show_param()
-        return f"{base_info}\nintensity: {self.__intensity}\nname: {self.__name}"
+        return f"{base_info}\nintensity: {self._intens}\nname: {self._name}"
 
     def get_config(self) -> str:
         return self._ff.get_item()
@@ -54,27 +54,29 @@ class BufferDrum(BaseDrum, ABC):
 
     def set_volume(self, volume: float) -> None:
         super().set_volume(volume)
+        self.stop()
         self._pl.prepare_patterns(self._bar_len, self._volume, self._par)
+        self.randomize()
 
     def set_par(self, par: float) -> None:
         super().set_par(par)
+        self.stop()
         self._pl.prepare_patterns(self._bar_len, self._volume, self._par)
+        self.randomize()
 
     def __str__(self) -> str:
-        return f"{super().__str__()}:{self.__name}"
+        return f"{super().__str__()}:{self._name}"
 
     def randomize(self) -> None:
-        self._is_fill = False
-        self.__play_lst, self.__name = self._pl.rand_quiet_ptn()
+        self._play_lst, self._name, self._intens = self._pl.rand_quiet_ptn()
         self._modify()
 
     def _modify(self) -> None:
-        self.__play_count = choices(self._COUNT_LST, weights=self._COUNT_WGHT, k=1)[0]
+        self._play_count = choices(self._COUNT_LST, weights=self._COUNT_WGHT, k=1)[0]
 
     def play_fill(self, idx: int) -> None:
-        self._is_fill = True
-        self.__play_lst, self.__name = self._pl.rand_loud_ptn()
-        self.__play_count = HUGE_INT
+        self._play_lst, self._name, self._intens = self._pl.rand_loud_ptn()
+        self._play_count = HUGE_INT
         tmp: int = idx % self._bar_len
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2
@@ -84,7 +86,7 @@ class BufferDrum(BaseDrum, ABC):
     def play(self, out_data: np.ndarray, idx: int) -> None:
         if self._is_stopped or not self._bar_len:
             return
-        if not self._is_fill and idx % self._bar_len == 0 and random() < self._DR_MODIF_PROB:
+        if idx % self._bar_len == 0 and random() < self._DR_MODIF_PROB:
             self._modify()
-        for buff in self.__play_lst[:self.__play_count]:
+        for buff in self._play_lst[:self._play_count]:
             from_buff_to_data(buff, out_data, idx)

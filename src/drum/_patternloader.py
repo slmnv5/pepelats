@@ -93,12 +93,12 @@ class PatternLoader:
             self.__snd_ptn.append(self._dl.fn_convert(bar_len, par, ptn_dic))
             MYLOG.debug(f"Converted pattern name: {name}, intensity: {intens}")
 
-    def rand_quiet_ptn(self) -> tuple[list[np.ndarray], str]:
+    def rand_quiet_ptn(self) -> tuple[list[np.ndarray], str, str]:
         """ sounds quiet sound and its ptn name """
         k = randrange(self._quiet_slice.start, self._quiet_slice.stop)
-        return self.__snd_ptn[k], self.__ptn[k][1]
+        return self.__snd_ptn[k], self.__ptn[k][1], self.__ptn[k][2]
 
-    def rand_loud_ptn(self) -> tuple[list[np.ndarray], str]:
+    def rand_loud_ptn(self) -> tuple[list[np.ndarray], str, str]:
         """ random loud sound and its ptn name """
         k = randrange(self._loud_slice.start, self._loud_slice.stop)
-        return self.__snd_ptn[k], self.__ptn[k][1]
+        return self.__snd_ptn[k], self.__ptn[k][1], self.__ptn[k][2]
