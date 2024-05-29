@@ -6,6 +6,8 @@ from threading import Timer
 
 import numpy as np
 
+from drum._euclidptrnloader import EuclidPtrnLoader
+from drum._oldptrnloader import OldPtrnLoader
 from drum._patternloader import PatternLoader, DrumLoader
 from drum.basedrum import BaseDrum
 from utils.utilconfig import SD_RATE, HUGE_INT
@@ -90,3 +92,13 @@ class BufferDrum(BaseDrum, ABC):
 
     def __str__(self):
         return f"{self._name}:{self._intens:.2F}:{self._bpm:.2F}"
+
+
+class EuclidPtrnDrum(BufferDrum):
+    def __init__(self):
+        BufferDrum.__init__(self, EuclidPtrnLoader())
+
+
+class OldPtrnDrum(BufferDrum):
+    def __init__(self):
+        BufferDrum.__init__(self, OldPtrnLoader())

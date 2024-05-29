@@ -8,7 +8,7 @@ from drum.drumfactory import create_drum
 
 def test_1():
     queue = Queue()
-    drum = create_drum("PatternDrum")
+    drum = create_drum("OldPtrnDrum")
     drum.start()
     ctrl = LoopCtrl(queue)
     ctrl.set_drum(drum)

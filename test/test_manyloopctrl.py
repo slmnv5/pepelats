@@ -9,7 +9,7 @@ from audio.audioinfo import AINFO, correct_sound
 
 
 def test_1() -> None:
-    drum = create_drum('EuclidDrum')
+    drum = create_drum('EuclidPtrnDrum')
     ctrl = SongCtrl(Queue())
 
     ctrl.set_drum(drum)

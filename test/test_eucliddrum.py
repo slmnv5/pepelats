@@ -5,7 +5,7 @@ from control.loopctrl import LoopCtrl
 from song.loopsimple import LoopSimple
 from drum.drumfactory import create_drum
 
-drum = create_drum("EuclidDrum")
+drum = create_drum("EuclidPtrnDrum")
 drum.set_config("Test.ini")
 drum.set_bar_len(88_000)
 drum.set_par(0)

@@ -8,7 +8,7 @@ from song.songpart import SongPart
 
 def test_1():
     queue = Queue()
-    drum = create_drum("PatternDrum")
+    drum = create_drum("OldPtrnDrum")
     ctrl = LoopCtrl(queue)
     ctrl.set_drum(drum)
     ctrl._set_is_rec(True)
