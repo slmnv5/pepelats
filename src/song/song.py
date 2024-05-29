@@ -92,7 +92,7 @@ class Song(CollectionOwner[SongPart]):
         while self.item_count() > len(parts_lst):
             self.delete_selected()
 
-        if isinstance(drum, LoopDrum) and not drum.songpart:
+        if isinstance(drum, LoopDrum):
             drum.songpart = self.item_from_idx(0)
 
     def save_new_song(self) -> None:

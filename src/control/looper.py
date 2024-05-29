@@ -161,7 +161,7 @@ class Looper(SongCtrl):
         self._stop_song()
         self._drum = create_drum(drum_type)
         self._drum.set_config()
-        self._drum.set_bar_len(bar_len)
+        self._init_drum(bar_len)
 
     def _load_drum_config(self) -> None:
         self._drum.set_config()
