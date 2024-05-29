@@ -13,6 +13,7 @@ from utils.utilother import FileFinder, CollectionOwner
 
 class Song(CollectionOwner[SongPart]):
     """Song keeps SongParts as CollectionOwner, can save and load from file"""
+    SONG_PARTS: int = 4
 
     def __init__(self, ctrl: LoopCtrl):
         CollectionOwner.__init__(self, SongPart())
@@ -21,12 +22,14 @@ class Song(CollectionOwner[SongPart]):
         self._ff = FileFinder(find_path(".save_song"), True, ".sng")
         if self._ff.item_from_idx(-1):  # select latest song
             self.load_song()
+        else:
+            self.clear()
 
     def clear(self) -> None:
-        while self.item_count() < 4:
+        while self.item_count() < self.SONG_PARTS:
             self.idx_from_item(SongPart())
         self.item_from_idx(0)
-        while self.item_count() > 4:
+        while self.item_count() > self.SONG_PARTS:
             self.delete_selected()
         self.apply_to_each(lambda x: x.clear())
         self._ctrl.set_drum(create_drum('SilentDrum'))
