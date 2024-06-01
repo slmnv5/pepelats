@@ -17,6 +17,7 @@ class ConfigName:
     play_section: str = "play"
     menu_dir: str = "menu_dir"
     main_ini: str = "main.ini"
+    local_ini: str = "local.ini"
     midi_out: str = "midi_out"
     midi_in: str = "midi_in"
     midi_min_velocity: str = "midi_min_velocity"

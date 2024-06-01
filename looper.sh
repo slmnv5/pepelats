@@ -12,6 +12,7 @@ fi
 sleep 5
 
 if [ ! -d ".save_song" ]; then mkdir -p ".save_song"; fi
+touch local.ini
 
 cd "./src" || exit 1
 
