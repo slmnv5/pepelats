@@ -44,6 +44,7 @@ class LoopDrum(BaseDrum):
         play_count: int = choices(self._COUNT_LST, weights=self._COUNT_WGHT, k=1)[0]
         loops = self._songpart.loops
         loops.apply_to_each(lambda x: x.set_silent(loops.idx_from_item(x) >= play_count))
+        self.start()
 
     def play_fill(self, idx: int) -> None:
         self._songpart.loops.apply_to_each(lambda x: x.set_silent(False))

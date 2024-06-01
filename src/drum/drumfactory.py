@@ -23,7 +23,6 @@ class DrumFactory:
 
         config: str = kwargs.get(ConfigName.drum_config)
         drum.set_config(config)
-        drum.set_bar_len(bar_len)
 
         volume: float = kwargs.get(ConfigName.drum_volume)
         if volume:
@@ -31,5 +30,9 @@ class DrumFactory:
         par: float = kwargs.get(ConfigName.drum_par)
         if par:
             drum.set_par(par)
+
+        drum.set_bar_len(bar_len)
+        drum.randomize()
+
         MYLOG.info(f"Created drum: {drum}")
         return drum
