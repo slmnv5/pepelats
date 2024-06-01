@@ -24,8 +24,7 @@ tmp = [int(x) for x in tmp]
 if not all([0 <= x < 128 for x in tmp]):
     raise RuntimeError(f"kbd_notes_midi in main.ini must be 0<=x<128, found: {tmp}")
 
-MIDI_NOTES11111: list[int] = tmp
-MIDI_DICT: dict[int, str] = dict(zip(tmp, ['A', 'B', 'C', 'D', 'E', 'F']))
+MIDI_DICT: dict[int, str] = dict(zip(tmp, ['a', 'b', 'c', 'd', 'e', 'f']))
 
 # ==================================
 # min note velocity to consider, counted notes have small velocity

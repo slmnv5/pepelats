@@ -44,7 +44,6 @@ class MenuHost:
         menu_key: str = f"{MIDI_DICT[note]}-{velo}"
         menu_cmd = self._menu_loader.get(menu_key)
         if not menu_cmd:
-            MYLOG.error(f"Not found {menu_key}. Check menu files if this key has mapped commands")
             return
 
         lst = menu_cmd.split(":")  # if there are many commands we need the list
@@ -82,7 +81,7 @@ class _MenuLoader:
         self._sect_idx: int = 0
         self._section: str = ConfigName.play_section
         assert os.path.isdir(dname)
-        self._dic = dict()
+        self._dict = dict()
         fname1 = f"{dname}/navigate.ini"
         for fname in ["play.ini", "song.ini", "drum.ini", "serv.ini"]:
             fname2 = f"{dname}/{fname}"
@@ -90,24 +89,25 @@ class _MenuLoader:
             read_lst = cfg.read([fname1, fname2])
             if len(read_lst) != 2:
                 raise RuntimeError(f"Not all INI menu files wre loaded: {fname1}, {fname2}")
-            dic = {s: dict(cfg.items(s)) for s in cfg.sections()}
-            self._dic |= dic
+            tmp = {s: dict(cfg.items(s)) for s in cfg.sections()}
+            self._dict |= tmp
+        MYLOG.debug(f"Loaded menu\n: {self._dict}")
 
     def get(self, key: str) -> str:
         sect_name = f"{self._section}.{self._sect_idx}"
-        sect_dic = self._dic.get(sect_name, dict())
+        sect_dic = self._dict.get(sect_name, dict())
         if key in sect_dic:
             return sect_dic[key]
 
         return ""
 
     def update_menu(self, section: str) -> None:
-        assert f"{section}.0" in self._dic
+        assert f"{section}.0" in self._dict
         self._section = section
         self._sect_idx = 0
 
     def update_section(self, go_next: bool = True) -> None:
-        lst = [x for x in self._dic.keys() if self._section in x]
+        lst = [x for x in self._dict.keys() if self._section in x]
         self._sect_idx += (1 if go_next else -1)
         self._sect_idx %= len(lst)
 
