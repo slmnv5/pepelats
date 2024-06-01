@@ -46,6 +46,7 @@ stty -echo
 
 while true; do
   killall -s 9 -w -v python
+  git reset --hard
   git pull
   $PYTHON_CMD
   sleep 5
