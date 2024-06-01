@@ -51,23 +51,25 @@ def find_path(path_end: str) -> str:
         return path_end
 
 
-def load_ini_section(fname: str, sect: str) -> dict[str, str]:
-    assert os.path.isfile(fname), f"Not found file: {fname}"
+def load_ini_section(sect: str) -> dict[str, str]:
+    main = find_path(ConfigName.main_ini)
+    local = find_path(ConfigName.local_ini)
     cfg = ConfigParser()
-    cfg.read(fname)
-    sect = next((x for x in cfg.sections() if x == sect), "DEFAULT")
+    cfg.read([main, local])  # local file overwrites main
+    if sect not in cfg.sections():
+        return dict()
     return dict(cfg.items(sect))
 
 
-def update_ini_section(fname: str, sect: str, dic: dict[str, str]) -> None:
-    assert os.path.isfile(fname) and sect
+def update_ini_section(sect: str, dic: dict[str, str]) -> None:
+    local = find_path(ConfigName.local_ini)
     cfg = ConfigParser()
-    cfg.read(fname)
+    cfg.read(local)
     if sect not in cfg.sections():
         cfg.add_section(sect)
     for k, v in dic.items():
         cfg.set(sect, k, v)
-    with open(fname, 'w') as f:
+    with open(local, 'w') as f:
         cfg.write(f)
 
 
@@ -76,7 +78,7 @@ SD_RATE: int = 44100
 HUGE_INT = 2 ** 32 - 1
 
 try:
-    _max_sec = int(load_ini_section(find_path(ConfigName.main_ini), "AUDIO")['max_len_seconds'])
+    _max_sec = int(load_ini_section("AUDIO")['max_len_seconds'])
 except Exception as ex:
     MYLOG.exception(ex)
     _max_sec = 60

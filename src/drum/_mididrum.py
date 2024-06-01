@@ -6,7 +6,7 @@ import numpy as np
 
 from drum.basedrum import BaseDrum
 from utils.utilalsa import int_to_bytes
-from utils.utilconfig import load_ini_section, find_path, ConfigName
+from utils.utilconfig import load_ini_section, ConfigName
 from utils.utilportout import MidiOutWrap
 
 
@@ -21,7 +21,7 @@ class MidiDrum(BaseDrum):
         self._par = 0.2  # for MIDI drum it is probability to change program at bar start
         # ======== MIDI specific ===============
         self._mow = MidiOutWrap()
-        dic = load_ini_section(find_path(ConfigName.main_ini), "MIDI")
+        dic = load_ini_section("MIDI")
         pname = dic.get(ConfigName.midi_out, "")
         self._mow.get_port(pname)
 
@@ -59,4 +59,3 @@ class MidiDrum(BaseDrum):
         is_ok = f"{self._mow.port.is_port_open()}"
         config = self.get_config()
         return f"{base_info}\nport OK: {is_ok}/{port}\nconfig: {config}"
-

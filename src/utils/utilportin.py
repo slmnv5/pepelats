@@ -9,7 +9,7 @@ import rtmidi
 
 from mvc.countmidicontrol import CountMidiControl
 from mvc.menuhost import MenuHost
-from utils.utilconfig import find_path, load_ini_section, ConfigName
+from utils.utilconfig import load_ini_section, ConfigName
 from utils.utillog import MYLOG
 from utils.utilmidi import KBD_NOTES, MIDI_DICT
 
@@ -18,7 +18,7 @@ _HAS_KBD = os.environ.get('HAS_KBD', "").upper() in ["Y", "YES", "TRUE", "1"]
 
 
 def get_pedal_control(q: Queue) -> MenuHost:
-    dic = load_ini_section(find_path(ConfigName.main_ini), "MIDI")
+    dic = load_ini_section("MIDI")
     pname = dic.get(ConfigName.midi_in, "")
     miw = MidiInWrap()
     if not miw.get_port(pname):

@@ -13,7 +13,7 @@ class MenuHost:
     """Translate menu command with parameters and sends to a connection. """
 
     def __init__(self, queue: Queue):
-        dic = load_ini_section(find_path(ConfigName.main_ini), "MENU")
+        dic = load_ini_section("MENU")
         dname = dic.get(ConfigName.menu_dir, "")
         dname = find_path(f"config/menu/{dname}")
         assert os.path.isdir(dname)

@@ -3,7 +3,7 @@ from math import log10
 import numpy as np
 import sounddevice as sd
 
-from utils.utilconfig import load_ini_section, find_path, ConfigName, SD_RATE
+from utils.utilconfig import load_ini_section, ConfigName, SD_RATE
 from utils.utillog import MYLOG
 
 
@@ -63,7 +63,7 @@ class AudioInfo:
             return
         self.__initialized = True
 
-        dic: dict[str, str] = load_ini_section(find_path(ConfigName.main_ini), "AINFO")
+        dic: dict[str, str] = load_ini_section("AINFO")
         self.SD_NAME: str = dic.get(ConfigName.device_name, "USB Audio").strip()
         # noinspection PyBroadException
         try:

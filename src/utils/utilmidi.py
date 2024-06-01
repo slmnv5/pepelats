@@ -1,9 +1,9 @@
 import os
 
-from utils.utilconfig import load_ini_section, find_path, ConfigName
+from utils.utilconfig import load_ini_section, ConfigName
 from utils.utillog import MYLOG
 
-_keyboard = load_ini_section(find_path(ConfigName.main_ini), "KEYBOARD")
+_keyboard = load_ini_section("KEYBOARD")
 _option_name = ConfigName.kbd_notes_windows if os.name != 'posix' else ConfigName.kbd_notes_linux
 tmp = _keyboard.get(_option_name, '')
 tmp = [x.strip() for x in tmp.split(',')]
@@ -29,7 +29,7 @@ MIDI_DICT: dict[int, str] = dict(zip(tmp, ['a', 'b', 'c', 'd', 'e', 'f']))
 # ==================================
 # min note velocity to consider, counted notes have small velocity
 MIDI_MIN_VELO: int = 10
-_midi = load_ini_section(find_path(ConfigName.main_ini), "MIDI")
+_midi = load_ini_section("MIDI")
 # noinspection PyBroadException
 try:
     MIDI_MIN_VELO = int(_midi.get(ConfigName.midi_min_velocity, '10'))
