@@ -22,10 +22,6 @@ class SongCtrl(LoopCtrl, ABC):
         self.__play_event: Event = Event()
         Thread(target=self.__play_loop, name="play_loop", daemon=True).start()
 
-    def get_selected(self) -> int:
-        """ What loop ID is selected/playing """
-        return self._song.get_idx()
-
     def _drum_create(self, bar_len: int, drum_type: str = None, drum_info: dict[str, any] = None) -> None:
         if drum_type:
             self._drum_type = drum_type
@@ -34,8 +30,6 @@ class SongCtrl(LoopCtrl, ABC):
             drum_info = dict()
 
         if self._drum_type == ConfigName.LoopDrum:
-            k = drum_info.get(ConfigName.drum_part_idx, 0)
-            self._song.swap_it(0, k)
             drum_info[ConfigName.drum_songpart] = self._song.item_from_idx(0)
 
         drum = DrumFactory.create_drum(bar_len, self._drum_type, **drum_info)

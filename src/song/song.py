@@ -69,7 +69,6 @@ class Song(CollectionOwner[SongPart]):
 
         parts_lst = [x if x else SongPart() for x in parts_lst]
         self._ctrl.menu_client_queue([ConfigName.drum_create, bar_len, drum_type, drum_info])
-        self._ctrl.menu_client_queue([ConfigName.menu_client_redraw, None])
 
         for part in parts_lst:
             self.idx_from_item(part)

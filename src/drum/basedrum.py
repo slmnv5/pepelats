@@ -70,7 +70,7 @@ class BaseDrum(ABC):
     def show_param(self) -> str:
         return f"vol:{self._volume:.2F} par:{self._par:.2F}"
 
-    def get_config(self) -> str:
+    def get_config(self, get_all: bool = False) -> str:
         return ""
 
     def set_config(self, config: str = None) -> None:

@@ -73,15 +73,6 @@ class CollectionOwner(Generic[T]):
         i = i % len(self.__items)
         return self.__items[i]
 
-    def swap_it(self, i: int, j: int) -> None:
-        sz = len(self.__items)
-        if i != j and 0 <= i < sz and 0 <= j < sz:
-            self.__items[i], self.__items[j] = self.__items[j], self.__items[i]
-        if self.__idx == i:
-            self.__idx = j
-        elif self.__idx == j:
-            self.__idx = i
-
     def item_count(self) -> int:
         return len(self.__items)
 

@@ -26,9 +26,6 @@ class LoopCtrl(MenuClient, ABC):
         self.stop_never()
 
     # noinspection PyMethodMayBeStatic
-    def get_selected(self) -> int:
-        """ What loop ID is selected/playing """
-        return 0
 
     def set_drum(self, drum: BaseDrum | None) -> None:
         self.__drum = drum
@@ -79,7 +76,7 @@ class LoopCtrl(MenuClient, ABC):
         self.drum.iterate_config(steps)
 
     def _drum_get_config(self) -> str:
-        return self.drum.get_config()
+        return self.drum.get_config(True)
 
     def _drum_set_par(self, chg: float) -> None:
         chg = 0.2 if chg > 0 else -0.2

@@ -34,9 +34,6 @@ class LoopDrum(BaseDrum):
     def show_param(self) -> str:
         return super().show_param()
 
-    def get_config(self) -> str:
-        return "Loop"
-
     def set_config(self, config: str = None) -> None:
         pass
 

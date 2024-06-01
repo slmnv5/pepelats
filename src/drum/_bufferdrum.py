@@ -37,8 +37,8 @@ class BufferDrum(BaseDrum, ABC):
         base_info = super().show_param()
         return f"{base_info}\nintensity: {self._intens:.2F}\nname: {self._name}"
 
-    def get_config(self) -> str:
-        return self._ff.get_item()
+    def get_config(self, get_all=False) -> str:
+        return self._ff.get_item() if not get_all else self._ff.get_str()
 
     def set_config(self, config=None) -> None:
         """ if config changes re-load and re-generate patterns """

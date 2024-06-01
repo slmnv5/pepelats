@@ -38,8 +38,7 @@ class SongPart(LoopSimple):
         start_rec_idx = ctrl.get_start_rec_idx()
         loop.finalize(ctrl.idx, base_len, start_rec_idx)
         if not bar_len:
-            drum_info = {ConfigName.drum_part_idx: ctrl.get_selected()}
-            ctrl.menu_client_queue([ConfigName.drum_create, ctrl.idx, None, drum_info])
+            ctrl.menu_client_queue([ConfigName.drum_create, ctrl.idx, None, None])
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
         self.loops.apply_to_each(lambda x: LoopSimple.play(x, out_data, idx))
