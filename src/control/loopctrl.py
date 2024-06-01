@@ -1,9 +1,8 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from multiprocessing import Queue
 from threading import Event
 
-from drum.basedrum import BaseDrum
-from drum.silentdrum import SilentDrum
+from drum.basedrum import BaseDrum, FakeDrum
 from mvc.menuclient import MenuClient
 from utils.utilconfig import HUGE_INT
 
@@ -14,23 +13,35 @@ class LoopCtrl(MenuClient, ABC):
     # 5k is about 0.1 second. May be late by this time without going to next full cycle
     _LATE_SAMPLES: int = 5000
 
-    def __init__(self, queue: Queue):
+    def __init__(self, queue: Queue, drum_type: str):
         super().__init__(queue)
         self.idx: int = 0
-        self._drum: BaseDrum = SilentDrum()
+        self._drum_type: str = drum_type
+        self.__drum: BaseDrum | None = None
+        self.__fakedrum: BaseDrum = FakeDrum()
         self._start_rec_idx: int = 0
         self.__is_rec: bool = False
         self.__stop_len: int = 0
         self.__stop_event: Event = Event()
         self.stop_never()
 
-    def get_drum(self) -> BaseDrum:
-        return self._drum
+    # noinspection PyMethodMayBeStatic
+    def get_selected(self) -> int:
+        """ What loop ID is selected/playing """
+        return 0
 
-    def set_drum(self, drum: BaseDrum) -> None:
-        self._drum = drum
+    def set_drum(self, drum: BaseDrum | None) -> None:
+        self.__drum = drum
 
-    def _stop_song(self, wait: int = 0) -> None:
+    @property
+    def drum(self):
+        return self.__drum if self.__drum else self.__fakedrum
+
+    @abstractmethod
+    def _drum_create(self, drum_info: dict[str, any]) -> None:
+        pass
+
+    def _song_stop(self, wait: int = 0) -> None:
         pass
 
     def get_is_rec(self) -> bool:
@@ -64,37 +75,35 @@ class LoopCtrl(MenuClient, ABC):
 
     # ===================== drum methods
 
-    def _iterate_drum_config(self, steps: int) -> None:
-        self._drum.iterate_config(steps)
+    def _drum_iterate_config(self, steps: int) -> None:
+        self.drum.iterate_config(steps)
 
-    def _show_drum_config(self) -> str:
-        return self._drum.show_config()
+    def _drum_get_config(self) -> str:
+        return self.drum.get_config()
 
-    def _change_drum_par(self, chg: float) -> None:
+    def _drum_set_par(self, chg: float) -> None:
         chg = 0.2 if chg > 0 else -0.2
-        self._drum.set_par(self._drum.get_par() + chg)
+        self.drum.set_par(self.drum.get_par() + chg)
 
-    def _change_drum_volume(self, chg: float) -> None:
-        volume = self._drum.get_volume()
+    def _drum_set_volume(self, chg: float) -> None:
+        volume = self.drum.get_volume()
         volume *= (1.2 if chg > 0 else 0.83)
-        self._drum.set_volume(volume)
+        self.drum.set_volume(volume)
 
-    def _show_drum_param(self) -> str:
-        return self._drum.show_param()
+    def _drum_show_param(self) -> str:
+        return self.drum.show_param()
 
-    def _random_drum(self) -> None:
-        self._drum.randomize()
-        self._drum.start()
+    def _drum_randomize(self) -> None:
+        self.drum.randomize()
 
-    def _play_drum_fill(self) -> None:
-        self._drum.play_fill(self.idx)
-        self._drum.start()
+    def _drum_play_fill(self) -> None:
+        self.drum.play_fill(self.idx)
 
-    def _stop_drum(self) -> None:
-        self._drum.stop()
+    def _drum_stop(self) -> None:
+        self.drum.stop()
 
-    def _start_drum(self) -> None:
-        self._drum.start()
+    def _drum_set_config(self, config: str = None) -> None:
+        self.drum.set_config(config)
 
     def get_start_rec_idx(self) -> int:
         return self._start_rec_idx

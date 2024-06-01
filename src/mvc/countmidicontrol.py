@@ -5,7 +5,11 @@ import rtmidi.midiconstants
 
 from mvc.menuhost import MenuHost
 from utils.utillog import MYLOG
-from utils.utilmidi import MIN_VELO, STD_VELO
+from utils.utilmidi import MIDI_MIN_VELO, MIDI_STD_VELO
+
+_CTRL = rtmidi.midiconstants.CONTROL_CHANGE
+_NON = rtmidi.midiconstants.NOTE_ON
+_NOFF = rtmidi.midiconstants.NOTE_OFF
 
 
 class MidiCcToNote:
@@ -46,7 +50,7 @@ class CountMidiControl(MenuHost):
 
     _COUNT_SEC: float = 0.600
 
-    def __init__(self, midi_in, queue: Queue):
+    def __init__(self, midi_in: rtmidi.MidiIn, queue: Queue):
         MenuHost.__init__(self, queue)
         self._midi_in = midi_in
         self.__on_count: int = 0
@@ -55,46 +59,45 @@ class CountMidiControl(MenuHost):
         self.__midi_cc_to_note = MidiCcToNote()
         self._midi_in.set_callback(self._process_msg)
 
-    def start(self) -> None:
-        super().start()
-
     # noinspection PyUnusedLocal
     def _process_msg(self, event, data=None) -> None:
-        msg, deltatime = event
+        msg, _ = event
         assert msg and isinstance(msg, list) and all(isinstance(x, int) for x in msg), f"msg: {msg}, type: {type(msg)}"
-        if msg[0] & 0xF0 == rtmidi.midiconstants.CONTROL_CHANGE:
+        if msg[0] & 0xF0 == _CTRL:
             msg = self.__midi_cc_to_note.convert(msg)
         if not msg:
             return
 
-        note_on: bool = msg[0] & 0xF0 == rtmidi.midiconstants.NOTE_ON
+        note_on: bool = msg[0] & 0xF0 == _NON
         note: int = msg[1]
         velo: int = msg[2]
-        if note_on and velo < MIN_VELO:
+        if note_on and velo < MIDI_MIN_VELO:
             return
-        velo = STD_VELO
+        else:
+            velo = MIDI_STD_VELO
         str_note = f"{note}-{velo}"
 
-        if note_on and self.__past_note != note:
-            # do not send same note many times, we count it below
-            MYLOG.debug(f"Sending non-counted note: {str_note}")
-            self._menuhost_send(str_note)
-
         if self.__past_note != note:
-            self.__on_count, self.__off_count = 0, 0
-            self.__past_note = note
+            self.__on_count, self.__off_count, self.__past_note = 0, 0, note  # init counters for new note
+            if note_on:
+                MYLOG.debug(f"Sending non-counted MIDI note: {str_note}")  # new note ON, send it
+                self._menuhost_send(str_note)
+
+        if not note_on and self.__on_count == 0:
+            return  # old OFF came before new ON, we ignore
 
         if note_on:
             self.__on_count += 1
-        elif self.__on_count > 0:  # old OFF note may come before new ON, we correct here
+        else:
             self.__off_count += 1
 
         Timer(CountMidiControl._COUNT_SEC, self.__count_enqueue,
               [self.__on_count, self.__off_count, note]).start()
 
     def __count_enqueue(self, on_count: int, off_count: int, note: int) -> None:
-        # if we came here after a delay and note counts have changed we do not send
-        if self.__past_note != note or self.__on_count != on_count or self.__off_count != off_count:
+        # if we came here after a delay and note counts have changed, just return
+        if (self.__past_note != note or self.__on_count != on_count
+                or self.__off_count != off_count):
             return
 
         # note and count did not change for long time, we send MIDI
@@ -102,7 +105,7 @@ class CountMidiControl(MenuHost):
         if self.__on_count > self.__off_count:
             count += 5
 
-        self.__on_count = self.__off_count = 0
-        self.__past_note = -1
+        self.__on_count, self.__off_count, self.__past_note = 0, 0, -1
         str_note = f"{note}-{count}"
+        MYLOG.debug(f"Sending counted MIDI note: {str_note}")
         self._menuhost_send(str_note)

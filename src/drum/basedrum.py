@@ -17,18 +17,6 @@ class BaseDrum(ABC):
         self._par: float = 0.5  # from 0 to 1,  swing, used by some drum types
         self._volume: float = 0.5  # from 0 to 1
 
-    def get_pickle_info(self) -> tuple[str, int, float, float]:
-        return self.get_config(), self._bar_len, self._volume, self._par
-
-    def set_pickle_info(self, info: tuple[str, int, float, float]) -> None:
-        if len(info) != 4:
-            MYLOG.error(f"set_picle_info() method incorrect parameter: {info}")
-            return
-        self.set_config(info[0])
-        self.set_bar_len(info[1])
-        self.set_volume(info[2])
-        self.set_par(info[3])
-
     def set_volume(self, volume: float) -> None:
         volume = min(1., volume)
         volume = max(0.05, volume)
@@ -58,7 +46,7 @@ class BaseDrum(ABC):
         self.stop()
         self._bar_len = bar_len
         self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / SD_RATE)
-        MYLOG.info(f"Set bar len for drum: {self}")
+        MYLOG.info(f"Set bar len {self._bar_len} for drum: {self}")
 
     @abstractmethod
     def play(self, out_data: np.ndarray, idx: int) -> None:
@@ -79,24 +67,35 @@ class BaseDrum(ABC):
         pass
 
     @abstractmethod
-    def show_config(self) -> str:
-        return ""
-
-    @abstractmethod
-    def iterate_config(self, steps: int) -> None:
-        pass
-
-    @abstractmethod
     def show_param(self) -> str:
         return f"vol:{self._volume:.2F} par:{self._par:.2F}"
 
-    @abstractmethod
     def get_config(self) -> str:
-        pass
+        return ""
 
-    @abstractmethod
     def set_config(self, config: str = None) -> None:
         pass
 
+    def iterate_config(self, steps: int) -> None:
+        pass
+
     def __str__(self) -> str:
-        return f"{self.get_config()}:{self._bpm:.2F}"
+        return f"{self.get_class_name()}:{self._bpm:.2F}"
+
+
+class FakeDrum(BaseDrum):
+
+    def play(self, out_data: np.ndarray, idx: int) -> None:
+        pass
+
+    def randomize(self) -> None:
+        pass
+
+    def play_fill(self, idx: int) -> None:
+        pass
+
+    def show_param(self) -> str:
+        return ""
+
+    def get_bpm(self) -> float:
+        return 0.0

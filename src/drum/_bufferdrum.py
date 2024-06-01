@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os.path
 from abc import ABC
 from random import choices, random
 from threading import Timer
@@ -29,6 +30,7 @@ class BufferDrum(BaseDrum, ABC):
         self._name: str = ""
         self._intens: float = 0
         self._par = 0.5  # for this drum it controls swing
+        self._stale: bool = True  # if stale it needs pattern reloading and regeneration
         self.set_config()
 
     def show_param(self) -> str:
@@ -39,36 +41,38 @@ class BufferDrum(BaseDrum, ABC):
         return self._ff.get_item()
 
     def set_config(self, config=None) -> None:
+        """ if config changes re-load and re-generate patterns """
         if config:
             self._ff.idx_from_item(config)
+            assert os.path.isfile(self._ff.get_full_name()), f"Not found file: {self._ff.get_full_name()}"
         self._pl.load_patterns(self._ff.get_full_name())
+        self._stale = True
 
     def set_bar_len(self, bar_len: int) -> None:
+        """ setting bar_len needs patern generation """
+        assert bar_len > 0 and self._bar_len == 0, "Method set_bar_len must be called only once"
         super().set_bar_len(bar_len)
-        self._pl.prepare_patterns(self._bar_len, self._volume, self._par)
-        self.randomize()
-
-    def show_config(self) -> str:
-        return self._ff.get_str()
+        self._stale = True
 
     def iterate_config(self, steps: int) -> None:
         self._ff.iterate(steps)
 
     def set_volume(self, volume: float) -> None:
         super().set_volume(volume)
-        self.stop()
-        self._pl.prepare_patterns(self._bar_len, self._volume, self._par)
-        self.randomize()
+        self._stale = True
 
     def set_par(self, par: float) -> None:
         super().set_par(par)
-        self.stop()
-        self._pl.prepare_patterns(self._bar_len, self._volume, self._par)
-        self.randomize()
+        self._stale = True
 
     def randomize(self) -> None:
+        if self._stale:
+            self.stop()
+            self._pl.prepare_patterns(self._bar_len, self._volume, self._par)
+            self._stale = False
         self._play_lst, self._name, self._intens = self._pl.rand_quiet_ptn()
         self._modify()
+        self.start()
 
     def _modify(self) -> None:
         self._play_count = choices(self._COUNT_LST, weights=self._COUNT_WGHT, k=1)[0]
@@ -89,9 +93,6 @@ class BufferDrum(BaseDrum, ABC):
             self._modify()
         for buff in self._play_lst[:self._play_count]:
             from_buff_to_data(buff, out_data, idx)
-
-    def __str__(self):
-        return f"{self._name}:{self._intens:.2F}:{self._bpm:.2F}"
 
 
 class EuclidPtrnDrum(BufferDrum):

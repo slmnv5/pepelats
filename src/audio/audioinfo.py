@@ -64,7 +64,7 @@ class AudioInfo:
         self.__initialized = True
 
         dic: dict[str, str] = load_ini_section(find_path(ConfigName.main_ini), "AINFO")
-        self.SD_NAME: str = dic.get("device_name", "USB Audio").strip()
+        self.SD_NAME: str = dic.get(ConfigName.device_name, "USB Audio").strip()
         # noinspection PyBroadException
         try:
             self.DEV_IN: dict[str, any] = sd.query_devices(self.SD_NAME, kind='input')
@@ -89,14 +89,14 @@ class AudioInfo:
 
         sd.default.samplerate = SD_RATE
 
-        self.SD_TYPE: str = dic.get("device_type", "int16").strip()
+        self.SD_TYPE: str = dic.get(ConfigName.device_type, "int16").strip()
         if self.SD_TYPE not in ['int16', 'float32']:
-            raise RuntimeError(f"device_type in main.ini must be [in16, float32], found: {self.SD_TYPE}")
+            raise RuntimeError(f"{ConfigName.device_type} in main.ini must be [in16, float32], found: {self.SD_TYPE}")
         sd.default.dtype = self.SD_TYPE
 
         sd.default.latency = ('low', 'low')
 
-        tmp = dic.get("drum_volume", "1.0")
+        tmp = dic.get(ConfigName.drum_volume, "1.0")
         self.DRUM_VOLUME: float = 1.0
         # noinspection PyBroadException
         try:

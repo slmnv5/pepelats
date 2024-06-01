@@ -44,6 +44,7 @@ class MidiDrum(BaseDrum):
 
     def randomize(self) -> None:
         self._mow.port.send_message([0xF0, 0x5C, 0xF7])
+        self.start()
 
     def play_fill(self, idx: int) -> None:
         self._mow.port.send_message([0xF0, 0x5D, 0xF7])
@@ -59,14 +60,3 @@ class MidiDrum(BaseDrum):
         config = self.get_config()
         return f"{base_info}\nport OK: {is_ok}/{port}\nconfig: {config}"
 
-    def get_config(self) -> str:
-        return "Midi"
-
-    def set_config(self, config: str = None) -> None:
-        pass
-
-    def show_config(self) -> str:
-        return ""
-
-    def iterate_config(self, steps: int) -> None:
-        pass

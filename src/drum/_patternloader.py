@@ -6,7 +6,7 @@ from random import randrange
 
 import numpy as np
 
-from audio.sampleloader import SampleLoader
+from audio.sampleloader import SMPLLOAD
 from utils.utilconfig import find_path
 from utils.utillog import MYLOG
 from utils.utilother import FileFinder
@@ -56,7 +56,7 @@ class PatternLoader:
         self.__snd_ptn: list[list[np.ndarray]] = list()
 
     def load_patterns(self, fname: str) -> None:
-        assert os.path.isfile(fname)
+        assert os.path.isfile(fname), f"Not found file: {fname}"
         cfg = ConfigParser()
         cfg.read(fname)
         dic: dict[str, dict[str, str]] = {s: dict(cfg.items(s)) for s in cfg.sections()}
@@ -88,7 +88,7 @@ class PatternLoader:
 
     def prepare_patterns(self, bar_len: int, volume: float, par: float) -> None:
         self.__snd_ptn.clear()
-        SampleLoader().set_volume(volume)
+        SMPLLOAD.set_volume(volume)
         assert self.__ptn, "Empty string patterns list!"
         # INI patterns are already sorted by intensity
         for ptn_dic, name, intens in self.__ptn:

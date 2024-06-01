@@ -56,7 +56,7 @@ class PyScreen(MenuClient):
         self.__loop_position: float = 0
         Thread(target=self.__updater, name="updater", daemon=True).start()
 
-    def _redraw(self, draw_info: DrawInfo) -> None:
+    def _menu_client_redraw(self, draw_info: DrawInfo) -> None:
         if not draw_info:
             return
         self.__loop_position = draw_info.loop_position

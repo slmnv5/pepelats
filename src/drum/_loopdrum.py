@@ -15,35 +15,19 @@ class LoopDrum(BaseDrum):
     _COUNT_LST: list[int] = [1, 2, 3, 4, 5]
     _COUNT_WGHT: list[int] = [1, 5, 5, 3, 1]
 
-    def __init__(self):
+    def __init__(self, song_part: SongPart):
         BaseDrum.__init__(self)
-        self._songpart: SongPart | None = None
+        self._songpart: SongPart = song_part
         self._par = 0.2  # for this drum - probability to randomize at bar start
-
-    def set_songpart(self, part: SongPart) -> None:
-        self._songpart = part
-
-    def start(self) -> None:
-        if not self._songpart:
-            return
-        self._is_stopped = False
-
-    def iterate_config(self, steps: int) -> None:
-        pass
 
     def show_param(self) -> str:
         return super().show_param()
-
-    def get_config(self) -> str:
-        return "Loop"
-
-    def set_config(self, config: str = None) -> None:
-        pass
 
     def randomize(self) -> None:
         play_count: int = choices(self._COUNT_LST, weights=self._COUNT_WGHT, k=1)[0]
         loops = self._songpart.loops
         loops.apply_to_each(lambda x: x.set_silent(loops.idx_from_item(x) >= play_count))
+        self.start()
 
     def play_fill(self, idx: int) -> None:
         self._songpart.loops.apply_to_each(lambda x: x.set_silent(False))
@@ -59,3 +43,6 @@ class LoopDrum(BaseDrum):
         if idx % self._bar_len == 0 and random() < self._par:
             self.randomize()
         self._songpart.play(out_data, idx)
+
+    def __str__(self) -> str:
+        return f"LoopDrum.{self.get_config()}:{self._bpm:.2F}"

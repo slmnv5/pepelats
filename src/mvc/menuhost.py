@@ -1,5 +1,4 @@
 import os
-from abc import abstractmethod
 from configparser import ConfigParser
 from multiprocessing import Queue
 from threading import Event
@@ -21,10 +20,9 @@ class MenuHost:
         self._draw_info = DrawInfo()
         self.__queue = queue
         self._update_menu(ConfigName.play_section)
-        self.__queue.put([ConfigName.client_redraw, self._draw_info])
+        self.__queue.put([ConfigName.menu_client_redraw, self._draw_info])
 
-    @abstractmethod
-    def start(self) -> None:
+    def start_menu_host(self) -> None:
         MYLOG.info(f"{self.__class__.__name__} working as MenuHost")
         Event().wait()
 
@@ -49,7 +47,7 @@ class MenuHost:
             lst1 = cmd.split()  # method name and arguments if any
             self.__process_list(lst1)
         # after all commands send _redraw
-        self.__queue.put([ConfigName.client_redraw, self._draw_info])
+        self.__queue.put([ConfigName.menu_client_redraw, self._draw_info])
 
     def __process_list(self, cmd: list) -> None:
         if not (cmd and isinstance(cmd, list)):
@@ -96,7 +94,6 @@ class _MenuLoader:
         if key in sect_dic:
             return sect_dic[key]
 
-        MYLOG.debug(f"Did not find key: {key} in menu: {sect_name}")
         return ""
 
     def update_menu(self, section: str) -> None:

@@ -37,6 +37,7 @@ class SampleLoader:
         MYLOG.debug(f"Loaded sounds:\nmaximum:{maximum}")
         # _energy has energy of each drum sound = variance * duration
         self._energy = {k: variance[k] * duration[k] for k in self._sounds}
+        self.set_volume(1.0)
 
     @staticmethod
     def _load_audio_samples(dname: str) -> dict[str, np.ndarray]:
@@ -61,7 +62,6 @@ class SampleLoader:
                           for k, v in self._sounds.items()}
 
     def get_sound(self, sname: str, is_accent: bool) -> np.ndarray:
-
         if sname in self._adjusted:
             if is_accent:
                 return self._adjusted[sname][1]
@@ -76,3 +76,4 @@ class SampleLoader:
         return list(self._sounds.keys())
 
 
+SMPLLOAD = SampleLoader()

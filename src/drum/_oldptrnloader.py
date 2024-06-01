@@ -5,7 +5,7 @@ from math import ceil
 import numpy as np
 
 from audio.audioinfo import make_buffer
-from audio.sampleloader import SampleLoader
+from audio.sampleloader import SMPLLOAD
 from drum._patternloader import DrumLoader
 from utils.utillog import MYLOG
 from utils.utilnumpy import from_data_to_buff
@@ -32,7 +32,6 @@ class OldPtrnLoader(DrumLoader):
         MYLOG.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
 
     def fn_convert(self, bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
-        sl = SampleLoader()
         result = list()
         accents: str = ptn_dic[self.__ACNT]
         steps = len(accents)
@@ -44,7 +43,7 @@ class OldPtrnLoader(DrumLoader):
             for k, s in enumerate(notes):
                 if s not in "!":
                     continue
-                sound_arr = sl.get_sound(sname, accents[k] == "!")
+                sound_arr = SMPLLOAD.get_sound(sname, accents[k] == "!")
                 idx = round(k * step_len)
                 if k % 2 != 0:
                     chg = round(step_len * par * 0.25)
@@ -54,7 +53,6 @@ class OldPtrnLoader(DrumLoader):
 
     def fn_intensity(self, ptn_dic: dict[str, str]) -> float:
         """ Calculate pattern intensity """
-        sl = SampleLoader()
         result: float = 0.0
         accents = ptn_dic[self.__ACNT]
         for sname, notes in [(k, v) for (k, v) in ptn_dic.items() if k != self.__ACNT]:
@@ -62,5 +60,5 @@ class OldPtrnLoader(DrumLoader):
                 if s not in "!":
                     continue
                 is_accent = accents[k] == '!'
-                result += sl.get_energy(sname, is_accent) / len(notes)
+                result += SMPLLOAD.get_energy(sname, is_accent) / len(notes)
         return result

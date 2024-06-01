@@ -5,8 +5,6 @@ import time
 from multiprocessing import Queue
 
 from control.songctrl import SongCtrl
-from drum.drumfactory import create_drum
-from drum.loopdrum import LoopDrum
 from utils.utilconfig import ConfigName, load_ini_section, find_path, update_ini_section, SD_RATE
 from utils.utillog import MYLOG
 from utils.utilother import DrawInfo, FileFinder
@@ -17,17 +15,17 @@ class Looper(SongCtrl):
     """Adds screen connection, Mixer, looper commands"""
 
     def __init__(self, recv_q: Queue, send_q: Queue):
-        SongCtrl.__init__(self, recv_q)
+        SongCtrl.__init__(self, recv_q, "LoopDrum")
         self._send_q = send_q
         self._saved_draw_info = DrawInfo()
 
-    def _redraw(self, draw_info: DrawInfo) -> None:
+    def _menu_client_redraw(self, draw_info: DrawInfo) -> None:
         if not draw_info:
             draw_info = self._saved_draw_info
         else:
             self._saved_draw_info = draw_info
 
-        draw_info.header = f"{self._drum}"
+        draw_info.header = f"{self._drum_type}:{self.drum.get_bpm():.2F}"
         if draw_info.update_method:
             # noinspection PyBroadException
             try:
@@ -42,16 +40,16 @@ class Looper(SongCtrl):
         draw_info.loop_seconds = length / SD_RATE
         draw_info.loop_position = 0 if not length else (self.idx % length) / length
         draw_info.is_rec = self.get_is_rec()
-        self._send_q.put([ConfigName.client_redraw, draw_info])
+        self._send_q.put([ConfigName.menu_client_redraw, draw_info])
 
     # ===============+ other methods ===============================
 
     def _restart_looper(self) -> None:
-        self._stop_song()
+        self._song_stop()
         os.system("killall -9 python")
 
     def _update_app(self) -> None:
-        self._stop_song()
+        self._song_stop()
         os.system("git reset --hard")
         os.system("git pull --ff-only; sleep 2")
 
@@ -116,61 +114,3 @@ class Looper(SongCtrl):
                 part.loops.idx_from_item(deleted)
         elif params[0] == "delete" and part != loop:
             part.loops.delete_selected()
-
-    # ================= song methods =============================
-
-    def _init_song(self) -> None:
-        self._drum.stop()
-        self._stop_song()
-        drum_type = self._drum.get_class_name()
-        config = self._drum.get_config()
-        self._drum = create_drum(drum_type)
-        self._drum.set_config(config)
-        self._song.clear()
-
-    def _delete_song(self) -> None:
-        self._stop_song()
-        self._song.delete_song()
-
-    def _load_song(self) -> None:
-        self._stop_song()
-        self._song.load_song()
-
-    def _save_song(self) -> None:
-        self._stop_song()
-        self._song.save_song()
-
-    def _save_new_song(self) -> None:
-        self._stop_song()
-        self._song.save_new_song()
-
-    def _show_name(self) -> str:
-        return self._song.get_complete_name()
-
-    def _show_songs(self) -> str:
-        return self._song.show_songs()
-
-    def _iterate_song(self, steps: int) -> None:
-        self._song.iterate_song(steps)
-
-    # ========== drum methods ==================================
-    def _change_drum_type(self, drum_type: str) -> None:
-        old_type, bar_len = self._drum.get_class_name(), self._drum.get_bar_len()
-        if old_type == drum_type:
-            return
-        self._stop_song()
-        self._drum = create_drum(drum_type)
-        self._drum.set_config()
-        self._set_bar_len(bar_len)
-
-    def _load_drum_config(self) -> None:
-        self._drum.set_config()
-        bar_len = self._drum.get_bar_len()
-        if bar_len:
-            self._drum.set_bar_len(bar_len)
-
-    def _set_bar_len(self, bar_len: int) -> None:
-        if isinstance(self._drum, LoopDrum):
-            self._drum.set_songpart(self._song.item_from_idx(0))
-
-        self._drum.set_bar_len(bar_len)

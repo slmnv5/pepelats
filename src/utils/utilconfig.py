@@ -9,16 +9,35 @@ APPDIR = os.sep + 'pepelats'
 
 class ConfigName:
     # menu and midi config related
-    default_config: str = "default_config"
+    drum_create: str = "_drum_create"
     update_method: str = "update_method"
     description: str = "description"
-    comment: str = "comment"
-    client_redraw: str = "_redraw"  # this is MenuClient command to update screen
+    menu_client_redraw: str = "_menu_client_redraw"
+    menu_client_stop: str = "menu_client_stop"
     play_section: str = "play"
     menu_dir: str = "menu_dir"
     main_ini: str = "main.ini"
     midi_out: str = "midi_out"
     midi_in: str = "midi_in"
+    midi_min_velocity: str = "midi_min_velocity"
+    max_len_seconds: str = "max_len_seconds"
+    device_name: str = "device_name"
+    device_type: str = "device_type"
+    kbd_notes_linux: str = "kbd_notes_linux"
+    kbd_notes_windows: str = "kbd_notes_windows"
+    kbd_midi_notes: str = "kbd_midi_notes"
+    # drum config
+    drum_config: str = 'drum_config'
+    drum_volume: str = "drum_volume"
+    drum_par: str = "drum_par"
+    drum_part_idx: str = "drum_part_idx"
+    drum_songpart: str = "drum_songpart"
+    # drum types
+    EuclidPtrnDrum: str = "EuclidPtrnDrum"
+    OldPtrnDrum: str = "OldPtrnDrum"
+    MidiDrum: str = "MidiDrum"
+    LoopDrum: str = "LoopDrum"
+    SilentDrum: str = "SilentDrum"
 
 
 def find_path(path_end: str) -> str:

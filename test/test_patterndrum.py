@@ -1,25 +1,60 @@
 from multiprocessing import Queue
-from threading import Timer
+from threading import Timer, Thread
+from time import sleep
 
-from control.loopctrl import LoopCtrl
+from control.songctrl import SongCtrl
 from song.loopsimple import LoopSimple
-from drum.drumfactory import create_drum
-
-queue = Queue()
-drum = create_drum("OldPtrnDrum")
-drum.set_config("Test.ini")
-drum.set_bar_len(100_000)
-drum.set_par(0)
-drum.start()
-
-ctrl = LoopCtrl(queue)
-ctrl.set_drum(drum)
-loop = LoopSimple()
-print("LooCtl", ctrl)
-print("Loop", loop)
+from song.songpart import SongPart
+from utils.utilconfig import ConfigName
 
 
 def test_1():
+    queue = Queue()
+    ctrl = SongCtrl(queue, "OldPtrnDrum")
+    t = Thread(target=ctrl.menu_client_start, name="process queue", args=[])
+    t.start()  # start processing message queue
+
+    part = SongPart()
+    print("SongCtrl", ctrl)
+    print("Part", part)
+
+    assert ctrl.drum.get_bar_len() == 0
+    ctrl._set_is_rec(True)
     Timer(3, ctrl.stop_at_bound, args=[0]).start()
+    part.play_loop(ctrl)  # recording from mic
+    while not ctrl.drum.get_bar_len():
+        sleep(1)  # wait for another thread to create drum
+
+    assert ctrl.drum.get_bar_len()
+    ctrl._drum_randomize()
     ctrl.stop_never()
-    loop.play_loop(ctrl)
+    Timer(3, ctrl.stop_at_bound, args=[0]).start()
+    part.play_loop(ctrl)  # playing recorded sound + drum
+    queue.put([ConfigName.menu_client_stop])
+    assert ctrl.drum.get_bar_len() == part.length
+
+
+def test_2():
+    queue = Queue()
+    ctrl = SongCtrl(queue, "EuclidPtrnDrum")
+    t = Thread(target=ctrl.menu_client_start, name="process queue", args=[])
+    t.start()  # start processing message queue
+
+    loop = LoopSimple()
+    print("SongCtrl", ctrl)
+    print("Loop", loop)
+
+    assert ctrl.drum.get_bar_len() == 0
+    ctrl._set_is_rec(True)
+    Timer(3, ctrl.stop_at_bound, args=[0]).start()
+    loop.play_loop(ctrl)  # recording from mic
+    while not ctrl.drum.get_bar_len():
+        sleep(1)  # wait for another thread to create drum
+
+    ctrl._drum_randomize()
+    assert ctrl.drum.get_bar_len()
+    ctrl.stop_never()
+    Timer(3, ctrl.stop_at_bound, args=[0]).start()
+    loop.play_loop(ctrl)  # playing recorded sound + drum
+    queue.put([ConfigName.menu_client_stop])
+    assert ctrl.drum.get_bar_len() == loop.length

@@ -32,7 +32,7 @@ Four buttons on **iRig BlueBoard**: A,B,C,D (MIDI notes 60, 62, 64, 65) and 2 bu
 E1, E2 (MIDI notes 12, 13). So if you see:
 
 ```
-65-2 : _stop_drum
+65-2 : _drum_stop
 ```
 
 this means that double tap on button D will stop drum

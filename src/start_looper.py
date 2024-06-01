@@ -13,7 +13,7 @@ def do_looper(q_looper: Queue, q_screen: Queue) -> None:
     # noinspection PyBroadException
     try:
         looper = Looper(q_looper, q_screen)
-        looper.start()
+        looper.menu_client_start()
     except Exception as ex:
         MYLOG.exception(ex)
         os.system("killall -9 python")
@@ -24,7 +24,7 @@ def do_screen(q_screen: Queue) -> None:
     # noinspection PyBroadException
     try:
         scr_view: MenuClient = PyScreen(q_screen)
-        scr_view.start()
+        scr_view.menu_client_start()
     except Exception as ex:
         MYLOG.exception(ex)
         os.system("killall -9 python")
@@ -41,7 +41,7 @@ def go() -> None:
 
     # noinspection PyBroadException
     try:
-        get_pedal_control(q_looper).start()
+        get_pedal_control(q_looper).start_menu_host()
     except Exception as ex:
         MYLOG.exception(ex)
         os.system("killall -9 python")
