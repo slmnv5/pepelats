@@ -52,7 +52,7 @@ def find_path(path_end: str) -> str:
 
 
 def load_ini_section(fname: str, sect: str) -> dict[str, str]:
-    assert os.path.isfile(fname) and sect
+    assert os.path.isfile(fname), f"Not found file: {fname}"
     cfg = ConfigParser()
     cfg.read(fname)
     sect = next((x for x in cfg.sections() if x == sect), "DEFAULT")
@@ -63,6 +63,8 @@ def update_ini_section(fname: str, sect: str, dic: dict[str, str]) -> None:
     assert os.path.isfile(fname) and sect
     cfg = ConfigParser()
     cfg.read(fname)
+    if sect not in cfg.sections():
+        cfg.add_section(sect)
     for k, v in dic.items():
         cfg.set(sect, k, v)
     with open(fname, 'w') as f:

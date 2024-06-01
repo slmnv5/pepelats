@@ -55,21 +55,21 @@ class Looper(SongCtrl):
 
     @staticmethod
     def _show_menu_config() -> str:
-        dic = load_ini_section(find_path(ConfigName.main_ini), "MENU")
+        dic = load_ini_section(find_path(ConfigName.local_ini), "MENU")
         return "Menu: " + dic.get(ConfigName.menu_dir, "")
 
     @staticmethod
     def _next_menu_config() -> None:
-        dict = load_ini_section(find_path(ConfigName.main_ini), "MENU")
-        config1 = dict.get(ConfigName.menu_dir, "")
-        dict = load_ini_section(find_path(ConfigName.local_ini), "MENU")
-        config2 = dict.get(ConfigName.menu_dir, "")
+        tmp = load_ini_section(find_path(ConfigName.main_ini), "MENU")
+        config1 = tmp.get(ConfigName.menu_dir, "")
+        tmp = load_ini_section(find_path(ConfigName.local_ini), "MENU")
+        config2 = tmp.get(ConfigName.menu_dir, "")
         config = config2 if config2 else config1
         ff = FileFinder(find_path("config/menu"), False, "")
         ff.idx_from_item(config)
         ff.iterate()  # next menu
-        dict[ConfigName.menu_dir] = ff.get_item()
-        update_ini_section(find_path(ConfigName.local_ini), "MENU", dict)
+        tmp[ConfigName.menu_dir] = ff.get_item()
+        update_ini_section(find_path(ConfigName.local_ini), "MENU", tmp)
 
     @staticmethod
     def _show_midi_out_ports() -> None:
