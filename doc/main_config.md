@@ -11,5 +11,5 @@ Some of the options used in this INI file are:
 * kbd_notes_linux -- 6 keys on computer keyboard connected to linux (to use keyboard as foot controller)
 * kbd_notes_windows -- 6 keys on computer keyboard connected to windows (to use keyboard for debugging)
 * midi_notes -- 6 MIDI notes sent by computer keyboard keys.
-* menu_dir -- where menu configuration files are stored. (default is [button6](./../config/menu/button6), optional
-  is [button4](./../config/menu/button4))
+* menu_dir -- where menu configuration files are stored. (default is [button6](./../config/menu/6x4xN), optional
+  is [button4](./../config/menu/4xNxN))
