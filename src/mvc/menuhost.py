@@ -5,6 +5,7 @@ from threading import Event
 
 from utils.utilconfig import ConfigName, find_path, load_ini_section
 from utils.utillog import MYLOG
+from utils.utilmidi import MIDI_DICT
 from utils.utilother import DrawInfo
 
 
@@ -36,13 +37,17 @@ class MenuHost:
         self._draw_info.description = self._menu_loader.get(ConfigName.description)
         self._draw_info.update_method = self._menu_loader.get(ConfigName.update_method)
 
-    def _menuhost_send(self, key: str) -> None:
-        # map note to command in JSON menu files
-        menu_str = self._menu_loader.get(key)
-        if not menu_str:
+    def _menuhost_send(self, note: int, velo: int) -> None:
+        if note not in MIDI_DICT:
+            MYLOG.error(f"MIDI note: {note} is not expected. Check main.ini file")
+
+        menu_key: str = f"{MIDI_DICT[note]}-{velo}"
+        menu_cmd = self._menu_loader.get(menu_key)
+        if not menu_cmd:
+            MYLOG.error(f"Not found {menu_key}. Check menu files if this key has mapped commands")
             return
 
-        lst = menu_str.split(":")  # if there are many commands we need the list
+        lst = menu_cmd.split(":")  # if there are many commands we need the list
         for cmd in lst:
             lst1 = cmd.split()  # method name and arguments if any
             self.__process_list(lst1)

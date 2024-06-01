@@ -75,13 +75,12 @@ class CountMidiControl(MenuHost):
             return
         else:
             velo = MIDI_STD_VELO
-        str_note = f"{note}-{velo}"
 
         if self.__past_note != note:
             self.__on_count, self.__off_count, self.__past_note = 0, 0, note  # init counters for new note
             if note_on:
-                MYLOG.debug(f"Sending non-counted MIDI note: {str_note}")  # new note ON, send it
-                self._menuhost_send(str_note)
+                MYLOG.debug(f"Sending non-counted MIDI note: {note}")  # new note ON, send it
+                self._menuhost_send(note, velo)
 
         if not note_on and self.__on_count == 0:
             return  # old OFF came before new ON, we ignore
@@ -106,6 +105,5 @@ class CountMidiControl(MenuHost):
             count += 5
 
         self.__on_count, self.__off_count, self.__past_note = 0, 0, -1
-        str_note = f"{note}-{count}"
-        MYLOG.debug(f"Sending counted MIDI note: {str_note}")
-        self._menuhost_send(str_note)
+        MYLOG.debug(f"Sending counted MIDI note: {note}, {count}")
+        self._menuhost_send(note, count)

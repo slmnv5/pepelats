@@ -5,27 +5,28 @@ from utils.utillog import MYLOG
 
 _keyboard = load_ini_section(find_path(ConfigName.main_ini), "KEYBOARD")
 _option_name = ConfigName.kbd_notes_windows if os.name != 'posix' else ConfigName.kbd_notes_linux
-tmp = _keyboard.get(_option_name, '1,2,3,4,q,w')
+tmp = _keyboard.get(_option_name, '')
 tmp = [x.strip() for x in tmp.split(',')]
 if len(tmp) != 6:
-    raise RuntimeError(f"kbd_notes_windows in main.ini must have at 6 keys, found: {tmp}")
+    raise RuntimeError(f"kbd_notes_windows and kbd_notes_linux in main.ini must have 6 values, found: {tmp}")
 KBD_NOTES: list[str] = tmp
 
 # ==================================
-tmp = _keyboard.get(ConfigName.kbd_midi_notes, '60,62,64,65,12,13')
+tmp = _keyboard.get(ConfigName.kbd_notes_midi, '')
 tmp = [x.strip() for x in tmp.split(',')]
-# noinspection PyBroadException
-try:
-    tmp = [int(x) for x in tmp]
-except Exception:
-    pass
-
 if len(tmp) != 6:
-    raise RuntimeError(f"{ConfigName.kbd_midi_notes} in main.ini must have 6 values, found: {tmp}")
-if not all(isinstance(x, int) and 0 <= x <= 127 for x in tmp):
-    raise RuntimeError(f"{ConfigName.kbd_midi_notes} in main.ini must have integer values from 0 to 127, found: {tmp}")
+    raise RuntimeError(f"kbd_notes_midi in main.ini must have 6 values, found: {tmp}")
 
-MIDI_NOTES: list[int] = tmp
+if not all([x.isdigit() for x in tmp]):
+    raise RuntimeError(f"kbd_notes_midi in main.ini must be 6 integers, found: {tmp}")
+tmp = [int(x) for x in tmp]
+
+if not all([0 <= x < 128 for x in tmp]):
+    raise RuntimeError(f"kbd_notes_midi in main.ini must be 0<=x<128, found: {tmp}")
+
+MIDI_NOTES11111: list[int] = tmp
+MIDI_DICT: dict[int, str] = dict(zip(tmp, ['A', 'B', 'C', 'D', 'E', 'F']))
+
 # ==================================
 # min note velocity to consider, counted notes have small velocity
 MIDI_MIN_VELO: int = 10

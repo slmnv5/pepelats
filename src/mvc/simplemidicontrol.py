@@ -29,4 +29,4 @@ class SimpleMidiControl(MenuHost):
         if velo < MIDI_MIN_VELO:
             return
         velo = MIDI_STD_VELO
-        self._menuhost_send(f"{note}-{velo}")
+        self._menuhost_send(note, velo)

@@ -25,7 +25,7 @@ class ConfigName:
     device_type: str = "device_type"
     kbd_notes_linux: str = "kbd_notes_linux"
     kbd_notes_windows: str = "kbd_notes_windows"
-    kbd_midi_notes: str = "kbd_midi_notes"
+    kbd_notes_midi: str = "kbd_notes_midi"
     # drum config
     drum_config: str = 'drum_config'
     drum_volume: str = "drum_volume"
