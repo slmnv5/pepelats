@@ -18,20 +18,20 @@ def test_1():
     print("SongCtrl", ctrl)
     print("Part", part)
 
-    assert ctrl.drum.get_bar_len() == 0
+    assert ctrl.get_drum().get_bar_len() == 0
     ctrl._set_is_rec(True)
     Timer(3, ctrl.stop_at_bound, args=[0]).start()
     part.play_loop(ctrl)  # recording from mic
-    while not ctrl.drum.get_bar_len():
+    while not ctrl.get_drum().get_bar_len():
         sleep(1)  # wait for another thread to create drum
 
-    assert ctrl.drum.get_bar_len()
+    assert ctrl.get_drum().get_bar_len()
     ctrl._drum_randomize()
     ctrl.stop_never()
     Timer(3, ctrl.stop_at_bound, args=[0]).start()
     part.play_loop(ctrl)  # playing recorded sound + drum
     queue.put([ConfigName.menu_client_stop])
-    assert ctrl.drum.get_bar_len() == part.length
+    assert ctrl.get_drum().get_bar_len() == part.length
 
 
 def test_2():
@@ -44,17 +44,17 @@ def test_2():
     print("SongCtrl", ctrl)
     print("Loop", loop)
 
-    assert ctrl.drum.get_bar_len() == 0
+    assert ctrl.get_drum().get_bar_len() == 0
     ctrl._set_is_rec(True)
     Timer(3, ctrl.stop_at_bound, args=[0]).start()
     loop.play_loop(ctrl)  # recording from mic
-    while not ctrl.drum.get_bar_len():
+    while not ctrl.get_drum().get_bar_len():
         sleep(1)  # wait for another thread to create drum
 
     ctrl._drum_randomize()
-    assert ctrl.drum.get_bar_len()
+    assert ctrl.get_drum().get_bar_len()
     ctrl.stop_never()
     Timer(3, ctrl.stop_at_bound, args=[0]).start()
     loop.play_loop(ctrl)  # playing recorded sound + drum
     queue.put([ConfigName.menu_client_stop])
-    assert ctrl.drum.get_bar_len() == loop.length
+    assert ctrl.get_drum().get_bar_len() == loop.length

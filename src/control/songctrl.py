@@ -1,10 +1,10 @@
 from abc import ABC
 from multiprocessing import Queue
 from threading import Event, Thread
-from time import sleep
 
 from control.loopctrl import LoopCtrl
-from drum.drumfactory import DrumFactory
+from drum.basedrum import BaseDrum
+from drum.drumfactory import create_drum
 from song.loopsimple import LoopSimple
 from song.song import Song
 from song.songpart import SongPart
@@ -32,8 +32,7 @@ class SongCtrl(LoopCtrl, ABC):
         if self._drum_type == ConfigName.LoopDrum:
             drum_info[ConfigName.drum_songpart] = self._song.get_at_idx(0)
 
-        drum = DrumFactory.create_drum(bar_len, self._drum_type, **drum_info)
-        self.set_drum(drum)
+        self._drum = create_drum(bar_len, self._drum_type, **drum_info)
 
     # ================ song part methods
 
@@ -81,7 +80,7 @@ class SongCtrl(LoopCtrl, ABC):
         selected: int = self._song.get_idx()
         part: SongPart = self._song.get_item()
         if part.is_empty:  # empty part, stop ASAP
-            self.stop_at_bound(self.drum.get_bar_len())
+            self.stop_at_bound(self._drum.get_bar_len())
             return
 
         if selected == self.__next_id:  # already plaing this part
@@ -144,12 +143,6 @@ class SongCtrl(LoopCtrl, ABC):
 
         # ================= song methods =============================
 
-    def _song_init(self) -> None:
-        self.drum.stop()
-        self._song_stop()
-        self.set_drum(None)
-        self._song.clear()
-
     def _song_delete(self) -> None:
         self._song_stop()
         self._song.delete_song()
@@ -171,12 +164,12 @@ class SongCtrl(LoopCtrl, ABC):
     def _song_iterate(self, steps: int) -> None:
         self._song.iterate_song(steps)
 
-    def _song_new(self, drum_type: str) -> None:
+    def _song_new(self, drum_type: str = "") -> None:
+        self._drum.stop()
         self._song_stop()
-        sleep(2)
-        self._drum_type = drum_type
+        self._drum_type = drum_type if drum_type else self._drum.get_class_name()
         self._song.clear()
-        self.set_drum(None)
+        self._drum = BaseDrum()
 
     def _song_stop(self, wait: int = 0) -> None:
         self._set_is_rec(False)

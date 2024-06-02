@@ -33,11 +33,11 @@ class Song(CollectionOwner[SongPart]):
         self._name = generate_name()
 
     def get_complete_name(self) -> str:
-        drum_type = self._ctrl.drum.get_class_name()[0]
+        drum_type = self._ctrl.get_drum().get_class_name()[0]
         return f"{self._name}.{drum_type}.sng"
 
     def save_song(self) -> None:
-        drum = self._ctrl.drum
+        drum = self._ctrl.get_drum()
         self._ff.idx_from_item(self.get_complete_name())
         fname = self._ff.get_full_name()
         parts_lst = list()

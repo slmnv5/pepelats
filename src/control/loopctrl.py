@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from multiprocessing import Queue
 from threading import Event
 
-from drum.basedrum import BaseDrum, FakeDrum
+from drum.basedrum import BaseDrum
 from mvc.menuclient import MenuClient
 from utils.utilconfig import HUGE_INT
 
@@ -17,8 +17,7 @@ class LoopCtrl(MenuClient, ABC):
         super().__init__(queue)
         self.idx: int = 0
         self._drum_type: str = drum_type
-        self.__drum: BaseDrum | None = None
-        self.__fakedrum: BaseDrum = FakeDrum()
+        self._drum: BaseDrum = BaseDrum()
         self._start_rec_idx: int = 0
         self.__is_rec: bool = False
         self.__stop_len: int = 0
@@ -26,13 +25,6 @@ class LoopCtrl(MenuClient, ABC):
         self.stop_never()
 
     # noinspection PyMethodMayBeStatic
-
-    def set_drum(self, drum: BaseDrum | None) -> None:
-        self.__drum = drum
-
-    @property
-    def drum(self):
-        return self.__drum if self.__drum else self.__fakedrum
 
     @abstractmethod
     def _drum_create(self, drum_info: dict[str, any]) -> None:
@@ -73,34 +65,37 @@ class LoopCtrl(MenuClient, ABC):
     # ===================== drum methods
 
     def _drum_iterate_config(self, steps: int) -> None:
-        self.drum.iterate_config(steps)
+        self._drum.iterate_config(steps)
 
     def _drum_get_config(self) -> str:
-        return self.drum.get_config(True)
+        return self._drum.get_config(True)
 
     def _drum_set_par(self, chg: float) -> None:
         chg = 0.2 if chg > 0 else -0.2
-        self.drum.set_par(self.drum.get_par() + chg)
+        self._drum.set_par(self._drum.get_par() + chg)
 
     def _drum_set_volume(self, chg: float) -> None:
-        volume = self.drum.get_volume()
+        volume = self._drum.get_volume()
         volume *= (1.2 if chg > 0 else 0.83)
-        self.drum.set_volume(volume)
+        self._drum.set_volume(volume)
 
     def _drum_show_param(self) -> str:
-        return self.drum.show_param()
+        return self._drum.show_param()
 
     def _drum_randomize(self) -> None:
-        self.drum.randomize()
+        self._drum.randomize()
 
     def _drum_play_fill(self) -> None:
-        self.drum.play_fill(self.idx)
+        self._drum.play_fill(self.idx)
 
     def _drum_stop(self) -> None:
-        self.drum.stop()
+        self._drum.stop()
 
     def _drum_set_config(self, config: str = None) -> None:
-        self.drum.set_config(config)
+        self._drum.set_config(config)
 
     def get_start_rec_idx(self) -> int:
         return self._start_rec_idx
+
+    def get_drum(self) -> BaseDrum:
+        return self._drum

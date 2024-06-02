@@ -6,33 +6,31 @@ from utils.utilconfig import ConfigName
 from utils.utillog import MYLOG
 
 
-class DrumFactory:
-    @staticmethod
-    def create_drum(bar_len: int, drum_type: str, **kwargs) -> BaseDrum:
-        drum: BaseDrum
-        if drum_type == ConfigName.EuclidPtrnDrum:
-            drum = EuclidPtrnDrum()
-        elif drum_type == ConfigName.OldPtrnDrum:
-            drum = OldPtrnDrum()
-        elif drum_type == ConfigName.MidiDrum:
-            drum = MidiDrum()
-        elif drum_type == ConfigName.LoopDrum:
-            drum = LoopDrum(kwargs.get(ConfigName.drum_songpart))
-        else:
-            raise RuntimeError(f"Unknown drum type: {drum_type}")
+def create_drum(bar_len: int, drum_type: str, **kwargs) -> BaseDrum:
+    drum: BaseDrum
+    if drum_type == ConfigName.EuclidPtrnDrum:
+        drum = EuclidPtrnDrum()
+    elif drum_type == ConfigName.OldPtrnDrum:
+        drum = OldPtrnDrum()
+    elif drum_type == ConfigName.MidiDrum:
+        drum = MidiDrum()
+    elif drum_type == ConfigName.LoopDrum:
+        drum = LoopDrum(kwargs.get(ConfigName.drum_songpart))
+    else:
+        raise RuntimeError(f"Unknown drum type: {drum_type}")
 
-        config: str = kwargs.get(ConfigName.drum_config)
-        drum.set_config(config)
+    config: str = kwargs.get(ConfigName.drum_config)
+    drum.set_config(config)
 
-        volume: float = kwargs.get(ConfigName.drum_volume)
-        if volume:
-            drum.set_volume(volume)
-        par: float = kwargs.get(ConfigName.drum_par)
-        if par:
-            drum.set_par(par)
+    volume: float = kwargs.get(ConfigName.drum_volume)
+    if volume:
+        drum.set_volume(volume)
+    par: float = kwargs.get(ConfigName.drum_par)
+    if par:
+        drum.set_par(par)
 
-        drum.set_bar_len(bar_len)
-        drum.randomize()
+    drum.set_bar_len(bar_len)
+    drum.randomize()
 
-        MYLOG.info(f"Created drum: {drum}")
-        return drum
+    MYLOG.info(f"Created drum: {drum}")
+    return drum

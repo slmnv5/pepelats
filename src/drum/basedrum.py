@@ -1,4 +1,4 @@
-from abc import abstractmethod, ABC
+from abc import abstractmethod
 
 import numpy as np
 
@@ -6,7 +6,7 @@ from utils.utilconfig import SD_RATE
 from utils.utillog import MYLOG
 
 
-class BaseDrum(ABC):
+class BaseDrum:
     # when plpaying drum fill it may not be too short and is extended
     SMALLEST_FILL_FRACTION: float = 0.1
 
@@ -81,21 +81,3 @@ class BaseDrum(ABC):
 
     def __str__(self) -> str:
         return f"{self.get_class_name()}:{self._bpm:.2F}"
-
-
-class FakeDrum(BaseDrum):
-
-    def play(self, out_data: np.ndarray, idx: int) -> None:
-        pass
-
-    def randomize(self) -> None:
-        pass
-
-    def play_fill(self, idx: int) -> None:
-        pass
-
-    def show_param(self) -> str:
-        return ""
-
-    def get_bpm(self) -> float:
-        return 0.0

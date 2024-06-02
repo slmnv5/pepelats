@@ -24,7 +24,7 @@ class SongPart(LoopSimple):
         loop: LoopSimple = self.loops.get_item()
         if not loop.is_empty:
             return
-        drum = ctrl.drum
+        drum = ctrl.get_drum()
         bar_len = drum.get_bar_len()
         part_len = self.length
         base_len = bar_len if self.is_empty else max(bar_len, part_len)
