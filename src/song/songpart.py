@@ -15,13 +15,6 @@ class SongPart(LoopSimple):
         self.__undos: list[LoopSimple] = list()
         self.my_id = id(self)
 
-    def clear(self) -> None:
-        if self.is_empty:
-            return
-        self.max_buffer()
-        self.loops = CollectionOwner[LoopSimple](self)
-        self.clear_undo()
-
     def correct_buffer(self) -> None:
         for loop in self.__undos:
             loop.correct_buffer()

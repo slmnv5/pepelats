@@ -57,10 +57,10 @@ class CollectionOwner(Generic[T]):
     def get_idx(self) -> int:
         return self.__idx
 
-    def idx_from_item(self, i: T) -> int:
-        if i not in self.__items:
-            self.__items.append(i)
-        self.__idx = self.__items.index(i)
+    def idx_from_item(self, item: T) -> int:
+        if item not in self.__items:
+            self.__items.append(item)
+        self.__idx = self.__items.index(item)
         return self.__idx
 
     def get_item(self) -> T:
@@ -69,9 +69,13 @@ class CollectionOwner(Generic[T]):
     def select_idx(self, i: int) -> None:
         self.__idx = i % len(self.__items)
 
-    def item_from_idx(self, i: int) -> T:
+    def get_at_idx(self, i: int) -> T:
         i = i % len(self.__items)
         return self.__items[i]
+
+    def set_at_idx(self, i: int, item: T) -> None:
+        i = i % len(self.__items)
+        self.__items[i] = item
 
     def item_count(self) -> int:
         return len(self.__items)

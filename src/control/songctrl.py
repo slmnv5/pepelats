@@ -30,7 +30,7 @@ class SongCtrl(LoopCtrl, ABC):
             drum_info = dict()
 
         if self._drum_type == ConfigName.LoopDrum:
-            drum_info[ConfigName.drum_songpart] = self._song.item_from_idx(0)
+            drum_info[ConfigName.drum_songpart] = self._song.get_at_idx(0)
 
         drum = DrumFactory.create_drum(bar_len, self._drum_type, **drum_info)
         self.set_drum(drum)
@@ -109,10 +109,10 @@ class SongCtrl(LoopCtrl, ABC):
         part: SongPart = self._song.get_item()
         if part.is_empty:
             return
-        loop: LoopSimple = part.loops.get_item()
-        assert part.loops.get_idx() == part.loops.item_count() - 1
-        assert not loop.is_empty
-        loop.max_buffer()
+        loops = part.loops
+        k = loops.get_idx()
+        assert k == loops.item_count() - 1
+        loops.set_at_idx(k, LoopSimple())
         self._start_rec_idx = self.idx
 
     def _delete_song_part(self) -> None:
@@ -131,11 +131,9 @@ class SongCtrl(LoopCtrl, ABC):
         selected: int = self._song.get_idx()
         if self.__next_id == selected:
             return  # can not clear active part
-        self._song.select_idx(self.__next_id)
-        self._song.get_item().clear()
+        self._song.set_at_idx(self.__next_id, SongPart())
         self.__next_id = selected
         self.stop_never()
-        self._song.select_idx(selected)
 
     def _redo_all(self) -> None:
         if self._song.get_idx() == self.__next_id:

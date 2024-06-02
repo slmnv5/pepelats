@@ -14,23 +14,19 @@ class Song(CollectionOwner[SongPart]):
     SONG_PARTS: int = 4
 
     def __init__(self, ctrl: LoopCtrl, load_song: bool):
-        CollectionOwner.__init__(self, SongPart())
+        CollectionOwner.__init__(self, [SongPart()] * 4)
         self._name: str = ""
         self._ctrl: LoopCtrl = ctrl
         self._ff = FileFinder(find_path(".save_song"), True, ".sng")
-        if load_song and self._ff.item_from_idx(-1):  # latest song
+        if load_song and self._ff.get_at_idx(-1):  # latest song
             self.select_idx(-1)
             self.load_song()
-        else:
-            self.clear()
 
     def clear(self) -> None:
-        self.apply_to_each(lambda x: SongPart.clear(x))
+        for k in range(self.item_count()):
+            if not self.get_at_idx(k).is_empty:
+                self.set_at_idx(k, SongPart())
         self.select_idx(0)
-        while self.item_count() > self.SONG_PARTS:
-            self.delete_selected()
-        while self.item_count() < self.SONG_PARTS:
-            self.idx_from_item(SongPart())
         self._name = generate_name()
 
     def get_complete_name(self) -> str:
