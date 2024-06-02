@@ -14,13 +14,16 @@ class Song(CollectionOwner[SongPart]):
     SONG_PARTS: int = 4
 
     def __init__(self, ctrl: LoopCtrl, load_song: bool):
-        CollectionOwner.__init__(self, [SongPart()] * 4)
+        tmp = [SongPart(1), SongPart(1), SongPart(1), SongPart(1)]
+        CollectionOwner.__init__(self, tmp)
         self._name: str = ""
         self._ctrl: LoopCtrl = ctrl
         self._ff = FileFinder(find_path(".save_song"), True, ".sng")
         if load_song and self._ff.get_at_idx(-1):  # latest song
             self.select_idx(-1)
             self.load_song()
+        else:
+            self.clear()
 
     def clear(self) -> None:
         for k in range(self.item_count()):

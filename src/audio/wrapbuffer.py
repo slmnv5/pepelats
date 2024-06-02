@@ -10,6 +10,8 @@ class WrapBuffer:
     """buffer that can wrap over the end when get/play and set/record samples """
 
     def __init__(self, sz: int = MAX_LEN):
+        if not (0 < sz <= MAX_LEN):
+            raise RuntimeError(f"Buffer size is not correct: {sz}")
         self.__len_ratio: float = 0
         self.__is_reverse: bool = False
         self.__is_silent: bool = False
