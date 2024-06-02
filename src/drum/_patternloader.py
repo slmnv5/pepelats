@@ -52,8 +52,9 @@ class PatternLoader:
         self._loud_slice: slice = slice(None, None)
         # dict of patterns from INI file. It has ptn dict, name, intensity. Sorted by intensity
         self.__ptn: list[tuple[dict[str, str], str, float]] = list()
-        # list of patterns as sounds, sorted by intensity
-        self.__snd_ptn: list[list[np.ndarray]] = list()
+        # list of patterns converted to sounds, sorted by intensity
+        self.__snd: list[list[np.ndarray]] = list()
+        self.__idx: int = 0
 
     def load_patterns(self, fname: str) -> None:
         assert os.path.isfile(fname), f"Not found file: {fname}"
@@ -87,20 +88,22 @@ class PatternLoader:
             self._quiet_slice = self._loud_slice = slice(0, ptn_len)
 
     def prepare_patterns(self, bar_len: int, volume: float, par: float) -> None:
-        self.__snd_ptn.clear()
+        self.__snd.clear()
         SMPLLOAD.set_volume(volume)
         assert self.__ptn, "Empty string patterns list!"
         # INI patterns are already sorted by intensity
         for ptn_dic, name, intens in self.__ptn:
-            self.__snd_ptn.append(self._dl.fn_convert(bar_len, par, ptn_dic))
+            self.__snd.append(self._dl.fn_convert(bar_len, par, ptn_dic))
             MYLOG.debug(f"Converted pattern name: {name}, intensity: {intens}")
 
-    def rand_quiet_ptn(self) -> tuple[list[np.ndarray], str, float]:
-        """ sounds quiet sound and its ptn name """
-        k = randrange(self._quiet_slice.start, self._quiet_slice.stop)
-        return self.__snd_ptn[k], self.__ptn[k][1], self.__ptn[k][2]
+    def random_quiet(self) -> tuple[list[np.ndarray], str, float, int]:
+        """ get random quiet sound, it's name, energy and index. Patterns sorted by energy   """
+        self.__idx = randrange(self._quiet_slice.start, self._quiet_slice.stop)
+        snd, ptn = self.__snd[self.__idx], self.__ptn[self.__idx]
+        return snd, ptn[1], ptn[2], self.__idx
 
-    def rand_loud_ptn(self) -> tuple[list[np.ndarray], str, float]:
-        """ random loud sound and its ptn name """
-        k = randrange(self._loud_slice.start, self._loud_slice.stop)
-        return self.__snd_ptn[k], self.__ptn[k][1], self.__ptn[k][2]
+    def random_loud(self) -> tuple[list[np.ndarray], str, float, int]:
+        """ get random loud sound, it's name, energy and index. Patterns sorted by energy  """
+        self.__idx = randrange(self._loud_slice.start, self._loud_slice.stop)
+        snd, ptn = self.__snd[self.__idx], self.__ptn[self.__idx]
+        return snd, ptn[1], ptn[2], self.__idx

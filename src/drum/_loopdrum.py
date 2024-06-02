@@ -20,9 +20,6 @@ class LoopDrum(BaseDrum):
         self._songpart: SongPart = song_part
         self._par = 0.2  # for this drum - probability to randomize at bar start
 
-    def show_param(self) -> str:
-        return super().show_param()
-
     def randomize(self) -> None:
         play_count: int = choices(self._COUNT_LST, weights=self._COUNT_WGHT, k=1)[0]
         loops = self._songpart.loops
@@ -43,6 +40,3 @@ class LoopDrum(BaseDrum):
         if idx % self._bar_len == 0 and random() < self._par:
             self.randomize()
         self._songpart.play(out_data, idx)
-
-    def __str__(self) -> str:
-        return f"LoopDrum.{self.get_config()}:{self._bpm:.2F}"

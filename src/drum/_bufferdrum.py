@@ -27,18 +27,19 @@ class BufferDrum(BaseDrum, ABC):
         self._ff = drum_loader.ff
         self._play_lst: list[np.ndarray] = list()  # list to play sounds, changed by randomize
         self._play_count: int = HUGE_INT  # how many arrays will play in the play list, changed by modify
-        self._name: str = ""
-        self._intens: float = 0
+        self._name: str = ""  # pattern name
+        self._energy: float = 0  # pattern energy
+        self._idx: float = 0  # pattern index
         self._par = 0.5  # for this drum it controls swing
-        self._stale: bool = True  # if stale it needs pattern reloading and regeneration
+        self._stale: bool = True  # if stale it needs pattern re-loading and re-generation
         self.set_config()
 
     def show_param(self) -> str:
         base_info = super().show_param()
-        return f"{base_info}\nintensity: {self._intens:.2F}\nname: {self._name}"
+        return f"{base_info}\nidx: {self._idx}, energy: {self._energy:.2F}\nname: {self._name}"
 
-    def get_config(self, get_all=False) -> str:
-        return self._ff.get_item() if not get_all else self._ff.get_str()
+    def get_config(self, include_all=False) -> str:
+        return self._ff.get_item() if not include_all else self._ff.get_str()
 
     def set_config(self, config=None) -> None:
         """ if config changes re-load and re-generate patterns """
@@ -65,20 +66,20 @@ class BufferDrum(BaseDrum, ABC):
         super().set_par(par)
         self._stale = True
 
+    def _modify(self) -> None:
+        self._play_count = choices(self._COUNT_LST, weights=self._COUNT_WGHT, k=1)[0]
+
     def randomize(self) -> None:
         if self._stale:
             self.stop()
             self._pl.prepare_patterns(self._bar_len, self._volume, self._par)
             self._stale = False
-        self._play_lst, self._name, self._intens = self._pl.rand_quiet_ptn()
+        self._play_lst, self._name, self._energy, self._idx = self._pl.random_quiet()
         self._modify()
         self.start()
 
-    def _modify(self) -> None:
-        self._play_count = choices(self._COUNT_LST, weights=self._COUNT_WGHT, k=1)[0]
-
     def play_fill(self, idx: int) -> None:
-        self._play_lst, self._name, self._intens = self._pl.rand_loud_ptn()
+        self._play_lst, self._name, self._energy, self._idx = self._pl.random_loud()
         self._play_count = HUGE_INT
         tmp: int = idx % self._bar_len
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
@@ -99,7 +100,13 @@ class EuclidPtrnDrum(BufferDrum):
     def __init__(self):
         BufferDrum.__init__(self, EuclidPtrnLoader())
 
+    def __str__(self) -> str:
+        return f"E:{self.get_config()}:{self._name}:{self._bpm:.2F}"
+
 
 class OldPtrnDrum(BufferDrum):
     def __init__(self):
         BufferDrum.__init__(self, OldPtrnLoader())
+
+    def __str__(self) -> str:
+        return f"O:{self.get_config()}:{self._name}:{self._bpm:.2F}"

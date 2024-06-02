@@ -34,21 +34,6 @@ class MidiDrum(BaseDrum):
         lst = int_to_bytes(round(self._bpm * 100), 6)
         self._mow.port.send_message([0xF0, 0x5A] + lst + [0xF7])
 
-    def play(self, out_data: np.ndarray, idx: int) -> None:
-        if self._is_stopped:
-            return
-        if idx % self._bar_len == 0:
-            if random() < self._par:
-                self.randomize()
-            self._mow.port.send_message([0xF0, 0x5B, 0xF7])
-
-    def randomize(self) -> None:
-        self._mow.port.send_message([0xF0, 0x5C, 0xF7])
-        self.start()
-
-    def play_fill(self, idx: int) -> None:
-        self._mow.port.send_message([0xF0, 0x5D, 0xF7])
-
     def stop(self) -> None:
         self._mow.port.send_message([0xFC])
         super().stop()
@@ -57,5 +42,19 @@ class MidiDrum(BaseDrum):
         base_info = super().show_param()
         port = f"{self._mow.name}"
         is_ok = f"{self._mow.port.is_port_open()}"
-        config = self.get_config()
-        return f"{base_info}\nport OK: {is_ok}/{port}\nconfig: {config}"
+        return f"{base_info}\nport OK: {is_ok}/{port}"
+
+    def randomize(self) -> None:
+        self._mow.port.send_message([0xF0, 0x5C, 0xF7])
+        self.start()
+
+    def play_fill(self, idx: int) -> None:
+        self._mow.port.send_message([0xF0, 0x5D, 0xF7])
+
+    def play(self, out_data: np.ndarray, idx: int) -> None:
+        if self._is_stopped:
+            return
+        if idx % self._bar_len == 0:
+            if random() < self._par:
+                self.randomize()
+            self._mow.port.send_message([0xF0, 0x5B, 0xF7])

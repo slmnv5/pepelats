@@ -48,10 +48,6 @@ class BaseDrum:
         self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / SD_RATE)
         MYLOG.info(f"Set bar len {self._bar_len} for drum: {self}")
 
-    @abstractmethod
-    def play(self, out_data: np.ndarray, idx: int) -> None:
-        pass
-
     def stop(self) -> None:
         self._is_stopped = True
 
@@ -59,19 +55,10 @@ class BaseDrum:
         if self._bar_len > 0:
             self._is_stopped = False
 
-    @abstractmethod
-    def randomize(self) -> None:
-        pass
-
-    @abstractmethod
-    def play_fill(self, idx: int) -> None:
-        pass
-
-    @abstractmethod
     def show_param(self) -> str:
         return f"vol:{self._volume:.2F} par:{self._par:.2F}"
 
-    def get_config(self, get_all: bool = False) -> str:
+    def get_config(self, include_all: bool = False) -> str:
         return ""
 
     def set_config(self, config: str = None) -> None:
@@ -82,3 +69,15 @@ class BaseDrum:
 
     def __str__(self) -> str:
         return f"{self.get_class_name()}:{self._bpm:.2F}"
+
+    @abstractmethod
+    def randomize(self) -> None:
+        pass
+
+    @abstractmethod
+    def play_fill(self, idx: int) -> None:
+        pass
+
+    @abstractmethod
+    def play(self, out_data: np.ndarray, idx: int) -> None:
+        pass
