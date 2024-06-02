@@ -23,12 +23,10 @@ class LoopSimple(WrapBuffer):
             ctrl.menu_client_queue([ConfigName.drum_create, ctrl.idx, None, None])
 
     def play_loop(self, ctrl: LoopCtrl):
-        drum = ctrl.get_drum()
-
         # noinspection PyUnusedLocal
         def callback(in_data, out_data, frame_count, time_info, status):
             out_data[:] = 0
-            drum.play(out_data, ctrl.idx)
+            ctrl.get_drum().play(out_data, ctrl.idx)
             self.play(out_data, ctrl.idx)
 
             if ctrl.get_is_rec():

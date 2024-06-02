@@ -56,7 +56,8 @@ class BaseDrum:
         self._is_stopped = True
 
     def start(self) -> None:
-        self._is_stopped = False
+        if self._bar_len > 0:
+            self._is_stopped = False
 
     @abstractmethod
     def randomize(self) -> None:

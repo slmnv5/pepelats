@@ -35,7 +35,7 @@ class MidiDrum(BaseDrum):
         self._mow.port.send_message([0xF0, 0x5A] + lst + [0xF7])
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
-        if not self._bar_len or self._is_stopped:
+        if self._is_stopped:
             return
         if idx % self._bar_len == 0:
             if random() < self._par:
