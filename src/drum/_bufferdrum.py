@@ -101,7 +101,7 @@ class EuclidPtrnDrum(BufferDrum):
         BufferDrum.__init__(self, EuclidPtrnLoader())
 
     def __str__(self) -> str:
-        return f"E:{self.get_config()}:{self._name}:{self._bpm:.2F}"
+        return f"E:{self._name}:{self._bpm:.2F}"
 
 
 class OldPtrnDrum(BufferDrum):
@@ -109,4 +109,4 @@ class OldPtrnDrum(BufferDrum):
         BufferDrum.__init__(self, OldPtrnLoader())
 
     def __str__(self) -> str:
-        return f"O:{self.get_config()}:{self._name}:{self._bpm:.2F}"
+        return f"O:{self._name}:{self._bpm:.2F}"

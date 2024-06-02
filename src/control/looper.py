@@ -25,7 +25,7 @@ class Looper(SongCtrl):
         else:
             self._saved_draw_info = draw_info
 
-        draw_info.header = f"{self._drum.get_class_name()}:{self._drum.get_bpm():.2F}"
+        draw_info.header = f"{self._drum}"
         if draw_info.update_method:
             # noinspection PyBroadException
             try:
