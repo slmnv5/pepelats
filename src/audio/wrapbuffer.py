@@ -42,10 +42,6 @@ class WrapBuffer:
     def correct_buffer(self) -> None:
         self.__buff = correct_sound(self.__buff, AINFO.SD_CH, AINFO.SD_TYPE)
 
-    def max_buffer11111111111111111111111(self) -> None:
-        self.__buff = np.zeros((MAX_LEN, AINFO.SD_CH), AINFO.SD_TYPE)
-        self.__info_str, self.__props_str, self.__len_ratio = "", "", 0
-
     def flip_reverse(self) -> None:
         self.__is_reverse = not self.__is_reverse
         self.__props_str = ""
