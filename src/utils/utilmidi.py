@@ -8,11 +8,10 @@ from utils.utilconfig import load_ini_section, ConfigName
 from utils.utillog import MYLOG
 
 _keyboard = load_ini_section("KEYBOARD")
-_option_name = ConfigName.kbd_notes_windows if os.name != 'posix' else ConfigName.kbd_notes_linux
-tmp = _keyboard.get(_option_name, '')
+tmp = _keyboard.get(ConfigName.kbd_notes_linux, '')
 tmp = [x.strip() for x in tmp.split(',')]
 if len(tmp) != 6:
-    raise RuntimeError(f"kbd_notes_windows and kbd_notes_linux in main.ini must have 6 values, found: {tmp}")
+    raise RuntimeError(f"Option kbd_notes_linux in main.ini must have 6 values, found: {tmp}")
 KBD_NOTES: list[str] = tmp
 
 # ==================================

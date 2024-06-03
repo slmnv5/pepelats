@@ -25,7 +25,6 @@ class ConfigName:
     device_name: str = "device_name"
     device_type: str = "device_type"
     kbd_notes_linux: str = "kbd_notes_linux"
-    kbd_notes_windows: str = "kbd_notes_windows"
     kbd_notes_midi: str = "kbd_notes_midi"
     # drum config
     drum_config: str = 'drum_config'
@@ -34,10 +33,9 @@ class ConfigName:
     drum_song_part: str = "drum_song_part"
     # drum types
     EuclidPtrnDrum: str = "EuclidPtrnDrum"
-    OldPtrnDrum: str = "OldPtrnDrum"
+    OldPtrnDrum: str = "PatternDrum"
     MidiDrum: str = "MidiDrum"
     LoopDrum: str = "LoopDrum"
-    SilentDrum: str = "SilentDrum"
 
 
 def find_path(path_end: str) -> str:
