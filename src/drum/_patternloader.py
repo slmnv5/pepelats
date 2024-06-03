@@ -6,7 +6,7 @@ from random import randrange
 
 import numpy as np
 
-from audio.sampleloader import SAMPLE_LOAD
+from audio.sampleloader import SampleLoader
 from utils.utilconfig import find_path
 from utils.utillog import MYLOG
 from utils.utilother import FileFinder
@@ -15,13 +15,14 @@ from utils.utilother import FileFinder
 # noinspection PyUnusedLocal
 class DrumLoader:
     """ Load drum pattern from INI patterns and create playable lists numpy arrays """
+    sl: SampleLoader = SampleLoader()
 
     def __init__(self, ptrn_dir: str):
         tmp: str = find_path(ptrn_dir)
         self.ff = FileFinder(tmp, True, ".ini")
         if not self.ff.get_item():
             raise RuntimeError(f"No INI files found in pattern directory: {ptrn_dir}")
-
+        
     @abstractmethod
     def fn_load(self, ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
         """One Drum pattern put into dictionary"""
@@ -89,7 +90,7 @@ class PatternLoader:
 
     def prepare_patterns(self, bar_len: int, volume: float, par: float) -> None:
         self.__snd.clear()
-        SAMPLE_LOAD.set_volume(volume)
+        self._dl.sl.set_volume(volume)
         assert self.__ptn, "Empty string patterns list!"
         # INI patterns are already sorted by intensity
         for ptn_dic, name, energy in self.__ptn:

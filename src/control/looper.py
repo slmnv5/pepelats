@@ -1,4 +1,4 @@
-from __future__ import annotations
+
 
 import os
 import time
@@ -8,7 +8,7 @@ from control.songctrl import SongCtrl
 from utils.utilconfig import ConfigName, load_ini_section, find_path, update_ini_section, SD_RATE
 from utils.utillog import MYLOG
 from utils.utilother import DrawInfo, FileFinder
-from utils.utilportout import MidiOutWrap
+from utils.utilmidi import show_out_ports
 
 
 class Looper(SongCtrl):
@@ -70,9 +70,8 @@ class Looper(SongCtrl):
 
     @staticmethod
     def _show_midi_out_ports() -> None:
-        mow = MidiOutWrap()
         os.system("clear")
-        print("\n", mow.show())
+        print("\n", show_out_ports())
         time.sleep(10)
 
     #  ============ all parts methods ===============

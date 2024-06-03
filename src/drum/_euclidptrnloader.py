@@ -1,9 +1,9 @@
-from __future__ import annotations
+
 
 import numpy as np
 
 from audio.audioinfo import make_buffer
-from audio.sampleloader import SAMPLE_LOAD
+
 from drum._patternloader import DrumLoader
 from utils.utillog import MYLOG
 from utils.utilnumpy import from_data_to_buff
@@ -38,7 +38,7 @@ class EuclidPtrnLoader(DrumLoader):
                 if k % 2 != 0:
                     chg = round(step_len * par * 0.25)
                     idx += chg
-                sound_arr = SAMPLE_LOAD.get_sound(sname, s == "*")
+                sound_arr = self.sl.get_sound(sname, s == "*")
                 from_data_to_buff(buff, sound_arr, idx)
 
         return result
@@ -51,5 +51,5 @@ class EuclidPtrnLoader(DrumLoader):
                 if s not in "+*":
                     continue
                 is_accent = s == '*'
-                result += SAMPLE_LOAD.get_energy(sname, is_accent) / len(notes)
+                result += self.sl.get_energy(sname, is_accent) / len(notes)
         return result

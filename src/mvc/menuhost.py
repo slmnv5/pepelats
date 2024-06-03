@@ -1,7 +1,7 @@
 import os
 from configparser import ConfigParser
 from multiprocessing import Queue
-from threading import Event
+from time import sleep
 
 from utils.utilconfig import ConfigName, find_path, load_ini_section
 from utils.utillog import MYLOG
@@ -23,9 +23,16 @@ class MenuHost:
         self._update_menu(ConfigName.play_section)
         self.__queue.put([ConfigName.menu_client_redraw, self._draw_info])
 
+    def is_alive(self) -> bool:
+        return True
+
     def start_menu_host(self) -> None:
-        MYLOG.info(f"{self.__class__.__name__} working as MenuHost")
-        Event().wait()
+        MYLOG.info(f"{self.__class__.__name__} start working as MenuHost")
+        while True:
+            sleep(5)
+            if not self.is_alive():
+                break
+        MYLOG.info(f"{self.__class__.__name__} stop working as MenuHost")
 
     def _update_menu(self, fname: str):
         self._menu_loader.update_menu(fname)
@@ -37,7 +44,7 @@ class MenuHost:
         self._draw_info.description = self._menu_loader.get(ConfigName.description)
         self._draw_info.update_method = self._menu_loader.get(ConfigName.update_method)
 
-    def _menuhost_send(self, note: int, velo: int) -> None:
+    def _send(self, note: int, velo: int) -> None:
         if note not in MIDI_DICT:
             MYLOG.error(f"MIDI note: {note} is not expected. Check main.ini file")
 

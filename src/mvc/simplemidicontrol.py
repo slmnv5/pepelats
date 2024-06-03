@@ -3,15 +3,20 @@ from multiprocessing import Queue
 import rtmidi.midiconstants
 
 from mvc.menuhost import MenuHost
+from utils.utilmidi import KbdMidiIn
 from utils.utilmidi import MIDI_MIN_VELO, MIDI_STD_VELO
 
 
 class SimpleMidiControl(MenuHost):
 
-    def __init__(self, midi_in, queue: Queue):
+    def __init__(self, midi_in: rtmidi.MidiIn | KbdMidiIn, queue: Queue):
         MenuHost.__init__(self, queue)
+        self._p_count: int = midi_in.get_port_count()
         self._midi_in = midi_in
         self._midi_in.set_callback(self._process_msg)
+
+    def is_alive(self) -> bool:
+        return self._midi_in.get_port_count() >= self._p_count
 
     # noinspection PyUnusedLocal
     def _process_msg(self, event, data=None) -> None:
@@ -29,4 +34,4 @@ class SimpleMidiControl(MenuHost):
         if velo < MIDI_MIN_VELO:
             return
         velo = MIDI_STD_VELO
-        self._menuhost_send(note, velo)
+        self._send(note, velo)

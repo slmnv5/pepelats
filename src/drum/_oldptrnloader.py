@@ -1,11 +1,11 @@
-from __future__ import annotations
+
 
 from math import ceil
 
 import numpy as np
 
 from audio.audioinfo import make_buffer
-from audio.sampleloader import SAMPLE_LOAD
+
 from drum._patternloader import DrumLoader
 from utils.utillog import MYLOG
 from utils.utilnumpy import from_data_to_buff
@@ -43,7 +43,7 @@ class OldPtrnLoader(DrumLoader):
             for k, s in enumerate(notes):
                 if s not in "!":
                     continue
-                sound_arr = SAMPLE_LOAD.get_sound(sname, accents[k] == "!")
+                sound_arr = self.sl.get_sound(sname, accents[k] == "!")
                 idx = round(k * step_len)
                 if k % 2 != 0:
                     chg = round(step_len * par * 0.25)
@@ -60,5 +60,5 @@ class OldPtrnLoader(DrumLoader):
                 if s not in "!":
                     continue
                 is_accent = accents[k] == '!'
-                result += SAMPLE_LOAD.get_energy(sname, is_accent) / len(notes)
+                result += self.sl.get_energy(sname, is_accent) / len(notes)
         return result

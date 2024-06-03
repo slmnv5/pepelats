@@ -5,11 +5,12 @@ import rtmidi.midiconstants
 
 from mvc.menuhost import MenuHost
 from utils.utillog import MYLOG
+from utils.utilmidi import KbdMidiIn
 from utils.utilmidi import MIDI_MIN_VELO, MIDI_STD_VELO
 
 _CTRL = rtmidi.midiconstants.CONTROL_CHANGE
-_NON = rtmidi.midiconstants.NOTE_ON
-_NOFF = rtmidi.midiconstants.NOTE_OFF
+_ON = rtmidi.midiconstants.NOTE_ON
+_OFF = rtmidi.midiconstants.NOTE_OFF
 
 
 class MidiCcToNote:
@@ -50,14 +51,18 @@ class CountMidiControl(MenuHost):
 
     _COUNT_SEC: float = 0.600
 
-    def __init__(self, midi_in: rtmidi.MidiIn, queue: Queue):
+    def __init__(self, midi_in: rtmidi.MidiIn | KbdMidiIn, queue: Queue):
         MenuHost.__init__(self, queue)
+        self._p_count: int = midi_in.get_port_count()
         self._midi_in = midi_in
         self.__on_count: int = 0
         self.__off_count: int = 0
         self.__past_note: int = -1  # original MIDI note
         self.__midi_cc_to_note = MidiCcToNote()
         self._midi_in.set_callback(self._process_msg)
+
+    def is_alive(self) -> bool:
+        return self._midi_in.get_port_count() >= self._p_count
 
     # noinspection PyUnusedLocal
     def _process_msg(self, event, data=None) -> None:
@@ -68,7 +73,7 @@ class CountMidiControl(MenuHost):
         if not msg:
             return
 
-        note_on: bool = msg[0] & 0xF0 == _NON
+        note_on: bool = msg[0] & 0xF0 == _ON
         note: int = msg[1]
         velo: int = msg[2]
         if note_on and velo < MIDI_MIN_VELO:
@@ -80,7 +85,7 @@ class CountMidiControl(MenuHost):
             self.__on_count, self.__off_count, self.__past_note = 0, 0, note  # init counters for new note
             if note_on:
                 MYLOG.debug(f"Sending non-counted MIDI note: {note}")  # new note ON, send it
-                self._menuhost_send(note, velo)
+                self._send(note, velo)
 
         if not note_on and self.__on_count == 0:
             return  # old OFF came before new ON, we ignore
@@ -106,4 +111,4 @@ class CountMidiControl(MenuHost):
 
         self.__on_count, self.__off_count, self.__past_note = 0, 0, -1
         MYLOG.debug(f"Sending counted MIDI note: {note}, {count}")
-        self._menuhost_send(note, count)
+        self._send(note, count)

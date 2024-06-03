@@ -1,13 +1,13 @@
 import sounddevice as sd
 
-from audio.audioinfo import AINFO
-# noinspection PyProtectedMember
-from audio.sampleloader import SAMPLE_LOAD
+from audio.audioinfo import AUDIO_INFO
+from audio.sampleloader import SampleLoader
 
 
 def test_1():
-    print(SAMPLE_LOAD.get_energy('bd', True))
-    sound = SAMPLE_LOAD.get_sound('bd', True)
-    assert sound.shape[1] == AINFO.SD_CH
-    assert sound.dtype == AINFO.SD_TYPE
+    sl = SampleLoader()
+    print(sl.get_energy('bd', True))
+    sound = sl.get_sound('bd', True)
+    assert sound.shape[1] == AUDIO_INFO.SD_CH
+    assert sound.dtype == AUDIO_INFO.SD_TYPE
     sd.play(sound, blocking=True)

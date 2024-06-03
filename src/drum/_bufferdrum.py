@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import os.path
 from abc import ABC
 from random import choices, random

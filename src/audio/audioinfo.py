@@ -8,7 +8,7 @@ from utils.utillog import MYLOG
 
 
 def make_buffer(sz: int) -> np.ndarray:
-    return np.zeros((sz, AINFO.SD_CH), AINFO.SD_TYPE)
+    return np.zeros((sz, AUDIO_INFO.SD_CH), AUDIO_INFO.SD_TYPE)
 
 
 def correct_sound(x: np.ndarray, channels: int, datatype: str) -> np.ndarray:
@@ -18,13 +18,13 @@ def correct_sound(x: np.ndarray, channels: int, datatype: str) -> np.ndarray:
     if x.ndim == 1:
         MYLOG.error(f"Re-shaping one dimensional array, shape: {x.shape}")
         x = x.reshape(-1, 1)
-    if x.dtype != AINFO.SD_TYPE:
-        MYLOG.warning(f"Correcting array type: {x.dtype} to {AINFO.SD_TYPE}")
+    if x.dtype != AUDIO_INFO.SD_TYPE:
+        MYLOG.warning(f"Correcting array type: {x.dtype} to {AUDIO_INFO.SD_TYPE}")
         factor = get_conversion_factor(x.dtype, datatype)
         x = (x * factor).astype(datatype)
 
-    if x.shape[1] != AINFO.SD_CH:
-        MYLOG.warning(f"Correcting audio channels: {x.shape[1]} to {AINFO.SD_CH}")
+    if x.shape[1] != AUDIO_INFO.SD_CH:
+        MYLOG.warning(f"Correcting audio channels: {x.shape[1]} to {AUDIO_INFO.SD_CH}")
         if x.shape[1] < channels:
             x = np.column_stack((x, x))
         elif x.shape[1] > channels:
@@ -63,8 +63,8 @@ class AudioInfo:
             return
         self.__initialized = True
 
-        dic: dict[str, str] = load_ini_section("AINFO")
-        self.SD_NAME: str = dic.get(ConfigName.device_name, "USB Audio").strip()
+        dic: dict[str, str] = load_ini_section("AUDIO")
+        self.SD_NAME: str = dic.get(ConfigName.device_name, "").strip()
         # noinspection PyBroadException
         try:
             self.DEV_IN: dict[str, any] = sd.query_devices(self.SD_NAME, kind='input')
@@ -117,4 +117,4 @@ class AudioInfo:
         return round(20 * log10(ratio))
 
 
-AINFO = AudioInfo()
+AUDIO_INFO = AudioInfo()
