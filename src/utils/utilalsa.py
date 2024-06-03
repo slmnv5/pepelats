@@ -56,7 +56,7 @@ def read_wav_slow(fname: str) -> np.ndarray[Any, dtype[floating[Any]]]:
         nchannels, sampwidth, framerate, nframes, _, _ = f.getparams()
         buffer = f.readframes(-1)
 
-    signed = sampwidth > 1  # 8 bit wavs are unsigned
+    signed = sampwidth > 1  # 8 bit WAVs are unsigned
     byteorder = sys.byteorder  # wave module uses sys.byteorder for bytes
     sz = sampwidth * nchannels
     frames = (buffer[i * sz: (i + 1) * sz] for i in range(nframes))

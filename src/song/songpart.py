@@ -12,11 +12,10 @@ class SongPart(LoopSimple):
     def __init__(self, sz: int = MAX_LEN):
         LoopSimple.__init__(self, sz)
         self.loops: CollectionOwner[LoopSimple] = CollectionOwner[LoopSimple](self)
-        self.__undos: list[LoopSimple] = list()
-        self.my_id = id(self)
+        self.__undo: list[LoopSimple] = list()
 
     def correct_buffer(self) -> None:
-        for loop in self.__undos:
+        for loop in self.__undo:
             loop.correct_buffer()
         self.loops.apply_to_each(lambda x: LoopSimple.correct_buffer(x))
 
@@ -41,9 +40,9 @@ class SongPart(LoopSimple):
         LoopSimple.record(loop, in_data, idx)
 
     def redo(self) -> bool:
-        if not self.__undos:
+        if not self.__undo:
             return False
-        item = self.__undos.pop()
+        item = self.__undo.pop()
         self.loops.idx_from_item(item)
         return True
 
@@ -52,13 +51,13 @@ class SongPart(LoopSimple):
         item = self.loops.delete_selected()
         if not item:
             return False
-        self.__undos.append(item)
+        self.__undo.append(item)
         return True
 
     def clear_undo(self) -> None:
-        self.__undos.clear()
+        self.__undo.clear()
 
     def __str__(self):
         if self.is_empty:
             return "---------------"
-        return f"{LoopSimple.__str__(self)}  {self.loops.item_count():02}/{len(self.__undos):02}"
+        return f"{LoopSimple.__str__(self)}  {self.loops.item_count():02}/{len(self.__undo):02}"
