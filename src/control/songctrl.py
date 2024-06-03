@@ -83,7 +83,7 @@ class SongCtrl(LoopCtrl, ABC):
             self.stop_at_bound(self._drum.get_bar_len())
             return
 
-        if selected == self.__next_id:  # already plaing this part
+        if selected == self.__next_id:  # already playing this part
             if changed_pid:  # just changed our mind, returned back to selected
                 self.stop_never()
                 return
