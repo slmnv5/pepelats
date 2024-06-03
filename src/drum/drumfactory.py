@@ -1,4 +1,4 @@
-from drum._bufferdrum import EuclidPtrnDrum, OldPtrnDrum
+from drum._bufferdrum import EuclidDrum, PatternDrum
 from drum._loopdrum import LoopDrum
 from drum._mididrum import MidiDrum
 from drum.basedrum import BaseDrum
@@ -9,9 +9,9 @@ from utils.utillog import MYLOG
 def create_drum(bar_len: int, drum_type: str, **kwargs) -> BaseDrum:
     drum: BaseDrum
     if drum_type == ConfigName.EuclidPtrnDrum:
-        drum = EuclidPtrnDrum()
+        drum = EuclidDrum()
     elif drum_type == ConfigName.OldPtrnDrum:
-        drum = OldPtrnDrum()
+        drum = PatternDrum()
     elif drum_type == ConfigName.MidiDrum:
         drum = MidiDrum()
     elif drum_type == ConfigName.LoopDrum:

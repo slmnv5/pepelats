@@ -96,7 +96,7 @@ class BufferDrum(BaseDrum, ABC):
             from_buff_to_data(buff, out_data, idx)
 
 
-class EuclidPtrnDrum(BufferDrum):
+class EuclidDrum(BufferDrum):
     def __init__(self):
         BufferDrum.__init__(self, EuclidPtrnLoader())
 
@@ -104,7 +104,7 @@ class EuclidPtrnDrum(BufferDrum):
         return f"E:{self._name}:{self._bpm:.2F}"
 
 
-class OldPtrnDrum(BufferDrum):
+class PatternDrum(BufferDrum):
     def __init__(self):
         BufferDrum.__init__(self, OldPtrnLoader())
 
