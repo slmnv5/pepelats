@@ -16,7 +16,8 @@ class MenuHost:
         dic = load_ini_section("MENU")
         dname = dic.get(ConfigName.menu_dir, "")
         dname = find_path(f"config/menu/{dname}")
-        assert os.path.isdir(dname)
+        if not os.path.isdir(dname):
+            raise RuntimeError(f"Directory not found: {dname}. Check main.ini and local.ini files")
         self._menu_loader = _MenuLoader(dname)
         self._draw_info = DrawInfo()
         self.__queue = queue
