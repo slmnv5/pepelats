@@ -14,5 +14,5 @@ Some of the options used in this INI file are:
   keyboard is attached it is used instead. Also on Windows keyboard is always used with fixed keys: 1, 2, 3, 4, q, w
 * midi_out = -- name of MIDI out for MIDI drum output, optional
 * midi_min_velo = 10 -- min note velocity to consider, small velocities used by counted notes (e.g. 1, 2,…8,…)
-* menu_dir = 6x4xN -- menu layout directory located in [6x4xN](./../config/menu/6x4xN) (6 buttons x 4 parts x N loops in
-  part). There are other configurations switchable inside service menu -- 4x2xN and 4xNxN (N means any number)
+* menu_dir = 6x4 -- menu layout directory located in [6x4](./../config/menu/6x4) (6 buttons x 4 parts). There are other
+  configurations switchable in service menu -- 4x2 and 4xN (N means any number)

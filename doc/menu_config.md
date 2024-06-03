@@ -1,7 +1,7 @@
 ## Menu configuration
 
 As mentioned MIDI controller is coupled with **menu configuration files**
-e.g. [play.ini](./../config/menu/6x4xN/play.ini) which translate notes to looper commands.
+e.g. [play.ini](./../config/menu/6x4/play.ini) which translate notes to looper commands.
 There are few views each with its own menu in each configuration directory:
 
     * navigate.ini -- control navigation between 4 views of the looper shown below:
