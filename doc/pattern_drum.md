@@ -1,6 +1,6 @@
 ## Pattern drum
 
-Pattern drum is using text patterns and sample WAV files to produce drum accompaniment.
+**Pattern drum** is using text patterns and sample WAV files to produce drum accompaniment.
 These sound samples are written into sound buffer along with recorded loops.
 
 There are about 200 patterns in a dozen of styles in directory: [config/drum/pattern](./../config/drum/pattern)

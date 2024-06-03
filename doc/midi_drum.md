@@ -20,7 +20,7 @@ external slave device. Here **BPM_LIST** is 6 bytes long. Examples:
 *5) [0xF0, 0x5C, 0xF7] - sysEx for program change, it may be ignored.
 *6) [0xF0, 0x5D, 0xF7] - sysEx for drum fill or break, it may be ignored.
 
-### MIDI port
+### MIDI out port
 
 **Main.ini** configuration has section "MIDI" and option "midi_out". This is MIDI port name (or part of the full name)
 that is used to send messages. If port is not available (device is not connected) so called "FakeMidiOut" port is used

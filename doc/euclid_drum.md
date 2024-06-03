@@ -16,4 +16,5 @@ bd : 16, 4, 0, 0
 sd : 13, 8, 0, 0
 ~~~
 
-This drum type is similar to IOS application Ruismaker which has great user manual explaining it all.
+This drum type also uses WAV sound samples as described [here](./pattern_drum.md)
+It is implemented in IOS application 'Ruismaker' which has user manual explaining it all.
