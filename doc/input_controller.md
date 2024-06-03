@@ -24,7 +24,7 @@ indispensable.
 
 Foot controller is coupled with **menu configuration files** e.g. [play.ini](./../config/menu/6x4xN/play.ini) which
 translate notes to looper commands.
-There are few views each with its own menu [menu_config.md](menu_config.md)
+There are few views each with its own menu: [menu_config.md](menu_config.md)
 
 There are few configurations some using 4 buttons and some 6 buttons. Two rightmost buttons are
 made by plugging in two ON/OFF momentarily switches into expression pedal input of **iRig BlueBoard MIDI foot controller
