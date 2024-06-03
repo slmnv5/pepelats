@@ -15,7 +15,7 @@ def create_drum(bar_len: int, drum_type: str, **kwargs) -> BaseDrum:
     elif drum_type == ConfigName.MidiDrum:
         drum = MidiDrum()
     elif drum_type == ConfigName.LoopDrum:
-        drum = LoopDrum(kwargs.get(ConfigName.drum_songpart))
+        drum = LoopDrum(kwargs.get(ConfigName.drum_song_part))
     else:
         raise RuntimeError(f"Unknown drum type: {drum_type}")
 

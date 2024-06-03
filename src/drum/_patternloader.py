@@ -42,12 +42,12 @@ class PatternLoader:
     """Load patterns from INI file. Logic to load, convert and calculate intensity is passed as 3 methods.
     Loaded patterns are converted to playable patterns - ready to play sound """
 
-    # patterns sorted by energy. Low enrgy patterns used for rythm, high enegry for drum fills/breaks
+    # patterns sorted by energy. Low energy patterns used for rhythm, high energy for drum fills/breaks
     _QUIET_PTRN_FRACTION: float = 0.7
 
     def __init__(self, drum_loader: DrumLoader):
         self._dl = drum_loader
-        # split quiet and loud patterns based on intencity
+        # split quiet and loud patterns based on intensity
         self._quiet_slice: slice = slice(None, None)
         self._loud_slice: slice = slice(None, None)
         # dict of patterns from INI file. It has ptn dict, name, intensity. Sorted by intensity
@@ -92,9 +92,9 @@ class PatternLoader:
         SMPLLOAD.set_volume(volume)
         assert self.__ptn, "Empty string patterns list!"
         # INI patterns are already sorted by intensity
-        for ptn_dic, name, intens in self.__ptn:
+        for ptn_dic, name, energy in self.__ptn:
             self.__snd.append(self._dl.fn_convert(bar_len, par, ptn_dic))
-            MYLOG.debug(f"Converted pattern name: {name}, intensity: {intens}")
+            MYLOG.debug(f"Converted pattern name: {name}, intensity: {energy}")
 
     def random_quiet(self) -> tuple[list[np.ndarray], str, float, int]:
         """ get random quiet sound, it's name, energy and index. Patterns sorted by energy   """

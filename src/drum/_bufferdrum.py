@@ -50,7 +50,7 @@ class BufferDrum(BaseDrum, ABC):
         self._stale = True
 
     def set_bar_len(self, bar_len: int) -> None:
-        """ setting bar_len needs patern generation """
+        """ setting bar_len needs pattern generation """
         assert bar_len > 0 and self._bar_len == 0, "Method set_bar_len must be called only once"
         super().set_bar_len(bar_len)
         self._stale = True

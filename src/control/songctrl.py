@@ -30,7 +30,7 @@ class SongCtrl(LoopCtrl, ABC):
             drum_info = dict()
 
         if self._drum_type == ConfigName.LoopDrum:
-            drum_info[ConfigName.drum_songpart] = self._song.get_at_idx(0)
+            drum_info[ConfigName.drum_song_part] = self._song.get_at_idx(0)
 
         self._drum = create_drum(bar_len, self._drum_type, **drum_info)
 

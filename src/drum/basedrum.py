@@ -7,7 +7,7 @@ from utils.utillog import MYLOG
 
 
 class BaseDrum:
-    # when plpaying drum fill it may not be too short and is extended
+    # when playing drum fill it may not be too short and is extended
     SMALLEST_FILL_FRACTION: float = 0.1
 
     def __init__(self):

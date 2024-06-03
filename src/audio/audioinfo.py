@@ -16,7 +16,7 @@ def correct_sound(x: np.ndarray, channels: int, datatype: str) -> np.ndarray:
     assert x.ndim in [1, 2]
     assert channels in [1, 2]
     if x.ndim == 1:
-        MYLOG.error(f"Re-shaping one dimentional array, shape: {x.shape}")
+        MYLOG.error(f"Re-shaping one dimensional array, shape: {x.shape}")
         x = x.reshape(-1, 1)
     if x.dtype != AINFO.SD_TYPE:
         MYLOG.warning(f"Correcting array type: {x.dtype} to {AINFO.SD_TYPE}")
