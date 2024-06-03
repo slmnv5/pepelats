@@ -10,7 +10,7 @@ from utils.utilconfig import ConfigName
 
 def test_1():
     queue = Queue()
-    ctrl = SongCtrl(queue, "OldPtrnDrum")
+    ctrl = SongCtrl(queue, "PatternDrum")
     t = Thread(target=ctrl.menu_client_start, name="process queue", args=[])
     t.start()  # start processing message queue
 

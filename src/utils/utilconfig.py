@@ -33,7 +33,7 @@ class ConfigName:
     drum_song_part: str = "drum_song_part"
     # drum types
     EuclidPtrnDrum: str = "EuclidPtrnDrum"
-    OldPtrnDrum: str = "PatternDrum"
+    PatternDrum: str = "PatternDrum"
     MidiDrum: str = "MidiDrum"
     LoopDrum: str = "LoopDrum"
 

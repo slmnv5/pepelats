@@ -10,7 +10,7 @@ def create_drum(bar_len: int, drum_type: str, **kwargs) -> BaseDrum:
     drum: BaseDrum
     if drum_type == ConfigName.EuclidPtrnDrum:
         drum = EuclidDrum()
-    elif drum_type == ConfigName.OldPtrnDrum:
+    elif drum_type == ConfigName.PatternDrum:
         drum = PatternDrum()
     elif drum_type == ConfigName.MidiDrum:
         drum = MidiDrum()
