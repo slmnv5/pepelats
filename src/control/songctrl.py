@@ -110,9 +110,9 @@ class SongCtrl(LoopCtrl, ABC):
             return
         loops = part.loops
         k = loops.get_idx()
-        assert k == loops.item_count() - 1
-        loops.set_at_idx(k, LoopSimple())
-        self._start_rec_idx = self.idx
+        if self.get_is_rec() and k > 0:
+            loops.set_at_idx(k, LoopSimple())
+            self._start_rec_idx = self.idx
 
     def _delete_song_part(self) -> None:
         selected = self._song.get_idx()
