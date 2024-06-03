@@ -2,8 +2,8 @@
 
 ## Features
 
-- Four song parts (intro/verse/chorus/bridge). Each part made of parallel loops
-- Parallel loops of variable length: ... 0.25, 0.5, 1, 2, 3 ... of initial loop
+- Multiple song parts (intro/verse/chorus/bridge). Each part made of parallel loops
+- Parallel loops of variable length: ... 0.25, 0.5, 1, 2, 3 ... of the 1-st loop
 - Full history of "undo/redo" for each part, not only the latest change
 - Loops and parts may be added/deleted on the run
 - Quantization - time of changing parts, recording is adjusted

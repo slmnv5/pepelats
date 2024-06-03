@@ -20,21 +20,15 @@ Multi tap uses 0.6 seconds delay to decide if there will be next tap. Because of
 time critical commands e.g. start playing or recording. But for other commands like changing volume it is
 indispensable.
 
-## Two MIDI input controller configurations
+## MIDI input controller configurations
 
-Foot controller is coupled with **menu configuration files** which translate notes to looper commands. There are 2
-configurations made for **iRig BlueBoard** -- one using 4 buttons and another using 6 buttons. Two additional
-buttons are made by plugging in two ON/OFF momentarily switches into expression pedal input of **iRig BlueBoard**
+Foot controller is coupled with **menu configuration files** e.g. [play.ini](./../config/menu/6x4xN/play.ini) which
+translate notes to looper commands.
+There are few views each with its own menu [menu_config.md](menu_config.md)
 
-### Six buttons controller configuration
+There are few configurations some using 4 buttons and some 6 buttons. Two rightmost buttons are
+made by plugging in two ON/OFF momentarily switches into expression pedal input of **iRig BlueBoard MIDI foot controller
+**. The looper converts control changes to note ON/OFF message
 
-Four buttons on **iRig BlueBoard**: A,B,C,D (MIDI notes 60, 62, 64, 65) and 2 buttons in MIDI expression pedal input:
-E1, E2 (MIDI notes 12, 13). So if you see:
-
-```
-65-2 : _drum_stop
-```
-
-this means that double tap on button D will stop drum
 
 

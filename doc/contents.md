@@ -1,8 +1,4 @@
-# Pepelats audio looper with drums
-
-### Looper diagram:
-
-![Looper diagram](img/looper.png)
+# Pepelats -- audio looper with drums
 
 1. [Features](./../README.md)
 2. [Installation](./install.md)

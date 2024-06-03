@@ -17,8 +17,9 @@ cd ~/; git clone https://github.com/slmnv5/pepelats
 $HOME/pepelats/looper.sh
 ```
 
-*5) Connect MIDI input controller and make sure it's name (or part of name) is listed in **main.ini** [MIDI] section
-Alternatively you may plug USB keyboard and use keys listed in **main.ini**
+*5) If computer keyboard is cobnnected it will be used for control. Keys and MIDI notes are configured in **main.ini**.
+
+Alternatively connect MIDI controller and make sure it's name (or part of name) is listed in **main.ini** [MIDI] section
 
 ### Command line parameters
 
@@ -28,6 +29,4 @@ Below parameters are used for troubleshooting
 - --debug -- more verbose logging
 - --keep_screen -- keep logging output on screen to see errors
 
-### Running on Windows:
-
-When running on windows computer keyboard is used as MIDI controller. Keys to notes mapping is in **main.ini**:
+log.txt -- is the log file that keeps about 1000 latest lines of all session session.
