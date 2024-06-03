@@ -17,7 +17,7 @@ cd ~/; git clone https://github.com/slmnv5/pepelats
 $HOME/pepelats/looper.sh
 ```
 
-*5) If computer keyboard is cobnnected it will be used for control. Keys and MIDI notes are configured in **main.ini**.
+*5) If computer keyboard is connected it will be used for control. Keys and MIDI notes are configured in **main.ini**.
 
 Alternatively connect MIDI controller and make sure it's name (or part of name) is listed in **main.ini** [MIDI] section
 
@@ -29,4 +29,4 @@ Below parameters are used for troubleshooting
 - --debug -- more verbose logging
 - --keep_screen -- keep logging output on screen to see errors
 
-log.txt -- is the log file that keeps about 1000 latest lines of all session session.
+log.txt -- is the log file that keeps about 1000 latest lines of all session.

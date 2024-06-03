@@ -1,7 +1,7 @@
 ## MIDI drum
 
 MIDI drum sends MIDI messages to external drum machine to synchronize it with the looper, change drum volume, program,
-etc. Translation of these MIDI messages may be done done with IOs app
+etc. Translation of these MIDI messages may be done with IOs app
 MidiFire [midi_fire_scene.txt](./../config/etc/txt/midi_fire_scene.txt) Any IOs drum machine app may be
 used.
 

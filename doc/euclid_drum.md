@@ -1,6 +1,6 @@
 ## Euclid drum
 
-*Euclid drum* rythms use four parameters: steps, beats, offset and accent.
+*Euclid drum* rhythms use four parameters: steps, beats, offset and accent.
 
 - Steps - length (or period) of the pattern.
 - Beats - how many drum hits there is in one period.
