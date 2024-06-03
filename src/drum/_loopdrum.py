@@ -13,7 +13,7 @@ class LoopDrum(BaseDrum):
     The song part will record real drum sounds and play along with other parts. """
 
     _COUNT_LST: list[int] = [1, 2, 3, 4, 5]
-    _COUNT_WGHT: list[int] = [1, 5, 5, 3, 1]
+    _COUNT_WEIGHT: list[int] = [1, 5, 5, 3, 1]
 
     def __init__(self, song_part: SongPart):
         BaseDrum.__init__(self)
@@ -21,7 +21,7 @@ class LoopDrum(BaseDrum):
         self._par = 0.2  # for this drum - probability to randomize at bar start
 
     def randomize(self) -> None:
-        play_count: int = choices(self._COUNT_LST, weights=self._COUNT_WGHT, k=1)[0]
+        play_count: int = choices(self._COUNT_LST, weights=self._COUNT_WEIGHT, k=1)[0]
         loops = self._song_part.loops
         loops.apply_to_each(lambda x: x.set_silent(loops.idx_from_item(x) >= play_count))
         self.start()

@@ -18,8 +18,8 @@ from utils.utilnumpy import from_buff_to_data
 class BufferDrum(BaseDrum, ABC):
     # Used to skip some drum sounds
     _COUNT_LST: list[int] = [2, 3, 4, 5]
-    _COUNT_WGHT: list[int] = [1, 5, 5, 2]
-    _DR_MODIF_PROB: float = 0.2
+    _COUNT_WEIGHT: list[int] = [1, 5, 5, 2]
+    _DR_MODIFY_PROB: float = 0.2
 
     def __init__(self, drum_loader: DrumLoader):
         BaseDrum.__init__(self)
@@ -67,7 +67,7 @@ class BufferDrum(BaseDrum, ABC):
         self._stale = True
 
     def _modify(self) -> None:
-        self._play_count = choices(self._COUNT_LST, weights=self._COUNT_WGHT, k=1)[0]
+        self._play_count = choices(self._COUNT_LST, weights=self._COUNT_WEIGHT, k=1)[0]
 
     def randomize(self) -> None:
         if self._stale:
@@ -90,7 +90,7 @@ class BufferDrum(BaseDrum, ABC):
     def play(self, out_data: np.ndarray, idx: int) -> None:
         if self._is_stopped:
             return
-        if idx % self._bar_len == 0 and random() < self._DR_MODIF_PROB:
+        if idx % self._bar_len == 0 and random() < self._DR_MODIFY_PROB:
             self._modify()
         for buff in self._play_lst[:self._play_count]:
             from_buff_to_data(buff, out_data, idx)

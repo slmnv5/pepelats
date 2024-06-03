@@ -10,7 +10,7 @@ from utils.utillog import MYLOG
 
 class SampleLoader:
     __instance = None
-    _ACNT_VOL = 1.2  # how much accent amplitude is bigger than non accent
+    _ACCENT_VOL = 1.2  # how much accent amplitude is bigger than non accent
 
     def __new__(cls):
         """ creates a singleton object, if it is not created, else returns existing """
@@ -57,7 +57,7 @@ class SampleLoader:
     def set_volume(self, vol: float) -> None:
         """ Set SampleLoader._adjusted volumes - normal and accented. SampleLoader._sounds stay unchanged """
         vol1 = vol * AINFO.DRUM_VOLUME
-        vol2 = vol1 * self._ACNT_VOL
+        vol2 = vol1 * self._ACCENT_VOL
         self._adjusted = {k: ((v * vol1).astype(AINFO.SD_TYPE), (v * vol2).astype(AINFO.SD_TYPE))
                           for k, v in self._sounds.items()}
 
@@ -69,11 +69,11 @@ class SampleLoader:
                 return self._adjusted[sname][0]
 
     def get_energy(self, sname: str, is_accent: bool) -> float:
-        factor = self._ACNT_VOL ** 2 if is_accent else 1
+        factor = self._ACCENT_VOL ** 2 if is_accent else 1
         return self._energy[sname] * factor
 
     def get_sound_names(self) -> list[str]:
         return list(self._sounds.keys())
 
 
-SMPLLOAD = SampleLoader()
+SAMPLE_LOAD = SampleLoader()

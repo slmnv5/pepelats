@@ -1,21 +1,13 @@
 # Set USB Audio as Default Audio Device
 
-You need to disable onboard audio by editing "config.txt" and setting
+Disable onboard audio by editing "config.txt" and setting
 dtparam=audio=off
 
 The USB sound device most likely is loaded as "card 1", check this by using command
 aplay -l
 
-This can be made the default audio device by editing a system file “alsa.conf”:
-sudo nano /usr/share/alsa/alsa.conf
+This can be made the default audio device:
 
-Scroll and find the following two lines:
-defaults.ctl.card 0
-defaults.pcm.card 0
-Change the 0 to a 1 to match the card number of the USB device and Save the file
-
-
-Alternatively you may edit file ".asoundrc"
 nano ~/.asoundrc
 
 Add the following text:

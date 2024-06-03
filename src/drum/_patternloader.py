@@ -6,7 +6,7 @@ from random import randrange
 
 import numpy as np
 
-from audio.sampleloader import SMPLLOAD
+from audio.sampleloader import SAMPLE_LOAD
 from utils.utilconfig import find_path
 from utils.utillog import MYLOG
 from utils.utilother import FileFinder
@@ -89,7 +89,7 @@ class PatternLoader:
 
     def prepare_patterns(self, bar_len: int, volume: float, par: float) -> None:
         self.__snd.clear()
-        SMPLLOAD.set_volume(volume)
+        SAMPLE_LOAD.set_volume(volume)
         assert self.__ptn, "Empty string patterns list!"
         # INI patterns are already sorted by intensity
         for ptn_dic, name, energy in self.__ptn:

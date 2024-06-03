@@ -4,7 +4,7 @@ from configparser import ConfigParser
 
 from utils.utillog import MYLOG
 
-APPDIR = os.sep + 'pepelats'
+APP_DIR = os.sep + 'pepelats'
 
 
 class ConfigName:
@@ -43,9 +43,9 @@ class ConfigName:
 def find_path(path_end: str) -> str:
     """Find file or dir. creates one if missing"""
     tmp1 = os.getcwd() + os.sep + path_end
-    pos = tmp1.find(APPDIR)
+    pos = tmp1.find(APP_DIR)
     if pos >= 0:
-        return tmp1[:pos + len(APPDIR)] + os.sep + path_end
+        return tmp1[:pos + len(APP_DIR)] + os.sep + path_end
     else:
         MYLOG.error(f"Path not found: {path_end}")
         return path_end

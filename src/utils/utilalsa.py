@@ -53,24 +53,24 @@ def read_wav_slow(fname: str) -> np.ndarray[Any, dtype[floating[Any]]]:
     """ slow reading using wave module, avoids import of specialized modules """
     assert os.path.isfile(fname)
     with wave.open(fname, "rb") as f:
-        nchannels, sampwidth, framerate, nframes, _, _ = f.getparams()
+        n_channels, sample_width, frame_rate, n_frames, _, _ = f.getparams()
         buffer = f.readframes(-1)
 
-    signed = sampwidth > 1  # 8 bit WAVs are unsigned
+    signed = sample_width > 1  # 8 bit WAVs are unsigned
     byteorder = sys.byteorder  # wave module uses sys.byteorder for bytes
-    sz = sampwidth * nchannels
-    frames = (buffer[i * sz: (i + 1) * sz] for i in range(nframes))
+    sz = sample_width * n_channels
+    frames = (buffer[i * sz: (i + 1) * sz] for i in range(n_frames))
     values = []  # e.g. for stereo, values[i] = [left_val, right_val]
     for frame in frames:
         channel_vals = []  # mono has 1 channel, stereo 2, etc.
-        for channel in range(nchannels):
-            as_bytes = frame[channel * sampwidth: (channel + 1) * sampwidth]
+        for channel in range(n_channels):
+            as_bytes = frame[channel * sample_width: (channel + 1) * sample_width]
             as_int = int.from_bytes(as_bytes, byteorder, signed=signed)
             channel_vals.append(as_int)
         values.append(channel_vals)
 
     nparray = np.array(values)
-    factor: float = 1. / (2 ** (sampwidth * 8 - 1))
+    factor: float = 1. / (2 ** (sample_width * 8 - 1))
     nparray = nparray * factor
     assert nparray.dtype == 'float64'
     return nparray
