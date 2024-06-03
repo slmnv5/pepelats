@@ -9,6 +9,8 @@ from utils.utillog import MYLOG
 
 _keyboard = load_ini_section("KEYBOARD")
 tmp = _keyboard.get(ConfigName.kbd_notes_linux, '')
+if os.name != "posix":
+    tmp = "1, 2, 3, 4, q, w"
 tmp = [x.strip() for x in tmp.split(',')]
 if len(tmp) != 6:
     raise RuntimeError(f"Option kbd_notes_linux in main.ini must have 6 values, found: {tmp}")
