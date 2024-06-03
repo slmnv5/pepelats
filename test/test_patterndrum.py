@@ -36,7 +36,7 @@ def test_1():
 
 def test_2():
     queue = Queue()
-    ctrl = SongCtrl(queue, "EuclidPtrnDrum")
+    ctrl = SongCtrl(queue, "EuclidDrum")
     t = Thread(target=ctrl.menu_client_start, name="process queue", args=[])
     t.start()  # start processing message queue
 
