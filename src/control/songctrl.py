@@ -20,6 +20,7 @@ class SongCtrl(LoopCtrl, ABC):
         self._song: Song = Song(self, load_song)
         self.__next_id: int = 0
         self.__play_event: Event = Event()
+        self._start_rec: bool = False  # if start non-empty loop with recording
         Thread(target=self.__play_loop, name="play_loop", daemon=True).start()
 
     def _drum_create(self, bar_len: int, drum_type: str = None, drum_info: dict[str, any] = None) -> None:
@@ -50,7 +51,7 @@ class SongCtrl(LoopCtrl, ABC):
             self._song.select_idx(self.__next_id)
             part = self._song.get_item()
             self.stop_never()
-            self._set_is_rec(part.is_empty)
+            self._set_is_rec(part.is_empty or self._start_rec)
             self._start_rec_idx, self.idx = 0, 0
             self.menu_client_queue([ConfigName.menu_client_redraw, None])
             part.play_loop(self)
@@ -67,6 +68,7 @@ class SongCtrl(LoopCtrl, ABC):
         self.__next_id %= self._song.item_count()
 
     def _play_song_part(self, pid: int = None) -> None:
+        self._start_rec = False
         if pid is None:
             pid = self.__next_id
 
@@ -104,6 +106,7 @@ class SongCtrl(LoopCtrl, ABC):
 
     def _overdub_song_part(self) -> None:
         if self._song.get_idx() != self.__next_id:
+            self._start_rec = True
             return
         part: SongPart = self._song.get_item()
         if part.is_empty:

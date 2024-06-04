@@ -1,5 +1,3 @@
-
-
 import os
 import time
 from multiprocessing import Queue
@@ -7,8 +5,8 @@ from multiprocessing import Queue
 from control.songctrl import SongCtrl
 from utils.utilconfig import ConfigName, load_ini_section, find_path, update_ini_section, SD_RATE
 from utils.utillog import MYLOG
-from utils.utilother import DrawInfo, FileFinder
 from utils.utilmidi import show_out_ports
+from utils.utilother import DrawInfo, FileFinder
 
 
 class Looper(SongCtrl):
@@ -25,7 +23,7 @@ class Looper(SongCtrl):
         else:
             self._saved_draw_info = draw_info
 
-        draw_info.header = f"{self._drum}"
+        draw_info.header = self._drum_type if not self._drum.get_bar_len() else f"{self._drum}"
         if draw_info.update_method:
             # noinspection PyBroadException
             try:
@@ -38,7 +36,7 @@ class Looper(SongCtrl):
         assert draw_info.content is not None
         length = self._song.get_item().length
         draw_info.loop_seconds = length / SD_RATE
-        draw_info.loop_position = 0 if not length else (self.idx % length) / length
+        draw_info.loop_position = (self.idx % length) / length
         draw_info.is_rec = self.get_is_rec()
         self._send_q.put([ConfigName.menu_client_redraw, draw_info])
 
