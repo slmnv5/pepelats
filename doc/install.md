@@ -17,9 +17,11 @@ cd ~/; git clone https://github.com/slmnv5/pepelats
 $HOME/pepelats/looper.sh
 ```
 
-*5) If computer keyboard is connected it will be used for control. Keys and MIDI notes are configured in **main.ini**.
+*5) Connect MIDI controller and make sure it's name (or part of name) is listed in main.ini [MIDI] section and the
+notes it sends are listed there as well.
 
-Alternatively connect MIDI controller and make sure it's name (or part of name) is listed in **main.ini** [MIDI] section
+If controller is not found and computer keyboard is connected it will be used for control. Keys are configured in
+main.ini. On Windows keys are fixed: '1,2,3,4,q,w' and used just for testing.
 
 ### Command line parameters
 

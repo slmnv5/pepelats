@@ -2,8 +2,8 @@
 
 **MIDI drum** sends MIDI messages to external drum machine to synchronize it with the looper, change drum volume,
 program,
-etc. Translation of these MIDI messages may be done with IOs app
-MidiFire [midi_fire_scene.txt](./../config/etc/txt/midi_fire_scene.txt) Any IOs drum machine app may be
+etc. Translation of these MIDI messages may be done with IOS app
+MidiFire [midi_fire_scene.txt](./../config/etc/txt/midi_fire_scene.txt) Any IOS drum machine app may be
 used.
 
 MIDI messages sent are:
@@ -22,7 +22,7 @@ external slave device. Here **BPM_LIST** is 6 bytes long. Examples:
 
 ### MIDI out port
 
-**Main.ini** configuration has section "MIDI" and option "midi_out". This is MIDI port name (or part of the full name)
+main.ini configuration has section "MIDI" and option "midi_out". This is MIDI port name (or part of the name)
 that is used to send messages. If port is not available (device is not connected) so called "FakeMidiOut" port is used
 which only logs few MIDI messages.
 You can see MIDI ports in service menu.
