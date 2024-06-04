@@ -69,11 +69,9 @@ class SongCtrl(LoopCtrl, ABC):
         self.__next_id += chg
         self.__next_id %= self._song.item_count()
 
-    def _play_song_part(self, pid: int = None) -> None:
+    def _play_song_part(self, pid: int) -> None:
+        """ Play specific part or record new loop of same length if already playing it """
         self._start_with_rec = False
-        if pid is None:
-            pid = self.__next_id
-
         changed_pid: bool = pid != self.__next_id  # did next_id change form prev. call
         self.__next_id = pid
 
@@ -106,7 +104,14 @@ class SongCtrl(LoopCtrl, ABC):
 
             self.stop_at_bound(part.length)
 
+    def _complete_song_part(self) -> None:
+        """ Write to selected loop that has been recorded before. Do not add new loops """
+        if self._song.get_idx() != self.__next_id:
+            return
+        self._set_is_rec(True)
+
     def _overdub_song_part(self) -> None:
+        """ Record new loop of different length. Start with adding empty loop of max. size """
         if self._song.get_idx() != self.__next_id:
             self._start_with_rec = True
             return
