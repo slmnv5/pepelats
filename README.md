@@ -5,9 +5,9 @@
 ### Looper
 
 - Multiple song parts (intro/verse/chorus/bridge). Each part consists of any number of parallel loops
-- Parallel loops of variable length: ... 0.25, 0.5, 1, 2, 3 ... of the 1-st loop
+- Parallel loops of variable length: ... 0.25, 0.5, 1, 2, 3 ... of the 1-st loop in a part
 - Full history of "undo/redo" for each part, not only the latest change
-- Loops and parts may be added/deleted on the run
+- Loops and parts may be added/deleted/cleared on the run
 - Silencing, reversing and re-arranging loops in song parts
 - Quantization - time of changing parts, recording is adjusted
 - Songs saved to and loaded from SD card
