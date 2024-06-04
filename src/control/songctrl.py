@@ -104,12 +104,6 @@ class SongCtrl(LoopCtrl, ABC):
 
             self.stop_at_bound(part.length)
 
-    def _complete_song_part(self) -> None:
-        """ Write to selected loop that has been recorded before. Do not add new loops """
-        if self._song.get_idx() != self.__next_id:
-            return
-        self._set_is_rec(True)
-
     def _overdub_song_part(self) -> None:
         """ Record new loop of different length. Start with adding empty loop of max. size """
         if self._song.get_idx() != self.__next_id:
