@@ -1,5 +1,13 @@
 #!/bin/sh
 
+test_keyboard() {
+  # sudo required for keyboard
+  SUDO=""
+  HAS_KBD=""
+  if lsusb | grep -i "USB Keyboard"; then HAS_KBD="YES"; SUDO="sudo -E"; fi
+  export HAS_KBD
+}
+
 TMP=$(dirname "$0")
 cd "$TMP" || exit 1
 
@@ -24,7 +32,6 @@ tail -n 1000 log.bak > log.txt
 echo "===========================" >> log.txt
 date >> log.txt
 
-
 # disable assert
 CODE_OPTIMIZE="-O"
 for var in "$@"; do
@@ -32,13 +39,6 @@ for var in "$@"; do
     CODE_OPTIMIZE=""
   fi
 done
-
-# sudo required for keyboard
-SUDO=""
-if lsusb | grep -i "USB Keyboard"; then export HAS_KBD="YES"; SUDO="sudo -E"; fi
-
-PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py $*"
-echo "$PYTHON_CMD"
 
 # disable under voltage error on screen, set huge font size, disable typing echo
 sudo dmesg -D
@@ -49,8 +49,12 @@ while true; do
   killall -s 9 -w -v python
   git reset --hard
   git pull
-  $PYTHON_CMD
   sleep 5
+  test_keyboard
+  PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py $*"
+  echo "$PYTHON_CMD"
+
+  $PYTHON_CMD
 done
 
 sudo dmesg -E
