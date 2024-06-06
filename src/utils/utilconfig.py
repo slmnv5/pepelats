@@ -20,7 +20,6 @@ class ConfigName:
     local_ini: str = "local.ini"
     midi_out: str = "midi_out"
     midi_in: str = "midi_in"
-    midi_min_velocity: str = "midi_min_velocity"
     max_len_seconds: str = "max_len_seconds"
     device_name: str = "device_name"
     device_type: str = "device_type"

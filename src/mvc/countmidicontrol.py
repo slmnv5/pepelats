@@ -5,8 +5,7 @@ import rtmidi.midiconstants
 
 from mvc.menuhost import MenuHost
 from utils.utillog import MYLOG
-from utils.utilmidi import KbdMidiIn
-from utils.utilmidi import MIDI_MIN_VELO, MIDI_STD_VELO
+from basic.midiinfo import KbdMidiIn
 
 _CTRL = rtmidi.midiconstants.CONTROL_CHANGE
 _ON = rtmidi.midiconstants.NOTE_ON
@@ -76,10 +75,10 @@ class CountMidiControl(MenuHost):
         note_on: bool = msg[0] & 0xF0 == _ON
         note: int = msg[1]
         velo: int = msg[2]
-        if note_on and velo < MIDI_MIN_VELO:
+        if note_on and velo < self.min_velo:
             return
         else:
-            velo = MIDI_STD_VELO
+            velo = self.std_velo
 
         if self.__past_note != note:
             self.__on_count, self.__off_count, self.__past_note = 0, 0, note  # init counters for new note

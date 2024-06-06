@@ -63,7 +63,7 @@ class Song(CollectionOwner[SongPart]):
         with open(fname, 'rb') as f:
             parts_lst, bar_len, drum_type, drum_info = pickle.load(f)
 
-        # saved song may have different audio format and channels
+        # saved song may have different basic format and channels
         for part in [x for x in parts_lst if x]:
             part.correct_buffer()
 

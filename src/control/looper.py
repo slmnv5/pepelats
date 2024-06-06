@@ -5,7 +5,7 @@ from multiprocessing import Queue
 from control.songctrl import SongCtrl
 from utils.utilconfig import ConfigName, load_ini_section, find_path, update_ini_section, SD_RATE
 from utils.utillog import MYLOG
-from utils.utilmidi import show_out_ports
+from basic.midiinfo import show_out_ports
 from utils.utilother import DrawInfo, FileFinder
 
 

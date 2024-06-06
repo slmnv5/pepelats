@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 
-from audio.audioinfo import correct_sound, AUDIO_INFO
+from basic.audioinfo import correct_sound, AUDIO_INFO
 from utils.utilalsa import read_wav_slow
 from utils.utilconfig import find_path, SD_RATE
 from utils.utillog import MYLOG

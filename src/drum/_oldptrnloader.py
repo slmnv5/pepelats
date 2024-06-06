@@ -4,7 +4,7 @@ from math import ceil
 
 import numpy as np
 
-from audio.audioinfo import make_buffer
+from basic.audioinfo import make_buffer
 
 from drum._patternloader import DrumLoader
 from utils.utillog import MYLOG

@@ -1,6 +1,6 @@
 import sounddevice as sd
 
-from audio.audioinfo import AUDIO_INFO
+from basic.audioinfo import AUDIO_INFO
 
 
 def test_1():

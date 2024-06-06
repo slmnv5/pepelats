@@ -24,7 +24,7 @@ def correct_sound(x: np.ndarray, channels: int, datatype: str) -> np.ndarray:
         x = (x * factor).astype(datatype)
 
     if x.shape[1] != AUDIO_INFO.SD_CH:
-        MYLOG.warning(f"Correcting audio channels: {x.shape[1]} to {AUDIO_INFO.SD_CH}")
+        MYLOG.warning(f"Correcting basic channels: {x.shape[1]} to {AUDIO_INFO.SD_CH}")
         if x.shape[1] < channels:
             x = np.column_stack((x, x))
         elif x.shape[1] > channels:
@@ -72,7 +72,7 @@ class AudioInfo:
             sd.default.device = self.SD_NAME
             MYLOG.info(f"Found device matching main.ini name: {self.SD_NAME}")
         except Exception:
-            MYLOG.error(f"No device matching main.ini name: {self.SD_NAME}, using default audio device instead")
+            MYLOG.error(f"No device matching main.ini name: {self.SD_NAME}, using default basic device instead")
             self.DEV_IN: dict[str, any] = sd.query_devices(None, kind='input')
             self.DEV_OUT: dict[str, any] = sd.query_devices(None, kind='output')
 

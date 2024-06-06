@@ -7,44 +7,6 @@ import rtmidi
 from utils.utilconfig import load_ini_section, ConfigName
 from utils.utillog import MYLOG
 
-_keyboard = load_ini_section("KEYBOARD")
-tmp = _keyboard.get(ConfigName.kbd_notes_linux, '')
-if os.name != "posix":
-    tmp = "1, 2, 3, 4, q, w"
-tmp = [x.strip() for x in tmp.split(',')]
-if len(tmp) != 6:
-    raise RuntimeError(f"Option kbd_notes_linux in main.ini must have 6 values, found: {tmp}")
-KBD_NOTES: list[str] = tmp
-
-# ==================================
-tmp = _keyboard.get(ConfigName.kbd_notes_midi, '')
-tmp = [x.strip() for x in tmp.split(',')]
-if len(tmp) != 6:
-    raise RuntimeError(f"kbd_notes_midi in main.ini must have 6 values, found: {tmp}")
-
-if not all([x.isdigit() for x in tmp]):
-    raise RuntimeError(f"kbd_notes_midi in main.ini must be 6 integers, found: {tmp}")
-tmp = [int(x) for x in tmp]
-
-if not all([0 <= x < 128 for x in tmp]):
-    raise RuntimeError(f"kbd_notes_midi in main.ini must be 0<=x<128, found: {tmp}")
-
-MIDI_DICT: dict[int, str] = dict(zip(tmp, ['a', 'b', 'c', 'd', 'e', 'f']))
-
-# ==================================
-# min note velocity to consider, counted notes have small velocity
-MIDI_MIN_VELO: int = 10
-_midi = load_ini_section("MIDI")
-# noinspection PyBroadException
-try:
-    MIDI_MIN_VELO = int(_midi.get(ConfigName.midi_min_velocity, '10'))
-except Exception as ex:
-    MIDI_MIN_VELO = 10
-    MYLOG.error(f"Failed loading from main.ini file: {ConfigName.midi_min_velocity}, error: {ex}")
-
-# standard note velocity used in menu files, note louder than MIDI_MIN_VELO is converted to MIDI_STD_VELO
-MIDI_STD_VELO: int = 100
-
 _IS_LINUX = os.name == "posix"
 _HAS_KBD = os.environ.get('HAS_KBD', "").upper() in ["Y", "YES", "TRUE", "1"]
 
@@ -53,7 +15,28 @@ class KbdMidiIn:
     """Using keyboard keys instead of MIDI notes"""
 
     def __init__(self):
-        self.__kbd_notes: dict[str, int] = dict(zip(KBD_NOTES, MIDI_DICT.keys()))
+        dic = load_ini_section("MIDI")
+        if not _IS_LINUX:
+            notes_str = "1, 2, 3, 4, q, w"
+        else:
+            notes_str = dic.get(ConfigName.kbd_notes_linux, '')
+
+        kbd_lst: list[str] = [x.strip() for x in notes_str.split(',')]
+        if len(kbd_lst) != 6:
+            raise RuntimeError(f"Option {ConfigName.kbd_notes_linux} in main.ini must have 6 values: {notes_str}")
+
+        notes_str = dic.get(ConfigName.kbd_notes_midi, '')
+        midi_lst = [x.strip() for x in notes_str.split(',')]
+        if len(midi_lst) != 6:
+            raise RuntimeError(f"Option {ConfigName.kbd_notes_midi} in main.ini must have 6 values: {notes_str}")
+        if not all([x.isdigit() for x in midi_lst]):
+            raise RuntimeError(f"Option {ConfigName.kbd_notes_midi} in main.ini must be 6 integers: {notes_str}")
+        midi_lst = [int(x) for x in midi_lst]
+
+        if not all([0 <= x < 128 for x in midi_lst]):
+            raise RuntimeError(f"Option {ConfigName.kbd_notes_midi} in main.ini must be 0<=x<128: {notes_str}")
+
+        self.__kbd_notes: dict[str, int] = dict(zip(kbd_lst, midi_lst))
         self._func: Callable[[tuple[list, any]], None] = self._fake_callback
         self._data: any = None
         self._pressed_key = False
@@ -99,7 +82,7 @@ class KbdMidiIn:
             self._func((msg, 0))
 
 
-def get_in_port(pname: str = "") -> tuple[rtmidi.MidiIn | KbdMidiIn, str]:
+def _get_in_port(pname: str = "") -> rtmidi.MidiIn | KbdMidiIn:
     midi_in: rtmidi.MidiIn = rtmidi.MidiIn()
     midi_in.close_port()
     p_count: int = midi_in.get_port_count()
@@ -108,13 +91,13 @@ def get_in_port(pname: str = "") -> tuple[rtmidi.MidiIn | KbdMidiIn, str]:
         if pname in port_name:
             midi_in.open_port(k, name="In")
             if midi_in.is_port_open():
-                return midi_in, port_name
+                return midi_in
 
     if _IS_LINUX and not _HAS_KBD:
         raise RuntimeError(f"Failed ot open MIDI IN port: {pname}")
 
     MYLOG.error(f"MIDI IN port is not open: {pname}, using computer keyboard")
-    return KbdMidiIn(), "KbdMidiIn"
+    return KbdMidiIn()
 
 
 class FakeMidiOut:
@@ -137,7 +120,7 @@ class FakeMidiOut:
         MYLOG.info(f"~~~~~~~~~~~~Send MIDI message: {msg}")
 
 
-def get_out_port(pname: str = "") -> tuple[rtmidi.MidiOut | FakeMidiOut | None, str]:
+def _get_out_port(pname: str = "") -> rtmidi.MidiOut | FakeMidiOut:
     midi_out: rtmidi.MidiOut = rtmidi.MidiOut()
     midi_out.close_port()
     for k in range(midi_out.get_port_count()):
@@ -145,10 +128,11 @@ def get_out_port(pname: str = "") -> tuple[rtmidi.MidiOut | FakeMidiOut | None, 
         if pname in port_name:
             midi_out.open_port(k, name="Out")
             if midi_out.is_port_open():
-                return midi_out, port_name
+                MYLOG.info(f"MIDI OUT port is open: {pname}")
+                return midi_out
 
     MYLOG.error(f"MIDI OUT port is not open: {pname}, using fake port")
-    return FakeMidiOut(), "FakeMidiOut"
+    return FakeMidiOut()
 
 
 def show_out_ports(pname: str = "") -> str:
@@ -157,3 +141,46 @@ def show_out_ports(pname: str = "") -> str:
     port_lst = [x.split(":")[0] for x in port_lst if "RtMidi" not in x and "Through" not in x]
     port_str = "\n".join(port_lst)
     return f"OUT: {pname} open: {midi_out.port.is_port_open()}\n{port_str}"
+
+
+class MidiInfo:
+    __instance = None
+
+    def __new__(cls):
+        """ creates a singleton object, if it is not created, else returns existing """
+        if not cls.__instance:
+            cls.__instance = super(MidiInfo, cls).__new__(cls)
+            cls.__instance.__initialized = False
+        return cls.__instance
+
+    def __init__(self):
+        if self.__initialized:
+            return
+        self.__initialized = True
+
+        dic: dict[str, str] = load_ini_section("MIDI")
+        pname = dic.get(ConfigName.midi_in, "")
+        self.MIDI_IN = _get_in_port(pname)
+
+        pname = dic.get(ConfigName.midi_out, "")
+        self.MIDI_OUT = _get_out_port(pname)
+
+        # min note velocity to consider, counted notes have small velocity
+        self.MIDI_MIN_VELO: int = 10
+        # standard note velocity used in menu files, note louder than MIDI_MIN_VELO is converted to MIDI_STD_VELO
+        self.MIDI_STD_VELO: int = 100
+
+        dic = load_ini_section("MIDI")
+        notes_str = dic.get(ConfigName.kbd_notes_midi, '')
+        midi_lst = [x.strip() for x in notes_str.split(',')]
+        if len(midi_lst) != 6:
+            raise RuntimeError(f"Option {ConfigName.kbd_notes_midi} in main.ini must have 6 values: {notes_str}")
+
+        if not all([x.isdigit() for x in midi_lst]):
+            raise RuntimeError(f"Option {ConfigName.kbd_notes_midi} in main.ini must be 6 integers: {notes_str}")
+        midi_lst = [int(x) for x in midi_lst]
+
+        if not all([0 <= x < 128 for x in midi_lst]):
+            raise RuntimeError(f"Option {ConfigName.kbd_notes_midi} in main.ini must be 0<=x<128: {notes_str}")
+
+        self.MIDI_DICT: dict[int, str] = dict(zip(midi_lst, ['a', 'b', 'c', 'd', 'e', 'f']))

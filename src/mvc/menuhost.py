@@ -5,7 +5,7 @@ from time import sleep
 
 from utils.utilconfig import ConfigName, find_path, load_ini_section
 from utils.utillog import MYLOG
-from utils.utilmidi import MIDI_DICT
+from basic.midiinfo import MidiInfo
 from utils.utilother import DrawInfo
 
 
@@ -23,6 +23,9 @@ class MenuHost:
         self.__queue = queue
         self._update_menu(ConfigName.play_section)
         self.__queue.put([ConfigName.menu_client_redraw, self._draw_info])
+        self.min_velo = MidiInfo().MIDI_MIN_VELO
+        self.std_velo = MidiInfo().MIDI_STD_VELO
+        self.midi_dict = MidiInfo().MIDI_DICT
 
     def is_alive(self) -> bool:
         return True
@@ -46,10 +49,10 @@ class MenuHost:
         self._draw_info.update_method = self._menu_loader.get(ConfigName.update_method)
 
     def _send(self, note: int, velo: int) -> None:
-        if note not in MIDI_DICT:
+        if note not in self.midi_dict:
             MYLOG.error(f"MIDI note: {note} is not expected. Check main.ini file")
 
-        menu_key: str = f"{MIDI_DICT[note]}-{velo}"
+        menu_key: str = f"{self.midi_dict[note]}-{velo}"
         menu_cmd = self._menu_loader.get(menu_key)
         if not menu_cmd:
             return

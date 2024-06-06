@@ -2,7 +2,7 @@ import random
 
 import numpy as np
 
-from audio.audioinfo import AUDIO_INFO
+from basic.audioinfo import AUDIO_INFO
 from utils.utilnumpy import from_buff_to_data, from_data_to_buff, trim_buffer
 
 

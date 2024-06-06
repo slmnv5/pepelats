@@ -3,8 +3,7 @@ from multiprocessing import Queue
 import rtmidi.midiconstants
 
 from mvc.menuhost import MenuHost
-from utils.utilmidi import KbdMidiIn
-from utils.utilmidi import MIDI_MIN_VELO, MIDI_STD_VELO
+from basic.midiinfo import KbdMidiIn
 
 
 class SimpleMidiControl(MenuHost):
@@ -26,12 +25,8 @@ class SimpleMidiControl(MenuHost):
         note_on: bool = msg[0] & 0xF0 == rtmidi.midiconstants.NOTE_ON
         note: int = msg[1]
         velo: int = msg[2]
-        if (note_on and velo < MIDI_MIN_VELO) or not note_on:
+        if (note_on and velo < self.min_velo) or not note_on:
             return
-        velo = MIDI_STD_VELO
+        velo = self.std_velo
         str_note = f"{note}-{velo}"
-
-        if velo < MIDI_MIN_VELO:
-            return
-        velo = MIDI_STD_VELO
         self._send(note, velo)

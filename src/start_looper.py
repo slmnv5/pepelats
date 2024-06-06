@@ -1,22 +1,12 @@
 import os
 from multiprocessing import Process, Queue
 
+from basic.midiinfo import MidiInfo
 from control.looper import Looper
 from mvc.countmidicontrol import CountMidiControl
 from mvc.menuclient import MenuClient
-from mvc.menuhost import MenuHost
 from mvc.pyscreen import PyScreen
-from utils.utilconfig import load_ini_section, ConfigName
 from utils.utillog import MYLOG
-from utils.utilmidi import get_in_port
-
-
-def get_pedal_control(q: Queue) -> MenuHost:
-    dic = load_ini_section("MIDI")
-    pname = dic.get(ConfigName.midi_in, "")
-    in_port, full_name = get_in_port(pname)
-    MYLOG.info(f'Open MIDI IN port {full_name}')
-    return CountMidiControl(in_port, q)
 
 
 # noinspection PyBroadException
@@ -44,7 +34,7 @@ def do_screen(q_screen: Queue) -> None:
 def go() -> None:
     q_screen = Queue()  # screen update messages
     q_looper = Queue()  # looper control messages
-    midi_ctrl = get_pedal_control(q_looper)
+    midi_ctrl = CountMidiControl(MidiInfo().MIDI_IN, q_looper)
 
     p1 = Process(target=do_looper, args=(q_looper, q_screen), name="looper", daemon=True)
     p1.start()

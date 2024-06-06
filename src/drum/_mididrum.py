@@ -1,14 +1,11 @@
-
-
 from random import random
 
 import numpy as np
 import rtmidi
 
+from basic.midiinfo import FakeMidiOut, MidiInfo
 from drum.basedrum import BaseDrum
 from utils.utilalsa import int_to_bytes
-from utils.utilconfig import load_ini_section, ConfigName
-from utils.utilmidi import FakeMidiOut, get_out_port
 
 
 class MidiDrum(BaseDrum):
@@ -20,12 +17,8 @@ class MidiDrum(BaseDrum):
     def __init__(self):
         BaseDrum.__init__(self)
         self._par = 0.2  # for MIDI drum it is probability to change program at bar start
-        # ======== MIDI specific ===============
-        dic = load_ini_section("MIDI")
-        pname = dic.get(ConfigName.midi_out, "")
         self.port: rtmidi.MidiOut | FakeMidiOut
-        self.name: str
-        self.port, self.name = get_out_port(pname)
+        self.port = MidiInfo().MIDI_OUT
 
     def set_volume(self, volume: float) -> None:
         super().set_volume(volume)
@@ -42,9 +35,8 @@ class MidiDrum(BaseDrum):
 
     def show_param(self) -> str:
         base_info = super().show_param()
-        port = f"{self.name}"
         is_ok = f"{self.port.is_port_open()}"
-        return f"{base_info}\nport OK: {is_ok}/{port}"
+        return f"{base_info}\nport OK: {is_ok}"
 
     def randomize(self) -> None:
         self.port.send_message([0xF0, 0x5C, 0xF7])
