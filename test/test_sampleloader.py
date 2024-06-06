@@ -1,7 +1,7 @@
 import sounddevice as sd
 
 from audio.audioinfo import AUDIO_INFO
-from audio.sampleloader import SampleLoader
+from drum.sampleloader import SampleLoader
 
 
 def test_1():
