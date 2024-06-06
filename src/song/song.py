@@ -2,6 +2,7 @@ import os
 import pickle
 
 from control.loopctrl import LoopCtrl
+# noinspection PyUnresolvedReferences
 from song.songpart import SongPart
 from utils.utilconfig import find_path, ConfigName
 from utils.utillog import MYLOG
