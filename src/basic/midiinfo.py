@@ -184,3 +184,6 @@ class MidiInfo:
             raise RuntimeError(f"Option {ConfigName.kbd_notes_midi} in main.ini must be 0<=x<128: {notes_str}")
 
         self.MIDI_DICT: dict[int, str] = dict(zip(midi_lst, ['a', 'b', 'c', 'd', 'e', 'f']))
+
+
+_NOT_USED = MidiInfo()
