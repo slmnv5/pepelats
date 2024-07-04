@@ -81,4 +81,4 @@ except Exception as ex:
     _max_sec = 60
 
 MAX_LEN = _max_sec * SD_RATE
-MYLOG.warning(f"Set sampling rate: {SD_RATE}, max. loop length: {_max_sec} sec")
+MYLOG.info(f"Set sampling rate: {SD_RATE}, max. loop length: {_max_sec} sec")

@@ -17,12 +17,8 @@ if [ -n "$found" ]; then
   exit 1
 fi
 
-sleep 5
-
 if [ ! -d ".save_song" ]; then mkdir -p ".save_song"; fi
 touch local.ini
-
-cd "./src" || exit 1
 
 sudo chmod a+rw ./.save_song/*
 touch log.txt
@@ -47,11 +43,11 @@ stty -echo
 
 while true; do
   killall -s 9 -w -v python
-  git reset --hard
-  git pull
+  # git reset --hard
+  # git pull
   sleep 5
   test_keyboard
-  PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./start_looper.py $*"
+  PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./src/start_looper.py $*"
   echo "$PYTHON_CMD"
 
   $PYTHON_CMD
