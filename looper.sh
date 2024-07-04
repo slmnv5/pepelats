@@ -45,11 +45,10 @@ while true; do
   killall -s 9 -w -v python
   # git reset --hard
   # git pull
-  sleep 5
   test_keyboard
   PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./src/start_looper.py $*"
   echo "$PYTHON_CMD"
-
+  sleep 5
   $PYTHON_CMD
 done
 
