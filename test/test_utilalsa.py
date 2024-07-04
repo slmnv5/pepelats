@@ -47,12 +47,12 @@ def test_5() -> None:
 
     sound1 = correct_sound(sound1, 1, 'int16')
     write_wav(fname, sound1)
-    sound2: np.ndarray = read_wav_slow(fname)
+    sound2: np.ndarray = read_wav_slow(fname, 'float64')
     assert sound2.shape == (SD_RATE, 1)
 
     sound1 = correct_sound(sound1, 2, 'float32')
     write_wav(fname, sound1)
-    sound2: np.ndarray = read_wav_slow(fname)
+    sound2: np.ndarray = read_wav_slow(fname, 'float64')
     assert sound2.shape == (SD_RATE, 2)
     # noinspection PyBroadException
     try:

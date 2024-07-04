@@ -47,7 +47,7 @@ class SampleLoader:
         for fname in [x for x in os.listdir(dname) if x.endswith('.wav')]:
             full_fname = dname + os.sep + fname
             assert os.path.isfile(full_fname)
-            sound = read_wav_slow(full_fname)
+            sound = read_wav_slow(full_fname, AUDIO_INFO.SD_TYPE)
             sound = correct_sound(sound, AUDIO_INFO.SD_CH, AUDIO_INFO.SD_TYPE)
             assert sound.dtype == AUDIO_INFO.SD_TYPE and sound.ndim == 2 and sound.shape[1] == AUDIO_INFO.SD_CH
             result[fname[:-4]] = sound

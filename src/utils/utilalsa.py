@@ -49,7 +49,7 @@ def bytes_to_int(byte_list: list[int]) -> int:
     return value
 
 
-def read_wav_slow(fname: str) -> np.ndarray[Any, dtype[floating[Any]]]:
+def read_wav_slow(fname: str, as_type: str) -> np.ndarray[Any, dtype[floating[Any]]]:
     """ slow reading using wave module, avoids import of specialized modules """
     assert os.path.isfile(fname)
     with wave.open(fname, "rb") as f:
@@ -71,9 +71,7 @@ def read_wav_slow(fname: str) -> np.ndarray[Any, dtype[floating[Any]]]:
 
     nparray = np.array(values)
     factor: float = 1. / (2 ** (sample_width * 8 - 1))
-    nparray = nparray * factor
-    assert nparray.dtype == 'float64'
-    return nparray
+    return (nparray * factor).astype(as_type)
 
 
 def write_wav(fname: str, sound: np.ndarray) -> None:
