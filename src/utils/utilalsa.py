@@ -7,6 +7,7 @@ from typing import Any
 import numpy as np
 from numpy import dtype, floating
 
+from basic.audioinfo import get_dtype_max
 from utils.utilconfig import SD_RATE
 
 
@@ -49,7 +50,7 @@ def bytes_to_int(byte_list: list[int]) -> int:
     return value
 
 
-def read_wav_slow(fname: str, as_type: str) -> np.ndarray[Any, dtype[floating[Any]]]:
+def read_wav_slow(fname: str, data_type: str) -> np.ndarray[Any, dtype[floating[Any]]]:
     """ slow reading using wave module, avoids import of specialized modules """
     assert os.path.isfile(fname)
     with wave.open(fname, "rb") as f:
@@ -70,8 +71,9 @@ def read_wav_slow(fname: str, as_type: str) -> np.ndarray[Any, dtype[floating[An
         values.append(channel_vals)
 
     nparray = np.array(values)
-    factor: float = 1. / (2 ** (sample_width * 8 - 1))
-    return (nparray * factor).astype(as_type)
+    factor1: float = 1. / (2 ** (sample_width * 8 - 1))
+    factor2: float = get_dtype_max(data_type)
+    return (nparray * (factor1 * factor2)).astype(data_type)
 
 
 def write_wav(fname: str, sound: np.ndarray) -> None:

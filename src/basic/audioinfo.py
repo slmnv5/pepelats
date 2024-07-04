@@ -11,7 +11,7 @@ def make_buffer(sz: int) -> np.ndarray:
     return np.zeros((sz, AUDIO_INFO.SD_CH), AUDIO_INFO.SD_TYPE)
 
 
-def correct_sound(x: np.ndarray, channels: int, datatype: str) -> np.ndarray:
+def correct_sound(x: np.ndarray, channels: int, data_type: str) -> np.ndarray:
     """ Convert numpy array to given channels and datatype """
     assert x.ndim in [1, 2]
     assert channels in [1, 2]
@@ -20,8 +20,8 @@ def correct_sound(x: np.ndarray, channels: int, datatype: str) -> np.ndarray:
         x = x.reshape(-1, 1)
     if x.dtype != AUDIO_INFO.SD_TYPE:
         MYLOG.warning(f"Correcting array type: {x.dtype} to {AUDIO_INFO.SD_TYPE}")
-        factor = get_conversion_factor(x.dtype, datatype)
-        x = (x * factor).astype(datatype)
+        factor = get_conversion_factor(x.dtype, data_type)
+        x = (x * factor).astype(data_type)
 
     if x.shape[1] != AUDIO_INFO.SD_CH:
         MYLOG.warning(f"Correcting basic channels: {x.shape[1]} to {AUDIO_INFO.SD_CH}")
@@ -32,20 +32,16 @@ def correct_sound(x: np.ndarray, channels: int, datatype: str) -> np.ndarray:
     return x
 
 
-def get_conversion_factor(type_src: str, type_dst: str) -> float | int:
-    """ returns conversion factor when changing dtype in numpy array with sound """
-    src_float = np.issubdtype(type_src, np.floating)
-    dst_float = np.issubdtype(type_dst, np.floating)
-    if src_float:
-        if dst_float:
-            return 1
-        else:
-            return float(np.iinfo(type_dst).max)
+def get_dtype_max(data_type: str) -> float:
+    if np.issubdtype(data_type, np.floating):
+        return 1.0
     else:
-        if dst_float:
-            return 1 / float(np.iinfo(type_src).max)
-        else:
-            return float(np.iinfo(type_dst).max) / float(np.iinfo(type_src).max)
+        return float(np.iinfo(data_type).max)
+
+
+def get_conversion_factor(type_src: str, type_dst: str) -> float:
+    """ returns conversion factor when changing dtype in numpy array with sound """
+    return get_dtype_max(type_dst) / get_dtype_max(type_src)
 
 
 class AudioInfo:
