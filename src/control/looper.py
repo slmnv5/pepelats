@@ -2,10 +2,10 @@ import os
 import time
 from multiprocessing import Queue
 
+from basic.midiinfo import show_out_ports
 from control.songctrl import SongCtrl
 from utils.utilconfig import ConfigName, load_ini_section, find_path, update_ini_section, SD_RATE
 from utils.utillog import MYLOG
-from basic.midiinfo import show_out_ports
 from utils.utilother import DrawInfo, FileFinder
 
 
@@ -68,9 +68,13 @@ class Looper(SongCtrl):
 
     @staticmethod
     def _show_midi_out_ports() -> None:
-        os.system("clear")
-        print("\n", show_out_ports())
+        print("\n" * 10, show_out_ports())
         time.sleep(10)
+
+    @staticmethod
+    def _update() -> None:
+        os.system("git reset --hard; clear; git pull")
+        time.sleep(5)
 
     #  ============ all parts methods ===============
 
