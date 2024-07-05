@@ -8,7 +8,8 @@ After sorting patterns by energy they are split into 2 groups - quiet and loud. 
 
 ### Drum variations
 
-Drums type have smaller variability when at start of the bar there is some probability of specific drums to be silenced (
+Drums type have smaller variability when at start of the bar there is some probability of specific drums to be
+silenced (
 e.g. hi-hat). Probability of variations is fixed Pattern and Euclid drums and is a parameter for Loop drum
 
 ### Drum swing

@@ -7,14 +7,14 @@ Each view has INI file that configures available MIDI messages and respective co
   them.
   Loops for each song part can be seen and edited as well
 
-* [song view](../config/menu/6x4/song.ini) -- stop song at different points, save, empty, delete or
-  load. Scroll list of saved songs.
+* [song view](../config/menu/6x4/song.ini) -- stop song instantly or at the end of loop. Save, empty, delete or
+  load song. Scroll list of saved songs.
 
-* [drum view](../config/menu/6x4/drum.ini) -- adjust volume and parameters. Assign specific configuration to drum
-  e.g. style for pattern drum.
+* [drum view](../config/menu/6x4/drum.ini) -- adjust volume and parameters. Assign configuration to drum e.g. style for
+  pattern drum.
 
 * [service view](../config/menu/6x4/serv.ini) -- restart looper, check for updates. Select one of
-  four drum types for new song.
+  four drum types.
 
 
 
