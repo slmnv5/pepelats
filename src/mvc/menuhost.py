@@ -27,14 +27,14 @@ class MenuHost:
         self.std_velo = MidiInfo().MIDI_STD_VELO
         self.midi_dict = MidiInfo().MIDI_DICT
 
-    def is_alive(self) -> bool:
+    def _is_alive(self) -> bool:
         return True
 
     def start_menu_host(self) -> None:
         MYLOG.info(f"{self.__class__.__name__} start working as MenuHost")
         while True:
             sleep(5)
-            if not self.is_alive():
+            if not self._is_alive():
                 break
         MYLOG.info(f"{self.__class__.__name__} stop working as MenuHost")
 

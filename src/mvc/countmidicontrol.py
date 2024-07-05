@@ -5,7 +5,7 @@ import rtmidi.midiconstants
 
 from mvc.menuhost import MenuHost
 from utils.utillog import MYLOG
-from basic.midiinfo import KbdMidiIn
+from basic.midiinfo import KbdMidiIn, MidiInfo
 
 _CTRL = rtmidi.midiconstants.CONTROL_CHANGE
 _ON = rtmidi.midiconstants.NOTE_ON
@@ -50,17 +50,17 @@ class CountMidiControl(MenuHost):
 
     _COUNT_SEC: float = 0.600
 
-    def __init__(self, midi_in: rtmidi.MidiIn | KbdMidiIn, queue: Queue):
+    def __init__(self, queue: Queue):
         MenuHost.__init__(self, queue)
-        self._p_count: int = midi_in.get_port_count()
-        self._midi_in = midi_in
+        self._midi_in: rtmidi.MidiIn | KbdMidiIn = MidiInfo().MIDI_IN
+        self._p_count: int = self._midi_in.get_port_count()
         self.__on_count: int = 0
         self.__off_count: int = 0
         self.__past_note: int = -1  # original MIDI note
         self.__midi_cc_to_note = MidiCcToNote()
         self._midi_in.set_callback(self._process_msg)
 
-    def is_alive(self) -> bool:
+    def _is_alive(self) -> bool:
         return self._midi_in.get_port_count() >= self._p_count
 
     # noinspection PyUnusedLocal

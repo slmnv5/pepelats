@@ -135,14 +135,6 @@ def _get_out_port(pname: str = "") -> rtmidi.MidiOut | FakeMidiOut:
     return FakeMidiOut()
 
 
-def show_out_ports(pname: str = "") -> str:
-    midi_out: rtmidi.MidiOut = rtmidi.MidiOut()
-    port_lst = midi_out.get_ports()
-    port_lst = [x.split(":")[0] for x in port_lst if "RtMidi" not in x and "Through" not in x]
-    port_str = "\n".join(port_lst)
-    return f"OUT: {pname} open: {midi_out.port.is_port_open()}\n{port_str}"
-
-
 class MidiInfo:
     __instance = None
 

@@ -1,7 +1,6 @@
 import os
 from multiprocessing import Process, Queue
 
-from basic.midiinfo import MidiInfo
 from control.looper import Looper
 from mvc.countmidicontrol import CountMidiControl
 from mvc.menuclient import MenuClient
@@ -34,7 +33,7 @@ def do_screen(q_screen: Queue) -> None:
 def go() -> None:
     q_screen = Queue()  # screen update messages
     q_looper = Queue()  # looper control messages
-    midi_ctrl = CountMidiControl(MidiInfo().MIDI_IN, q_looper)
+    midi_ctrl = CountMidiControl(q_looper)
 
     p1 = Process(target=do_looper, args=(q_looper, q_screen), name="looper", daemon=True)
     p1.start()

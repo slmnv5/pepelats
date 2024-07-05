@@ -48,7 +48,7 @@ while true; do
   echo "$PYTHON_CMD"
   sleep 5
   $PYTHON_CMD
-done+
+done
 
 sudo dmesg -E
 sudo setfont Uni1-VGA16

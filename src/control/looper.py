@@ -2,7 +2,6 @@ import os
 import time
 from multiprocessing import Queue
 
-from basic.midiinfo import show_out_ports
 from control.songctrl import SongCtrl
 from utils.utilconfig import ConfigName, load_ini_section, find_path, update_ini_section, SD_RATE
 from utils.utillog import MYLOG
@@ -65,11 +64,6 @@ class Looper(SongCtrl):
         ff.iterate()  # next menu
         tmp[ConfigName.menu_dir] = ff.get_item()
         update_ini_section("MENU", tmp)
-
-    @staticmethod
-    def _show_midi_out_ports() -> None:
-        print("\n" * 10, show_out_ports())
-        time.sleep(10)
 
     @staticmethod
     def _update() -> None:
