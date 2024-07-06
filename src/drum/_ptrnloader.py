@@ -13,7 +13,7 @@ from utils.utilother import FileFinder
 
 
 # noinspection PyUnusedLocal
-class DrumLoader:
+class PtrnLoader:
     """ Load drum pattern from INI patterns and create playable lists numpy arrays """
     sl: SampleLoader = SampleLoader()
 
@@ -39,14 +39,14 @@ class DrumLoader:
         return 0.0
 
 
-class PatternLoader:
+class PtrnManager:
     """Load patterns from INI file. Logic to load, convert and calculate intensity is passed as 3 methods.
     Loaded patterns are converted to playable patterns - ready to play sound """
 
     # patterns sorted by energy. Low energy patterns used for rhythm, high energy for drum fills/breaks
     _QUIET_PTRN_FRACTION: float = 0.7
 
-    def __init__(self, drum_loader: DrumLoader):
+    def __init__(self, drum_loader: PtrnLoader):
         self._dl = drum_loader
         # split quiet and loud patterns based on intensity
         self._quiet_slice: slice = slice(None, None)

@@ -6,8 +6,8 @@ from threading import Timer
 import numpy as np
 
 from drum._euclidptrnloader import EuclidPtrnLoader
-from drum._oldptrnloader import OldPtrnLoader
-from drum._patternloader import PatternLoader, DrumLoader
+from drum._styleptrnloader import StylePtrnLoader
+from drum._ptrnloader import PtrnManager, PtrnLoader
 from drum.basedrum import BaseDrum
 from utils.utilconfig import SD_RATE, HUGE_INT
 from utils.utilnumpy import from_buff_to_data
@@ -19,10 +19,10 @@ class BufferDrum(BaseDrum, ABC):
     _COUNT_WEIGHT: list[int] = [1, 5, 5, 2]
     _DR_MODIFY_PROB: float = 0.2
 
-    def __init__(self, drum_loader: DrumLoader):
+    def __init__(self, ptrn_loader: PtrnLoader):
         BaseDrum.__init__(self)
-        self._pl = PatternLoader(drum_loader)
-        self._ff = drum_loader.ff
+        self._pm = PtrnManager(ptrn_loader)
+        self._ff = ptrn_loader.ff
         self._play_lst: list[np.ndarray] = list()  # list to play sounds, changed by randomize
         self._play_count: int = HUGE_INT  # how many arrays will play in the play list, changed by modify
         self._name: str = ""  # pattern name
@@ -44,7 +44,7 @@ class BufferDrum(BaseDrum, ABC):
         if config:
             self._ff.idx_from_item(config)
             assert os.path.isfile(self._ff.get_full_name()), f"Not found file: {self._ff.get_full_name()}"
-        self._pl.load_patterns(self._ff.get_full_name())
+        self._pm.load_patterns(self._ff.get_full_name())
         self._stale = True
 
     def set_bar_len(self, bar_len: int) -> None:
@@ -70,14 +70,14 @@ class BufferDrum(BaseDrum, ABC):
     def randomize(self) -> None:
         if self._stale:
             self.stop()
-            self._pl.prepare_patterns(self._bar_len, self._volume, self._par)
+            self._pm.prepare_patterns(self._bar_len, self._volume, self._par)
             self._stale = False
-        self._play_lst, self._name, self._energy, self._idx = self._pl.random_quiet()
+        self._play_lst, self._name, self._energy, self._idx = self._pm.random_quiet()
         self._modify()
         self.start()
 
     def play_fill(self, idx: int) -> None:
-        self._play_lst, self._name, self._energy, self._idx = self._pl.random_loud()
+        self._play_lst, self._name, self._energy, self._idx = self._pm.random_loud()
         self._play_count = HUGE_INT
         tmp: int = idx % self._bar_len
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
@@ -102,9 +102,9 @@ class EuclidDrum(BufferDrum):
         return f"E:{self._name}:{self._bpm:.2F}"
 
 
-class PatternDrum(BufferDrum):
+class StyleDrum(BufferDrum):
     def __init__(self):
-        BufferDrum.__init__(self, OldPtrnLoader())
+        BufferDrum.__init__(self, StylePtrnLoader())
 
     def __str__(self) -> str:
-        return f"O:{self._name}:{self._bpm:.2F}"
+        return f"S:{self._name}:{self._bpm:.2F}"

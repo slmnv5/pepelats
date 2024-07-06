@@ -6,17 +6,17 @@ import numpy as np
 
 from basic.audioinfo import make_buffer
 
-from drum._patternloader import DrumLoader
+from drum._ptrnloader import PtrnLoader
 from utils.utillog import MYLOG
 from utils.utilnumpy import from_data_to_buff
 
 
-class OldPtrnLoader(DrumLoader):
+class StylePtrnLoader(PtrnLoader):
     """Pattern based drum"""
 
     def __init__(self):
         # drum patterns from INI file
-        DrumLoader.__init__(self, "config/drum/pattern")
+        PtrnLoader.__init__(self, "config/drum/pattern")
         # name of accent pattern
         self.__ACCENT: str = "ac"
 
