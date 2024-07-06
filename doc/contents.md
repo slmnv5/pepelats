@@ -7,7 +7,7 @@
 5. [Looper views](./looper_views.md)
 6. [Menu configuration](./menu_config.md)
 7. [Midi drum](./midi_drum.md)
-8. [Pattern drum](./pattern_drum.md)
+8. [Pattern drum](./style_drum)
 9. [Loop drum](./loop_drum.md)
 10. [Euclid drum](./euclid_drum.md)
  
