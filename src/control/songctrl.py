@@ -168,13 +168,13 @@ class SongCtrl(LoopCtrl, ABC):
     def _song_iterate(self, steps: int) -> None:
         self._song.iterate_song(steps)
 
-    def _song_new(self, drum_type: str = "") -> None:
+    def _song_init(self) -> None:
+        self._song.clear()
+        self._drum = BaseDrum()
+
+    def _change_drum(self, drum_type: str) -> None:
         self._drum.stop()
         self._song_stop()
-        if not drum_type:
-            self._song.clear()
-            self._drum = BaseDrum()
-            return
         if drum_type != self._drum_type:
             self._drum_type = drum_type
             bar_len = self._drum.get_bar_len()
