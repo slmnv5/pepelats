@@ -3,7 +3,7 @@
 **Pattern drum** is using text patterns and sample WAV files to produce drum accompaniment.
 These sound samples are written into sound buffer along with recorded loops.
 
-There are about 200 patterns in a dozen of styles in directory: [config/drum/pattern](./../config/drum/style)
+There are about 200 patterns in a dozen of styles in directory: [config/drum/style](./../config/drum/style)
 Example: [Pop.ini](../config/drum/style/Pop.ini)
 
 Sound samples are saved in [config/drum/samples](./../config/drum/wav)

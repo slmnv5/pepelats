@@ -16,7 +16,7 @@ class StylePtrnLoader(PtrnLoader):
 
     def __init__(self):
         # drum patterns from INI file
-        PtrnLoader.__init__(self, "config/drum/pattern")
+        PtrnLoader.__init__(self, "config/drum/style")
         # name of accent pattern
         self.__ACCENT: str = "ac"
 
