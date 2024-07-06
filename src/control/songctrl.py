@@ -169,6 +169,8 @@ class SongCtrl(LoopCtrl, ABC):
         self._song.iterate_song(steps)
 
     def _song_init(self) -> None:
+        self._drum.stop()
+        self._song_stop()
         self._song.clear()
         self._drum = BaseDrum()
 
