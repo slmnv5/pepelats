@@ -1,39 +1,24 @@
 from abc import ABC
-from multiprocessing import Queue
 from threading import Event, Thread
 
 from control.loopctrl import LoopCtrl
 from drum.basedrum import BaseDrum
-from drum.drumfactory import create_drum
 from song.loopsimple import LoopSimple
 from song.song import Song
 from song.songpart import SongPart
-from utils.utilconfig import ConfigName
 
 
 class SongCtrl(LoopCtrl, ABC):
     """added playback thread and Song.
      Song is collection of song parts with related methods"""
 
-    def __init__(self, queue: Queue, drum_type: str, load_song: bool = False):
-        LoopCtrl.__init__(self, queue, drum_type)
-        self._song: Song = Song(self, load_song)
+    def __init__(self, drum_type: str):
+        LoopCtrl.__init__(self, drum_type)
+        self._song: Song = Song(self)
         self.__next_id: int = 0
         self.__play_event: Event = Event()
         self._start_with_rec: bool = False  # if start non-empty loop with recording
         Thread(target=self.__play_loop, name="play_loop", daemon=True).start()
-
-    def _drum_create(self, bar_len: int, drum_type: str = None, drum_info: dict[str, any] = None) -> None:
-        if drum_type:
-            self._drum_type = drum_type
-
-        if drum_info is None:
-            drum_info = dict()
-
-        if self._drum_type == ConfigName.LoopDrum:
-            drum_info[ConfigName.drum_song_part] = self._song.get_at_idx(0)
-
-        self._drum = create_drum(bar_len, self._drum_type, **drum_info)
 
     # ================ song part methods
 
@@ -53,12 +38,10 @@ class SongCtrl(LoopCtrl, ABC):
             self.stop_never()
             self._set_is_rec(part.is_empty or self._start_with_rec)
             if self._start_with_rec:
-                part.loops.idx_from_item(LoopSimple(part.length))
-            self._start_rec_idx, self.idx, self._start_with_rec = 0, 0, False
-            self.menu_client_queue([ConfigName.menu_client_redraw, None])
+                part.loops.idx_from_item(LoopSimple(part.get_len()))
+            self.idx, self._start_with_rec = 0, False
+            self._update_view()
             part.play_loop(self)
-            if not self.__play_event.is_set():
-                self.menu_client_queue(["_drum_stop"])
 
     def _add_song_part(self) -> None:
         selected: int = self._song.get_idx()
@@ -94,7 +77,7 @@ class SongCtrl(LoopCtrl, ABC):
                     self._set_is_rec(False)
                     part.trim_buffer(self)
                 else:
-                    part.loops.idx_from_item(LoopSimple(part.length))
+                    part.loops.idx_from_item(LoopSimple(part.get_len()))
                     part.clear_undo()
                     self._set_is_rec(True)
         else:  # asked to play another part
@@ -102,7 +85,7 @@ class SongCtrl(LoopCtrl, ABC):
                 self._set_is_rec(False)
                 part.trim_buffer(self)
 
-            self.stop_at_bound(part.length)
+            self.stop_at_bound(part.get_len())
 
     def _overdub_song_part(self) -> None:
         """ Record new loop of different length. Start with adding empty loop of max. size """
@@ -112,11 +95,10 @@ class SongCtrl(LoopCtrl, ABC):
         part: SongPart = self._song.get_item()
         if part.is_empty:
             return
-        loops = part.loops
-        k = loops.get_idx()
-        if self.get_is_rec() and k > 0:
-            loops.set_at_idx(k, LoopSimple())
-            self._start_rec_idx = self.idx
+        if not self.get_is_rec():
+            return
+        self.idx = self.idx % part.get_max_len()
+        part.loops.get_item().max_buffer()
 
     def _delete_song_part(self) -> None:
         selected = self._song.get_idx()
@@ -181,11 +163,11 @@ class SongCtrl(LoopCtrl, ABC):
             self._drum_type = drum_type
             bar_len = self._drum.get_bar_len()
             if bar_len:
-                self._drum_create(bar_len)
+                self.drum_create(bar_len, dict())
 
     def _song_stop(self, wait: int = 0) -> None:
         self._set_is_rec(False)
         self.__play_event.clear()
         self.__next_id = self._song.get_idx()
-        bound = self._song.get_item().length if wait else 0
+        bound = self._song.get_item().get_len if wait else 0
         self.stop_at_bound(bound)

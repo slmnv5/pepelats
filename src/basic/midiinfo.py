@@ -82,24 +82,6 @@ class KbdMidiIn:
             self._func((msg, 0))
 
 
-def _get_in_port(pname: str = "") -> rtmidi.MidiIn | KbdMidiIn:
-    midi_in: rtmidi.MidiIn = rtmidi.MidiIn()
-    midi_in.close_port()
-    p_count: int = midi_in.get_port_count()
-    for k in range(p_count):
-        port_name = midi_in.get_port_name(k)
-        if pname in port_name:
-            midi_in.open_port(k, name="In")
-            if midi_in.is_port_open():
-                return midi_in
-
-    if _IS_LINUX and not _HAS_KBD:
-        raise RuntimeError(f"Failed ot open MIDI IN port: {pname}")
-
-    MYLOG.error(f"MIDI IN port is not open: {pname}, using computer keyboard")
-    return KbdMidiIn()
-
-
 class FakeMidiOut:
 
     def __init__(self):
@@ -120,21 +102,6 @@ class FakeMidiOut:
         MYLOG.info(f"~~~~~~~~~~~~Send MIDI message: {msg}")
 
 
-def _get_out_port(pname: str = "") -> rtmidi.MidiOut | FakeMidiOut:
-    midi_out: rtmidi.MidiOut = rtmidi.MidiOut()
-    midi_out.close_port()
-    for k in range(midi_out.get_port_count()):
-        port_name = midi_out.get_port_name(k)
-        if pname in port_name:
-            midi_out.open_port(k, name="Out")
-            if midi_out.is_port_open():
-                MYLOG.info(f"MIDI OUT port is open: {pname}")
-                return midi_out
-
-    MYLOG.error(f"MIDI OUT port is not open: {pname}, using fake port")
-    return FakeMidiOut()
-
-
 class MidiInfo:
     __instance = None
 
@@ -149,13 +116,6 @@ class MidiInfo:
         if self.__initialized:
             return
         self.__initialized = True
-
-        dic: dict[str, str] = load_ini_section("MIDI")
-        pname = dic.get(ConfigName.midi_in, "")
-        self.MIDI_IN = _get_in_port(pname)
-
-        pname = dic.get(ConfigName.midi_out, "")
-        self.MIDI_OUT = _get_out_port(pname)
 
         # min note velocity to consider, counted notes have small velocity
         self.MIDI_MIN_VELO: int = 10
@@ -176,3 +136,41 @@ class MidiInfo:
             raise RuntimeError(f"Option {ConfigName.kbd_notes_midi} in main.ini must be 0<=x<128: {notes_str}")
 
         self.MIDI_DICT: dict[int, str] = dict(zip(midi_lst, ['a', 'b', 'c', 'd', 'e', 'f']))
+
+
+def get_in_port() -> rtmidi.MidiIn | KbdMidiIn:
+    dic: dict[str, str] = load_ini_section("MIDI")
+    pname = dic.get(ConfigName.midi_in, "")
+    midi_in: rtmidi.MidiIn = rtmidi.MidiIn()
+    midi_in.close_port()
+    p_count: int = midi_in.get_port_count()
+    for k in range(p_count):
+        port_name = midi_in.get_port_name(k)
+        if pname in port_name:
+            midi_in.open_port(k, name="In")
+            if midi_in.is_port_open():
+                return midi_in
+
+    if _IS_LINUX and not _HAS_KBD:
+        raise RuntimeError(f"Failed ot open MIDI IN port: {pname}")
+
+    MYLOG.error(f"MIDI IN port is not open: {pname}, using computer keyboard")
+    return KbdMidiIn()
+
+
+def get_out_port() -> rtmidi.MidiOut | FakeMidiOut:
+    dic: dict[str, str] = load_ini_section("MIDI")
+    pname = dic.get(ConfigName.midi_out, "")
+
+    midi_out: rtmidi.MidiOut = rtmidi.MidiOut()
+    midi_out.close_port()
+    for k in range(midi_out.get_port_count()):
+        port_name = midi_out.get_port_name(k)
+        if pname in port_name:
+            midi_out.open_port(k, name="Out")
+            if midi_out.is_port_open():
+                MYLOG.info(f"MIDI OUT port is open: {pname}")
+                return midi_out
+
+    MYLOG.error(f"MIDI OUT port is not open: {pname}, using fake port")
+    return FakeMidiOut()

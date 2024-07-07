@@ -1,4 +1,3 @@
-import os
 import pickle
 
 from control.loopctrl import LoopCtrl
@@ -14,17 +13,12 @@ class Song(CollectionOwner[SongPart]):
     """Song keeps SongParts as CollectionOwner, can save and load from file"""
     SONG_PARTS: int = 4
 
-    def __init__(self, ctrl: LoopCtrl, load_song: bool):
-        tmp = [SongPart(1), SongPart(1), SongPart(1), SongPart(1)]
+    def __init__(self, ctrl: LoopCtrl):
+        tmp = [SongPart(), SongPart(), SongPart(), SongPart()]
         CollectionOwner.__init__(self, tmp)
-        self._name: str = ""
+        self._name: str = generate_name()
         self._ctrl: LoopCtrl = ctrl
         self._ff = FileFinder(find_path(".save_song"), True, ".sng")
-        if load_song and self._ff.get_at_idx(-1):  # latest song
-            self.select_idx(-1)
-            self.load_song()
-        else:
-            self.clear()
 
     def clear(self) -> None:
         for k in range(self.item_count()):
@@ -44,14 +38,14 @@ class Song(CollectionOwner[SongPart]):
         parts_lst = list()
         self.apply_to_each(lambda x: parts_lst.append(None if x.is_empty else x))
         drum_info: dict[str, any] = dict()
-        drum_type = drum.get_class_name()
         bar_len = drum.get_bar_len()
+        drum_info[ConfigName.drum_type] = drum.get_class_name()
         drum_info[ConfigName.drum_config] = drum.get_config()
         drum_info[ConfigName.drum_volume] = drum.get_volume()
         drum_info[ConfigName.drum_par] = drum.get_par()
 
         with open(fname, 'wb') as f:
-            pickle.dump((parts_lst, bar_len, drum_type, drum_info), f)
+            pickle.dump((parts_lst, bar_len, drum_info), f)
 
         MYLOG.info(f"Saved song file: {fname}")
 
@@ -61,21 +55,21 @@ class Song(CollectionOwner[SongPart]):
         MYLOG.info(f"Loading song file: {fname}")
         part_lst: list[SongPart | None]
         with open(fname, 'rb') as f:
-            parts_lst, bar_len, drum_type, drum_info = pickle.load(f)
+            parts_lst, bar_len, drum_info = pickle.load(f)
 
         # saved song may have different basic format and channels
         for part in [x for x in parts_lst if x]:
             part.correct_buffer()
 
         parts_lst = [x if x else SongPart() for x in parts_lst]
-        self._ctrl.menu_client_queue([ConfigName.drum_create, bar_len, drum_type, drum_info])
-
         for part in parts_lst:
             self.idx_from_item(part)
 
         self.select_idx(0)
         while self.item_count() > len(parts_lst):
             self.delete_selected()
+
+        self._ctrl.drum_create(bar_len, drum_info)
 
     def show_songs(self) -> str:
         return self._ff.get_str()
@@ -85,11 +79,3 @@ class Song(CollectionOwner[SongPart]):
 
     def iterate_song(self, steps: int) -> None:
         self._ff.iterate(steps=steps)
-
-    def _disable_failed_song(self) -> None:
-        fname = self._ff.get_full_name()
-        cmd = f"{'mv' if os.name == 'posix' else 'move'} {fname} {fname}.bad"
-        os.system(f"{cmd}")
-        if not os.path.isfile(fname):
-            self._ff.delete_selected()
-            MYLOG.error(f"Failed to load and disabled song: {fname}.bad")

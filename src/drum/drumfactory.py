@@ -6,8 +6,9 @@ from utils.utilconfig import ConfigName
 from utils.utillog import MYLOG
 
 
-def create_drum(bar_len: int, drum_type: str, **kwargs) -> BaseDrum:
+def create_drum(bar_len: int, **kwargs) -> BaseDrum:
     drum: BaseDrum
+    drum_type: str = kwargs.get(ConfigName.drum_type, ConfigName.StyleDrum)
     if drum_type == ConfigName.EuclidDrum:
         drum = EuclidDrum()
     elif drum_type == ConfigName.StyleDrum:

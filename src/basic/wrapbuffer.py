@@ -3,7 +3,7 @@ import numpy as np
 from basic.audioinfo import correct_sound, AUDIO_INFO
 from utils.utilconfig import MAX_LEN
 from utils.utillog import MYLOG
-from utils.utilnumpy import from_buff_to_data, from_data_to_buff, trim_buffer
+from utils.utilnumpy import from_buff_to_data, from_data_to_buff
 
 
 class WrapBuffer:
@@ -53,8 +53,14 @@ class WrapBuffer:
     def is_silent(self) -> bool:
         return self.__is_silent
 
-    @property
-    def length(self) -> int:
+    def max_buffer(self) -> None:
+        shape = self.__buff.shape
+        assert len(shape) == 2
+        tmp = np.zeros((MAX_LEN, shape[1]), self.__buff.dtype)
+        tmp[:shape[0]] = self.__buff[:shape[0]]
+        self.__buff = tmp
+
+    def get_len(self) -> int:
         return len(self.__buff)
 
     @property
@@ -70,29 +76,23 @@ class WrapBuffer:
         tmp = self.__buff[::-1] if self.__is_reverse else self.__buff
         from_buff_to_data(tmp, out_data, idx)
 
-    def finalize(self, idx: int, base_len: int, start_rec_idx: int) -> None:
+    def finalize(self, idx: int, base_len: int) -> None:
         """Trim is done only once to fix buffer length for empty loop.
         base_len - bigger of 2: parallel loop length or 1 bar length
         case 1) base_len == 0 trim to idx value, bar length is NOT known yet
         case 2) base_len != 0 trim to multiple of base_len i.e.  1/4 1/2 1 2 3 ...
         """
         assert self.is_empty
-        assert 0 <= start_rec_idx < idx, f"start_rec_idx: {start_rec_idx}, idx: {idx}"
-        self.__info_str = ""  # force recalculate volume and length
         if not base_len:  # Case 1
-            assert start_rec_idx == 0, "start==0 as we record 1st time"
             self.__buff = self.__buff[:idx]
             self.__len_ratio = 1
         else:  # Case 2
-            rec_len: int = idx - start_rec_idx
             # new loop length must be ... 1/2, 1, 2, 3, ...
             tmp = base_len
-            while rec_len < tmp // 2:
+            while idx < tmp // 2:
                 tmp //= 2
-            rec_len = round(rec_len / tmp) * tmp
-            self.__len_ratio = rec_len / base_len
-            # align start with main loop if not started from zero
-            offset = start_rec_idx % tmp
-            self.__buff = trim_buffer(self.__buff, rec_len, start_rec_idx - offset)
+            idx = round(idx / tmp) * tmp
+            self.__len_ratio = idx / base_len
+            self.__buff = self.__buff[:idx]
 
         MYLOG.info(f"After trim length ratio: {self.__len_ratio}")

@@ -1,5 +1,3 @@
-
-
 import os
 from typing import TypeVar, Generic, Iterable, Callable
 
@@ -30,8 +28,10 @@ class DrawInfo:
         self.header: str = ""
         self.description: str = ""
         self.content: str = ""
-        self.loop_seconds: float = 0
-        self.loop_position: float = 0
+        self.loop_seconds: float = 0.0
+        self.max_loop_position: float = 0.0
+        self.loop_position: float = 0.0
+        self.max_loop_factor: float = 1.0
         self.is_rec: bool = False
 
     def __str__(self):

@@ -3,9 +3,9 @@ from threading import Timer
 
 import rtmidi.midiconstants
 
+from basic.midiinfo import KbdMidiIn, get_in_port
 from mvc.menuhost import MenuHost
 from utils.utillog import MYLOG
-from basic.midiinfo import KbdMidiIn, MidiInfo
 
 _CTRL = rtmidi.midiconstants.CONTROL_CHANGE
 _ON = rtmidi.midiconstants.NOTE_ON
@@ -52,7 +52,7 @@ class CountMidiControl(MenuHost):
 
     def __init__(self, queue: Queue):
         MenuHost.__init__(self, queue)
-        self._midi_in: rtmidi.MidiIn | KbdMidiIn = MidiInfo().MIDI_IN
+        self._midi_in: rtmidi.MidiIn | KbdMidiIn = get_in_port()
         self._p_count: int = self._midi_in.get_port_count()
         self.__on_count: int = 0
         self.__off_count: int = 0

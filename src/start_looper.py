@@ -5,6 +5,7 @@ from control.looper import Looper
 from mvc.countmidicontrol import CountMidiControl
 from mvc.menuclient import MenuClient
 from mvc.pyscreen import PyScreen
+from utils.utilconfig import ConfigName
 from utils.utillog import MYLOG
 
 
@@ -12,7 +13,7 @@ from utils.utillog import MYLOG
 def do_looper(q_looper: Queue, q_screen: Queue) -> None:
     # noinspection PyBroadException
     try:
-        looper = Looper(q_looper, q_screen)
+        looper = Looper(q_looper, q_screen, ConfigName.LoopDrum)
         looper.menu_client_start()
     except Exception as ex:
         MYLOG.exception(ex)

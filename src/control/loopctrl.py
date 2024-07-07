@@ -1,24 +1,20 @@
 from abc import ABC, abstractmethod
-from multiprocessing import Queue
 from threading import Event
 
 from drum.basedrum import BaseDrum
-from mvc.menuclient import MenuClient
 from utils.utilconfig import HUGE_INT
 
 
-class LoopCtrl(MenuClient, ABC):
+class LoopCtrl(ABC):
     """class with events to control one loop, has playback index and drum"""
 
     # 5k is about 0.1 second. May be late by this time without going to next full cycle
     _LATE_SAMPLES: int = 5000
 
-    def __init__(self, queue: Queue, drum_type: str):
-        super().__init__(queue)
+    def __init__(self, drum_type: str):
         self.idx: int = 0
         self._drum_type: str = drum_type
         self._drum: BaseDrum = BaseDrum()
-        self._start_rec_idx: int = 0
         self.__is_rec: bool = False
         self.__stop_len: int = 0
         self.__stop_event: Event = Event()
@@ -27,7 +23,11 @@ class LoopCtrl(MenuClient, ABC):
     # noinspection PyMethodMayBeStatic
 
     @abstractmethod
-    def _drum_create(self, drum_info: dict[str, any]) -> None:
+    def _update_view(self) -> None:
+        pass
+
+    @abstractmethod
+    def drum_create(self, bar_len: int, drum_info: dict[str, any]) -> None:
         pass
 
     def _song_stop(self, wait: int = 0) -> None:
@@ -93,9 +93,6 @@ class LoopCtrl(MenuClient, ABC):
 
     def _drum_set_config(self, config: str = None) -> None:
         self._drum.set_config(config)
-
-    def get_start_rec_idx(self) -> int:
-        return self._start_rec_idx
 
     def get_drum(self) -> BaseDrum:
         return self._drum

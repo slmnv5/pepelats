@@ -3,7 +3,7 @@ from random import random
 import numpy as np
 import rtmidi
 
-from basic.midiinfo import FakeMidiOut, MidiInfo
+from basic.midiinfo import FakeMidiOut, get_out_port
 from drum.basedrum import BaseDrum
 from utils.utilalsa import int_to_bytes
 
@@ -17,8 +17,7 @@ class MidiDrum(BaseDrum):
     def __init__(self):
         BaseDrum.__init__(self)
         self._par = 0.2  # for MIDI drum it is probability to change program at bar start
-        self.port: rtmidi.MidiOut | FakeMidiOut
-        self.port = MidiInfo().MIDI_OUT
+        self.port: rtmidi.MidiOut | FakeMidiOut = get_out_port()
 
     def set_volume(self, volume: float) -> None:
         super().set_volume(volume)

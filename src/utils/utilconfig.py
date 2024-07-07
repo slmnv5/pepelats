@@ -26,7 +26,8 @@ class ConfigName:
     kbd_notes_linux: str = "kbd_notes_linux"
     kbd_notes_midi: str = "kbd_notes_midi"
     # drum config
-    drum_config: str = 'drum_config'
+    drum_type: str = "drum_type"
+    drum_config: str = "drum_config"
     drum_volume: str = "drum_volume"
     drum_par: str = "drum_par"
     drum_song_part: str = "drum_song_part"

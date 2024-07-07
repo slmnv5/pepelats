@@ -3,26 +3,34 @@ import time
 from multiprocessing import Queue
 
 from control.songctrl import SongCtrl
+from drum.drumfactory import create_drum
+from mvc.menuclient import MenuClient
 from utils.utilconfig import ConfigName, load_ini_section, find_path, update_ini_section, SD_RATE
 from utils.utillog import MYLOG
 from utils.utilother import DrawInfo, FileFinder
 
 
-class Looper(SongCtrl):
+class Looper(MenuClient, SongCtrl):
     """Adds screen connection, Mixer, looper commands"""
 
-    def __init__(self, recv_q: Queue, send_q: Queue):
-        SongCtrl.__init__(self, recv_q, "LoopDrum")
-        self._send_q = send_q
-        self._saved_draw_info = DrawInfo()
+    def __init__(self, recv_q: Queue, send_q: Queue, drum_type: str):
+        MenuClient.__init__(self, recv_q)
+        SongCtrl.__init__(self, drum_type)
+        self.__send_q = send_q
+
+    def drum_create(self, bar_len: int, drum_info: dict[str, any]) -> None:
+        if ConfigName.drum_type not in drum_info:
+            drum_info[ConfigName.drum_type] = self._drum_type
+        drum_info[ConfigName.drum_song_part] = self._song.get_at_idx(0)
+        self._drum = create_drum(bar_len, **drum_info)
+
+    def _update_view(self) -> None:
+        self.menu_client_queue([ConfigName.menu_client_redraw, self._di])
 
     def _menu_client_redraw(self, draw_info: DrawInfo) -> None:
-        if not draw_info:
-            draw_info = self._saved_draw_info
-        else:
-            self._saved_draw_info = draw_info
+        self._di = draw_info
 
-        draw_info.header = self._drum_type if not self._drum.get_bar_len() else f"{self._drum}"
+        draw_info.header = f"{self._drum}"
         if draw_info.update_method:
             # noinspection PyBroadException
             try:
@@ -33,11 +41,15 @@ class Looper(SongCtrl):
         else:
             draw_info.content = ""
         assert draw_info.content is not None
-        length = self._song.get_item().length
-        draw_info.loop_seconds = length / SD_RATE
-        draw_info.loop_position = (self.idx % length) / length
+        part = self._song.get_item()
+        length1: int = part.get_len()
+        draw_info.loop_seconds = length1 / SD_RATE
+        draw_info.loop_position = (self.idx % length1) / length1
+        length2 = part.get_max_len()
+        draw_info.max_loop_position = (self.idx % length2) / length2
+        draw_info.max_loop_factor = length2 / length1
         draw_info.is_rec = self.get_is_rec()
-        self._send_q.put([ConfigName.menu_client_redraw, draw_info])
+        self.__send_q.put([ConfigName.menu_client_redraw, draw_info])
 
     # ===============+ other methods ===============================
 

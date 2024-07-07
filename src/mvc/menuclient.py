@@ -1,5 +1,3 @@
-
-
 from abc import abstractmethod
 from multiprocessing import Queue
 
@@ -11,6 +9,7 @@ from utils.utilother import DrawInfo
 class MenuClient:
     def __init__(self, queue: Queue):
         self.__queue: Queue = queue
+        self._di = DrawInfo()
 
     def menu_client_start(self):
         while True:
@@ -26,7 +25,7 @@ class MenuClient:
                 MYLOG.exception(ex)
 
     @abstractmethod
-    def _menu_client_redraw(self, draw_info: DrawInfo | None) -> None:
+    def _menu_client_redraw(self, draw_info: DrawInfo) -> None:
         pass
 
     def menu_client_queue(self, command: list) -> None:

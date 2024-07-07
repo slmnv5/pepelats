@@ -3,9 +3,9 @@ from configparser import ConfigParser
 from multiprocessing import Queue
 from time import sleep
 
+from basic.midiinfo import MidiInfo
 from utils.utilconfig import ConfigName, find_path, load_ini_section
 from utils.utillog import MYLOG
-from basic.midiinfo import MidiInfo
 from utils.utilother import DrawInfo
 
 
@@ -19,10 +19,10 @@ class MenuHost:
         if not os.path.isdir(dname):
             raise RuntimeError(f"Directory not found: {dname}. Check main.ini and local.ini files")
         self._menu_loader = _MenuLoader(dname)
-        self._draw_info = DrawInfo()
+        self._di = DrawInfo()
         self.__queue = queue
         self._update_menu(ConfigName.play_section)
-        self.__queue.put([ConfigName.menu_client_redraw, self._draw_info])
+        self.__queue.put([ConfigName.menu_client_redraw, self._di])
         self.min_velo = MidiInfo().MIDI_MIN_VELO
         self.std_velo = MidiInfo().MIDI_STD_VELO
         self.midi_dict = MidiInfo().MIDI_DICT
@@ -40,13 +40,13 @@ class MenuHost:
 
     def _update_menu(self, fname: str):
         self._menu_loader.update_menu(fname)
-        self._draw_info.description = self._menu_loader.get(ConfigName.description)
-        self._draw_info.update_method = self._menu_loader.get(ConfigName.update_method)
+        self._di.description = self._menu_loader.get(ConfigName.description)
+        self._di.update_method = self._menu_loader.get(ConfigName.update_method)
 
     def _update_section(self, go_next: bool):
         self._menu_loader.update_section(go_next)
-        self._draw_info.description = self._menu_loader.get(ConfigName.description)
-        self._draw_info.update_method = self._menu_loader.get(ConfigName.update_method)
+        self._di.description = self._menu_loader.get(ConfigName.description)
+        self._di.update_method = self._menu_loader.get(ConfigName.update_method)
 
     def _send(self, note: int, velo: int) -> None:
         if note not in self.midi_dict:
@@ -62,7 +62,7 @@ class MenuHost:
             lst1 = cmd.split()  # method name and arguments if any
             self.__process_list(lst1)
         # after all commands send _redraw
-        self.__queue.put([ConfigName.menu_client_redraw, self._draw_info])
+        self.__queue.put([ConfigName.menu_client_redraw, self._di])
 
     def __process_list(self, cmd: list) -> None:
         if not (cmd and isinstance(cmd, list)):

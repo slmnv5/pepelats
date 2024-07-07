@@ -2,15 +2,15 @@ from multiprocessing import Queue
 
 import rtmidi.midiconstants
 
+from basic.midiinfo import KbdMidiIn, get_in_port
 from mvc.menuhost import MenuHost
-from basic.midiinfo import KbdMidiIn, MidiInfo
 
 
 class SimpleMidiControl(MenuHost):
 
     def __init__(self, queue: Queue):
         MenuHost.__init__(self, queue)
-        self._midi_in: rtmidi.MidiIn | KbdMidiIn = MidiInfo().MIDI_IN
+        self._midi_in: rtmidi.MidiIn | KbdMidiIn = get_in_port()
         self._p_count: int = self._midi_in.get_port_count()
         self._midi_in.set_callback(self._process_msg)
 

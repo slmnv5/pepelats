@@ -2,7 +2,7 @@ import numpy as np
 
 from control.loopctrl import LoopCtrl
 from song.loopsimple import LoopSimple
-from utils.utilconfig import MAX_LEN, ConfigName
+from utils.utilconfig import MAX_LEN
 from utils.utilother import CollectionOwner
 
 
@@ -13,6 +13,12 @@ class SongPart(LoopSimple):
         LoopSimple.__init__(self, sz)
         self.loops: CollectionOwner[LoopSimple] = CollectionOwner[LoopSimple](self)
         self.__undo: list[LoopSimple] = list()
+
+    def get_max_len(self) -> int:
+        loops = self.loops
+        len_lst: list[int] = list()
+        loops.apply_to_each(lambda x: len_lst.append(x.get_len()))
+        return max(len_lst)
 
     def correct_buffer(self) -> None:
         for loop in self.__undo:
@@ -25,12 +31,11 @@ class SongPart(LoopSimple):
             return
         drum = ctrl.get_drum()
         bar_len = drum.get_bar_len()
-        part_len = self.length
+        part_len = self.get_len()
         base_len = bar_len if self.is_empty else max(bar_len, part_len)
-        start_rec_idx = ctrl.get_start_rec_idx()
-        loop.finalize(ctrl.idx, base_len, start_rec_idx)
+        loop.finalize(ctrl.idx, base_len)
         if not bar_len:
-            ctrl.menu_client_queue([ConfigName.drum_create, ctrl.idx, None, None])
+            ctrl.drum_create(ctrl.idx, dict())
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
         self.loops.apply_to_each(lambda x: LoopSimple.play(x, out_data, idx))

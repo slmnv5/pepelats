@@ -2,7 +2,7 @@ import sounddevice as sd
 
 from basic.wrapbuffer import WrapBuffer
 from control.loopctrl import LoopCtrl
-from utils.utilconfig import MAX_LEN, ConfigName
+from utils.utilconfig import MAX_LEN
 
 
 class LoopSimple(WrapBuffer):
@@ -18,9 +18,9 @@ class LoopSimple(WrapBuffer):
             return
         drum = ctrl.get_drum()
         bar_len = drum.get_bar_len()
-        self.finalize(ctrl.idx, bar_len, 0)
+        self.finalize(ctrl.idx, bar_len)
         if not bar_len:
-            ctrl.menu_client_queue([ConfigName.drum_create, ctrl.idx, None, None])
+            ctrl.drum_create(ctrl.idx, dict())
 
     def play_loop(self, ctrl: LoopCtrl):
         # noinspection PyUnusedLocal
