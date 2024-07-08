@@ -76,22 +76,17 @@ class Looper(MenuClient, SongCtrl):
 
     # ===============+ other methods ===============================
 
-    def _restart_looper(self) -> None:
+    def _looper_restart(self) -> None:
         self._song_stop()
         os.system("killall -9 python")
 
-    def _update_app(self) -> None:
-        self._song_stop()
-        os.system("git reset --hard")
-        os.system("git pull --ff-only; sleep 2")
-
     @staticmethod
-    def _menu_show_config() -> str:
+    def _menu_config_show() -> str:
         dic = load_ini_section("MENU")
         return "Menu: " + dic.get(ConfigName.menu_dir, "")
 
     @staticmethod
-    def _next_menu_config() -> None:
+    def _menu_config_iterate() -> None:
         tmp = load_ini_section("MENU")
         config = tmp.get(ConfigName.menu_dir, "")
         ff = FileFinder(find_path("config/menu"), False, "")
@@ -101,7 +96,7 @@ class Looper(MenuClient, SongCtrl):
         update_ini_section("MENU", tmp)
 
     @staticmethod
-    def _update() -> None:
+    def _looper_update() -> None:
         os.system("git reset --hard; clear; git pull")
         time.sleep(5)
 
