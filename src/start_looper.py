@@ -3,7 +3,6 @@ from multiprocessing import Process, Queue
 
 from control.looper import Looper
 from mvc.countmidicontrol import CountMidiControl
-from mvc.menuclient import MenuClient
 from mvc.pyscreen import PyScreen
 from utils.utillog import MYLOG
 
@@ -23,7 +22,7 @@ def do_looper(q_looper: Queue, q_screen: Queue) -> None:
 def do_screen(q_screen: Queue) -> None:
     # noinspection PyBroadException
     try:
-        scr_view: MenuClient = PyScreen(q_screen)
+        scr_view = PyScreen(q_screen)
         scr_view.menu_client_start()
     except Exception as ex:
         MYLOG.exception(ex)

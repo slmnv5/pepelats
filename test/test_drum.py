@@ -6,7 +6,6 @@ from control.looper import Looper
 from song.loopsimple import LoopSimple
 from song.songpart import SongPart
 from utils.utilconfig import ConfigName
-from utils.utilconfig import SD_RATE
 
 
 def test_1():
@@ -66,8 +65,17 @@ def test_3():
     looper = Looper(queue1, queue2)
     looper.drum_create(100_000, drum_type="MidiDrum")
     drum = looper.get_drum()
-    drum.set_bar_len(SD_RATE * 2)
     bar_len = drum.get_bar_len()
-    assert bar_len == SD_RATE * 2
+    assert bar_len == 100_000
+    try:
+        drum.set_bar_len(200_000)
+        has_exception = False
+    except AssertionError:
+        has_exception = True
+    assert has_exception
     drum.start()
+    drum.randomize()
+    drum.play_fill(100_000)
+    drum.set_par(0.5)
+    drum.set_volume(0.5)
     drum.stop()

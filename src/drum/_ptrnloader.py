@@ -6,7 +6,7 @@ from random import randrange
 
 import numpy as np
 
-from drum.sampleloader import SampleLoader
+from drum._sampleloader import SampleLoader
 from utils.utilconfig import find_path
 from utils.utillog import MYLOG
 from utils.utilother import FileFinder

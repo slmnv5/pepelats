@@ -2,7 +2,7 @@ import os
 import time
 from multiprocessing import Queue
 
-from control.songctrl import SongCtrl
+from control._songctrl import SongCtrl
 from drum.bufferdrum import EuclidDrum, StyleDrum
 from drum.loopdrum import LoopDrum
 from drum.mididrum import MidiDrum

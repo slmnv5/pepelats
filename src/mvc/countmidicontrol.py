@@ -4,7 +4,7 @@ from threading import Timer
 import rtmidi.midiconstants
 
 from basic.midiinfo import KbdMidiIn, get_in_port
-from mvc.menuhost import MenuHost
+from mvc._menuhost import MenuHost
 from utils.utillog import MYLOG
 
 _CTRL = rtmidi.midiconstants.CONTROL_CHANGE
