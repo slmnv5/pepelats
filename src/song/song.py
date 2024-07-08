@@ -69,7 +69,7 @@ class Song(CollectionOwner[SongPart]):
         while self.item_count() > len(parts_lst):
             self.delete_selected()
 
-        self._ctrl.drum_create(bar_len, drum_info)
+        self._ctrl.drum_create(bar_len, **drum_info)
 
     def show_songs(self) -> str:
         return self._ff.get_str()

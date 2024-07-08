@@ -35,7 +35,7 @@ class SongPart(LoopSimple):
         base_len = bar_len if self.is_empty else max(bar_len, part_len)
         loop.finalize(ctrl.idx, base_len)
         if not bar_len:
-            ctrl.drum_create(ctrl.idx, dict())
+            ctrl.drum_create(ctrl.idx)
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
         self.loops.apply_to_each(lambda x: LoopSimple.play(x, out_data, idx))

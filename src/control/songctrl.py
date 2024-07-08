@@ -2,7 +2,6 @@ from abc import ABC
 from threading import Event, Thread
 
 from control.loopctrl import LoopCtrl
-from drum.basedrum import BaseDrum
 from song.loopsimple import LoopSimple
 from song.song import Song
 from song.songpart import SongPart
@@ -154,7 +153,7 @@ class SongCtrl(LoopCtrl, ABC):
         self._drum.stop()
         self._song_stop()
         self._song.clear()
-        self._drum = BaseDrum()
+        self._drum = self.drum_create(0)
 
     def _change_drum(self, drum_type: str) -> None:
         self._drum.stop()
@@ -163,7 +162,7 @@ class SongCtrl(LoopCtrl, ABC):
             self._drum_type = drum_type
             bar_len = self._drum.get_bar_len()
             if bar_len:
-                self.drum_create(bar_len, dict())
+                self.drum_create(bar_len)
 
     def _song_stop(self, wait: int = 0) -> None:
         self._set_is_rec(False)

@@ -3,7 +3,6 @@ from threading import Timer, Thread
 from time import sleep
 
 from control.looper import Looper
-from drum.drumfactory import create_drum
 from song.loopsimple import LoopSimple
 from song.songpart import SongPart
 from utils.utilconfig import ConfigName
@@ -63,7 +62,10 @@ def test_2():
 
 
 def test_3():
-    drum = create_drum(100_000, drum_type="MidiDrum")
+    queue1, queue2 = Queue(), Queue()
+    looper = Looper(queue1, queue2, ConfigName.EuclidDrum)
+    looper.drum_create(100_000, drum_type="MidiDrum")
+    drum = looper.get_drum()
     drum.set_bar_len(SD_RATE * 2)
     bar_len = drum.get_bar_len()
     assert bar_len == SD_RATE * 2

@@ -27,7 +27,7 @@ class LoopCtrl(ABC):
         pass
 
     @abstractmethod
-    def drum_create(self, bar_len: int, drum_info: dict[str, any]) -> None:
+    def drum_create(self, bar_len: int, **kwargs) -> None:
         pass
 
     def _song_stop(self, wait: int = 0) -> None:

@@ -3,9 +3,12 @@ import time
 from multiprocessing import Queue
 
 from control.songctrl import SongCtrl
-from drum.drumfactory import create_drum
+from drum.bufferdrum import EuclidDrum, StyleDrum
+from drum.loopdrum import LoopDrum
+from drum.mididrum import MidiDrum
 from mvc.menuclient import MenuClient
-from utils.utilconfig import ConfigName, load_ini_section, find_path, update_ini_section, SD_RATE
+from utils.utilconfig import ConfigName
+from utils.utilconfig import load_ini_section, find_path, update_ini_section, SD_RATE
 from utils.utillog import MYLOG
 from utils.utilother import DrawInfo, FileFinder
 
@@ -18,11 +21,31 @@ class Looper(MenuClient, SongCtrl):
         SongCtrl.__init__(self, drum_type)
         self.__send_q = send_q
 
-    def drum_create(self, bar_len: int, drum_info: dict[str, any]) -> None:
-        if ConfigName.drum_type not in drum_info:
-            drum_info[ConfigName.drum_type] = self._drum_type
-        drum_info[ConfigName.drum_song_part] = self._song.get_at_idx(0)
-        self._drum = create_drum(bar_len, **drum_info)
+    def drum_create(self, bar_len: int, **kwargs) -> None:
+        drum_type: str = kwargs.get(ConfigName.drum_type, ConfigName.StyleDrum)
+        if drum_type == ConfigName.EuclidDrum:
+            drum = EuclidDrum()
+        elif drum_type == ConfigName.StyleDrum:
+            drum = StyleDrum()
+        elif drum_type == ConfigName.MidiDrum:
+            drum = MidiDrum()
+        elif drum_type == ConfigName.LoopDrum:
+            drum = LoopDrum(kwargs.get(ConfigName.drum_song_part))
+        else:
+            raise RuntimeError(f"Unknown drum type: {drum_type}")
+
+        config: str = kwargs.get(ConfigName.drum_config)
+        drum.set_config(config)
+
+        volume: float = kwargs.get(ConfigName.drum_volume)
+        if volume:
+            drum.set_volume(volume)
+        par: float = kwargs.get(ConfigName.drum_par)
+        if par:
+            drum.set_par(par)
+
+        drum.set_bar_len(bar_len)
+        drum.randomize()
 
     def _update_view(self) -> None:
         self.menu_client_queue([ConfigName.menu_client_redraw, self._di])
