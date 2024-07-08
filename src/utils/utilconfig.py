@@ -43,6 +43,8 @@ class ConfigName:
     StyleDrum: str = "StyleDrum"
     MidiDrum: str = "MidiDrum"
     LoopDrum: str = "LoopDrum"
+    # saved sounds dict.
+    pickled_sounds: str = "pickled_sounds.pkl"
 
 
 def find_path(path_end: str) -> str:

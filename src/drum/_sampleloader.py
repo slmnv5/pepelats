@@ -5,7 +5,7 @@ import numpy as np
 
 from basic.audioinfo import correct_sound, AUDIO_INFO
 from utils.utilalsa import read_wav_slow
-from utils.utilconfig import find_path, SD_RATE
+from utils.utilconfig import find_path, SD_RATE, ConfigName
 from utils.utillog import MYLOG
 
 
@@ -26,27 +26,30 @@ class SampleLoader:
         self.__initialized = True
         # sound names and loaded sound samples
         self._sounds: dict[str, np.ndarray] = dict()
-        fname = find_path("config/drum/wav/pickled_sounds.pkl")
+        fname = find_path(ConfigName.pickled_sounds)
         if os.path.isfile(fname):
             with open(fname, 'rb') as f:
                 try:
                     self._sounds = pickle.load(f)
-                except pickle.UnpicklingError as ex:
+                    sound = self._sounds['bd']
+                    if sound.dtype != AUDIO_INFO.SD_TYPE:
+                        raise RuntimeError(f"Pickled sounds have wrong dtype: {sound.dtype}")
+                    if sound.shape[1] != AUDIO_INFO.SD_CH:
+                        raise RuntimeError(f"Pickled sounds have wrong channels: {sound.shape[1]}")
+                except Exception as ex:
+                    self._sounds = dict()
                     MYLOG.error(ex)
 
         if not self._sounds:
-            self._sounds = self._load_audio_samples(find_path("config/drum/wav"))
-            dname = find_path("config/drum/wav")
-            assert os.path.isdir(dname)
-            fname = dname + os.sep + "pickled_sounds.pkl"
+            self._sounds = self._load_audio_samples(find_path(ConfigName.drum_config))
             try:
                 with open(fname, 'wb') as f:
                     pickle.dump(self._sounds, f)
             except pickle.PicklingError as ex:
                 MYLOG.error(ex)
-            MYLOG.info("Loaded drum sounds from WAV file")
+            MYLOG.warning("Loaded drum sounds from WAV file")
         else:
-            MYLOG.info("Loaded drum sounds from pickle file")
+            MYLOG.warning("Loaded drum sounds from pickle file")
 
         maximum: dict[str, float] = {k: round(v.max() / AUDIO_INFO.MAX_SD_TYPE, 2) for k, v in self._sounds.items()}
         variance: dict[str, float] = {k: round(1000 * v.var() / (AUDIO_INFO.MAX_SD_TYPE ** 2), 2) for k, v in
