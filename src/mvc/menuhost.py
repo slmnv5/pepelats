@@ -21,7 +21,7 @@ class MenuHost:
         self._menu_loader = _MenuLoader(dname)
         self._di = DrawInfo()
         self.__queue = queue
-        self._update_menu(ConfigName.play_section)
+        self._menu_update(ConfigName.play_section)
         self.__queue.put([ConfigName.menu_client_redraw, self._di])
         self.min_velo = MidiInfo().MIDI_MIN_VELO
         self.std_velo = MidiInfo().MIDI_STD_VELO
@@ -38,7 +38,7 @@ class MenuHost:
                 break
         MYLOG.info(f"{self.__class__.__name__} stop working as MenuHost")
 
-    def _update_menu(self, fname: str):
+    def _menu_update(self, fname: str):
         self._menu_loader.update_menu(fname)
         self._di.description = self._menu_loader.get(ConfigName.description)
         self._di.update_method = self._menu_loader.get(ConfigName.update_method)
@@ -67,11 +67,11 @@ class MenuHost:
     def __process_list(self, cmd: list) -> None:
         if not (cmd and isinstance(cmd, list)):
             return
-        elif cmd[0] == "_update_menu":
-            self._update_menu(cmd[1])
-        elif cmd[0] == "_prev_section":
+        elif cmd[0] == "_menu_update":
+            self._menu_update(cmd[1])
+        elif cmd[0] == "_menu_prev_section":
             self._update_section(False)
-        elif cmd[0] == "_next_section":
+        elif cmd[0] == "_menu_next_section":
             self._update_section(True)
         else:
             for k in range(1, len(cmd)):
