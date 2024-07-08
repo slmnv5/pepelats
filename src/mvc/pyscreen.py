@@ -92,12 +92,12 @@ class PyScreen(MenuClient):
                 self._di.max_loop_position += 1.0 / _UPDATES_PER_LOOP / self._di.max_loop_factor
                 if self._di.max_loop_position >= 1:
                     self._di.max_loop_position = 0
-                pos2 = round(self._di.max_loop_position * SCR_COLS)
+                pos2 = round(self._di.max_loop_position * SCR_COLS)  # shown by blue color
 
-            pos1 = round(self._di.loop_position * SCR_COLS)
+            pos1 = round(self._di.loop_position * SCR_COLS)  # shown by inverse background
             if pos2 > pos1:
                 line = (get_color_str(_BLUE, _WHITE) + line[:pos1] +
-                        get_color_str(_BLACK, _WHITE) + line[pos1:pos2] +
+                        get_color_str(_BLUE, _BLACK) + line[pos1:pos2] +
                         get_color_str(_WHITE, _BLACK) + line[pos2:])
             else:
                 line = (get_color_str(_BLUE, _WHITE) + line[:pos2] +
