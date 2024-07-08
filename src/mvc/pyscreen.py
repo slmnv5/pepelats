@@ -5,11 +5,11 @@ from textwrap import wrap
 from threading import Thread
 
 from mvc.menuclient import MenuClient
-from utils.utilconfig import KEEP_SCREEN, SCR_COLS
+from utils.utilconfig import SCR_COLS
 from utils.utilother import DrawInfo
 
 if os.name == "posix":
-    _UPDATES_PER_LOOP: float = 16
+    _UPDATES_PER_LOOP: float = 16.0
 else:
     _UPDATES_PER_LOOP: float = 0.01
 
@@ -23,6 +23,9 @@ _BLUE_COLOR: str = '\x1b[1;34m'
 
 _REVERSE_COLOR: str = '\x1b[7m'
 _END_REVERSE: str = '\x1b[27m'
+
+_UNDER_LINE: str = '\x1b[4m'
+_UNDER_END: str = '\x1b[24m'
 
 
 def get_with_color(line: str, is_rec: bool) -> str:
@@ -44,22 +47,18 @@ class PyScreen(MenuClient):
     def __init__(self, q: Queue):
         MenuClient.__init__(self, q)
         self._di = DrawInfo()
-        self._line1: str = ''
-        self._line2: str = ''
         Thread(target=self.__updater, name="updater", daemon=True).start()
 
     def _menu_client_redraw(self, draw_info: DrawInfo) -> None:
         self._di = draw_info
-        self._line1 = draw_info.header[:SCR_COLS].center(SCR_COLS)
+        self._di.header = self._di.header[:SCR_COLS].center(SCR_COLS)
 
-        print("\033[2;1H", end='')  # move cursor to line and position
-        if not KEEP_SCREEN:
-            print("\033[0J", end="")  # clear from cursor to end of screen
+        print(f"\033[1;1H{self._di.header}")  # move cursor to line=1 and pos=1
 
-        lst: list[str] = wrap(draw_info.description, SCR_COLS)
-        self._line2 = lst[0].ljust(SCR_COLS)
+        lines: list[str] = wrap(draw_info.description, SCR_COLS)
+        lines = [x.ljust(SCR_COLS) for x in lines]
+        print('\n'.join(lines))
 
-        print('\n'.join(lst), sep='')
         lines = draw_info.content.split('\n')
         for line in lines:
             line = line[:SCR_COLS]
@@ -73,14 +72,16 @@ class PyScreen(MenuClient):
             self._di.loop_position += 1.0 / _UPDATES_PER_LOOP
             if self._di.loop_position >= 1.0:
                 self._di.loop_position = 0.0
-            pos = round(self._di.loop_position * SCR_COLS)
-            progress_line = _REVERSE_COLOR + self._line1[:pos] + _END_REVERSE + self._line1[pos:]
 
+            line = self._di.header
             if self._di.max_loop_factor > 1:
                 self._di.max_loop_position += 1.0 / _UPDATES_PER_LOOP / self._di.max_loop_factor
                 if self._di.max_loop_position >= 1:
                     self._di.max_loop_position = 0
                 pos = round(self._di.max_loop_position * SCR_COLS)
-                progress_line += '\n' + _REVERSE_COLOR + self._line2[:pos] + _END_REVERSE + self._line2[pos:]
+                line = _UNDER_LINE + line[:pos] + _UNDER_END + line[pos:]
 
-            print(f"\033[1;1H{progress_line}", end='', flush=True)
+            pos = round(self._di.loop_position * SCR_COLS)
+            line = _REVERSE_COLOR + line[:pos] + _END_REVERSE + line[pos:]
+
+            print(f"\033[1;1H{line}", end='', flush=True)
