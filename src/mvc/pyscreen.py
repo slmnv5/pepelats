@@ -68,7 +68,7 @@ class PyScreen(MenuClient):
             print("\033[0J", end="")  # clear from cursor to end of screen
 
         lst: list[str] = wrap(draw_info.description, _COLS)
-        self._line2 = lst[0]
+        self._line2 = lst[0].center(_COLS)
 
         print(_BLUE_COLOR, '\n'.join(lst), _END_ALL, sep='')
         lines = draw_info.content.split('\n')
@@ -90,7 +90,7 @@ class PyScreen(MenuClient):
                 if self._di.max_loop_position >= 1:
                     self._di.max_loop_position = 0
                 pos = round(self._di.max_loop_position * _COLS)
-                line = _REVERSE_COLOR + self._line2[:pos] + _END_REVERSE + self._line2[pos:]
+                line = _REVERSE_COLOR + _BLUE_COLOR + self._line2[:pos] + _END_REVERSE + self._line2[pos:] + _END_ALL
                 print(f"\033[2;1H{line}", end='')
 
             pos = round(self._di.loop_position * _COLS)
