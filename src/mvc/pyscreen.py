@@ -39,9 +39,6 @@ def get_with_color(line: str, is_rec: bool) -> str:
         return line
 
 
-# print("\033c", end="")
-
-
 class PyScreen(MenuClient):
 
     def __init__(self, q: Queue):
@@ -76,15 +73,14 @@ class PyScreen(MenuClient):
             self._di.loop_position += 1.0 / _UPDATES_PER_LOOP
             if self._di.loop_position >= 1.0:
                 self._di.loop_position = 0.0
+            pos = round(self._di.loop_position * SCR_COLS)
+            progress_line = _REVERSE_COLOR + self._line1[:pos] + _END_REVERSE + self._line1[pos:]
 
             if self._di.max_loop_factor > 1:
                 self._di.max_loop_position += 1.0 / _UPDATES_PER_LOOP / self._di.max_loop_factor
                 if self._di.max_loop_position >= 1:
                     self._di.max_loop_position = 0
                 pos = round(self._di.max_loop_position * SCR_COLS)
-                line = _REVERSE_COLOR + self._line2[:pos] + _END_REVERSE + self._line2[pos:]
-                print(f"\033[2;1H{line}", end='')
+                progress_line += '\n' + _REVERSE_COLOR + self._line2[:pos] + _END_REVERSE + self._line2[pos:]
 
-            pos = round(self._di.loop_position * SCR_COLS)
-            line = _REVERSE_COLOR + self._line1[:pos] + _END_REVERSE + self._line1[pos:]
-            print(f"\033[1;1H{line}", end='', flush=True)
+            print(f"\033[1;1H{progress_line}", end='', flush=True)
