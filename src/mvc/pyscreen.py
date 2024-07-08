@@ -28,9 +28,9 @@ def get_color_str(fg_color_id: int, bk_color_id: int) -> str:
     if fg_color_id and not bk_color_id:
         return f"\x1b[{fg_color_id}m"
     elif not fg_color_id and bk_color_id:
-        return f"\x1b[{fg_color_id + 10}m"
+        return f"\x1b[{bk_color_id + 10}m"
     else:
-        return f"\x1b[{fg_color_id};{fg_color_id + 10}m"
+        return f"\x1b[{fg_color_id};{bk_color_id + 10}m"
 
 
 _END_ALL: str = '\x1b[0m'
