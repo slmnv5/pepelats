@@ -51,6 +51,3 @@ class MyLog:
 
     def exception(self, msg):
         self._logger.exception(msg)
-
-
-MYLOG11111111111111111111 = MyLog()
