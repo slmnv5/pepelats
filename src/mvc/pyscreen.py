@@ -24,8 +24,8 @@ _BLUE_COLOR: str = '\x1b[1;34m'
 _REVERSE_COLOR: str = '\x1b[7m'
 _END_REVERSE: str = '\x1b[27m'
 
-_UNDER_LINE: str = '\x1b[4m'
-_UNDER_END: str = '\x1b[24m'
+_UNDER_LINE: str = '\x1b[9m'
+_UNDER_END: str = '\x1b[29m'
 
 
 def get_with_color(line: str, is_rec: bool) -> str:
@@ -61,7 +61,7 @@ class PyScreen(MenuClient):
 
         lines = draw_info.content.split('\n')
         for line in lines:
-            line = get_with_color(line, draw_info.is_rec)
+            line = get_with_color(line.ljust(SCR_COLS), draw_info.is_rec)
             print(line)
         print('\x1b[0J', end='')
 
