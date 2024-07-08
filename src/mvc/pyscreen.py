@@ -60,7 +60,7 @@ class PyScreen(MenuClient):
             print("\033[0J", end="")  # clear from cursor to end of screen
 
         lst: list[str] = wrap(draw_info.description, SCR_COLS)
-        self._line2 = lst[0].center(SCR_COLS)
+        self._line2 = lst[0].ljust(SCR_COLS)
 
         print('\n'.join(lst), sep='')
         lines = draw_info.content.split('\n')
