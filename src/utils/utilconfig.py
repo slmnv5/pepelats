@@ -46,7 +46,7 @@ class ConfigName:
 
 
 def find_path(path_end: str) -> str:
-    """Find file or dir. creates one if missing"""
+    """ Find file or dir. """
     tmp1 = os.getcwd() + os.sep + path_end
     pos = tmp1.find(APP_DIR)
     if pos >= 0:

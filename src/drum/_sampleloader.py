@@ -1,4 +1,5 @@
 import os
+import pickle
 
 import numpy as np
 
@@ -24,7 +25,29 @@ class SampleLoader:
             return
         self.__initialized = True
         # sound names and loaded sound samples
-        self._sounds: dict[str, np.ndarray] = self._load_audio_samples(find_path("config/drum/wav"))
+        self._sounds: dict[str, np.ndarray] = dict()
+        fname = find_path("config/drum/wav/pickled_sounds.pkl")
+        if os.path.isfile(fname):
+            with open(fname, 'rb') as f:
+                try:
+                    self._sounds = pickle.load(f)
+                except pickle.UnpicklingError as ex:
+                    MYLOG.error(ex)
+
+        if not self._sounds:
+            self._sounds = self._load_audio_samples(find_path("config/drum/wav"))
+            dname = find_path("config/drum/wav")
+            assert os.path.isdir(dname)
+            fname = dname + os.sep + "pickled_sounds.pkl"
+            try:
+                with open(fname, 'wb') as f:
+                    pickle.dump(self._sounds, f)
+            except pickle.PicklingError as ex:
+                MYLOG.error(ex)
+            MYLOG.info("Loaded drum sounds from WAV file")
+        else:
+            MYLOG.info("Loaded drum sounds from pickle file")
+
         maximum: dict[str, float] = {k: round(v.max() / AUDIO_INFO.MAX_SD_TYPE, 2) for k, v in self._sounds.items()}
         variance: dict[str, float] = {k: round(1000 * v.var() / (AUDIO_INFO.MAX_SD_TYPE ** 2), 2) for k, v in
                                       self._sounds.items()}
