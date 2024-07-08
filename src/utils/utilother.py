@@ -116,8 +116,8 @@ class FileFinder(CollectionOwner[str]):
         self.__dir: str = dname
         self.__is_file = is_file
 
-        lst: list[str] = [x for x in filter(self.__match, os.listdir(self.__dir))]
-        lst.sort(key=lambda x: os.path.getmtime(self.__dir + os.sep + x))
+        lst: list[str] = [x for x in os.listdir(self.__dir) if self.__match(x)]
+        lst.sort()
 
         if not lst:
             lst.append("")
