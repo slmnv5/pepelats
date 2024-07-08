@@ -1,6 +1,6 @@
 import numpy as np
 
-from basic.audioinfo import correct_sound, AUDIO_INFO
+from basic.audioinfo import correct_sound, AudioInfo
 from utils.utilconfig import MAX_LEN
 from utils.utillog import MYLOG
 from utils.utilnumpy import from_buff_to_data, from_data_to_buff
@@ -15,7 +15,7 @@ class WrapBuffer:
         self.__len_ratio: float = 0
         self.__is_reverse: bool = False
         self.__is_silent: bool = False
-        self.__buff: np.ndarray = np.zeros((sz, AUDIO_INFO.SD_CH), AUDIO_INFO.SD_TYPE)
+        self.__buff: np.ndarray = np.zeros((sz, AudioInfo().SD_CH), AudioInfo().SD_TYPE)
         self.__info_str: str = ""
         self.__props_str: str = ""
 
@@ -23,7 +23,7 @@ class WrapBuffer:
         if self.is_empty:
             return ""
         if not self.__info_str:
-            self.__info_str = f"V:{AUDIO_INFO.vol_db(self.__buff):03}db"
+            self.__info_str = f"V:{AudioInfo().vol_db(self.__buff):03}db"
             tmp: str
             if self.__len_ratio == 0:
                 tmp = " L:    "
@@ -40,7 +40,7 @@ class WrapBuffer:
         return self.__info_str + self.__props_str
 
     def correct_buffer(self) -> None:
-        self.__buff = correct_sound(self.__buff, AUDIO_INFO.SD_CH, AUDIO_INFO.SD_TYPE)
+        self.__buff = correct_sound(self.__buff, AudioInfo().SD_CH, AudioInfo().SD_TYPE)
 
     def flip_reverse(self) -> None:
         self.__is_reverse = not self.__is_reverse

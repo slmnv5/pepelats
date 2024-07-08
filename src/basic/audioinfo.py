@@ -8,7 +8,7 @@ from utils.utillog import MYLOG
 
 
 def make_buffer(sz: int) -> np.ndarray:
-    return np.zeros((sz, AUDIO_INFO.SD_CH), AUDIO_INFO.SD_TYPE)
+    return np.zeros((sz, AudioInfo().SD_CH), AudioInfo().SD_TYPE)
 
 
 def correct_sound(x: np.ndarray, channels: int, data_type: str) -> np.ndarray:
@@ -18,13 +18,13 @@ def correct_sound(x: np.ndarray, channels: int, data_type: str) -> np.ndarray:
     if x.ndim == 1:
         MYLOG.error(f"Re-shaping one dimensional array, shape: {x.shape}")
         x = x.reshape(-1, 1)
-    if x.dtype != AUDIO_INFO.SD_TYPE:
-        MYLOG.warning(f"Correcting array type: {x.dtype} to {AUDIO_INFO.SD_TYPE}")
+    if x.dtype != AudioInfo().SD_TYPE:
+        MYLOG.warning(f"Correcting array type: {x.dtype} to {AudioInfo().SD_TYPE}")
         factor = get_conversion_factor(x.dtype, data_type)
         x = (x * factor).astype(data_type)
 
-    if x.shape[1] != AUDIO_INFO.SD_CH:
-        MYLOG.warning(f"Correcting basic channels: {x.shape[1]} to {AUDIO_INFO.SD_CH}")
+    if x.shape[1] != AudioInfo().SD_CH:
+        MYLOG.warning(f"Correcting basic channels: {x.shape[1]} to {AudioInfo().SD_CH}")
         if x.shape[1] < channels:
             x = np.column_stack((x, x))
         elif x.shape[1] > channels:
@@ -111,6 +111,3 @@ class AudioInfo:
     def vol_db(self, arr: np.ndarray) -> int:
         ratio = max(0.0001, np.max(arr, initial=0) / self.MAX_SD_TYPE)
         return round(20 * log10(ratio))
-
-
-AUDIO_INFO = AudioInfo()
