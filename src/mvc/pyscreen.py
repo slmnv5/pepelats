@@ -96,11 +96,11 @@ class PyScreen(MenuClient):
 
             pos1 = round(self._di.loop_position * SCR_COLS)  # shown by inverse background
             if pos2 > pos1:
-                line = (get_color_str(_BLUE, _WHITE) + line[:pos1] +
-                        get_color_str(_BLUE, _BLACK) + line[pos1:pos2] +
+                line = (get_color_str(_YELLOW, _WHITE) + line[:pos1] +
+                        get_color_str(_YELLOW, _BLACK) + line[pos1:pos2] +
                         _END_ALL + line[pos2:])
             else:
-                line = (get_color_str(_BLUE, _WHITE) + line[:pos2] +
+                line = (get_color_str(_YELLOW, _WHITE) + line[:pos2] +
                         get_color_str(_BLACK, _WHITE) + line[pos2:pos1] +
                         _END_ALL + line[pos1:])
 
