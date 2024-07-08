@@ -93,5 +93,5 @@ class PyScreen(MenuClient):
                 line = line[:pos] + '▒' + line[pos + 1:]
 
             pos = round(self._di.loop_position * SCR_COLS)  # shown by inverse background
-            line = _REVERSE_COLOR + line[pos:] + _END_ALL + line[pos]
+            line = _REVERSE_COLOR + line[:pos] + _END_ALL + line[pos:]
             print(f"\033[1;1H{line}", end='', flush=True)
