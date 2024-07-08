@@ -151,10 +151,12 @@ class SongCtrl(LoopCtrl, ABC):
         self._song.iterate_song(steps)
 
     def _song_init(self) -> None:
-        self._drum.stop()
         self._song_stop()
         self._song.clear()
-        self._drum = self.drum_create(0)
+        drum_info = {ConfigName.drum_config: self._drum.get_config(),
+                     ConfigName.drum_volume: self._drum.get_volume(),
+                     ConfigName.drum_par: self._drum.get_par()}
+        self.drum_create(0, **drum_info)
 
     def _change_drum(self, drum_type: str) -> None:
         self._drum.stop()

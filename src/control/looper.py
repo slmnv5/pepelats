@@ -20,9 +20,11 @@ class Looper(MenuClient, SongCtrl):
         MenuClient.__init__(self, recv_q)
         SongCtrl.__init__(self)
         self.__send_q = send_q
+        self.drum_create(0)
 
     def drum_create(self, bar_len: int, **kwargs) -> None:
-        drum_type: str = kwargs.get(ConfigName.drum_type, ConfigName.StyleDrum)
+        drum_type: str = kwargs.get(ConfigName.drum_type, self._drum.get_class_name())
+
         if drum_type == ConfigName.EuclidDrum:
             self._drum = EuclidDrum()
         elif drum_type == ConfigName.StyleDrum:
@@ -32,19 +34,18 @@ class Looper(MenuClient, SongCtrl):
         elif drum_type == ConfigName.LoopDrum:
             self._drum = LoopDrum(self._song.get_at_idx(0))
         else:
-            raise RuntimeError(f"Unknown drum type: {drum_type}")
+            self._drum = StyleDrum()
 
         config: str = kwargs.get(ConfigName.drum_config)
         self._drum.set_config(config)
-
-        volume: float = kwargs.get(ConfigName.drum_volume)
+        volume = kwargs.get(ConfigName.drum_volume)
         if volume:
             self._drum.set_volume(volume)
-        par: float = kwargs.get(ConfigName.drum_par)
+        par = kwargs.get(ConfigName.drum_par)
         if par:
             self._drum.set_par(par)
-
-        self._drum.set_bar_len(bar_len)
+        if bar_len:
+            self._drum.set_bar_len(bar_len)
 
     def _update_view(self) -> None:
         self.menu_client_queue([ConfigName.menu_client_redraw, self._di])
