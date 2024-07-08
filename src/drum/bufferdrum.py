@@ -67,6 +67,7 @@ class BufferDrum(BaseDrum, ABC):
         self.start()
 
     def _regenerate(self) -> None:
+        """ re-generate patterns after smth changed - volume, par, etc"""
         save_stop = self._is_stopped
         self.stop()
         self._pm.prepare_patterns(self._bar_len, self._volume, self._par)
