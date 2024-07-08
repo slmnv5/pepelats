@@ -16,36 +16,36 @@ from utils.utilother import DrawInfo, FileFinder
 class Looper(MenuClient, SongCtrl):
     """Adds screen connection, Mixer, looper commands"""
 
-    def __init__(self, recv_q: Queue, send_q: Queue, drum_type: str):
+    def __init__(self, recv_q: Queue, send_q: Queue):
         MenuClient.__init__(self, recv_q)
-        SongCtrl.__init__(self, drum_type)
+        SongCtrl.__init__(self)
         self.__send_q = send_q
 
     def drum_create(self, bar_len: int, **kwargs) -> None:
         drum_type: str = kwargs.get(ConfigName.drum_type, ConfigName.StyleDrum)
         if drum_type == ConfigName.EuclidDrum:
-            drum = EuclidDrum()
+            self._drum = EuclidDrum()
         elif drum_type == ConfigName.StyleDrum:
-            drum = StyleDrum()
+            self._drum = StyleDrum()
         elif drum_type == ConfigName.MidiDrum:
-            drum = MidiDrum()
+            self._drum = MidiDrum()
         elif drum_type == ConfigName.LoopDrum:
-            drum = LoopDrum(kwargs.get(ConfigName.drum_song_part))
+            self._drum = LoopDrum(self._song.get_at_idx(0))
         else:
             raise RuntimeError(f"Unknown drum type: {drum_type}")
 
         config: str = kwargs.get(ConfigName.drum_config)
-        drum.set_config(config)
+        self._drum.set_config(config)
 
         volume: float = kwargs.get(ConfigName.drum_volume)
         if volume:
-            drum.set_volume(volume)
+            self._drum.set_volume(volume)
         par: float = kwargs.get(ConfigName.drum_par)
         if par:
-            drum.set_par(par)
+            self._drum.set_par(par)
 
-        drum.set_bar_len(bar_len)
-        drum.randomize()
+        self._drum.set_bar_len(bar_len)
+        self._drum.randomize()
 
     def _update_view(self) -> None:
         self.menu_client_queue([ConfigName.menu_client_redraw, self._di])

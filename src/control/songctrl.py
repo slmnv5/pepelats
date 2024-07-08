@@ -5,14 +5,15 @@ from control.loopctrl import LoopCtrl
 from song.loopsimple import LoopSimple
 from song.song import Song
 from song.songpart import SongPart
+from utils.utilconfig import ConfigName
 
 
 class SongCtrl(LoopCtrl, ABC):
     """added playback thread and Song.
      Song is collection of song parts with related methods"""
 
-    def __init__(self, drum_type: str):
-        LoopCtrl.__init__(self, drum_type)
+    def __init__(self):
+        LoopCtrl.__init__(self)
         self._song: Song = Song(self)
         self.__next_id: int = 0
         self.__play_event: Event = Event()
@@ -158,11 +159,10 @@ class SongCtrl(LoopCtrl, ABC):
     def _change_drum(self, drum_type: str) -> None:
         self._drum.stop()
         self._song_stop()
-        if drum_type != self._drum_type:
-            self._drum_type = drum_type
+        if drum_type != self._drum.get_class_name():
             bar_len = self._drum.get_bar_len()
-            if bar_len:
-                self.drum_create(bar_len)
+            drum_info = {ConfigName.drum_type: drum_type, ConfigName.drum_volume: self._drum.get_volume()}
+            self.drum_create(bar_len, **drum_info)
 
     def _song_stop(self, wait: int = 0) -> None:
         self._set_is_rec(False)

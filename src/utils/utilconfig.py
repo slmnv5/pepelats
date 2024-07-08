@@ -30,7 +30,6 @@ class ConfigName:
     drum_config: str = "drum_config"
     drum_volume: str = "drum_volume"
     drum_par: str = "drum_par"
-    drum_song_part: str = "drum_song_part"
     # drum types
     EuclidDrum: str = "EuclidDrum"
     StyleDrum: str = "StyleDrum"

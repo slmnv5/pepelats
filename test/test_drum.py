@@ -11,7 +11,7 @@ from utils.utilconfig import SD_RATE
 
 def test_1():
     queue1, queue2 = Queue(), Queue()
-    looper = Looper(queue1, queue2, ConfigName.StyleDrum)
+    looper = Looper(queue1, queue2)
     t = Thread(target=looper.menu_client_start, name="process queue", args=[])
     t.start()  # start processing message queue
 
@@ -37,7 +37,7 @@ def test_1():
 
 def test_2():
     queue1, queue2 = Queue(), Queue()
-    looper = Looper(queue1, queue2, ConfigName.EuclidDrum)
+    looper = Looper(queue1, queue2)
     t = Thread(target=looper.menu_client_start, name="process queue", args=[])
     t.start()  # start processing message queue
 
@@ -63,7 +63,7 @@ def test_2():
 
 def test_3():
     queue1, queue2 = Queue(), Queue()
-    looper = Looper(queue1, queue2, ConfigName.EuclidDrum)
+    looper = Looper(queue1, queue2)
     looper.drum_create(100_000, drum_type="MidiDrum")
     drum = looper.get_drum()
     drum.set_bar_len(SD_RATE * 2)

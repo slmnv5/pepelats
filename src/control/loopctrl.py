@@ -11,9 +11,8 @@ class LoopCtrl(ABC):
     # 5k is about 0.1 second. May be late by this time without going to next full cycle
     _LATE_SAMPLES: int = 5000
 
-    def __init__(self, drum_type: str):
+    def __init__(self):
         self.idx: int = 0
-        self._drum_type: str = drum_type
         self._drum: BaseDrum = BaseDrum()
         self.__is_rec: bool = False
         self.__stop_len: int = 0
