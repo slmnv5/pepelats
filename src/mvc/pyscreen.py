@@ -5,21 +5,13 @@ from textwrap import wrap
 from threading import Thread
 
 from mvc.menuclient import MenuClient
-from utils.utilconfig import KEEP_SCREEN
-from utils.utillog import MYLOG
+from utils.utilconfig import KEEP_SCREEN, SCR_COLS
 from utils.utilother import DrawInfo
 
 if os.name == "posix":
     _UPDATES_PER_LOOP: float = 16
 else:
     _UPDATES_PER_LOOP: float = 0.01
-
-try:
-    _COLS, _ROWS = os.get_terminal_size()
-except OSError:
-    _COLS, _ROWS = 30, 10
-
-MYLOG.info(f"Text screen size: cols={_COLS} rows={_ROWS}")
 
 # foreground, background ends with '40m'
 _END_ALL: str = '\x1b[0m'
@@ -61,19 +53,19 @@ class PyScreen(MenuClient):
 
     def _menu_client_redraw(self, draw_info: DrawInfo) -> None:
         self._di = draw_info
-        self._line1 = draw_info.header[:_COLS].center(_COLS)
+        self._line1 = draw_info.header[:SCR_COLS].center(SCR_COLS)
 
         print("\033[2;1H", end='')  # move cursor to line and position
         if not KEEP_SCREEN:
             print("\033[0J", end="")  # clear from cursor to end of screen
 
-        lst: list[str] = wrap(draw_info.description, _COLS)
-        self._line2 = lst[0].center(_COLS)
+        lst: list[str] = wrap(draw_info.description, SCR_COLS)
+        self._line2 = lst[0].center(SCR_COLS)
 
         print('\n'.join(lst), sep='')
         lines = draw_info.content.split('\n')
         for line in lines:
-            line = line[:_COLS]
+            line = line[:SCR_COLS]
             line = get_with_color(line, draw_info.is_rec)
             print(line)
 
@@ -89,10 +81,10 @@ class PyScreen(MenuClient):
                 self._di.max_loop_position += 1.0 / _UPDATES_PER_LOOP / self._di.max_loop_factor
                 if self._di.max_loop_position >= 1:
                     self._di.max_loop_position = 0
-                pos = round(self._di.max_loop_position * _COLS)
+                pos = round(self._di.max_loop_position * SCR_COLS)
                 line = _REVERSE_COLOR + self._line2[:pos] + _END_REVERSE + self._line2[pos:]
                 print(f"\033[2;1H{line}", end='')
 
-            pos = round(self._di.loop_position * _COLS)
+            pos = round(self._di.loop_position * SCR_COLS)
             line = _REVERSE_COLOR + self._line1[:pos] + _END_REVERSE + self._line1[pos:]
             print(f"\033[1;1H{line}", end='', flush=True)

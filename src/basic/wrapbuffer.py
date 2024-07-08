@@ -21,7 +21,7 @@ class WrapBuffer:
 
     def __str__(self):
         if self.is_empty:
-            return "---------------"
+            return ""
         if not self.__info_str:
             self.__info_str = f"V:{AUDIO_INFO.vol_db(self.__buff):03}db"
             tmp: str

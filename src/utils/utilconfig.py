@@ -5,6 +5,14 @@ from configparser import ConfigParser
 from utils.utillog import MYLOG
 
 APP_DIR = os.sep + 'pepelats'
+SCR_COLS: int
+SCR_ROWS: int
+try:
+    SCR_COLS, SCR_ROWS = os.get_terminal_size()
+except OSError:
+    SCR_COLS, SCR_ROWS = 30, 10
+
+MYLOG.info(f"Text screen size: cols={SCR_COLS} rows={SCR_ROWS}")
 
 
 class ConfigName:

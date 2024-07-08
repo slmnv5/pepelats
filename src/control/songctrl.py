@@ -5,7 +5,7 @@ from control.loopctrl import LoopCtrl
 from song.loopsimple import LoopSimple
 from song.song import Song
 from song.songpart import SongPart
-from utils.utilconfig import ConfigName
+from utils.utilconfig import ConfigName, SCR_COLS
 
 
 class SongCtrl(LoopCtrl, ABC):
@@ -24,10 +24,10 @@ class SongCtrl(LoopCtrl, ABC):
 
     def _show_loops(self) -> str:
         part = self._song.get_item()
-        return part.loops.get_str()
+        return part.loops.get_str(pad_str='-', pad_cols=SCR_COLS)
 
     def _show_parts(self) -> str:
-        return self._song.get_str(self.__next_id)
+        return self._song.get_str(self.__next_id, '-', pad_cols=SCR_COLS)
 
     def __play_loop(self) -> None:
         """runs in a thread, play and record current song part"""

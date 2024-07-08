@@ -6,7 +6,7 @@ from utils.utilconfig import HUGE_INT
 T = TypeVar('T')
 
 
-def _stable_sub_list(idx: int, items: list[any], sub_list_size: int) -> list[tuple[str, int]]:
+def _stable_sub_list(idx: int, items: list[any], sub_list_size: int) -> list[tuple[int, str]]:
     """ Sub list of elements surrounding one item at position = idx.
     If item's idx changes sub list stays the same if item is still included in the sub list.
     Otherwise, new sub list including item returned """
@@ -19,7 +19,7 @@ def _stable_sub_list(idx: int, items: list[any], sub_list_size: int) -> list[tup
     else:
         tmp: list[int] = [*range(start_idx, items_len), *range(0, stop_idx % items_len)]
 
-    return [(f"{k:02} {items[k]}", k) for k in tmp]
+    return [(k, items[k]) for k in tmp]
 
 
 class DrawInfo:
@@ -91,18 +91,19 @@ class CollectionOwner(Generic[T]):
         self.__idx = 0
         return item
 
-    def get_str(self, next_idx: int = None) -> str:
-        item_sub_list: list[tuple[str, int]] = _stable_sub_list(self.__idx, self.__items, 5)
-        tmp: str = ""
-        for (s, k) in item_sub_list:
+    def get_str(self, next_idx: int = None, pad_str: str = None, pad_cols: int = None) -> str:
+        item_sub_list = _stable_sub_list(self.__idx, self.__items, 5)
+        tmp: list[str] = list()
+        for (k, s) in item_sub_list:
             if k == self.__idx:
-                tmp += f"*{s}\n"
+                tmp.append(f"*{k:02} {s}")
             elif k == next_idx:
-                tmp += f"~{s}\n"
+                tmp.append(f"~{k:02} {s}")
             else:
-                tmp += f"-{s}\n"
-
-        return tmp[:-1]
+                tmp.append(f"-{k:02} {s}")
+        if pad_cols and pad_str:
+            tmp = [x.ljust(pad_cols, pad_str) for x in tmp]
+        return '\n'.join(tmp)
 
     def iterate(self, steps: int = 1) -> None:
         self.__idx += steps
