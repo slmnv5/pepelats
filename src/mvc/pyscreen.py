@@ -13,7 +13,7 @@ if os.name == "posix":
 else:
     _UPDATES_PER_LOOP: float = 0.01
 
-_BLACK = 30
+_BLACK = 4
 _RED = 31
 _GREEN = 32
 _YELLOW = 33
