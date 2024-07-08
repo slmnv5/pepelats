@@ -71,7 +71,7 @@ class Song(CollectionOwner[SongPart]):
 
         self._ctrl.drum_create(bar_len, **drum_info)
 
-    def show_songs(self) -> str:
+    def show_list(self) -> str:
         return self._ff.get_str()
 
     def delete_song(self) -> None:

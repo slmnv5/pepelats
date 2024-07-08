@@ -130,6 +130,7 @@ class SongCtrl(LoopCtrl, ABC):
         # ================= song methods =============================
 
     def _song_delete(self) -> None:
+        self._drum.stop()
         self._song_stop()
         self._song.delete_song()
 
@@ -138,19 +139,21 @@ class SongCtrl(LoopCtrl, ABC):
         self._song.load_song()
 
     def _song_save(self) -> None:
+        self._drum.stop()
         self._song_stop()
         self._song.save_song()
 
-    def _song_name(self) -> str:
+    def _song_show_name(self) -> str:
         return self._song.get_complete_name()
 
-    def _song_list(self) -> str:
-        return self._song.show_songs()
+    def _song_show_list(self) -> str:
+        return self._song.show_list()
 
     def _song_iterate(self, steps: int) -> None:
         self._song.iterate_song(steps)
 
     def _song_init(self) -> None:
+        self._drum.stop()
         self._song_stop()
         self._song.clear()
         drum_info = {ConfigName.drum_config: self._drum.get_config(),
@@ -158,12 +161,14 @@ class SongCtrl(LoopCtrl, ABC):
                      ConfigName.drum_par: self._drum.get_par()}
         self.drum_create(0, **drum_info)
 
-    def _change_drum(self, drum_type: str) -> None:
+    def _drum_change_type(self, drum_type: str) -> None:
         self._drum.stop()
         self._song_stop()
         if drum_type != self._drum.get_class_name():
             bar_len = self._drum.get_bar_len()
-            drum_info = {ConfigName.drum_type: drum_type, ConfigName.drum_volume: self._drum.get_volume()}
+            drum_info = {ConfigName.drum_config: self._drum.get_config(),
+                         ConfigName.drum_volume: self._drum.get_volume(),
+                         ConfigName.drum_par: self._drum.get_par()}
             self.drum_create(bar_len, **drum_info)
 
     def _song_stop(self, wait: int = 0) -> None:

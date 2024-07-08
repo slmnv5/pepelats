@@ -86,7 +86,7 @@ class Looper(MenuClient, SongCtrl):
         os.system("git pull --ff-only; sleep 2")
 
     @staticmethod
-    def _show_menu_config() -> str:
+    def _menu_show_config() -> str:
         dic = load_ini_section("MENU")
         return "Menu: " + dic.get(ConfigName.menu_dir, "")
 

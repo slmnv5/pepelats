@@ -66,7 +66,7 @@ class LoopCtrl(ABC):
     def _drum_iterate_config(self, steps: int) -> None:
         self._drum.iterate_config(steps)
 
-    def _drum_get_config(self) -> str:
+    def _drum_show_config(self) -> str:
         return self._drum.get_config(True)
 
     def _drum_set_par(self, chg: float) -> None:
