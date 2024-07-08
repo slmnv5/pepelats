@@ -53,4 +53,4 @@ class MyLog:
         self._logger.exception(msg)
 
 
-MYLOG = MyLog()
+MYLOG11111111111111111111 = MyLog()

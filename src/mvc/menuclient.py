@@ -2,7 +2,7 @@ from abc import abstractmethod
 from multiprocessing import Queue
 
 from utils.utilconfig import ConfigName
-from utils.utillog import MYLOG
+from utils.utillog import MyLog
 from utils.utilother import DrawInfo
 
 
@@ -21,7 +21,7 @@ class MenuClient:
                 method = getattr(self, method_name)
                 method(*params)
             except Exception as ex:
-                MYLOG.exception(ex)
+                MyLog().exception(ex)
 
     @abstractmethod
     def _menu_client_redraw(self, draw_info: DrawInfo) -> None:
@@ -29,4 +29,4 @@ class MenuClient:
 
     def menu_client_queue(self, command: list) -> None:
         self.__queue.put(command)
-        MYLOG.debug(f"Added to queue command: {command}")
+        MyLog().debug(f"Added to queue command: {command}")

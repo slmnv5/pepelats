@@ -9,7 +9,7 @@ from drum.mididrum import MidiDrum
 from mvc.menuclient import MenuClient
 from utils.utilconfig import ConfigName
 from utils.utilconfig import load_ini_section, find_path, update_ini_section, SD_RATE
-from utils.utillog import MYLOG
+from utils.utillog import MyLog
 from utils.utilother import DrawInfo, FileFinder
 
 
@@ -61,7 +61,7 @@ class Looper(MenuClient, SongCtrl):
                 method = getattr(self, draw_info.update_method)
                 draw_info.content = method()
             except Exception as ex:
-                MYLOG.exception(ex)
+                MyLog().exception(ex)
         else:
             draw_info.content = ""
         assert draw_info.content is not None

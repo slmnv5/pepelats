@@ -5,7 +5,7 @@ import rtmidi.midiconstants
 
 from basic.midiinfo import KbdMidiIn, get_in_port
 from mvc._menuhost import MenuHost
-from utils.utillog import MYLOG
+from utils.utillog import MyLog
 
 _CTRL = rtmidi.midiconstants.CONTROL_CHANGE
 _ON = rtmidi.midiconstants.NOTE_ON
@@ -83,7 +83,7 @@ class CountMidiControl(MenuHost):
         if self.__past_note != note:
             self.__on_count, self.__off_count, self.__past_note = 0, 0, note  # init counters for new note
             if note_on:
-                MYLOG.debug(f"Sending non-counted MIDI note: {note}")  # new note ON, send it
+                MyLog().debug(f"Sending non-counted MIDI note: {note}")  # new note ON, send it
                 self._send(note, velo)
 
         if not note_on and self.__on_count == 0:
@@ -109,5 +109,5 @@ class CountMidiControl(MenuHost):
             count += 5
 
         self.__on_count, self.__off_count, self.__past_note = 0, 0, -1
-        MYLOG.debug(f"Sending counted MIDI note: {note}, {count}")
+        MyLog().debug(f"Sending counted MIDI note: {note}, {count}")
         self._send(note, count)

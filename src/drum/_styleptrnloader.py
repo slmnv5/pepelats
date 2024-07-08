@@ -7,7 +7,7 @@ import numpy as np
 from basic.audioinfo import make_buffer
 
 from drum._ptrnloader import PtrnLoader
-from utils.utillog import MYLOG
+from utils.utillog import MyLog
 from utils.utilnumpy import from_data_to_buff
 
 
@@ -29,7 +29,7 @@ class StylePtrnLoader(PtrnLoader):
             assert isinstance(notes, str) and len(notes) > 0
             notes = (notes * ceil(max_steps / len(notes)))[:max_steps]
             ptn_dic[sname] = notes
-        MYLOG.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
+        MyLog().debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
 
     def fn_convert(self, bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
         result = list()

@@ -8,7 +8,7 @@ import numpy as np
 
 from drum._sampleloader import SampleLoader
 from utils.utilconfig import find_path
-from utils.utillog import MYLOG
+from utils.utillog import MyLog
 from utils.utilother import FileFinder
 
 
@@ -78,7 +78,7 @@ class PtrnManager:
             raise RuntimeError(f"No patterns found in file: {fname}")
         # sort patterns by intensity
         self.__ptn = sorted(zip(l1, l2, l3), key=lambda x: x[2])
-        MYLOG.debug(f"Done loading from: {fname}\n{self.__ptn}")
+        MyLog().debug(f"Done loading from: {fname}\n{self.__ptn}")
         ptn_len = len(self.__ptn)
         split_id = floor(ptn_len * self._QUIET_PTRN_FRACTION)
 
@@ -95,7 +95,7 @@ class PtrnManager:
         # INI patterns are already sorted by intensity
         for ptn_dic, name, energy in self.__ptn:
             self.__snd.append(self._dl.fn_convert(bar_len, par, ptn_dic))
-            MYLOG.debug(f"Converted pattern name: {name}, intensity: {energy}")
+            MyLog().debug(f"Converted pattern name: {name}, intensity: {energy}")
 
     def random_quiet(self) -> tuple[list[np.ndarray], str, float, int]:
         """ get random quiet sound, it's name, energy and index. Patterns sorted by energy   """

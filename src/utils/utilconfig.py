@@ -2,7 +2,7 @@ import os
 import sys
 from configparser import ConfigParser
 
-from utils.utillog import MYLOG
+from utils.utillog import MyLog
 
 APP_DIR = os.sep + 'pepelats'
 SCR_COLS: int
@@ -12,7 +12,7 @@ try:
 except OSError:
     SCR_COLS, SCR_ROWS = 30, 10
 
-MYLOG.info(f"Text screen size: cols={SCR_COLS} rows={SCR_ROWS}")
+MyLog().info(f"Text screen size: cols={SCR_COLS} rows={SCR_ROWS}")
 
 
 class ConfigName:
@@ -54,7 +54,7 @@ def find_path(path_end: str) -> str:
     if pos >= 0:
         return tmp1[:pos + len(APP_DIR)] + os.sep + path_end
     else:
-        MYLOG.error(f"Path not found: {path_end}")
+        MyLog().error(f"Path not found: {path_end}")
         return path_end
 
 
@@ -87,8 +87,8 @@ HUGE_INT = 2 ** 32 - 1
 try:
     _max_sec = int(load_ini_section("AUDIO")['max_len_seconds'])
 except Exception as ex:
-    MYLOG.exception(ex)
+    MyLog().exception(ex)
     _max_sec = 60
 
 MAX_LEN = _max_sec * SD_RATE
-MYLOG.info(f"Set sampling rate: {SD_RATE}, max. loop length: {_max_sec} sec")
+MyLog().info(f"Set sampling rate: {SD_RATE}, max. loop length: {_max_sec} sec")

@@ -4,7 +4,7 @@ from multiprocessing import Process, Queue
 from control.looper import Looper
 from mvc.countmidicontrol import CountMidiControl
 from mvc.pyscreen import PyScreen
-from utils.utillog import MYLOG
+from utils.utillog import MyLog
 
 
 # noinspection PyBroadException
@@ -14,7 +14,7 @@ def do_looper(q_looper: Queue, q_screen: Queue) -> None:
         looper = Looper(q_looper, q_screen)
         looper.menu_client_start()
     except Exception as ex:
-        MYLOG.exception(ex)
+        MyLog().exception(ex)
         os.system("killall -9 python")
 
 
@@ -25,7 +25,7 @@ def do_screen(q_screen: Queue) -> None:
         scr_view = PyScreen(q_screen)
         scr_view.menu_client_start()
     except Exception as ex:
-        MYLOG.exception(ex)
+        MyLog().exception(ex)
         os.system("killall -9 python")
 
 
@@ -47,6 +47,6 @@ if __name__ == "__main__":
     try:
         go()
     except Exception as ex1:
-        MYLOG.exception(ex1)
+        MyLog().exception(ex1)
     finally:
         os.system("killall -9 python")

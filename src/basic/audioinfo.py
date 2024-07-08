@@ -4,7 +4,7 @@ import numpy as np
 import sounddevice as sd
 
 from utils.utilconfig import load_ini_section, ConfigName, SD_RATE
-from utils.utillog import MYLOG
+from utils.utillog import MyLog
 
 
 def make_buffer(sz: int) -> np.ndarray:
@@ -16,15 +16,15 @@ def correct_sound(x: np.ndarray, channels: int, data_type: str) -> np.ndarray:
     assert x.ndim in [1, 2]
     assert channels in [1, 2]
     if x.ndim == 1:
-        MYLOG.error(f"Re-shaping one dimensional array, shape: {x.shape}")
+        MyLog().error(f"Re-shaping one dimensional array, shape: {x.shape}")
         x = x.reshape(-1, 1)
     if x.dtype != AudioInfo().SD_TYPE:
-        MYLOG.warning(f"Correcting array type: {x.dtype} to {AudioInfo().SD_TYPE}")
+        MyLog().warning(f"Correcting array type: {x.dtype} to {AudioInfo().SD_TYPE}")
         factor = get_conversion_factor(x.dtype, data_type)
         x = (x * factor).astype(data_type)
 
     if x.shape[1] != AudioInfo().SD_CH:
-        MYLOG.warning(f"Correcting basic channels: {x.shape[1]} to {AudioInfo().SD_CH}")
+        MyLog().warning(f"Correcting basic channels: {x.shape[1]} to {AudioInfo().SD_CH}")
         if x.shape[1] < channels:
             x = np.column_stack((x, x))
         elif x.shape[1] > channels:
@@ -66,13 +66,13 @@ class AudioInfo:
             self.DEV_IN: dict[str, any] = sd.query_devices(self.SD_NAME, kind='input')
             self.DEV_OUT: dict[str, any] = sd.query_devices(self.SD_NAME, kind='output')
             sd.default.device = self.SD_NAME
-            MYLOG.info(f"Found device matching main.ini name: {self.SD_NAME}")
+            MyLog().info(f"Found device matching main.ini name: {self.SD_NAME}")
         except Exception:
-            MYLOG.error(f"No device matching main.ini name: {self.SD_NAME}, using default basic device instead")
+            MyLog().error(f"No device matching main.ini name: {self.SD_NAME}, using default basic device instead")
             self.DEV_IN: dict[str, any] = sd.query_devices(None, kind='input')
             self.DEV_OUT: dict[str, any] = sd.query_devices(None, kind='output')
 
-        MYLOG.debug(f"Using IN/OUT devices:\n{self.DEV_IN}\n\n{self.DEV_OUT}\n\n")
+        MyLog().debug(f"Using IN/OUT devices:\n{self.DEV_IN}\n\n{self.DEV_OUT}\n\n")
 
         # =======================================
         if self.DEV_IN["max_input_channels"] not in [1, 2]:
@@ -100,11 +100,11 @@ class AudioInfo:
             self.DRUM_VOLUME = min(self.DRUM_VOLUME, 1.0)
             self.DRUM_VOLUME = max(self.DRUM_VOLUME, 0.1)
         except Exception:
-            MYLOG.warning(f"Value of drum_volume is incorrect in main.ini file: {tmp}, using value of 1.0")
+            MyLog().warning(f"Value of drum_volume is incorrect in main.ini file: {tmp}, using value of 1.0")
 
         self.MAX_SD_TYPE = get_conversion_factor('float32', self.SD_TYPE)
 
-        MYLOG.warning(f"Using IN/OUT channels: {self.SD_CH}, sample rate: {SD_RATE}, data type: {self.SD_TYPE}")
+        MyLog().warning(f"Using IN/OUT channels: {self.SD_CH}, sample rate: {SD_RATE}, data type: {self.SD_TYPE}")
         sd.check_output_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=SD_RATE)
         sd.check_input_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=SD_RATE)
 

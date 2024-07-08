@@ -5,7 +5,7 @@ import keyboard
 import rtmidi
 
 from utils.utilconfig import load_ini_section, ConfigName
-from utils.utillog import MYLOG
+from utils.utillog import MyLog
 
 _IS_LINUX = os.name == "posix"
 _HAS_KBD = os.environ.get('HAS_KBD', "").upper() in ["Y", "YES", "TRUE", "1"]
@@ -63,7 +63,7 @@ class KbdMidiIn:
     def on_press(self, kbd_event):
         if kbd_event.name == "esc":
             keyboard.unhook_all()
-            MYLOG.debug("Done unhook_all and exit !")
+            MyLog().debug("Done unhook_all and exit !")
             # noinspection PyProtectedMember
             os._exit(1)
             return
@@ -99,7 +99,7 @@ class FakeMidiOut:
         if not msg or msg[0] == 0xF8 or msg[0] == 0xFE:
             return  # do not log too much
 
-        MYLOG.info(f"~~~~~~~~~~~~Send MIDI message: {msg}")
+        MyLog().info(f"~~~~~~~~~~~~Send MIDI message: {msg}")
 
 
 class MidiInfo:
@@ -154,7 +154,7 @@ def get_in_port() -> rtmidi.MidiIn | KbdMidiIn:
     if _IS_LINUX and not _HAS_KBD:
         raise RuntimeError(f"Failed ot open MIDI IN port: {pname}")
 
-    MYLOG.error(f"MIDI IN port is not open: {pname}, using computer keyboard")
+    MyLog().error(f"MIDI IN port is not open: {pname}, using computer keyboard")
     return KbdMidiIn()
 
 
@@ -169,8 +169,8 @@ def get_out_port() -> rtmidi.MidiOut | FakeMidiOut:
         if pname in port_name:
             midi_out.open_port(k, name="Out")
             if midi_out.is_port_open():
-                MYLOG.info(f"MIDI OUT port is open: {pname}")
+                MyLog().info(f"MIDI OUT port is open: {pname}")
                 return midi_out
 
-    MYLOG.error(f"MIDI OUT port is not open: {pname}, using fake port")
+    MyLog().error(f"MIDI OUT port is not open: {pname}, using fake port")
     return FakeMidiOut()

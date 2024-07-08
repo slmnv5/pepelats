@@ -5,7 +5,7 @@ from time import sleep
 
 from basic.midiinfo import MidiInfo
 from utils.utilconfig import ConfigName, find_path, load_ini_section
-from utils.utillog import MYLOG
+from utils.utillog import MyLog
 from utils.utilother import DrawInfo
 
 
@@ -31,12 +31,12 @@ class MenuHost:
         return True
 
     def start_menu_host(self) -> None:
-        MYLOG.info(f"{self.__class__.__name__} start working as MenuHost")
+        MyLog().info(f"{self.__class__.__name__} start working as MenuHost")
         while True:
             sleep(5)
             if not self._is_alive():
                 break
-        MYLOG.info(f"{self.__class__.__name__} stop working as MenuHost")
+        MyLog().info(f"{self.__class__.__name__} stop working as MenuHost")
 
     def _menu_update(self, fname: str):
         self._menu_loader.update_menu(fname)
@@ -50,7 +50,7 @@ class MenuHost:
 
     def _send(self, note: int, velo: int) -> None:
         if note not in self.midi_dict:
-            MYLOG.error(f"MIDI note: {note} is not expected. Check main.ini file")
+            MyLog().error(f"MIDI note: {note} is not expected. Check main.ini file")
 
         menu_key: str = f"{self.midi_dict[note]}-{velo}"
         menu_cmd = self._menu_loader.get(menu_key)
@@ -80,7 +80,7 @@ class MenuHost:
                 elif cmd[k].strip('+-').replace('.', '', 1).isdigit():
                     cmd[k] = float(cmd[k])
 
-            MYLOG.debug(f"{self.__class__.__name__} send command: {cmd}")
+            MyLog().debug(f"{self.__class__.__name__} send command: {cmd}")
             self.__queue.put(cmd)
 
 
@@ -102,7 +102,7 @@ class _MenuLoader:
                 raise RuntimeError(f"Not all INI menu files wre loaded: {fname1}, {fname2}")
             tmp = {s: dict(cfg.items(s)) for s in cfg.sections()}
             self._dict |= tmp
-        MYLOG.debug(f"Loaded menu\n: {self._dict}")
+        MyLog().debug(f"Loaded menu\n: {self._dict}")
 
     def get(self, key: str) -> str:
         sect_name = f"{self._section}.{self._sect_idx}"

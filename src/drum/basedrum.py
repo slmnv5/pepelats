@@ -3,7 +3,7 @@ from abc import abstractmethod
 import numpy as np
 
 from utils.utilconfig import SD_RATE
-from utils.utillog import MYLOG
+from utils.utillog import MyLog
 
 
 class BaseDrum:
@@ -47,7 +47,7 @@ class BaseDrum:
         assert self._bar_len == 0, "Method set_bar_len must be called only once"
         self._bar_len = bar_len
         self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / SD_RATE)
-        MYLOG.info(f"Set bar len {self._bar_len} for drum: {self}")
+        MyLog().info(f"Set bar len {self._bar_len} for drum: {self}")
 
     def stop(self) -> None:
         self._is_stopped = True

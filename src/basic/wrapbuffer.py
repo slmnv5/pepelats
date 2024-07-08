@@ -2,7 +2,7 @@ import numpy as np
 
 from basic.audioinfo import correct_sound, AudioInfo
 from utils.utilconfig import MAX_LEN
-from utils.utillog import MYLOG
+from utils.utillog import MyLog
 from utils.utilnumpy import from_buff_to_data, from_data_to_buff
 
 
@@ -95,4 +95,4 @@ class WrapBuffer:
             self.__len_ratio = idx / base_len
             self.__buff = self.__buff[:idx]
 
-        MYLOG.info(f"After trim length ratio: {self.__len_ratio}")
+        MyLog().info(f"After trim length ratio: {self.__len_ratio}")

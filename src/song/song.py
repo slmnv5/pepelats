@@ -4,7 +4,7 @@ from control.loopctrl import LoopCtrl
 # noinspection PyUnresolvedReferences
 from song.songpart import SongPart
 from utils.utilconfig import find_path, ConfigName
-from utils.utillog import MYLOG
+from utils.utillog import MyLog
 from utils.utilname import generate_name
 from utils.utilother import FileFinder, CollectionOwner
 
@@ -47,12 +47,12 @@ class Song(CollectionOwner[SongPart]):
         with open(fname, 'wb') as f:
             pickle.dump((parts_lst, bar_len, drum_info), f)
 
-        MYLOG.info(f"Saved song file: {fname}")
+        MyLog().info(f"Saved song file: {fname}")
 
     def load_song(self) -> None:
         self._name = self._ff.get_item().split(".")[0]
         fname = self._ff.get_full_name()
-        MYLOG.info(f"Loading song file: {fname}")
+        MyLog().info(f"Loading song file: {fname}")
         part_lst: list[SongPart | None]
         with open(fname, 'rb') as f:
             parts_lst, bar_len, drum_info = pickle.load(f)

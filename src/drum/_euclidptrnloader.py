@@ -5,7 +5,7 @@ import numpy as np
 from basic.audioinfo import make_buffer
 
 from drum._ptrnloader import PtrnLoader
-from utils.utillog import MYLOG
+from utils.utillog import MyLog
 from utils.utilnumpy import from_data_to_buff
 from utils.utilother import EuclidSlicer
 
@@ -22,7 +22,7 @@ class EuclidPtrnLoader(PtrnLoader):
             ptn_lst = [int(x) for x in euclid_str.split(",")]
             if ptn_lst[0] and ptn_lst[1]:
                 ptn_dic[sname] = EuclidSlicer(ptn_lst[0], ptn_lst[1], ptn_lst[2], ptn_lst[3]).get_ptrn_str()
-        MYLOG.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
+        MyLog().debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
 
     def fn_convert(self, bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
         result = list()
