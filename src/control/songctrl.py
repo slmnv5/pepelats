@@ -43,20 +43,11 @@ class SongCtrl(LoopCtrl, ABC):
             self._update_view()
             part.play_loop(self)
 
-    def _add_song_part(self) -> None:
-        selected: int = self._song.get_idx()
-        self.__next_id = self._song.idx_from_item(SongPart())
-        self._song.select_idx(selected)
-
-    def _change_song_part(self, chg: int) -> None:
-        self.__next_id += chg
-        self.__next_id %= self._song.item_count()
-
-    def _play_song_part(self, pid: int) -> None:
+    def _song_part_play(self, part_id: int) -> None:
         """ Play specific part or record new loop of same length if already playing it """
         self._start_with_rec = False
-        changed_pid: bool = pid != self.__next_id  # did next_id change form prev. call
-        self.__next_id = pid
+        changed_pid: bool = part_id != self.__next_id  # did next_id change form prev. call
+        self.__next_id = part_id
 
         if not self.__play_event.is_set():  # not playing now
             self.__play_event.set()
@@ -87,9 +78,10 @@ class SongCtrl(LoopCtrl, ABC):
 
             self.stop_at_bound(part.get_len())
 
-    def _overdub_song_part(self) -> None:
+    def _song_part_record(self, part_id: int) -> None:
         """ Record new loop of different length. Start with adding empty loop of max. size """
-        if self._song.get_idx() != self.__next_id:
+        assert self.__next_id == part_id
+        if self._song.get_idx() != part_id:
             self._start_with_rec = True
             return
         part: SongPart = self._song.get_item()
@@ -100,27 +92,16 @@ class SongCtrl(LoopCtrl, ABC):
         self.idx = self.idx % part.get_max_len()
         part.loops.get_item().max_buffer()
 
-    def _delete_song_part(self) -> None:
-        selected = self._song.get_idx()
-        if self.__next_id == selected:
-            return  # can not delete active part
-        elif self.__next_id < selected:
-            selected -= 1  # selected will be less after deletion
-
-        self._song.select_idx(self.__next_id)
-        self._song.delete_selected()
-        self._song.select_idx(selected)
-        self.__next_id = selected
-
-    def _clear_song_part(self) -> None:
+    def _song_part_clear(self, part_id: int) -> None:
+        assert self.__next_id == part_id
         selected: int = self._song.get_idx()
-        if self.__next_id == selected:
+        if part_id == selected:
             return  # can not clear active part
-        self._song.set_at_idx(self.__next_id, SongPart())
+        self._song.set_at_idx(part_id, SongPart())
         self.__next_id = selected
         self.stop_never()
 
-    def _redo_all(self) -> None:
+    def _song_part_redo_all(self) -> None:
         if self._song.get_idx() == self.__next_id:
             self._set_is_rec(False)
             part = self._song.get_item()
@@ -166,9 +147,8 @@ class SongCtrl(LoopCtrl, ABC):
         self._song_stop()
         if drum_type != self._drum.get_class_name():
             bar_len = self._drum.get_bar_len()
-            drum_info = {ConfigName.drum_config: self._drum.get_config(),
-                         ConfigName.drum_volume: self._drum.get_volume(),
-                         ConfigName.drum_par: self._drum.get_par()}
+            drum_info = {ConfigName.drum_type: drum_type,
+                         ConfigName.drum_volume: self._drum.get_volume()}
             self.drum_create(bar_len, **drum_info)
 
     def _song_stop(self, wait: int = 0) -> None:

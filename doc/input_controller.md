@@ -44,10 +44,10 @@ _command1, _command2 : are commands of the looper. Multiple commands are separat
 p1, p2, ... : optional parameters of commands. Each one may be a number or text
 
 ```
-C-100 : _play_song_part 2
-D-100 : _play_song_part 3
-A-2 : _overdub_song_part
-B-2 : _overdub_song_part
+C-100 : _song_part_play 2
+D-100 : _song_part_play 3
+A-2 : _song_part_record
+B-2 : _song_part_record
 ```
 
 ## Control changes
