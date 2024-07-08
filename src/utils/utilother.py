@@ -28,7 +28,7 @@ class DrawInfo:
         self.header: str = ""
         self.description: str = ""
         self.content: str = ""
-        self.loop_seconds: float = 0.0
+        self.loop_seconds: float = 10.0
         self.max_loop_position: float = 0.0
         self.loop_position: float = 0.0
         self.max_loop_factor: float = 1.0

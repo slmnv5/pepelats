@@ -17,6 +17,7 @@ class Looper(MenuClient, SongCtrl):
     """Adds screen connection, Mixer, looper commands"""
 
     def __init__(self, recv_q: Queue, send_q: Queue):
+        self._di = DrawInfo()
         MenuClient.__init__(self, recv_q)
         SongCtrl.__init__(self)
         self.__send_q = send_q

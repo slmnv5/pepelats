@@ -54,6 +54,7 @@ class PyScreen(MenuClient):
 
     def __init__(self, q: Queue):
         MenuClient.__init__(self, q)
+        self._di = DrawInfo()
         Thread(target=self.__updater, name="updater", daemon=True).start()
 
     def _menu_client_redraw(self, draw_info: DrawInfo) -> None:
@@ -61,7 +62,8 @@ class PyScreen(MenuClient):
         if not KEEP_SCREEN:
             print("\033c", end="")  # clear screen
         draw_info.header = draw_info.header[:_COLS].center(_COLS)
-        print(draw_info.header)
+
+        print(f"\033[2;1H", end='', flush=True)
         lines = wrap(draw_info.description, _COLS)
         print(_BLUE_COLOR, end='')
         for line in [x for x in lines if x]:

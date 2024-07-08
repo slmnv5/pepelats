@@ -9,7 +9,6 @@ from utils.utilother import DrawInfo
 class MenuClient:
     def __init__(self, queue: Queue):
         self.__queue: Queue = queue
-        self._di = DrawInfo()
 
     def menu_client_start(self):
         while True:
