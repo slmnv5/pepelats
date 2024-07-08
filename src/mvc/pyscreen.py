@@ -55,15 +55,15 @@ class PyScreen(MenuClient):
 
         print(f"\033[1;1H{self._di.header}")  # move cursor to line=1 and pos=1
 
-        lines: list[str] = wrap(draw_info.description, SCR_COLS)
+        lines = wrap(draw_info.description, SCR_COLS)
         lines = [x.ljust(SCR_COLS) for x in lines]
         print('\n'.join(lines))
 
         lines = draw_info.content.split('\n')
         for line in lines:
-            line = line[:SCR_COLS]
             line = get_with_color(line, draw_info.is_rec)
             print(line)
+        print('\x1b[0J', end='')
 
     def __updater(self):
         while True:
