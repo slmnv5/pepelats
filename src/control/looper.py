@@ -45,7 +45,6 @@ class Looper(MenuClient, SongCtrl):
             self._drum.set_par(par)
 
         self._drum.set_bar_len(bar_len)
-        self._drum.randomize()
 
     def _update_view(self) -> None:
         self.menu_client_queue([ConfigName.menu_client_redraw, self._di])
