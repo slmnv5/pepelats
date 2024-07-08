@@ -55,47 +55,44 @@ class PyScreen(MenuClient):
     def __init__(self, q: Queue):
         MenuClient.__init__(self, q)
         self._di = DrawInfo()
+        self._line1: str = ''
+        self._line2: str = ''
         Thread(target=self.__updater, name="updater", daemon=True).start()
 
     def _menu_client_redraw(self, draw_info: DrawInfo) -> None:
         self._di = draw_info
-        draw_info.header = draw_info.header[:_COLS].center(_COLS)
+        self._line1 = draw_info.header[:_COLS].center(_COLS)
 
-        print("\033[2;1H", end='', flush=True)  # move cursor to line and position
+        print("\033[2;1H", end='')  # move cursor to line and position
         if not KEEP_SCREEN:
             print("\033[0J", end="")  # clear from cursor to end of screen
 
-        lines = wrap(draw_info.description, _COLS)
-        print(_BLUE_COLOR, end='')
-        for line in [x for x in lines if x]:
-            print(line)
-        print(_END_ALL, end='')
+        lst: list[str] = wrap(draw_info.description, _COLS)
+        self._line2 = lst[0]
+
+        print(_BLUE_COLOR, '\n'.join(lst), _END_ALL, sep='')
         lines = draw_info.content.split('\n')
         for line in lines:
             line = line[:_COLS]
             line = get_with_color(line, draw_info.is_rec)
             print(line)
-        # print("", end="", flush=True)
 
     def __updater(self):
         while True:
-            di = self._di
-            line = di.header
-            time.sleep(di.loop_seconds / _UPDATES_PER_LOOP)
+            time.sleep(self._di.loop_seconds / _UPDATES_PER_LOOP)
 
-            di.loop_position += 1.0 / _UPDATES_PER_LOOP
-            if di.loop_position >= 1.0:
-                di.loop_position = 0.0
+            self._di.loop_position += 1.0 / _UPDATES_PER_LOOP
+            if self._di.loop_position >= 1.0:
+                self._di.loop_position = 0.0
 
-            if di.max_loop_factor > 1:
-                di.max_loop_position += 1.0 / _UPDATES_PER_LOOP / di.max_loop_factor
-                if di.max_loop_position >= 1:
-                    di.max_loop_position = 0
-                pos = round(di.max_loop_position * _COLS)
-                line = line[:pos] + '*' + line[pos + 1:]
+            if self._di.max_loop_factor > 1:
+                self._di.max_loop_position += 1.0 / _UPDATES_PER_LOOP / self._di.max_loop_factor
+                if self._di.max_loop_position >= 1:
+                    self._di.max_loop_position = 0
+                pos = round(self._di.max_loop_position * _COLS)
+                line = _REVERSE_COLOR + self._line2[:pos] + _END_REVERSE + self._line2[pos:]
+                print(f"\033[2;1H{line}", end='')
 
-            pos = round(di.loop_position * _COLS)
-            line = _REVERSE_COLOR + line[:pos] + _END_REVERSE + line[pos:]
-
-            # all starts at 1, 1
+            pos = round(self._di.loop_position * _COLS)
+            line = _REVERSE_COLOR + self._line1[:pos] + _END_REVERSE + self._line1[pos:]
             print(f"\033[1;1H{line}", end='', flush=True)
