@@ -41,7 +41,7 @@ class SampleLoader:
                     MYLOG.error(ex)
 
         if not self._sounds:
-            self._sounds = self._load_audio_samples(find_path(ConfigName.drum_config))
+            self._sounds = self._load_audio_samples(find_path('config/drum/wav'))
             try:
                 with open(fname, 'wb') as f:
                     pickle.dump(self._sounds, f)
