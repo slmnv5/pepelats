@@ -98,10 +98,10 @@ class PyScreen(MenuClient):
             if pos2 > pos1:
                 line = (get_color_str(_BLUE, _WHITE) + line[:pos1] +
                         get_color_str(_BLUE, _BLACK) + line[pos1:pos2] +
-                        get_color_str(_WHITE, _BLACK) + line[pos2:])
+                        _END_ALL + line[pos2:])
             else:
                 line = (get_color_str(_BLUE, _WHITE) + line[:pos2] +
                         get_color_str(_BLACK, _WHITE) + line[pos2:pos1] +
-                        get_color_str(_WHITE, _BLACK) + line[pos1:])
+                        _END_ALL + line[pos1:])
 
             print(f"\033[1;1H{line}", end='', flush=True)
