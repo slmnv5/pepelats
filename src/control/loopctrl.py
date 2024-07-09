@@ -29,9 +29,6 @@ class LoopCtrl(ABC):
     def drum_create(self, bar_len: int, **kwargs) -> None:
         pass
 
-    def _song_stop(self, wait: int = 0) -> None:
-        pass
-
     def get_is_rec(self) -> bool:
         return self.__is_rec
 

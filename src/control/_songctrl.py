@@ -158,5 +158,5 @@ class SongCtrl(LoopCtrl, ABC):
         self._set_is_rec(False)
         self.__play_event.clear()
         self.__next_id = self._song.get_idx()
-        bound = self._song.get_item().get_len if wait else 0
+        bound = self._song.get_item().get_len() if wait else 0
         self.stop_at_bound(bound)
