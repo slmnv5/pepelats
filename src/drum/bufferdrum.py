@@ -42,7 +42,7 @@ class BufferDrum(BaseDrum, ABC):
     def set_config(self, config=None) -> None:
         """ if config changes re-load and re-generate patterns """
         if config:
-            self._ff.idx_from_item(config)
+            self._ff.add_item(config, True)
             assert os.path.isfile(self._ff.get_full_name()), f"Not found file: {self._ff.get_full_name()}"
         self._pm.load_patterns(self._ff.get_full_name())
         self._regenerate()

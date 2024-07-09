@@ -1,5 +1,5 @@
 import os
-from typing import TypeVar, Generic, Iterable, Callable
+from typing import TypeVar, Generic, Iterable
 
 from utils.utilconfig import HUGE_INT
 
@@ -60,12 +60,6 @@ class CollectionOwner(Generic[T]):
     def get_idx(self) -> int:
         return self.__idx
 
-    def idx_from_item111111111111111111(self, item: T) -> int:
-        if item not in self.__items:
-            self.__items.append(item)
-        self.__idx = self.__items.index(item)
-        return self.__idx
-
     def add_item(self, item: T, set_idx: bool) -> int:
         if item not in self.__items:
             self.__items.append(item)
@@ -80,20 +74,12 @@ class CollectionOwner(Generic[T]):
     def select_idx(self, i: int) -> None:
         self.__idx = i % len(self.__items)
 
-    def get_at_idx(self, i: int) -> T:
-        i = i % len(self.__items)
-        return self.__items[i]
-
     def set_at_idx(self, i: int, item: T) -> None:
         i = i % len(self.__items)
         self.__items[i] = item
 
     def item_count(self) -> int:
         return len(self.__items)
-
-    def apply_to_each1111111111111111111111111111111(self, method: Callable) -> None:
-        for x in self.__items:
-            method(x)
 
     def delete_selected(self) -> T | None:
         if self.item_count() <= 1:
@@ -116,7 +102,7 @@ class CollectionOwner(Generic[T]):
             tmp = [x.ljust(pad_cols, pad_str) for x in tmp]
         return '\n'.join(tmp)
 
-    def iterate(self, steps: int = 1) -> None:
+    def iterate(self, steps: int) -> None:
         self.__idx += steps
         self.__idx %= self.item_count()
 

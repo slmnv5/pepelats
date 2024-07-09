@@ -33,7 +33,7 @@ class Looper(MenuClient, SongCtrl):
         elif drum_type == ConfigName.MidiDrum:
             self._drum = MidiDrum()
         elif drum_type == ConfigName.LoopDrum:
-            self._drum = LoopDrum(self._song.get_at_idx(0))
+            self._drum = LoopDrum(self._song.get_list()[0])
         else:
             self._drum = StyleDrum()
 
@@ -92,7 +92,7 @@ class Looper(MenuClient, SongCtrl):
         config = tmp.get(ConfigName.menu_dir, "")
         ff = FileFinder(find_path("config/menu"), False, "")
         ff.add_item(config, True)
-        ff.iterate()  # next menu
+        ff.iterate(1)  # next menu
         tmp[ConfigName.menu_dir] = ff.get_item()
         update_ini_section("MENU", tmp)
 

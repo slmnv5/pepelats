@@ -21,8 +21,8 @@ class Song(CollectionOwner[SongPart]):
         self._ff = FileFinder(find_path(".save_song"), True, ".sng")
 
     def clear(self) -> None:
-        for k in range(self.item_count()):
-            if not self.get_at_idx(k).is_empty:
+        for k, x in enumerate(self.get_list()):
+            if not x.is_empty:
                 self.set_at_idx(k, SongPart())
         self.select_idx(0)
         self._name = generate_name()

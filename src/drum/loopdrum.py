@@ -23,8 +23,8 @@ class LoopDrum(BaseDrum):
         play_count: int = round(self._volume * loop_count)
         play_idx_lst = choices(range(play_count), k=play_count)
         play_idx_lst.append(0)
-        for k in range(loops.item_count()):
-            loops.get_at_idx(k).set_silent(k not in play_idx_lst)
+        for k, x in enumerate(loops.get_list()):
+            x.set_silent(k not in play_idx_lst)
         self.start()
 
     def play_fill(self, idx: int) -> None:
