@@ -1,4 +1,5 @@
 from abc import ABC
+from copy import deepcopy
 from threading import Event, Thread
 
 from control.loopctrl import LoopCtrl
@@ -42,6 +43,17 @@ class SongCtrl(LoopCtrl, ABC):
             self.idx, self._start_with_rec = 0, False
             self._update_view()
             part.play_loop(self)
+
+    def _part_duplicate(self) -> None:
+        part: SongPart = self._song.get_item()
+        if part.is_empty:
+            return
+        for k, x in enumerate(self._song.get_list()):
+            if x.is_empty:
+                self._song.set_at_idx(k, deepcopy(part))
+                self.__next_id = k
+                self.stop_at_bound(part.get_len())
+                return
 
     def _part_play(self, part_id: int) -> None:
         """ Play specific part or record new loop of same length if already playing it """
