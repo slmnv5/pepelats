@@ -43,7 +43,7 @@ class SongCtrl(LoopCtrl, ABC):
             self._update_view()
             part.play_loop(self)
 
-    def _song_part_play(self, part_id: int) -> None:
+    def _part_play(self, part_id: int) -> None:
         """ Play specific part or record new loop of same length if already playing it """
         self._start_with_rec = False
         changed_pid: bool = part_id != self.__next_id  # did next_id change form prev. call
@@ -78,7 +78,7 @@ class SongCtrl(LoopCtrl, ABC):
 
             self.stop_at_bound(part.get_len())
 
-    def _song_part_record(self, part_id: int) -> None:
+    def _part_record(self, part_id: int) -> None:
         """ Record new loop of different length. Start with adding empty loop of max. size """
         assert self.__next_id == part_id
         if self._song.get_idx() != part_id:
@@ -92,7 +92,7 @@ class SongCtrl(LoopCtrl, ABC):
         self.idx = self.idx % part.get_max_len()
         part.loops.get_item().max_buffer()
 
-    def _song_part_clear(self, part_id: int) -> None:
+    def _part_clear(self, part_id: int) -> None:
         assert self.__next_id == part_id
         selected: int = self._song.get_idx()
         if part_id == selected:
@@ -101,7 +101,7 @@ class SongCtrl(LoopCtrl, ABC):
         self.__next_id = selected
         self.stop_never()
 
-    def _song_part_redo_all(self) -> None:
+    def _part_redo_all(self) -> None:
         if self._song.get_idx() == self.__next_id:
             self._set_is_rec(False)
             part = self._song.get_item()

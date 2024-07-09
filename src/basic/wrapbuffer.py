@@ -68,7 +68,7 @@ class WrapBuffer:
         return not (0 < len(self.__buff) < MAX_LEN)
 
     def record(self, in_data: np.ndarray, idx: int) -> None:
-        from_data_to_buff(self.__buff, in_data, idx)
+        from_data_to_buff(self.__buff, in_data, idx, True)
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
         if self.__is_silent:

@@ -103,7 +103,7 @@ class Looper(MenuClient, SongCtrl):
 
     #  ============ all parts methods ===============
 
-    def _song_part_undo(self) -> None:
+    def _part_undo(self) -> None:
         part = self._song.get_item()
         if part.loops.item_count() <= 1:
             return
@@ -116,7 +116,7 @@ class Looper(MenuClient, SongCtrl):
         else:
             part.loops.delete_selected()
 
-    def _song_part_redo(self) -> None:
+    def _part_redo(self) -> None:
         self._set_is_rec(False)
         part = self._song.get_item()
         part.redo()
