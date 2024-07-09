@@ -14,7 +14,7 @@ class SampleLoader:
     _ACCENT_VOL = 1.2  # how much accent amplitude is bigger than non accent
 
     def __new__(cls):
-        """ creates a singleton object, if it is not created, else returns existing """
+        """ creates a singleton object """
         if not cls.__instance:
             cls.__instance = super(SampleLoader, cls).__new__(cls)
             cls.__instance.__initialized = False
@@ -51,9 +51,10 @@ class SampleLoader:
         else:
             MyLog().warning("Loaded drum sounds from pickle file")
 
-        maximum: dict[str, float] = {k: round(v.max() / AudioInfo().MAX_SD_TYPE, 2) for k, v in self._sounds.items()}
-        variance: dict[str, float] = {k: round(1000 * v.var() / (AudioInfo().MAX_SD_TYPE ** 2), 2) for k, v in
-                                      self._sounds.items()}
+        m_amp = AudioInfo().MAX_SD_TYPE
+        m_amp2 = m_amp * m_amp / 1000
+        maximum: dict[str, float] = {k: round(v.max() / m_amp, 2) for k, v in self._sounds.items()}
+        variance: dict[str, float] = {k: round(v.var() / m_amp2, 2) for k, v in self._sounds.items()}
         duration: dict[str, float] = {k: round(len(v) / SD_RATE, 2) for k, v in self._sounds.items()}
 
         # _adjusted has normal and accented sound, used to change volume up/down, _sounds do not change

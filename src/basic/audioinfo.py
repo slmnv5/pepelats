@@ -48,7 +48,7 @@ class AudioInfo:
     __instance = None
 
     def __new__(cls):
-        """ creates a singleton object, if it is not created, else returns existing """
+        """ creates a singleton object """
         if not cls.__instance:
             cls.__instance = super(AudioInfo, cls).__new__(cls)
             cls.__instance.__initialized = False
