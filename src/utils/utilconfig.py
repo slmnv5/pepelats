@@ -17,7 +17,6 @@ MyLog().info(f"Text screen size: cols={SCR_COLS} rows={SCR_ROWS}")
 
 class ConfigName:
     # menu and midi config related
-    drum_create: str = "_drum_create"
     update_method: str = "update_method"
     description: str = "description"
     menu_client_redraw: str = "_menu_client_redraw"
@@ -43,8 +42,8 @@ class ConfigName:
     StyleDrum: str = "StyleDrum"
     MidiDrum: str = "MidiDrum"
     LoopDrum: str = "LoopDrum"
-    # saved sounds dict.
-    pickled_sounds: str = "pickled_sounds.pkl"
+    # saved dictionary with drum samples to avoid slow wav conversion
+    pickled_drum_samples: str = "pickled_drum_samples.pkl"
 
 
 def find_path(path_end: str) -> str:

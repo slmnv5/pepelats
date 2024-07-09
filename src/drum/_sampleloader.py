@@ -26,7 +26,7 @@ class SampleLoader:
         self.__initialized = True
         # sound names and loaded sound samples
         self._sounds: dict[str, np.ndarray] = dict()
-        fname = find_path(ConfigName.pickled_sounds)
+        fname = find_path(ConfigName.pickled_drum_samples)
         if os.path.isfile(fname):
             with open(fname, 'rb') as f:
                 try:

@@ -24,7 +24,10 @@ class Looper(MenuClient, SongCtrl):
         self.drum_create(0)
 
     def drum_create(self, bar_len: int, **kwargs) -> None:
-        drum_type: str = kwargs.get(ConfigName.drum_type, self._drum.get_class_name())
+        self.menu_client_queue(['_drum_create', bar_len, {**kwargs}])
+
+    def _drum_create(self, bar_len: int, drum_info: dict[str: any]) -> None:
+        drum_type: str = drum_info.get(ConfigName.drum_type, self._drum.get_class_name())
 
         if drum_type == ConfigName.EuclidDrum:
             self._drum = EuclidDrum()
@@ -37,12 +40,12 @@ class Looper(MenuClient, SongCtrl):
         else:
             self._drum = StyleDrum()
 
-        config: str = kwargs.get(ConfigName.drum_config)
+        config: str = drum_info.get(ConfigName.drum_config)
         self._drum.set_config(config)
-        volume = kwargs.get(ConfigName.drum_volume)
+        volume = drum_info.get(ConfigName.drum_volume)
         if volume:
             self._drum.set_volume(volume)
-        par = kwargs.get(ConfigName.drum_par)
+        par = drum_info.get(ConfigName.drum_par)
         if par:
             self._drum.set_par(par)
         if bar_len:
