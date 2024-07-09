@@ -36,7 +36,8 @@ class Song(CollectionOwner[SongPart]):
         self._ff.idx_from_item(self.get_complete_name())
         fname = self._ff.get_full_name()
         parts_lst = list()
-        self.apply_to_each(lambda x: parts_lst.append(None if x.is_empty else x))
+        for x in self.get_list():
+            parts_lst.append(None if x.is_empty else x)
         drum_info: dict[str, any] = dict()
         bar_len = drum.get_bar_len()
         drum_info[ConfigName.drum_type] = drum.get_class_name()

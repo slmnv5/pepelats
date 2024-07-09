@@ -16,14 +16,16 @@ class SongPart(LoopSimple):
 
     def get_max_len(self) -> int:
         loops = self.loops
-        len_lst: list[int] = list()
-        loops.apply_to_each(lambda x: len_lst.append(x.get_len()))
-        return max(len_lst)
+        max_len: int = 0
+        for x in loops.get_list():
+            max_len = max(x.get_len(), max_len)
+        return max_len
 
     def correct_buffer(self) -> None:
-        for loop in self.__undo:
-            loop.correct_buffer()
-        self.loops.apply_to_each(lambda x: LoopSimple.correct_buffer(x))
+        for x in self.__undo:
+            x.correct_buffer()
+        for x in self.loops.get_list():
+            LoopSimple.correct_buffer(x)
 
     def trim_buffer(self, ctrl: LoopCtrl) -> None:
         loop: LoopSimple = self.loops.get_item()
@@ -38,7 +40,8 @@ class SongPart(LoopSimple):
             ctrl.drum_create(ctrl.idx)
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
-        self.loops.apply_to_each(lambda x: LoopSimple.play(x, out_data, idx))
+        for x in self.loops.get_list():
+            LoopSimple.play(x, out_data, idx)
 
     def record(self, in_data: np.ndarray, idx: int) -> None:
         loop = self.loops.get_item()

@@ -54,6 +54,9 @@ class CollectionOwner(Generic[T]):
             raise RuntimeError(f'Error: CollectionOwner init with empty collection')
         self.__idx: int = 0
 
+    def get_list(self) -> list[T]:
+        return self.__items
+
     def get_idx(self) -> int:
         return self.__idx
 
@@ -80,7 +83,7 @@ class CollectionOwner(Generic[T]):
     def item_count(self) -> int:
         return len(self.__items)
 
-    def apply_to_each(self, method: Callable) -> None:
+    def apply_to_each1111111111111111111111111111111(self, method: Callable) -> None:
         for x in self.__items:
             method(x)
 

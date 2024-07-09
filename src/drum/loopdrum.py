@@ -23,11 +23,13 @@ class LoopDrum(BaseDrum):
         play_count: int = round(self._volume * loop_count)
         play_idx_lst = choices(range(play_count), k=play_count)
         play_idx_lst.append(0)
-        loops.apply_to_each(lambda x: x.set_silent(loops.idx_from_item(x) not in play_idx_lst))
+        for k in range(loops.item_count()):
+            loops.get_at_idx(k).set_silent(k not in play_idx_lst)
         self.start()
 
     def play_fill(self, idx: int) -> None:
-        self._song_part.loops.apply_to_each(lambda x: x.set_silent(False))
+        for x in self._song_part.loops.get_list():
+            x.set_silent(False)
         tmp: int = idx % self._bar_len
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2

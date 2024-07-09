@@ -3,15 +3,6 @@ import random
 from utils.utilother import FileFinder, CollectionOwner, EuclidSlicer
 
 
-def test_0():
-    tpl = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I')
-    co = CollectionOwner(tpl)
-    found_list = list()
-    co.apply_to_each(lambda x: found_list.append(x if x in ['F', 'A', 'B'] else None))
-    assert found_list.index('F') == 5
-    assert found_list.index('A') == 0
-
-
 def test_1():
     lst = [chr(k) for k in range(65, 80)]
     co = CollectionOwner(lst)
@@ -25,7 +16,8 @@ def test_1():
 
 def test_2():
     ff = FileFinder(".", True, "")
-    ff.apply_to_each(lambda x: print(x))
+    for x in ff.get_list():
+        print(x)
     print("================")
     print(f"count: {ff.item_count()}")
 
