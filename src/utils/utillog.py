@@ -37,7 +37,7 @@ class MyLog:
             level = logging.WARNING
 
         self._logger.setLevel(level)
-        self.warning(f"=========== Started logger in process id: {os.getpid()} ==========")
+        self.warning(f"=========== Created MyLog in process id: {os.getpid()} ==========")
 
     def debug(self, msg):
         self._logger.debug(msg)

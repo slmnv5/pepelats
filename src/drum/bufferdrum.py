@@ -5,11 +5,12 @@ from threading import Timer
 
 import numpy as np
 
+from basic.audioinfo import AudioInfo
 from drum._euclidptrnloader import EuclidPtrnLoader
 from drum._ptrnloader import PtrnManager, PtrnLoader
 from drum._styleptrnloader import StylePtrnLoader
 from drum.basedrum import BaseDrum
-from utils.utilconfig import SD_RATE, HUGE_INT
+from utils.utilconfig import HUGE_INT
 from utils.utilnumpy import from_buff_to_data
 
 
@@ -82,7 +83,7 @@ class BufferDrum(BaseDrum, ABC):
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2
         # return to normal level
-        Timer(tmp / SD_RATE, self.randomize).start()
+        Timer(tmp / AudioInfo().SD_RATE, self.randomize).start()
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
         if self._is_stopped:

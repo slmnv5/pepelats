@@ -1,15 +1,15 @@
 import numpy as np
 
+from basic.audioinfo import AudioInfo
 from control.loopctrl import LoopCtrl
 from song.loopsimple import LoopSimple
-from utils.utilconfig import MAX_LEN
 from utils.utilother import CollectionOwner
 
 
 class SongPart(LoopSimple):
     """SongPart includes many simple loops to play together"""
 
-    def __init__(self, sz: int = MAX_LEN):
+    def __init__(self, sz: int = AudioInfo().MAX_LEN):
         LoopSimple.__init__(self, sz)
         self.loops: CollectionOwner[LoopSimple] = CollectionOwner[LoopSimple](self)
         self.__undo: list[LoopSimple] = list()
@@ -28,14 +28,13 @@ class SongPart(LoopSimple):
             LoopSimple.correct_buffer(x)
 
     def trim_buffer(self, ctrl: LoopCtrl) -> None:
-        loop: LoopSimple = self.loops.get_item()
-        if not loop.is_empty:
+        if not self.is_empty:
             return
         drum = ctrl.get_drum()
         bar_len = drum.get_bar_len()
-        part_len = self.get_len()
-        base_len = bar_len if self.is_empty else max(bar_len, part_len)
-        loop.finalize(ctrl.idx, base_len)
+        max_part_len = self.get_max_len()
+        base_len = bar_len if self.is_empty else max(bar_len, max_part_len)
+        self.finalize(ctrl.idx, base_len)
         if not bar_len:
             ctrl.drum_create(ctrl.idx)
 

@@ -1,7 +1,6 @@
 import numpy as np
 
 from basic.audioinfo import correct_sound, AudioInfo
-from utils.utilconfig import MAX_LEN
 from utils.utillog import MyLog
 from utils.utilnumpy import from_buff_to_data, from_data_to_buff
 
@@ -9,10 +8,9 @@ from utils.utilnumpy import from_buff_to_data, from_data_to_buff
 class WrapBuffer:
     """buffer that can wrap over the end when get/play and set/record samples """
 
-    def __init__(self, sz: int = MAX_LEN):
-        if not (0 < sz <= MAX_LEN):
+    def __init__(self, sz: int = AudioInfo().MAX_LEN):
+        if not (0 < sz <= AudioInfo().MAX_LEN):
             raise RuntimeError(f"Buffer size is not correct: {sz}")
-        self.__len_ratio: float = 0
         self.__is_reverse: bool = False
         self.__is_silent: bool = False
         self.__buff: np.ndarray = np.zeros((sz, AudioInfo().SD_CH), AudioInfo().SD_TYPE)
@@ -23,17 +21,7 @@ class WrapBuffer:
         if self.is_empty:
             return ""
         if not self.__info_str:
-            self.__info_str = f"V:{AudioInfo().vol_db(self.__buff):03}db"
-            tmp: str
-            if self.__len_ratio == 0:
-                tmp = " L:    "
-            elif self.__len_ratio >= 1:
-                tmp = f" L:{round(self.__len_ratio):04}"
-            else:
-                tmp = f" L:1/{round(1 / self.__len_ratio):02}"
-
-            self.__info_str += tmp
-
+            self.__info_str = f"V:{AudioInfo().vol_db(self.__buff):02}db L:{(self.get_len() / AudioInfo().SD_RATE):04.1F}s "
         if not self.__props_str:
             self.__props_str = f" {'S' if self.__is_silent else ' '}{'R' if self.__is_reverse else ' '}"
 
@@ -56,7 +44,7 @@ class WrapBuffer:
     def max_buffer(self) -> None:
         shape = self.__buff.shape
         assert len(shape) == 2
-        tmp = np.zeros((MAX_LEN, shape[1]), self.__buff.dtype)
+        tmp = np.zeros((AudioInfo().MAX_LEN, shape[1]), self.__buff.dtype)
         tmp[:shape[0]] = self.__buff[:shape[0]]
         self.__buff = tmp
 
@@ -65,7 +53,7 @@ class WrapBuffer:
 
     @property
     def is_empty(self) -> bool:
-        return not (0 < len(self.__buff) < MAX_LEN)
+        return not (0 < len(self.__buff) < AudioInfo().MAX_LEN)
 
     def record(self, in_data: np.ndarray, idx: int) -> None:
         from_data_to_buff(self.__buff, in_data, idx, True)
@@ -85,14 +73,14 @@ class WrapBuffer:
         assert self.is_empty
         if not base_len:  # Case 1
             self.__buff = self.__buff[:idx]
-            self.__len_ratio = 1
+            len_ratio = 1
         else:  # Case 2
             # new loop length must be ... 1/2, 1, 2, 3, ...
             tmp = base_len
             while idx < tmp // 2:
                 tmp //= 2
             idx = round(idx / tmp) * tmp
-            self.__len_ratio = idx / base_len
+            len_ratio = idx / base_len
             self.__buff = self.__buff[:idx]
 
-        MyLog().info(f"After trim length ratio: {self.__len_ratio}")
+        MyLog().info(f"After trim length ratio: {len_ratio}")

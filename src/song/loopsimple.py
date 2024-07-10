@@ -1,15 +1,15 @@
 import sounddevice as sd
 
+from basic.audioinfo import AudioInfo
 from basic.wrapbuffer import WrapBuffer
 from control.loopctrl import LoopCtrl
-from utils.utilconfig import MAX_LEN
 
 
 class LoopSimple(WrapBuffer):
     """Loop truncates itself to be multiple of bar length. Bar length is stored in a drum.
     Loop creates drum with proper bar length if drum is empty"""
 
-    def __init__(self, sz: int = MAX_LEN):
+    def __init__(self, sz: int = AudioInfo().MAX_LEN):
         WrapBuffer.__init__(self, sz)
 
     def trim_buffer(self, ctrl: LoopCtrl) -> None:

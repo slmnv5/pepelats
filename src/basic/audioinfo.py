@@ -1,9 +1,10 @@
+import os
 from math import log10
 
 import numpy as np
 import sounddevice as sd
 
-from utils.utilconfig import load_ini_section, ConfigName, SD_RATE
+from utils.utilconfig import load_ini_section, ConfigName
 from utils.utillog import MyLog
 
 
@@ -68,11 +69,11 @@ class AudioInfo:
             sd.default.device = self.SD_NAME
             MyLog().info(f"Found device matching main.ini name: {self.SD_NAME}")
         except Exception:
-            MyLog().error(f"No device matching main.ini name: {self.SD_NAME}, using default basic device instead")
+            MyLog().error(f"No device matching main.ini name: {self.SD_NAME}, using default device instead")
             self.DEV_IN: dict[str, any] = sd.query_devices(None, kind='input')
             self.DEV_OUT: dict[str, any] = sd.query_devices(None, kind='output')
 
-        MyLog().debug(f"Using IN/OUT devices:\n{self.DEV_IN}\n\n{self.DEV_OUT}\n\n")
+        MyLog().info(f"Using IN/OUT devices:\n{self.DEV_IN}\n\n{self.DEV_OUT}\n\n")
 
         # =======================================
         if self.DEV_IN["max_input_channels"] not in [1, 2]:
@@ -83,17 +84,23 @@ class AudioInfo:
         self.SD_CH = min(self.DEV_IN["max_input_channels"], self.DEV_OUT["max_output_channels"])
         sd.default.channels = self.SD_CH, self.SD_CH
 
-        sd.default.samplerate = SD_RATE
+        tmp = dic.get(ConfigName.sample_rate, "44100")
+        # noinspection PyBroadException
+        try:
+            self.SD_RATE: int = int(tmp)
+        except Exception:
+            MyLog().error(f"Device sample rate {tmp} is incorrect, using 44100 instead")
+            self.SD_RATE: int = 44100
 
         self.SD_TYPE: str = dic.get(ConfigName.device_type, "int16").strip()
         if self.SD_TYPE not in ['int16', 'float32']:
             raise RuntimeError(f"{ConfigName.device_type} in main.ini must be [in16, float32], found: {self.SD_TYPE}")
-        sd.default.dtype = self.SD_TYPE
 
+        sd.default.samplerate = self.SD_RATE
+        sd.default.dtype = self.SD_TYPE
         sd.default.latency = ('low', 'low')
 
         tmp = dic.get(ConfigName.drum_volume, "1.0")
-        self.DRUM_VOLUME: float = 1.0
         # noinspection PyBroadException
         try:
             self.DRUM_VOLUME = float(tmp)
@@ -101,12 +108,22 @@ class AudioInfo:
             self.DRUM_VOLUME = max(self.DRUM_VOLUME, 0.1)
         except Exception:
             MyLog().warning(f"Value of drum_volume is incorrect in main.ini file: {tmp}, using value of 1.0")
+            self.DRUM_VOLUME = 1.0
 
         self.MAX_SD_TYPE = get_conversion_factor('float32', self.SD_TYPE)
+        tmp = dic.get(ConfigName.max_len_seconds, "60")
+        # noinspection PyBroadException
+        try:
+            self.MAX_LEN = int(tmp) * self.SD_RATE
+        except Exception:
+            MyLog().warning(f"Value of max_len_seconds is incorrect in main.ini file: {tmp}, using value of 60")
+            self.MAX_LEN = 60 * self.SD_RATE
 
-        MyLog().warning(f"Using IN/OUT channels: {self.SD_CH}, sample rate: {SD_RATE}, data type: {self.SD_TYPE}")
-        sd.check_output_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=SD_RATE)
-        sd.check_input_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=SD_RATE)
+        MyLog().warning(f"Using IN/OUT channels: {self.SD_CH}, sample rate: {self.SD_RATE}, data type: {self.SD_TYPE}")
+        sd.check_output_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
+        sd.check_input_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
+
+        MyLog().warning(f"=========== Created AudioInfo in process id: {os.getpid()} ==========")
 
     def vol_db(self, arr: np.ndarray) -> int:
         ratio = max(0.0001, np.max(arr, initial=0) / self.MAX_SD_TYPE)

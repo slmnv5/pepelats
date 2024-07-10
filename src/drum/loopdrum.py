@@ -3,9 +3,9 @@ from threading import Timer
 
 import numpy as np
 
+from basic.audioinfo import AudioInfo
 from drum.basedrum import BaseDrum
 from song.songpart import SongPart
-from utils.utilconfig import SD_RATE
 
 
 class LoopDrum(BaseDrum):
@@ -34,7 +34,7 @@ class LoopDrum(BaseDrum):
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2
         # return to normal level
-        Timer(tmp / SD_RATE, self.randomize).start()
+        Timer(tmp / AudioInfo().SD_RATE, self.randomize).start()
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
         if self._is_stopped:

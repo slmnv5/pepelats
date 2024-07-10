@@ -149,9 +149,7 @@ class SongCtrl(LoopCtrl, ABC):
         self._drum.stop()
         self._song_stop()
         self._song.clear()
-        drum_info = {ConfigName.drum_config: self._drum.get_config(),
-                     ConfigName.drum_volume: self._drum.get_volume(),
-                     ConfigName.drum_par: self._drum.get_par()}
+        drum_info = self._drum.get_drum_info()
         self.drum_create(0, **drum_info)
 
     def _drum_type_change(self, drum_type: str) -> None:
@@ -159,8 +157,7 @@ class SongCtrl(LoopCtrl, ABC):
         self._song_stop()
         if drum_type != self._drum.get_class_name():
             bar_len = self._drum.get_bar_len()
-            drum_info = {ConfigName.drum_type: drum_type,
-                         ConfigName.drum_volume: self._drum.get_volume()}
+            drum_info = {ConfigName.drum_type: drum_type}
             self.drum_create(bar_len, **drum_info)
 
     def _drum_type_show(self) -> str:

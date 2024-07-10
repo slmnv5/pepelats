@@ -2,13 +2,14 @@ import os
 import time
 from multiprocessing import Queue
 
+from basic.audioinfo import AudioInfo
 from control._songctrl import SongCtrl
 from drum.bufferdrum import EuclidDrum, StyleDrum
 from drum.loopdrum import LoopDrum
 from drum.mididrum import MidiDrum
 from mvc.menuclient import MenuClient
 from utils.utilconfig import ConfigName
-from utils.utilconfig import load_ini_section, find_path, update_ini_section, SD_RATE
+from utils.utilconfig import load_ini_section, find_path, update_ini_section
 from utils.utillog import MyLog
 from utils.utilother import DrawInfo, FileFinder
 
@@ -70,7 +71,7 @@ class Looper(MenuClient, SongCtrl):
         assert draw_info.content is not None
         part = self._song.get_item()
         length1: int = part.get_len()
-        draw_info.loop_seconds = length1 / SD_RATE
+        draw_info.loop_seconds = length1 / AudioInfo().SD_RATE
         draw_info.loop_position = (self.idx % length1) / length1
         length2 = part.get_max_len()
         draw_info.max_loop_position = (self.idx % length2) / length2

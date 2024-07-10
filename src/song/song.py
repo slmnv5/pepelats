@@ -3,7 +3,7 @@ import pickle
 from control.loopctrl import LoopCtrl
 # noinspection PyUnresolvedReferences
 from song.songpart import SongPart
-from utils.utilconfig import find_path, ConfigName
+from utils.utilconfig import find_path
 from utils.utillog import MyLog
 from utils.utilname import generate_name
 from utils.utilother import FileFinder, CollectionOwner
@@ -38,12 +38,8 @@ class Song(CollectionOwner[SongPart]):
         parts_lst = list()
         for x in self.get_list():
             parts_lst.append(None if x.is_empty else x)
-        drum_info: dict[str, any] = dict()
         bar_len = drum.get_bar_len()
-        drum_info[ConfigName.drum_type] = drum.get_class_name()
-        drum_info[ConfigName.drum_config] = drum.get_config()
-        drum_info[ConfigName.drum_volume] = drum.get_volume()
-        drum_info[ConfigName.drum_par] = drum.get_par()
+        drum_info = drum.get_drum_info()
 
         with open(fname, 'wb') as f:
             pickle.dump((parts_lst, bar_len, drum_info), f)

@@ -30,6 +30,7 @@ class ConfigName:
     max_len_seconds: str = "max_len_seconds"
     device_name: str = "device_name"
     device_type: str = "device_type"
+    sample_rate: str = "sample_rate"
     kbd_notes_linux: str = "kbd_notes_linux"
     kbd_notes_midi: str = "kbd_notes_midi"
     # drum config
@@ -80,14 +81,4 @@ def update_ini_section(sect: str, dic: dict[str, str]) -> None:
 
 
 KEEP_SCREEN: bool = "--keep_screen" in sys.argv
-SD_RATE: int = 44100
 HUGE_INT = 2 ** 32 - 1
-
-try:
-    _max_sec = int(load_ini_section("AUDIO")['max_len_seconds'])
-except Exception as ex:
-    MyLog().exception(ex)
-    _max_sec = 60
-
-MAX_LEN = _max_sec * SD_RATE
-MyLog().info(f"Set sampling rate: {SD_RATE}, max. loop length: {_max_sec} sec")
