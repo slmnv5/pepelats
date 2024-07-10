@@ -4,13 +4,9 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from utils.utillog import MyLog
 
 
-def recursive_files() -> list[str]:
-    def match_file(x: str) -> bool:
-        return x.endswith(".ini") or x.endswith(".txt")
-
-    files1 = [r + os.sep + f for (r, _, f) in os.walk(".") if match_file(f)]
-    files2 = [r + os.sep + f for (r, _, f) in os.walk("./config") if match_file(f)]
-    return [*files1, *files2]
+def find_files(dname: str, end_with: str) -> list[str]:
+    root, _, files = os.walk(dname)
+    return [root + os.sep + f for f in files if f.endwith(end_with)]
 
 
 class MyHandler(BaseHTTPRequestHandler):
@@ -22,7 +18,7 @@ class MyHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         print(f"GET request,\nPath: {self.path}\nHeaders:\n{self.headers}\n")
         self._set_response()
-        str1 = str(recursive_files())
+        str1 = str(find_files(".", "ini"))
         print(111111111111111, str1)
         self.wfile.write(str1.encode('utf-8'))
 
