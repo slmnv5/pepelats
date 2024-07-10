@@ -24,6 +24,7 @@ class SampleLoader:
         if self.__initialized:
             return
         self.__initialized = True
+        MyLog().warning(f"=========== Created SampleLoader in process id: {os.getpid()} ==========")
         # sound names and loaded sound samples
         self._sounds: dict[str, np.ndarray] = dict()
         fname = find_path(ConfigName.pickled_drum_samples)

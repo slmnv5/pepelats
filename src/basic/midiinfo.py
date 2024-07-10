@@ -116,7 +116,7 @@ class MidiInfo:
         if self.__initialized:
             return
         self.__initialized = True
-
+        MyLog().warning(f"=========== Created MidiInfo in process id: {os.getpid()} ==========")
         # min note velocity to consider, counted notes have small velocity
         self.MIDI_MIN_VELO: int = 10
         # standard note velocity used in menu files, note louder than MIDI_MIN_VELO is converted to MIDI_STD_VELO

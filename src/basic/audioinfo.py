@@ -54,7 +54,7 @@ class AudioInfo:
         if self.__initialized:
             return
         self.__initialized = True
-
+        MyLog().warning(f"=========== Created AudioInfo in process id: {os.getpid()} ==========")
         dic: dict[str, str] = load_ini_section("AUDIO")
         self.SD_NAME: str = dic.get(ConfigName.device_name, "").strip()
         # noinspection PyBroadException
@@ -121,7 +121,7 @@ class AudioInfo:
         except Exception:
             raise RuntimeError("Wrong audio settings")
 
-        MyLog().warning(f"=========== Created AudioInfo in process id: {os.getpid()} ==========")
+
 
     def vol_db(self, arr: np.ndarray) -> int:
         ratio = max(0.0001, np.max(arr, initial=0) / self.MAX_SD_TYPE)
