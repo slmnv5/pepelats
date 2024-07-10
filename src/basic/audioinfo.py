@@ -87,9 +87,7 @@ class AudioInfo:
             MyLog().error(f"Device sample rate {tmp} is incorrect, using 44100 instead")
             self.SD_RATE: int = 44100
 
-        self.SD_TYPE: str = dic.get(ConfigName.device_type, "int16").strip()
-        if self.SD_TYPE not in ['int16', 'float32']:
-            raise RuntimeError(f"{ConfigName.device_type} in main.ini must be [in16, float32], found: {self.SD_TYPE}")
+        self.SD_TYPE: str = dic.get(ConfigName.device_type, "int16")
 
         sd.default.samplerate = self.SD_RATE
         sd.default.dtype = self.SD_TYPE
@@ -114,14 +112,8 @@ class AudioInfo:
             MyLog().warning(f"Value of max_len_seconds is incorrect in main.ini file: {tmp}, using value of 60")
             self.MAX_LEN = 60 * self.SD_RATE
 
-        # noinspection PyBroadException
-        try:
-            sd.check_output_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
-            sd.check_input_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
-        except Exception:
-            raise RuntimeError("Wrong audio settings")
-
-
+        sd.check_output_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
+        sd.check_input_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
 
     def vol_db(self, arr: np.ndarray) -> int:
         ratio = max(0.0001, np.max(arr, initial=0) / self.MAX_SD_TYPE)
