@@ -52,8 +52,8 @@ class BaseDrum:
         return self._bar_len
 
     def set_bar_len(self, bar_len: int) -> None:
-        assert bar_len > 0
-        assert self._bar_len == 0, "Method set_bar_len must be called only once"
+        if bar_len <= 0 or self._bar_len != 0:
+            raise RuntimeError("Method set_bar_len must be called only once with positive bar_len")
         self._bar_len = bar_len
         self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / AudioInfo().SD_RATE)
         MyLog().info(f"Set bar len {self._bar_len} for drum: {self}")

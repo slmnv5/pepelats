@@ -10,7 +10,7 @@ class WrapBuffer:
 
     def __init__(self, sz: int = AudioInfo().MAX_LEN):
         if not (0 < sz <= AudioInfo().MAX_LEN):
-            raise RuntimeError(f"Buffer size is not correct: {sz}")
+            raise RuntimeError(f"WrapBuffer size is not correct: {sz}")
         self.__is_reverse: bool = False
         self.__is_silent: bool = False
         self.__buff: np.ndarray = np.zeros((sz, AudioInfo().SD_CH), AudioInfo().SD_TYPE)
@@ -53,7 +53,7 @@ class WrapBuffer:
 
     @property
     def is_empty(self) -> bool:
-        return not (0 < len(self.__buff) < AudioInfo().MAX_LEN)
+        return len(self.__buff) >= AudioInfo().MAX_LEN
 
     def record(self, in_data: np.ndarray, idx: int) -> None:
         from_data_to_buff(self.__buff, in_data, idx, True)
@@ -70,7 +70,11 @@ class WrapBuffer:
         case 1) base_len == 0 trim to idx value, bar length is NOT known yet
         case 2) base_len != 0 trim to multiple of base_len i.e.  1/4 1/2 1 2 3 ...
         """
-        assert self.is_empty
+        if not self.is_empty:
+            raise RuntimeError(f"Trimming loop that is not empty")
+        if not base_len < AudioInfo().MAX_LEN:
+            raise RuntimeError(f"Trimming base_len is not correct: {base_len}")
+
         if not base_len:  # Case 1
             self.__buff = self.__buff[:idx]
             len_ratio = 1
@@ -82,5 +86,4 @@ class WrapBuffer:
             idx = round(idx / tmp) * tmp
             len_ratio = idx / base_len
             self.__buff = self.__buff[:idx]
-
         MyLog().info(f"After trim length ratio: {len_ratio}")

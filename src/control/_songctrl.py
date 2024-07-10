@@ -101,7 +101,7 @@ class SongCtrl(LoopCtrl, ABC):
             return
         if not self.get_is_rec():
             return
-        self.idx = self.idx % part.get_max_len()
+        self.idx = self.idx % part.get_max_len(0)
         part.get_item().max_buffer()
 
     def _part_clear(self, part_id: int) -> None:

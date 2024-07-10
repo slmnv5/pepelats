@@ -70,12 +70,12 @@ class Looper(MenuClient, SongCtrl):
             draw_info.content = ""
         assert draw_info.content is not None
         part = self._song.get_item()
-        length1: int = part.get_len()
-        draw_info.loop_seconds = length1 / AudioInfo().SD_RATE
-        draw_info.loop_position = (self.idx % length1) / length1
-        length2 = part.get_max_len()
-        draw_info.max_loop_position = (self.idx % length2) / length2
-        draw_info.max_loop_factor = length2 / length1
+        part_len: int = part.get_len()
+        draw_info.loop_seconds = part_len / AudioInfo().SD_RATE
+        draw_info.loop_position = (self.idx % part_len) / part_len
+        max_loop_len = part.get_max_len(part_len)
+        draw_info.max_loop_position = (self.idx % max_loop_len) / max_loop_len
+        draw_info.max_loop_factor = max_loop_len / part_len
         draw_info.is_rec = self.get_is_rec()
         self.__send_q.put([ConfigName.menu_client_redraw, draw_info])
 

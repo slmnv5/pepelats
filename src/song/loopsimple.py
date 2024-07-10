@@ -16,8 +16,7 @@ class LoopSimple(WrapBuffer):
         """trims length to multiple of bar length"""
         if not self.is_empty:
             return
-        drum = ctrl.get_drum()
-        bar_len = drum.get_bar_len()
+        bar_len = ctrl.get_drum().get_bar_len()
         self.finalize(ctrl.idx, bar_len)
         if not bar_len:
             ctrl.drum_create(ctrl.idx)

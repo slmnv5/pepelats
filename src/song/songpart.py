@@ -13,9 +13,9 @@ class SongPart(LoopSimple, CollectionOwner[LoopSimple]):
         CollectionOwner.__init__(self, self)
         self.__undo: list[LoopSimple] = list()
 
-    def get_max_len(self) -> int:
-        max_len = 0
-        for x in self.get_list():
+    def get_max_len(self, start_value: int) -> int:
+        max_len = start_value
+        for x in [x for x in self.get_list() if not x.is_empty]:
             max_len = max(LoopSimple.get_len(x), max_len)
         return max_len
 
@@ -29,10 +29,8 @@ class SongPart(LoopSimple, CollectionOwner[LoopSimple]):
         loop = self.get_item()
         if not loop.is_empty:
             return
-        drum = ctrl.get_drum()
-        bar_len = drum.get_bar_len()
-        max_part_len = self.get_max_len()
-        base_len = bar_len if self.is_empty else max(bar_len, max_part_len)
+        bar_len = ctrl.get_drum().get_bar_len()
+        base_len = self.get_max_len(bar_len)
         loop.finalize(ctrl.idx, base_len)
         if not bar_len:
             ctrl.drum_create(ctrl.idx)
