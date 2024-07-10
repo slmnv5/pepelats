@@ -25,7 +25,7 @@ def correct_sound(x: np.ndarray, channels: int, data_type: str) -> np.ndarray:
         x = (x * factor).astype(data_type)
 
     if x.shape[1] != AudioInfo().SD_CH:
-        MyLog().warning(f"Correcting basic channels: {x.shape[1]} to {AudioInfo().SD_CH}")
+        MyLog().warning(f"Correcting audio channels: {x.shape[1]} to {AudioInfo().SD_CH}")
         if x.shape[1] < channels:
             x = np.column_stack((x, x))
         elif x.shape[1] > channels:
