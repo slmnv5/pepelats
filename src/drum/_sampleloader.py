@@ -33,9 +33,9 @@ class SampleLoader:
                     self._sounds = pickle.load(f)
                     sound = self._sounds['bd']
                     if sound.dtype != AudioInfo().SD_TYPE:
-                        raise RuntimeError(f"Pickled sounds have wrong dtype: {sound.dtype}")
+                        raise RuntimeError(f"Pickled drum samples have wrong dtype: {sound.dtype}")
                     if sound.shape[1] != AudioInfo().SD_CH:
-                        raise RuntimeError(f"Pickled sounds have wrong channels: {sound.shape[1]}")
+                        raise RuntimeError(f"Pickled drum samples have wrong channels: {sound.shape[1]}")
                 except Exception as ex:
                     self._sounds = dict()
                     MyLog().error(ex)
@@ -47,9 +47,9 @@ class SampleLoader:
                     pickle.dump(self._sounds, f)
             except pickle.PicklingError as ex:
                 MyLog().error(ex)
-            MyLog().warning("Loaded drum sounds from WAV file")
+            MyLog().warning("Loaded drum samples from WAV file")
         else:
-            MyLog().warning("Loaded drum sounds from pickle file")
+            MyLog().warning("Loaded drum samples from pickle file")
 
         m_amp = AudioInfo().MAX_SD_TYPE
         m_amp2 = m_amp * m_amp / 1000
