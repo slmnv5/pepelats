@@ -7,6 +7,7 @@ from drum.bufferdrum import EuclidDrum, StyleDrum
 from drum.loopdrum import LoopDrum
 from drum.mididrum import MidiDrum
 from mvc.menuclient import MenuClient
+from serv.server import server_start
 from utils.utilconfig import ConfigName
 from utils.utilconfig import load_ini_section, find_path, update_ini_section
 from utils.utillog import MyLog
@@ -101,7 +102,8 @@ class Looper(MenuClient, SongCtrl):
 
     @staticmethod
     def _server_start() -> None:
-        os.system("python -m http.server 8000")
+        os.system("hostname -I")
+        server_start()
 
     #  ============ all parts methods ===============
 

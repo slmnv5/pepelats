@@ -23,7 +23,7 @@ class MyHandler(BaseHTTPRequestHandler):
         self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
 
 
-def run():
+def server_start():
     httpd = HTTPServer(('', 8000), MyHandler)
     MyLog().info('Starting httpd...\n')
     try:
@@ -35,4 +35,4 @@ def run():
 
 
 if __name__ == '__main__':
-    run()
+    server_start()
