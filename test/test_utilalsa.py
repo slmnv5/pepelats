@@ -3,7 +3,7 @@ import os
 import numpy as np
 import sounddevice as sd
 
-from basic.audioinfo import correct_sound, get_conversion_factor, AudioInfo
+from basic.audioinfo import correct_sound, AudioInfo, get_dtype_max
 from utils.utilalsa import make_noise, int_to_bytes, bytes_to_int, make_sin_sound, write_wav, \
     read_wav_slow
 from utils.utilconfig import find_path
@@ -62,12 +62,9 @@ def test_5() -> None:
 
 
 def test_6() -> None:
-    assert get_conversion_factor('int16', 'int16') == 1
-    assert get_conversion_factor('float32', 'int16') == 32767
-    assert round(get_conversion_factor('int16', 'float32'), 6) == round(1 / 32768, 6)
-    assert get_conversion_factor('float64', 'float32') == 1
-    assert get_conversion_factor('float32', 'float64') == 1
-    assert get_conversion_factor('float64', 'int16') == 32767
+    assert get_dtype_max('int16') == 32767
+    assert get_dtype_max('float32') == 1
+    assert get_dtype_max('float64') == 1
 
 
 if __name__ == "__main__":

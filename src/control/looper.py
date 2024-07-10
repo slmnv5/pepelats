@@ -109,7 +109,7 @@ class Looper(MenuClient, SongCtrl):
 
     def _part_undo(self) -> None:
         part = self._song.get_item()
-        if part.loops.item_count() <= 1:
+        if part.item_count() <= 1:
             return
 
         is_rec = self.get_is_rec()
@@ -118,7 +118,7 @@ class Looper(MenuClient, SongCtrl):
         if not is_rec:
             part.undo()
         else:
-            part.loops.delete_selected()
+            part.delete_selected()
 
     def _part_redo(self) -> None:
         self._set_is_rec(False)
@@ -128,19 +128,18 @@ class Looper(MenuClient, SongCtrl):
     # ================= one part methods ====================================
 
     def _loop_iterate(self, steps: int) -> None:
-        loops = self._song.get_item().loops
-        loops.iterate(steps)
+        self._song.get_item().iterate(steps)
 
     def _loop_edit(self, action: str) -> None:
         part = self._song.get_item()
-        loop = part.loops.get_item()
+        loop = part.get_item()
         if action == "silent":
             loop.set_silent(not loop.is_silent())
         elif action == "reverse":
             loop.flip_reverse()
         elif action == "move" and part != loop:
-            deleted = part.loops.delete_selected()
+            deleted = part.delete_selected()
             if deleted:
-                part.loops.add_item(deleted, True)
+                part.add_item(deleted, True)
         elif action == "delete" and part != loop:
-            part.loops.delete_selected()
+            part.delete_selected()

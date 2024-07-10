@@ -18,17 +18,16 @@ class LoopDrum(BaseDrum):
         self._par = 0.2  # for this drum - probability to randomize at bar start
 
     def randomize(self) -> None:
-        loops = self._song_part.loops
-        loop_count = loops.item_count()
+        loop_count = self._song_part.item_count()
         play_count: int = round(self._volume * loop_count)
         play_idx_lst = choices(range(play_count), k=play_count)
         play_idx_lst.append(0)
-        for k, x in enumerate(loops.get_list()):
+        for k, x in enumerate(self._song_part.get_list()):
             x.set_silent(k not in play_idx_lst)
         self.start()
 
     def play_fill(self, idx: int) -> None:
-        for x in self._song_part.loops.get_list():
+        for x in self._song_part.get_list():
             x.set_silent(False)
         tmp: int = idx % self._bar_len
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:

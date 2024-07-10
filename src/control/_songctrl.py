@@ -25,7 +25,7 @@ class SongCtrl(LoopCtrl, ABC):
 
     def _show_loops(self) -> str:
         part = self._song.get_item()
-        return part.loops.get_str(pad_str='-', pad_cols=SCR_COLS)
+        return part.get_str(pad_str='-', pad_cols=SCR_COLS)
 
     def _show_parts(self) -> str:
         return self._song.get_str(self.__next_id, '-', pad_cols=SCR_COLS)
@@ -39,7 +39,7 @@ class SongCtrl(LoopCtrl, ABC):
             self.stop_never()
             self._set_is_rec(part.is_empty or self._start_with_rec)
             if self._start_with_rec:
-                part.loops.add_item(LoopSimple(part.get_len()), True)
+                part.add_item(LoopSimple(part.get_len()), True)
             self.idx, self._start_with_rec = 0, False
             self._update_view()
             part.play_loop(self)
@@ -80,7 +80,7 @@ class SongCtrl(LoopCtrl, ABC):
                     self._set_is_rec(False)
                     part.trim_buffer(self)
                 else:
-                    part.loops.add_item(LoopSimple(part.get_len()), True)
+                    part.add_item(LoopSimple(part.get_len()), True)
                     part.clear_undo()
                     self._set_is_rec(True)
         else:  # asked to play another part
@@ -102,7 +102,7 @@ class SongCtrl(LoopCtrl, ABC):
         if not self.get_is_rec():
             return
         self.idx = self.idx % part.get_max_len()
-        part.loops.get_item().max_buffer()
+        part.get_item().max_buffer()
 
     def _part_clear(self, part_id: int) -> None:
         assert self.__next_id == part_id
