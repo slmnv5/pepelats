@@ -152,7 +152,7 @@ def get_in_port() -> rtmidi.MidiIn | KbdMidiIn:
                 return midi_in
 
     if _IS_LINUX and not _HAS_KBD:
-        raise RuntimeError(f"Failed ot open MIDI IN port: {pname}")
+        raise RuntimeError(f"Failed to open MIDI IN port: {pname}")
 
     MyLog().error(f"MIDI IN port is not open: {pname}, using computer keyboard")
     return KbdMidiIn()

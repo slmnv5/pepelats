@@ -21,7 +21,7 @@ class WrapBuffer:
         if self.is_empty:
             return ""
         if not self.__info_str:
-            self.__info_str = f"V:{AudioInfo().vol_db(self.__buff):02}db L:{(self.get_len() / AudioInfo().SD_RATE):04.1F}s "
+            self.__info_str = f"V:{AudioInfo().vol_db(self.__buff):03}db L:{(self.get_len() / AudioInfo().SD_RATE):04.1F}s "
         if not self.__props_str:
             self.__props_str = f" {'S' if self.__is_silent else ' '}{'R' if self.__is_reverse else ' '}"
 
