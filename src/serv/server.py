@@ -5,6 +5,7 @@ from utils.utillog import MyLog
 
 
 def find_files(dname: str, end_with: str) -> list[str]:
+    print(222222222, os.walk(dname))
     root, _, files = os.walk(dname)
     return [root + os.sep + f for f in files if f.endwith(end_with)]
 
