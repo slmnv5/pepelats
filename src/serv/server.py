@@ -1,4 +1,4 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHandler
 
 from utils.utillog import MyLog
 
@@ -24,7 +24,7 @@ class MyHandler(BaseHTTPRequestHandler):
 
 
 def server_start():
-    httpd = HTTPServer(('', 8000), MyHandler)
+    httpd = HTTPServer(('', 8000), SimpleHTTPRequestHandler)
     MyLog().info('Starting httpd...\n')
     try:
         httpd.serve_forever()
