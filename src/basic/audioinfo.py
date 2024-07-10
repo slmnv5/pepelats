@@ -21,7 +21,7 @@ def correct_sound(x: np.ndarray, channels: int, data_type: str) -> np.ndarray:
         x = x.reshape(-1, 1)
     if x.dtype != AudioInfo().SD_TYPE:
         MyLog().warning(f"Correcting array type: {x.dtype} to {AudioInfo().SD_TYPE}")
-        factor = get_conversion_factor(x.dtype, data_type)
+        factor = get_dtype_max(data_type) / get_dtype_max(x.dtype)
         x = (x * factor).astype(data_type)
 
     if x.shape[1] != AudioInfo().SD_CH:
@@ -38,11 +38,6 @@ def get_dtype_max(data_type: str) -> float:
         return 1.0
     else:
         return float(np.iinfo(data_type).max)
-
-
-def get_conversion_factor(type_src: str, type_dst: str) -> float:
-    """ returns conversion factor when changing dtype in numpy array with sound """
-    return get_dtype_max(type_dst) / get_dtype_max(type_src)
 
 
 class AudioInfo:
@@ -110,7 +105,7 @@ class AudioInfo:
             MyLog().warning(f"Value of drum_volume is incorrect in main.ini file: {tmp}, using value of 1.0")
             self.DRUM_VOLUME = 1.0
 
-        self.MAX_SD_TYPE = get_conversion_factor('float32', self.SD_TYPE)
+        self.MAX_SD_TYPE = get_dtype_max(self.SD_TYPE)
         tmp = dic.get(ConfigName.max_len_seconds, "60")
         # noinspection PyBroadException
         try:
