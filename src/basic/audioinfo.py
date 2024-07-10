@@ -68,7 +68,7 @@ class AudioInfo:
             self.DEV_IN: dict[str, any] = sd.query_devices(None, kind='input')
             self.DEV_OUT: dict[str, any] = sd.query_devices(None, kind='output')
 
-        MyLog().info(f"Using IN/OUT devices:\n{self.DEV_IN}\n\n{self.DEV_OUT}\n\n")
+        MyLog().warning(f"Using IN/OUT devices:\n{self.DEV_IN}\n\n{self.DEV_OUT}\n\n")
 
         # =======================================
         if self.DEV_IN["max_input_channels"] not in [1, 2]:
@@ -114,7 +114,6 @@ class AudioInfo:
             MyLog().warning(f"Value of max_len_seconds is incorrect in main.ini file: {tmp}, using value of 60")
             self.MAX_LEN = 60 * self.SD_RATE
 
-        MyLog().warning(f"Using IN/OUT channels: {self.SD_CH}, sample rate: {self.SD_RATE}, data type: {self.SD_TYPE}")
         # noinspection PyBroadException
         try:
             sd.check_output_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
