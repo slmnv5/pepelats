@@ -20,9 +20,10 @@ class MyHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        MyLog().info(f"GET request,\nPath: {self.path}\nHeaders:\n{self.headers}\n")
+        print(f"GET request,\nPath: {self.path}\nHeaders:\n{self.headers}\n")
         self._set_response()
         str1 = str(recursive_files())
+        print(111111111111111, str1)
         self.wfile.write(str1.encode('utf-8'))
 
     def do_POST(self):
