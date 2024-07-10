@@ -77,7 +77,7 @@ class Looper(MenuClient, SongCtrl):
 
     def _looper_restart(self) -> None:
         self._song_stop()
-        os.system("killall -9 python")
+        os.system("killall -9 python > /dev/null")
 
     @staticmethod
     def _menu_config_show() -> str:

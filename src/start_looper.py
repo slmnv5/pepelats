@@ -34,4 +34,4 @@ if __name__ == "__main__":
     except Exception as ex:
         MyLog().exception(ex)
     finally:
-        os.system("killall -9 python")
+        os.system("killall -9 python > /dev/null")
