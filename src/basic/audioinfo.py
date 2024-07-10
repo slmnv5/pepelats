@@ -115,8 +115,12 @@ class AudioInfo:
             self.MAX_LEN = 60 * self.SD_RATE
 
         MyLog().warning(f"Using IN/OUT channels: {self.SD_CH}, sample rate: {self.SD_RATE}, data type: {self.SD_TYPE}")
-        sd.check_output_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
-        sd.check_input_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
+        # noinspection PyBroadException
+        try:
+            sd.check_output_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
+            sd.check_input_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
+        except Exception:
+            raise RuntimeError(f"Wrong audio settings for:\n{self.DEV_IN}\n{self.DEV_OUT}")
 
         MyLog().warning(f"=========== Created AudioInfo in process id: {os.getpid()} ==========")
 
