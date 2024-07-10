@@ -7,46 +7,31 @@ from mvc.pyscreen import PyScreen
 from utils.utillog import MyLog
 
 
-# noinspection PyBroadException
 def do_looper(q_looper: Queue, q_screen: Queue) -> None:
-    # noinspection PyBroadException
-    try:
-        looper = Looper(q_looper, q_screen)
-        looper.menu_client_start()
-    except Exception as ex:
-        MyLog().exception(ex)
-        os.system("killall -9 python")
+    looper = Looper(q_looper, q_screen)
+    looper.menu_client_start()
 
 
 # noinspection PyBroadException
 def do_screen(q_screen: Queue) -> None:
-    # noinspection PyBroadException
-    try:
-        scr_view = PyScreen(q_screen)
-        scr_view.menu_client_start()
-    except Exception as ex:
-        MyLog().exception(ex)
-        os.system("killall -9 python")
-
-
-def go() -> None:
-    q_screen = Queue()  # screen update messages
-    q_looper = Queue()  # looper control messages
-    midi_ctrl = CountMidiControl(q_looper)
-
-    p1 = Process(target=do_looper, args=(q_looper, q_screen), name="looper", daemon=True)
-    p1.start()
-    p2 = Process(target=do_screen, args=(q_screen,), name="screen", daemon=True)
-    p2.start()
-
-    midi_ctrl.start_menu_host()
+    scr_view = PyScreen(q_screen)
+    scr_view.menu_client_start()
 
 
 if __name__ == "__main__":
     # noinspection PyBroadException
     try:
-        go()
-    except Exception as ex1:
-        MyLog().exception(ex1)
+        q_scr = Queue()  # screen update messages
+        q_lpr = Queue()  # looper control messages
+        midi_ctrl = CountMidiControl(q_lpr)
+
+        p1 = Process(target=do_looper, args=[q_lpr, q_scr], name="looper", daemon=True)
+        p1.start()
+        p2 = Process(target=do_screen, args=[q_scr], name="screen", daemon=True)
+        p2.start()
+
+        midi_ctrl.start_menu_host()
+    except Exception as ex:
+        MyLog().exception(ex)
     finally:
         os.system("killall -9 python")
