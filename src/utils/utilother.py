@@ -28,15 +28,14 @@ class DrawInfo:
         self.header: str = ""
         self.description: str = ""
         self.content: str = ""
-        self.loop_seconds: float = 10.0
-        self.max_loop_position: float = 0.0
-        self.loop_position: float = 0.0
-        self.max_loop_factor: float = 1.0
+        self.part_len: int = 0
+        self.max_loop_len: int = 0
+        self.idx: int = 0
         self.is_rec: bool = False
 
     def __str__(self):
-        return f"CALL:{self.update_method}|L:{self.loop_seconds:05.2F}|" \
-               f"P:{self.loop_position:.3F}|REC:{self.is_rec}"
+        return f"CALL:{self.update_method}|L:{self.part_len}|" \
+               f"P:{self.idx}|REC:{self.is_rec}"
 
 
 class CollectionOwner(Generic[T]):

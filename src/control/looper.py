@@ -2,7 +2,6 @@ import os
 import time
 from multiprocessing import Queue
 
-from basic.audioinfo import AudioInfo
 from control._songctrl import SongCtrl
 from drum.bufferdrum import EuclidDrum, StyleDrum
 from drum.loopdrum import LoopDrum
@@ -55,29 +54,24 @@ class Looper(MenuClient, SongCtrl):
     def _update_view(self) -> None:
         self.menu_client_queue([ConfigName.menu_client_redraw, self._di])
 
-    def _menu_client_redraw(self, draw_info: DrawInfo) -> None:
-        self._di = draw_info
+    def _menu_client_redraw(self, di: DrawInfo) -> None:
+        self._di = di
 
-        draw_info.header = f"{self._drum}"
-        if draw_info.update_method:
+        di.header = f"{self._drum}"
+        if di.update_method:
             # noinspection PyBroadException
             try:
-                method = getattr(self, draw_info.update_method)
-                draw_info.content = method()
+                method = getattr(self, di.update_method)
+                di.content = method()
             except Exception as ex:
                 MyLog().exception(ex)
-        else:
-            draw_info.content = ""
-        assert draw_info.content is not None
+                di.content = ""
         part = self._song.get_item()
-        part_len: int = part.get_len()
-        draw_info.loop_seconds = part_len / AudioInfo().SD_RATE
-        draw_info.loop_position = (self.idx % part_len) / part_len
-        max_loop_len = part.get_max_len(part_len)
-        draw_info.max_loop_position = (self.idx % max_loop_len) / max_loop_len
-        draw_info.max_loop_factor = max_loop_len / part_len
-        draw_info.is_rec = self.get_is_rec()
-        self.__send_q.put([ConfigName.menu_client_redraw, draw_info])
+        di.part_len = part.get_len()
+        di.max_loop_len = part.get_max_len(di.part_len)
+        di.idx = self.idx
+        di.is_rec = self.get_is_rec()
+        self.__send_q.put([ConfigName.menu_client_redraw, di])
 
     # ===============+ other methods ===============================
 
