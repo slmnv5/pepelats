@@ -26,15 +26,14 @@ class SongPart(LoopSimple, CollectionOwner[LoopSimple]):
             LoopSimple.correct_buffer(x)
 
     def trim_buffer(self, ctrl: LoopCtrl) -> None:
-        if not self.is_empty:
-            print(11111100000000000009)
+        loop = self.get_item()
+        if not loop.is_empty:
             return
-        print(22222222222222222)
         drum = ctrl.get_drum()
         bar_len = drum.get_bar_len()
         max_part_len = self.get_max_len()
         base_len = bar_len if self.is_empty else max(bar_len, max_part_len)
-        self.finalize(ctrl.idx, base_len)
+        loop.finalize(ctrl.idx, base_len)
         if not bar_len:
             ctrl.drum_create(ctrl.idx)
 
@@ -50,7 +49,7 @@ class SongPart(LoopSimple, CollectionOwner[LoopSimple]):
         if not self.__undo:
             return False
         item = self.__undo.pop()
-        self.add_item(item, True)
+        self.add_item(item)
         return True
 
     def undo(self) -> bool:

@@ -39,7 +39,7 @@ class SongCtrl(LoopCtrl, ABC):
             self.stop_never()
             self._set_is_rec(part.is_empty or self._start_with_rec)
             if self._start_with_rec:
-                part.add_item(LoopSimple(part.get_len()), True)
+                part.add_item(LoopSimple(part.get_len()))
             self.idx, self._start_with_rec = 0, False
             self._update_view()
             part.play_loop(self)
@@ -80,7 +80,7 @@ class SongCtrl(LoopCtrl, ABC):
                     self._set_is_rec(False)
                     part.trim_buffer(self)
                 else:
-                    part.add_item(LoopSimple(part.get_len()), True)
+                    part.add_item(LoopSimple(part.get_len()))
                     part.clear_undo()
                     self._set_is_rec(True)
         else:  # asked to play another part

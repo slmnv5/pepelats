@@ -33,7 +33,7 @@ class Song(CollectionOwner[SongPart]):
 
     def save_song(self) -> None:
         drum = self._ctrl.get_drum()
-        self._ff.add_item(self.get_complete_name(), True)
+        self._ff.add_item(self.get_complete_name())
         fname = self._ff.get_full_name()
         parts_lst = list()
         for x in self.get_list():
@@ -60,7 +60,7 @@ class Song(CollectionOwner[SongPart]):
 
         parts_lst = [x if x else SongPart() for x in parts_lst]
         for part in parts_lst:
-            self.add_item(part, True)
+            self.add_item(part)
 
         self.select_idx(0)
         while self.item_count() > len(parts_lst):

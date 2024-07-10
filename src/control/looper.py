@@ -95,7 +95,7 @@ class Looper(MenuClient, SongCtrl):
         tmp = load_ini_section("MENU")
         config = tmp.get(ConfigName.menu_dir, "")
         ff = FileFinder(find_path("config/menu"), False, "")
-        ff.add_item(config, True)
+        ff.add_item(config)
         ff.iterate(1)  # next menu
         tmp[ConfigName.menu_dir] = ff.get_item()
         update_ini_section("MENU", tmp)
@@ -140,6 +140,6 @@ class Looper(MenuClient, SongCtrl):
         elif action == "move" and part != loop:
             deleted = part.delete_selected()
             if deleted:
-                part.add_item(deleted, True)
+                part.add_item(deleted)
         elif action == "delete" and part != loop:
             part.delete_selected()
