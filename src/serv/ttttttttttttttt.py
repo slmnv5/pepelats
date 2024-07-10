@@ -1,4 +1,3 @@
-import json
 import os
 import sys
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -6,8 +5,6 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 IP_ADDRESS = "192.168.1.1"  # subprocess.check_output("hostname -I", shell=True)
 BASE_DIR = None
 LOAD_PREFIX = "/load?file="
-LOAD_PREFIX_LEN = len(LOAD_PREFIX)
-FNAME_END = "1.txt"
 
 MAIN_HTML = """
 <html>
@@ -70,103 +67,57 @@ var frame = document.getElementById('myFrame');
 """
 
 
-def recursive_files(dname: str) -> dict:
-    matches = dict()
-    for root, _, filenames in os.walk(dname):
-        for fn in filenames:
-            if fn.endswith(FNAME_END):
-                relDir = os.path.relpath(root, dname)
-                relFile = os.path.join(relDir, fn)
-                matches[relFile] = fn
-    return matches
+def recursive_files(dname: str) -> list[str]:
+    def match_file(x: str) -> bool:
+        return x.endswith(".ini") or x.endswith(".txt")
+
+    files1 = [r + os.sep + f for (r, _, f) in os.walk(".") if match_file(f)]
+    files2 = [r + os.sep + f for (r, _, f) in os.walk("./config") if match_file(f)]
+    return [*files1, *files2]
 
 
-class FileSelector:
+class MyHandler(BaseHTTPRequestHandler):
 
-    def __init__(self, dname: str):
-        self.all_files = recursive_files(dname)
-        self.selected_files = {}
-        self.selectedFileName = os.path.join(dname, 'data.json')
-        if os.path.isfile(self.selectedFileName):
-            with open(self.selectedFileName, 'r') as fp:
-                self.selected_files = json.load(fp)
-
-    @staticmethod
-    def decorate(keyValPair, linkStart):
-        strTag = "<a href=%s%s>%s</a><br>" % (linkStart, keyValPair[0], keyValPair[1])
-        return strTag
-
-    def getSelected(self, linkStart):
-        strTag = ""
-        for x in self.selected_files.items():
-            strTag += self.decorate(x, linkStart)
-        return strTag
-
-    def getAll(self, linkStart):
-        strTag = ""
-        for x in self.all_files.items():
-            strTag += self.decorate(x, linkStart)
-        return strTag
-
-
-class CaptiveHandler(BaseHTTPRequestHandler):
-
-    def send_Load(self):
-        self.send_Head()
-        filename = self.path[LOAD_PREFIX_LEN:]
+    def send_load(self):
+        self.send_head()
+        filename = self.path[len(LOAD_PREFIX):]
         str1 = "./" + filename
         str2 = FILE_HTML % (str1)
-        self.wfile.write(str2)
+        self.wfile.write(bytes(str2))
 
-    def change_Mark(self):
-        filename = self.path[LOAD_PREFIX_LEN:]
-        dic1 = self.file_selector.selected_files
-        dic2 = self.file_selector.all_files
+    def send_main(self):
+        self.send_head()
+        str1 = MAIN_HTML % ("dddddddddddddddddd", "wwwweeeeeeeeeeeee")
+        self.wfile.write(bytes(str1))
 
-        if filename in dic1:
-            del dic1[filename]
-        elif filename in dic2:
-            value = dic2[filename]
-            dic1[filename] = value
-
-        with open(self.file_selector.selectedFileName, 'w') as fp:
-            json.dump(dic1, fp)
-
-        self.send_Main()
-
-    def send_Main(self):
-        self.send_Head()
-        str1 = MAIN_HTML % (self.file_selector.getSelected(LOAD_PREFIX), self.file_selector.getAll(LOAD_PREFIX))
-        self.wfile.write(str1)
-
-    def send_Binary(self, filename):
+    def send_binary(self, filename):
         f = open(filename, "rb")
         str1 = f.read()
         f.close()
         self.wfile.write(str1)
 
-    def send_Redir(self):
-        self.send_Head()
+    def send_redir(self):
+        self.send_head()
         self.wfile.write(REDIRECT_HTML)
 
-    def send_Head(self):
+    def send_head(self):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
 
     def do_GET(self):
         if self.path.startswith(LOAD_PREFIX):
-            return self.send_Load()
+            return self.send_load()
 
         if self.path.startswith("/login"):
-            return self.send_Main()
+            return self.send_main()
 
         isLocal = self.path.startswith("/")
         fileExists = os.path.isfile("." + self.path)
         if isLocal and fileExists:
-            return self.send_Binary("." + self.path)
+            return self.send_binary("." + self.path)
 
-        return self.send_Redir()
+        return self.send_redir()
 
 
 if __name__ == '__main__':
@@ -183,8 +134,7 @@ if __name__ == '__main__':
     print(11111111111111)
     os.getcwd(), SAVEPATH
 
-    my_serv1 = HTTPServer(('', 8000), CaptiveHandler)
-    my_serv1.file_selector = FileSelector(BASE_DIR)
+    my_serv1 = HTTPServer(('', 8000), MyHandler)
 
     try:
         my_serv1.serve_forever()
