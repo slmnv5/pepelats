@@ -99,6 +99,10 @@ class Looper(MenuClient, SongCtrl):
         os.system("git reset --hard; clear; git pull")
         time.sleep(5)
 
+    @staticmethod
+    def _server_start() -> None:
+        os.system("python -m http.server 8000")
+
     #  ============ all parts methods ===============
 
     def _part_undo(self) -> None:
