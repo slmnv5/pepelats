@@ -42,7 +42,7 @@ sudo setfont Uni1-VGA32x16
 stty -echo
 
 while true; do
-  killall -9 -w python > /dev/null
+  killall -9 -qw python > /dev/null
   test_keyboard
   PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./src/start_looper.py $*"
   echo "$PYTHON_CMD"
