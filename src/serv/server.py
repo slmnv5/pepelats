@@ -36,13 +36,13 @@ class MyHandler(BaseHTTPRequestHandler):
 
 def server_start():
     httpd = HTTPServer(('', 8000), MyHandler)
-    MyLog().info('Starting httpd...\n')
+    print('Starting httpd...\n')
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
         pass
     httpd.server_close()
-    MyLog().info('Stopping httpd...\n')
+    print('Stopping httpd...\n')
 
 
 if __name__ == '__main__':
