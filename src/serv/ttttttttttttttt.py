@@ -76,7 +76,7 @@ def recursive_files(dname: str) -> list[str]:
     return [*files1, *files2]
 
 
-class MyHandler(BaseHTTPRequestHandler):
+class MyHandler111111111(BaseHTTPRequestHandler):
 
     def send_load(self):
         self.send_head()
@@ -134,7 +134,7 @@ if __name__ == '__main__':
     print(11111111111111)
     os.getcwd(), SAVEPATH
 
-    my_serv1 = HTTPServer(('', 8000), MyHandler)
+    my_serv1 = HTTPServer(('', 8000), MyHandler111111111)
 
     try:
         my_serv1.serve_forever()
