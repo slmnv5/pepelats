@@ -18,7 +18,6 @@ def test_2():
     ff = FileFinder(".", True, "")
     for x in ff.get_list():
         print(x)
-    print("================")
     print(f"count: {ff.item_count()}")
 
 

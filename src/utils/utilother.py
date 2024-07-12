@@ -187,11 +187,4 @@ class EuclidSlicer:
 
 
 if __name__ == "__main__":
-    def test_1():
-        lst = list(range(22))
-        sub_lst = _stable_sub_list(20, lst, 5)
-        assert [20, 21, 0, 1, 2] == sub_lst
-        print(sub_lst)
-
-
-    test_1()
+    pass

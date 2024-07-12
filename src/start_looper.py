@@ -4,6 +4,7 @@ from multiprocessing import Process, Queue
 from control.looper import Looper
 from mvc.countmidicontrol import CountMidiControl
 from mvc.pyscreen import PyScreen
+from utils.utilconfig import ConfigName
 from utils.utillog import MyLog
 
 
@@ -34,4 +35,4 @@ if __name__ == "__main__":
     except Exception as ex:
         MyLog().exception(ex)
     finally:
-        os.system("killall -9 -qw python > /dev/null")
+        os.system(ConfigName.kill_command)

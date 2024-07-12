@@ -16,15 +16,19 @@ MyLog().info(f"Text screen size: cols={SCR_COLS} rows={SCR_ROWS}")
 
 
 class ConfigName:
-    # menu and midi config related
+    # Kill command
+    kill_command = "killall -9 -qw python > /dev/null"
+    # file location
+    main_ini: str = "main.ini"
+    local_ini: str = "local.ini"
+    # menu config related
     update_method: str = "update_method"
     description: str = "description"
     menu_client_redraw: str = "_menu_client_redraw"
     menu_client_stop: str = "menu_client_stop"
     play_section: str = "play"
+    # INI file options
     menu_dir: str = "menu_dir"
-    main_ini: str = "main.ini"
-    local_ini: str = "local.ini"
     midi_out: str = "midi_out"
     midi_in: str = "midi_in"
     max_len_seconds: str = "max_len_seconds"
@@ -33,7 +37,7 @@ class ConfigName:
     sample_rate: str = "sample_rate"
     kbd_notes_linux: str = "kbd_notes_linux"
     kbd_notes_midi: str = "kbd_notes_midi"
-    # drum config
+    # drum config related
     drum_type: str = "drum_type"
     drum_config: str = "drum_config"
     drum_volume: str = "drum_volume"
@@ -61,6 +65,7 @@ def find_path(path_end: str) -> str:
 def load_ini_section(sect: str) -> dict[str, str]:
     main = find_path(ConfigName.main_ini)
     local = find_path(ConfigName.local_ini)
+    assert os.path.isfile(main)
     cfg = ConfigParser()
     cfg.read([main, local])  # local file overwrites main
     if sect not in cfg.sections():

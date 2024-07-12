@@ -127,6 +127,4 @@ class _MenuLoader:
 
 
 if __name__ == "__main__":
-    ml = _MenuLoader(find_path("config/menu/4x2"))
-    print(ml.get("60-100"))
-    print(ml.get("65-6"))
+    pass
