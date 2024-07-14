@@ -1,9 +1,46 @@
 import os
+import re
+import subprocess
 from typing import TypeVar, Generic, Iterable
 
-from utils.utilconfig import HUGE_INT
+from utils.utilconfig import HUGE_INT, SCR_ROWS, SCR_COLS
 
 T = TypeVar('T')
+
+
+def split_to_dict(data: str, bound: str, mark1: str, mark2: str,
+                  strip1: str = "", strip2: str = "") -> dict[str, str]:
+    """ split data into dictionary:
+    bound mark1 <k> mark2 <v> bound mark1 <k> mark2 <v> bound ..... """
+    result = dict()
+    split_data = [x for x in data.split(bound) if mark1 in x and mark2 in x]
+    for x in split_data:
+        k, v = split_key_value(x, mark1, mark2, strip1, strip2)
+        result[k] = v
+    return result
+
+
+def get_ip_address() -> str:
+    if os.name == 'posix':
+        result = subprocess.run(['hostname', '-I'], stdout=subprocess.PIPE)
+        return result.stdout.decode()
+    elif os.name == 'nt':
+        result = subprocess.run(['ipconfig'], stdout=subprocess.PIPE)
+        dic = split_to_dict(result.stdout.decode(), '\r\n', 'IPv4 Address', ': ', '. ')
+        assert len(dic) == 1 and '' in dic
+        return dic['']
+    else:
+        raise RuntimeError("OS must be posix or nt")
+
+
+def split_key_value(data: str, mark1: str, mark2: str, strip1: str = "", strip2="") -> tuple[str, str]:
+    """ Find 2 substrings using 2 markers and strip some chas from them
+    Used to parse key-value pairs: mark1 k1 mark2 v1  mark1 k2 mark2 v2 """
+    result = re.search(f'{mark1}(.*){mark2}(.*)', data)
+    if result:
+        return result.group(1).strip(strip1), result.group(2).strip(strip2)
+    else:
+        return "", ""
 
 
 def _stable_sub_list(idx: int, items: list[any], sub_list_size: int) -> list[tuple[int, str]]:
@@ -85,8 +122,9 @@ class CollectionOwner(Generic[T]):
         self.__idx = 0
         return item
 
-    def get_str(self, next_idx: int = None, pad_str: str = None, pad_cols: int = None) -> str:
-        item_sub_list = _stable_sub_list(self.__idx, self.__items, 5)
+    def get_str(self, next_idx: int = None, pad_str: str = None) -> str:
+        sub_list_sz: int = SCR_ROWS - 5
+        item_sub_list = _stable_sub_list(self.__idx, self.__items, sub_list_sz)
         tmp: list[str] = list()
         for (k, s) in item_sub_list:
             if k == self.__idx:
@@ -95,8 +133,8 @@ class CollectionOwner(Generic[T]):
                 tmp.append(f"~{k:02} {s}")
             else:
                 tmp.append(f"-{k:02} {s}")
-        if pad_cols and pad_str:
-            tmp = [x.ljust(pad_cols, pad_str) for x in tmp]
+        if pad_str:
+            tmp = [x.ljust(SCR_COLS, pad_str) for x in tmp]
         return '\n'.join(tmp)
 
     def iterate(self, steps: int) -> None:

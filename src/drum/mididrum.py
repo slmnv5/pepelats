@@ -5,7 +5,7 @@ import rtmidi
 
 from basic.midiinfo import FakeMidiOut, get_out_port
 from drum.basedrum import BaseDrum
-from utils.utilalsa import int_to_bytes
+from drum._utilalsa import int_to_bytes
 
 
 class MidiDrum(BaseDrum):

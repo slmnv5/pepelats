@@ -1,6 +1,6 @@
 import random
 
-from utils.utilother import FileFinder, CollectionOwner, EuclidSlicer
+from utils.utilother import FileFinder, CollectionOwner, EuclidSlicer, split_key_value
 
 
 def test_1():
@@ -66,3 +66,11 @@ def test_7():
     idx = sl.start + random.randrange(len(lst))
     assert idx == 0
     assert lst == [1]
+
+
+def test_8():
+    big_str = "cc12345aabb12345dd"
+    assert ("12345", "12345") == split_key_value(big_str, "cc", "aa", "b", strip2="bd")
+    assert ("", "") == split_key_value(big_str, "CC", "aa", "b", strip2="b")
+    assert ("", "") == split_key_value(big_str, "cc", "AA", "b", strip2="b")
+    assert ("5", "5") == split_key_value(big_str, "34", "34", "ab12", strip2="bd")

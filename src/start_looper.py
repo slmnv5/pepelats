@@ -1,10 +1,8 @@
-import os
 from multiprocessing import Process, Queue
 
 from control.looper import Looper
 from mvc.countmidicontrol import CountMidiControl
-from mvc.pyscreen import PyScreen
-from utils.utilconfig import ConfigName
+from mvc.textscreen import TextScreen
 from utils.utillog import MyLog
 
 
@@ -15,7 +13,7 @@ def do_looper(q_looper: Queue, q_screen: Queue) -> None:
 
 # noinspection PyBroadException
 def do_screen(q_screen: Queue) -> None:
-    scr_view = PyScreen(q_screen)
+    scr_view = TextScreen(q_screen)
     scr_view.menu_client_start()
 
 
@@ -35,4 +33,4 @@ if __name__ == "__main__":
     except Exception as ex:
         MyLog().exception(ex)
     finally:
-        os.system(ConfigName.kill_command)
+        print("Exit done")

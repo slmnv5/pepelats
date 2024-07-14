@@ -4,8 +4,8 @@ import pickle
 import numpy as np
 
 from basic.audioinfo import correct_sound, AudioInfo
-from utils.utilalsa import read_wav_slow
-from utils.utilconfig import find_path, ConfigName
+from drum._utilalsa import read_wav_slow
+from utils.utilconfig import ConfigName
 from utils.utillog import MyLog
 
 
@@ -27,7 +27,7 @@ class SampleLoader:
         MyLog().warning(f"=========== Created SampleLoader in process id: {os.getpid()} ==========")
         # sound names and loaded sound samples
         self._sounds: dict[str, np.ndarray] = dict()
-        fname = find_path(ConfigName.pickled_drum_samples)
+        fname = ConfigName.pickled_drum_samples
         if os.path.isfile(fname):
             with open(fname, 'rb') as f:
                 try:
@@ -42,7 +42,7 @@ class SampleLoader:
                     MyLog().error(ex)
 
         if not self._sounds:
-            self._sounds = self._load_audio_samples(find_path('config/drum/wav'))
+            self._sounds = self._load_audio_samples(ConfigName.drum_samples_dir)
             try:
                 with open(fname, 'wb') as f:
                     pickle.dump(self._sounds, f)

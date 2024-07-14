@@ -4,7 +4,7 @@ from multiprocessing import Queue
 from time import sleep
 
 from basic.midiinfo import MidiInfo
-from utils.utilconfig import ConfigName, find_path, load_ini_section
+from utils.utilconfig import ConfigName, load_ini_section
 from utils.utillog import MyLog
 from utils.utilother import DrawInfo
 
@@ -14,15 +14,15 @@ class MenuHost:
 
     def __init__(self, queue: Queue):
         dic = load_ini_section("MENU")
-        dname = dic.get(ConfigName.menu_dir, "")
-        dname = find_path(f"config/menu/{dname}")
+        dname = dic.get(ConfigName.menu_choice, "")
+        dname = f"{ConfigName.menu_config_dir}/{dname}"
         if not os.path.isdir(dname):
             raise RuntimeError(f"Directory not found: {dname}. Check main.ini and local.ini files")
         self._menu_loader = _MenuLoader(dname)
         self._di = DrawInfo()
         self.__queue = queue
         self._menu_update(ConfigName.play_section)
-        self.__queue.put([ConfigName.menu_client_redraw, self._di])
+        self.__queue.put([ConfigName.client_redraw, self._di])
         self.min_velo = MidiInfo().MIDI_MIN_VELO
         self.std_velo = MidiInfo().MIDI_STD_VELO
         self.midi_dict = MidiInfo().MIDI_DICT
@@ -32,10 +32,9 @@ class MenuHost:
 
     def start_menu_host(self) -> None:
         MyLog().info(f"{self.__class__.__name__} start working as MenuHost")
-        while True:
+        while self._is_alive():
             sleep(5)
-            if not self._is_alive():
-                break
+        self.__queue.put([ConfigName.looper_stop])
         MyLog().info(f"{self.__class__.__name__} stop working as MenuHost")
 
     def _menu_update(self, fname: str):
@@ -62,7 +61,7 @@ class MenuHost:
             lst1 = cmd.split()  # method name and arguments if any
             self.__process_list(lst1)
         # after all commands send _redraw
-        self.__queue.put([ConfigName.menu_client_redraw, self._di])
+        self.__queue.put([ConfigName.client_redraw, self._di])
 
     def __process_list(self, cmd: list) -> None:
         if not (cmd and isinstance(cmd, list)):
@@ -99,7 +98,7 @@ class _MenuLoader:
             cfg = ConfigParser()
             read_lst = cfg.read([fname1, fname2])
             if len(read_lst) != 2:
-                raise RuntimeError(f"Not all INI menu files wre loaded: {fname1}, {fname2}")
+                raise RuntimeError(f"Not all INI menu files loaded: {fname1}, {fname2}")
             tmp = {s: dict(cfg.items(s)) for s in cfg.sections()}
             self._dict |= tmp
         MyLog().debug(f"Loaded menu\n: {self._dict}")

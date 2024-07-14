@@ -1,5 +1,4 @@
 import os
-from typing import Callable
 
 import keyboard
 import rtmidi
@@ -37,36 +36,30 @@ class KbdMidiIn:
             raise RuntimeError(f"Option {ConfigName.kbd_notes_midi} in main.ini must be 0<=x<128: {notes_str}")
 
         self.__kbd_notes: dict[str, int] = dict(zip(kbd_lst, midi_lst))
-        self._func: Callable[[tuple[list, any]], None] = self._fake_callback
+        self._func = None
         self._data: any = None
         self._pressed_key = False
         keyboard.on_press(callback=self.on_press, suppress=True)
         keyboard.on_release(callback=self.on_release, suppress=True)
+        self._port_count: int = 1
 
     @staticmethod
     def is_port_open() -> bool:
         return True
 
-    @staticmethod
-    def get_port_count() -> int:
-        return 0
+    def get_port_count(self) -> int:
+        return self._port_count
 
     def set_callback(self, func, data=None) -> None:
         self._data = data
         self._func = func
 
-    @staticmethod
-    def _fake_callback(event: tuple[list[int], float]) -> None:
-        raise RuntimeError("This fake method should not be called")
-
     # noinspection PyUnresolvedReferences
     def on_press(self, kbd_event):
         if kbd_event.name == "esc":
             keyboard.unhook_all()
-            MyLog().debug("Done unhook_all and exit !")
-            # noinspection PyProtectedMember
-            os._exit(1)
-            return
+            MyLog().debug("Done unhook_all")
+            self._port_count = 0
 
         val = self.__kbd_notes.get(kbd_event.name, None)
         if val is not None and not self._pressed_key:

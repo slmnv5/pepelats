@@ -2,10 +2,10 @@ import pickle
 
 from control.loopctrl import LoopCtrl
 # noinspection PyUnresolvedReferences
+from song._utilname import generate_name
+# noinspection PyUnresolvedReferences
 from song.songpart import SongPart
-from utils.utilconfig import find_path
 from utils.utillog import MyLog
-from utils.utilname import generate_name
 from utils.utilother import FileFinder, CollectionOwner
 
 
@@ -18,7 +18,7 @@ class Song(CollectionOwner[SongPart]):
         CollectionOwner.__init__(self, tmp)
         self._name: str = generate_name()
         self._ctrl: LoopCtrl = ctrl
-        self._ff = FileFinder(find_path(".save_song"), True, ".sng")
+        self._ff = FileFinder(".save_song", True, ".sng")
 
     def clear(self) -> None:
         for k, x in enumerate(self.get_list()):

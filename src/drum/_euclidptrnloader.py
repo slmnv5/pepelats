@@ -5,6 +5,7 @@ import numpy as np
 from basic.audioinfo import make_buffer
 
 from drum._ptrnloader import PtrnLoader
+from utils.utilconfig import ConfigName
 from utils.utillog import MyLog
 from utils.utilnumpy import from_data_to_buff
 from utils.utilother import EuclidSlicer
@@ -14,7 +15,7 @@ class EuclidPtrnLoader(PtrnLoader):
     _BAR_STEPS: int = 16  # each bar has so many steps
 
     def __init__(self):
-        PtrnLoader.__init__(self, "config/drum/euclid")
+        PtrnLoader.__init__(self, f"{ConfigName.drum_config_dir}/euclid")
 
     def fn_load(self, ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
         """One Drum pattern put into dictionary"""

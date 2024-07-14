@@ -4,9 +4,9 @@ import numpy as np
 import sounddevice as sd
 
 from basic.audioinfo import correct_sound, AudioInfo, get_dtype_max
-from utils.utilalsa import make_noise, int_to_bytes, bytes_to_int, make_sin_sound, write_wav, \
+# noinspection PyProtectedMember
+from drum._utilalsa import make_noise, int_to_bytes, bytes_to_int, make_sin_sound, write_wav, \
     read_wav_slow
-from utils.utilconfig import find_path
 
 
 def test_1() -> None:
@@ -42,7 +42,7 @@ def test_4() -> None:
 
 
 def test_5() -> None:
-    fname = find_path('.save_song') + os.sep + "test.wav"
+    fname = '.save_song' + os.sep + "test.wav"
     sound1: np.ndarray = make_sin_sound(330, 1)
 
     sound1 = correct_sound(sound1, 1, 'int16')

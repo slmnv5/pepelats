@@ -7,7 +7,6 @@ from random import randrange
 import numpy as np
 
 from drum._sampleloader import SampleLoader
-from utils.utilconfig import find_path
 from utils.utillog import MyLog
 from utils.utilother import FileFinder
 
@@ -18,11 +17,10 @@ class PtrnLoader:
     sl: SampleLoader = SampleLoader()
 
     def __init__(self, ptrn_dir: str):
-        tmp: str = find_path(ptrn_dir)
-        self.ff = FileFinder(tmp, True, ".ini")
+        self.ff = FileFinder(ptrn_dir, True, ".ini")
         if not self.ff.get_item():
             raise RuntimeError(f"No INI files found in pattern directory: {ptrn_dir}")
-        
+
     @abstractmethod
     def fn_load(self, ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
         """One Drum pattern put into dictionary"""

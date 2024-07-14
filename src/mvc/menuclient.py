@@ -9,12 +9,17 @@ from utils.utilother import DrawInfo
 class MenuClient:
     def __init__(self, queue: Queue):
         self.__queue: Queue = queue
+        self._alive: bool = True
+
+    def _clean_up(self) -> None:
+        self._alive = False
 
     def menu_client_start(self):
-        while True:
+        while self._alive:
             command = self.__queue.get()
             method_name, *params = command
-            if method_name == ConfigName.menu_client_stop:
+            if method_name == ConfigName.looper_stop:
+                self._clean_up()
                 break
             # noinspection PyBroadException
             try:
@@ -24,7 +29,7 @@ class MenuClient:
                 MyLog().exception(ex)
 
     @abstractmethod
-    def _menu_client_redraw(self, draw_info: DrawInfo) -> None:
+    def _client_redraw(self, draw_info: DrawInfo) -> None:
         pass
 
     def menu_client_queue(self, command: list) -> None:

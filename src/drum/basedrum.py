@@ -40,7 +40,7 @@ class BaseDrum:
     def get_drum_info(self) -> dict[str, str | float]:
         drum_info: dict[str, str | float] = dict()
         drum_info[ConfigName.drum_type] = self.get_class_name()
-        drum_info[ConfigName.drum_config] = self.get_config()
+        drum_info[ConfigName.drum_config_file] = self.get_config()
         drum_info[ConfigName.drum_volume] = self.get_volume()
         drum_info[ConfigName.drum_par] = self.get_par()
         return drum_info

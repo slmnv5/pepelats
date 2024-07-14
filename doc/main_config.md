@@ -16,5 +16,5 @@ Some of the options used in this INI file are:
   keyboard is attached it is used instead.
   Also on Windows computer keyboard is used with fixed keys: 1, 2, 3, 4, q, w
 * midi_out = -- name of MIDI OUT port for MIDI drum, optional
-* menu_dir = 6x4 -- menu layout directory located in [6x4](./../config/menu/6x4) (6 buttons x 4 parts). New directories
+* menu_choice = 6x4 -- menu layout directory located in [6x4](./../config/menu/6x4) (6 buttons x 4 parts). New directories
   with configurations may be added and switched from service menu.

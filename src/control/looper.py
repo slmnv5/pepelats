@@ -6,23 +6,26 @@ from control._songctrl import SongCtrl
 from drum.bufferdrum import EuclidDrum, StyleDrum
 from drum.loopdrum import LoopDrum
 from drum.mididrum import MidiDrum
-from mvc.menuclient import MenuClient
-from serv.server import server_start
+from serv.webserver import webserver_start
 from utils.utilconfig import ConfigName
-from utils.utilconfig import load_ini_section, find_path, update_ini_section
+from utils.utilconfig import load_ini_section, update_ini_section
 from utils.utillog import MyLog
 from utils.utilother import DrawInfo, FileFinder
 
 
-class Looper(MenuClient, SongCtrl):
+class Looper(SongCtrl):
     """Adds screen connection, Mixer, looper commands"""
 
     def __init__(self, recv_q: Queue, send_q: Queue):
+        SongCtrl.__init__(self, recv_q)
         self._di = DrawInfo()
-        MenuClient.__init__(self, recv_q)
-        SongCtrl.__init__(self)
         self.__send_q = send_q
         self.drum_create(0)
+
+    def _clean_up(self) -> None:
+        super()._clean_up()
+        self._song_stop()
+        self.__send_q.put([ConfigName.looper_stop])
 
     def drum_create(self, bar_len: int, **kwargs) -> None:
         self.menu_client_queue(['_drum_create', bar_len, {**kwargs}])
@@ -41,7 +44,7 @@ class Looper(MenuClient, SongCtrl):
         else:
             self._drum = StyleDrum()
 
-        config: str = drum_info.get(ConfigName.drum_config)
+        config: str = drum_info.get(ConfigName.drum_config_file)
         self._drum.set_config(config)
         volume = drum_info.get(ConfigName.drum_volume)
         if volume:
@@ -53,9 +56,9 @@ class Looper(MenuClient, SongCtrl):
             self._drum.set_bar_len(bar_len)
 
     def _update_view(self) -> None:
-        self.menu_client_queue([ConfigName.menu_client_redraw, self._di])
+        self.menu_client_queue([ConfigName.client_redraw, self._di])
 
-    def _menu_client_redraw(self, di: DrawInfo) -> None:
+    def _client_redraw(self, di: DrawInfo) -> None:
         self._di = di
 
         di.header = f"{self._drum}"
@@ -72,27 +75,23 @@ class Looper(MenuClient, SongCtrl):
         di.max_loop_len = part.get_max_len(di.part_len)
         di.idx = self.idx
         di.is_rec = self.get_is_rec()
-        self.__send_q.put([ConfigName.menu_client_redraw, di])
+        self.__send_q.put([ConfigName.client_redraw, di])
 
     # ===============+ other methods ===============================
-
-    def _looper_restart(self) -> None:
-        self._song_stop()
-        os.system(ConfigName.kill_command)
 
     @staticmethod
     def _menu_config_show() -> str:
         dic = load_ini_section("MENU")
-        return "Menu: " + dic.get(ConfigName.menu_dir, "")
+        return "Menu: " + dic.get(ConfigName.menu_choice, "")
 
     @staticmethod
     def _menu_config_iterate() -> None:
         tmp = load_ini_section("MENU")
-        config = tmp.get(ConfigName.menu_dir, "")
-        ff = FileFinder(find_path("config/menu"), False, "")
+        config = tmp.get(ConfigName.menu_choice, "")
+        ff = FileFinder(ConfigName.menu_config_dir, False, "")
         ff.add_item(config)
         ff.iterate(1)  # next menu
-        tmp[ConfigName.menu_dir] = ff.get_item()
+        tmp[ConfigName.menu_choice] = ff.get_item()
         update_ini_section("MENU", tmp)
 
     @staticmethod
@@ -100,10 +99,9 @@ class Looper(MenuClient, SongCtrl):
         os.system("git reset --hard; clear; git pull")
         time.sleep(5)
 
-    @staticmethod
-    def _server_start() -> None:
-        os.system("hostname -I")
-        server_start()
+    def _server_start(self) -> None:
+        self._song_stop()
+        webserver_start()
 
     #  ============ all parts methods ===============
 

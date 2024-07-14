@@ -1,19 +1,22 @@
 from abc import ABC
 from copy import deepcopy
+from multiprocessing import Queue
 from threading import Event, Thread
 
 from control.loopctrl import LoopCtrl
+from mvc.menuclient import MenuClient
 from song.loopsimple import LoopSimple
 from song.song import Song
 from song.songpart import SongPart
-from utils.utilconfig import ConfigName, SCR_COLS
+from utils.utilconfig import ConfigName
 
 
-class SongCtrl(LoopCtrl, ABC):
+class SongCtrl(MenuClient, LoopCtrl, ABC):
     """added playback thread and Song.
      Song is collection of song parts with related methods"""
 
-    def __init__(self):
+    def __init__(self, recv_q: Queue):
+        MenuClient.__init__(self, recv_q)
         LoopCtrl.__init__(self)
         self._song: Song = Song(self)
         self.__next_id: int = 0
@@ -25,14 +28,14 @@ class SongCtrl(LoopCtrl, ABC):
 
     def _show_loops(self) -> str:
         part = self._song.get_item()
-        return part.get_str(pad_str='-', pad_cols=SCR_COLS)
+        return part.get_str(pad_str='-')
 
     def _show_parts(self) -> str:
-        return self._song.get_str(self.__next_id, '-', pad_cols=SCR_COLS)
+        return self._song.get_str(self.__next_id, '-')
 
     def __play_loop(self) -> None:
         """runs in a thread, play and record current song part"""
-        while True:
+        while self._alive:
             self.__play_event.wait()
             self._song.select_idx(self.__next_id)
             part = self._song.get_item()
@@ -123,7 +126,6 @@ class SongCtrl(LoopCtrl, ABC):
         # ================= song methods =============================
 
     def _song_delete(self) -> None:
-        self._drum.stop()
         self._song_stop()
         self._song.delete_song()
 
@@ -132,7 +134,6 @@ class SongCtrl(LoopCtrl, ABC):
         self._song.load_song()
 
     def _song_save(self) -> None:
-        self._drum.stop()
         self._song_stop()
         self._song.save_song()
 
@@ -146,14 +147,12 @@ class SongCtrl(LoopCtrl, ABC):
         self._song.iterate_song(steps)
 
     def _song_init(self) -> None:
-        self._drum.stop()
         self._song_stop()
         self._song.clear()
         drum_info = self._drum.get_drum_info()
         self.drum_create(0, **drum_info)
 
     def _drum_type_change(self, drum_type: str) -> None:
-        self._drum.stop()
         self._song_stop()
         if drum_type != self._drum.get_class_name():
             bar_len = self._drum.get_bar_len()
@@ -164,6 +163,7 @@ class SongCtrl(LoopCtrl, ABC):
         return "Current drum type: " + self._drum.get_class_name()
 
     def _song_stop(self, wait: int = 0) -> None:
+        self._drum.stop()
         self._set_is_rec(False)
         self.__play_event.clear()
         self.__next_id = self._song.get_idx()

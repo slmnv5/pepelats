@@ -17,9 +17,6 @@ words2 = ["year", "people", "way", "day", "man", "thing", "woman", "life", "chil
 
 
 def generate_name() -> str:
-    while True:
-        wrd1 = random.choice(words1)
-        wrd2 = random.choice(words2)
-        if len(wrd1) + len(wrd2) < 18:
-            break
+    wrd1 = random.choice(words1)
+    wrd2 = random.choice(words2)
     return f"{wrd1}_{wrd2}"

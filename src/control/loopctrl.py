@@ -38,8 +38,8 @@ class LoopCtrl(ABC):
     def get_stop_len(self) -> int:
         return self.__stop_len
 
-    def get_stop_event(self) -> Event:
-        return self.__stop_event
+    def stop_wait(self) -> None:
+        self.__stop_event.wait()
 
     def stop_never(self) -> None:
         self.__stop_len = HUGE_INT

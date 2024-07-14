@@ -11,10 +11,9 @@ test_keyboard() {
 TMP=$(dirname "$0")
 cd "$TMP" || exit 1
 
-found=$(pgrep --full start_looper.py)
-if [ -n "$found" ]; then
-  echo "Exiting, already running"
-  exit 1
+if pidof -o %PPID -x "looper.sh">/dev/null; then
+    echo "Process already running"
+    exit 1
 fi
 
 if [ ! -d ".save_song" ]; then mkdir -p ".save_song"; fi

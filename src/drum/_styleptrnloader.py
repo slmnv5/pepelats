@@ -1,12 +1,10 @@
-
-
 from math import ceil
 
 import numpy as np
 
 from basic.audioinfo import make_buffer
-
 from drum._ptrnloader import PtrnLoader
+from utils.utilconfig import ConfigName
 from utils.utillog import MyLog
 from utils.utilnumpy import from_data_to_buff
 
@@ -16,7 +14,7 @@ class StylePtrnLoader(PtrnLoader):
 
     def __init__(self):
         # drum patterns from INI file
-        PtrnLoader.__init__(self, "config/drum/style")
+        PtrnLoader.__init__(self, f"{ConfigName.drum_config_dir}/style")
         # name of accent pattern
         self.__ACCENT: str = "ac"
 

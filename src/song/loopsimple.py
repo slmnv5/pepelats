@@ -36,6 +36,6 @@ class LoopSimple(WrapBuffer):
                 ctrl.stop_at_bound(0)
 
         with sd.Stream(callback=callback):
-            ctrl.get_stop_event().wait()
+            ctrl.stop_wait()
 
         self.trim_buffer(ctrl)

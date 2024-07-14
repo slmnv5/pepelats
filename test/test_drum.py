@@ -13,12 +13,11 @@ def test_1():
     looper = Looper(queue1, queue2)
     t = Thread(target=looper.menu_client_start, name="process queue", args=[])
     t.start()  # start processing message queue
+    print("Looper", looper)
+    assert looper.get_drum().get_bar_len() == 0
 
     part = SongPart()
-    print("Looper", looper)
     print("Part", part)
-
-    assert looper.get_drum().get_bar_len() == 0
     looper._set_is_rec(True)
     Timer(3, looper.stop_at_bound, args=[0]).start()
     part.play_loop(looper)  # recording from mic
@@ -30,7 +29,7 @@ def test_1():
     looper.stop_never()
     Timer(3, looper.stop_at_bound, args=[0]).start()
     part.play_loop(looper)  # playing recorded sound + drum
-    queue1.put([ConfigName.menu_client_stop])
+    queue1.put([ConfigName.looper_stop])
     assert looper.get_drum().get_bar_len() == part.get_len()
 
 
@@ -39,12 +38,11 @@ def test_2():
     looper = Looper(queue1, queue2)
     t = Thread(target=looper.menu_client_start, name="process queue", args=[])
     t.start()  # start processing message queue
+    print("Looper", looper)
+    assert looper.get_drum().get_bar_len() == 0
 
     loop = LoopSimple()
-    print("SongCtrl", looper)
     print("Loop", loop)
-
-    assert looper.get_drum().get_bar_len() == 0
     looper._set_is_rec(True)
     Timer(3, looper.stop_at_bound, args=[0]).start()
     loop.play_loop(looper)  # recording from mic
@@ -56,21 +54,28 @@ def test_2():
     looper.stop_never()
     Timer(3, looper.stop_at_bound, args=[0]).start()
     loop.play_loop(looper)  # playing recorded sound + drum
-    queue1.put([ConfigName.menu_client_stop])
+    queue1.put([ConfigName.looper_stop])
     assert looper.get_drum().get_bar_len() == loop.get_len()
 
 
 def test_3():
     queue1, queue2 = Queue(), Queue()
     looper = Looper(queue1, queue2)
+    t = Thread(target=looper.menu_client_start, name="process queue", args=[])
+    t.start()  # start processing message queue
+    print("Looper", looper)
+    assert looper.get_drum().get_bar_len() == 0
+
     looper.drum_create(100_000, drum_type="MidiDrum")
+    while not looper.get_drum().get_bar_len():
+        sleep(1)  # wait for another thread to create drum
+
     drum = looper.get_drum()
-    bar_len = drum.get_bar_len()
-    assert bar_len == 100_000
+    assert drum.get_bar_len() == 100_000
     try:
         drum.set_bar_len(200_000)
         has_exception = False
-    except AssertionError:
+    except RuntimeError:
         has_exception = True
     assert has_exception
     drum.start()
