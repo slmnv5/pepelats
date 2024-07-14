@@ -101,7 +101,9 @@ class Looper(SongCtrl):
 
     def _server_start(self) -> None:
         self._song_stop()
+        print("HTTP server starting")
         webserver_start()
+        print("HTTP server stopped")
 
     #  ============ all parts methods ===============
 

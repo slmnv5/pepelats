@@ -69,8 +69,10 @@ def test_7():
 
 
 def test_8():
-    big_str = "cc12345aabb12345dd"
-    assert ("12345", "12345") == split_key_value(big_str, "cc", "aa", "b", strip2="bd")
-    assert ("", "") == split_key_value(big_str, "CC", "aa", "b", strip2="b")
-    assert ("", "") == split_key_value(big_str, "cc", "AA", "b", strip2="b")
-    assert ("5", "5") == split_key_value(big_str, "34", "34", "ab12", strip2="bd")
+    big_str = "cc12345ab\n\n\n12345dd"
+    assert ("12345", "12345") == split_key_value(big_str, "cc", "\n", "ab", strip2="\nd")
+    assert ("12345", "12345") == split_key_value(big_str, "cc", "ab", "", strip2="\nd")
+    assert ("12345", "12345dd") == split_key_value(big_str, "cc", "a", "", strip2="b\n")
+    assert ("", "") == split_key_value(big_str, "CC", "a", "", strip2="")
+    assert ("", "") == split_key_value(big_str, "cc", "A", "", strip2="")
+    assert ("5", "\n12345dd") == split_key_value(big_str, "34", "\n\n", "ab", strip2="")

@@ -28,10 +28,10 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
 
     def _show_loops(self) -> str:
         part = self._song.get_item()
-        return part.get_str(pad_str='-')
+        return part.get_str()
 
     def _show_parts(self) -> str:
-        return self._song.get_str(self.__next_id, '-')
+        return self._song.get_str(self.__next_id)
 
     def __play_loop(self) -> None:
         """runs in a thread, play and record current song part"""

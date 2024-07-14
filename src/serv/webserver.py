@@ -1,14 +1,13 @@
 import os
 import subprocess
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from threading import Thread
 
-from utils.utilconfig import ConfigName
-from utils.utilother import get_ip_address, split_to_dict
+from utils.utilconfig import ConfigName, IP_ADDR
+from utils.utilother import split_to_dict
 
-LOAD_PREFIX = "/load?file="
-RESET_PREFIX = "/reset"
-RESTART_PREFIX = "/restart"
+_LOAD_PATH = "/load?file="
+_RESET_PATH = "/reset"
+_RESTART_PATH = "/restart"
 
 
 def _load_html_file(fname: str) -> str:
@@ -18,7 +17,7 @@ def _load_html_file(fname: str) -> str:
 
 
 def _one_link(fname: str) -> str:
-    return f"<a href = {LOAD_PREFIX}{fname}>{fname}</a><br/>"
+    return f"<a href = {_LOAD_PATH}{fname}>{fname}</a><br/>"
 
 
 def _all_links(dname: str, end_with: str) -> str:
@@ -75,16 +74,16 @@ class MyHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/":
             self._send_config_page()
-        elif self.path == RESET_PREFIX:
+        elif self.path == _RESET_PATH:
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             result = subprocess.run(['git', 'reset', '--hard'], stdout=subprocess.PIPE)
             self.wfile.write(result.stdout)
-        elif self.path == RESTART_PREFIX:
-            Thread(self.server.shutdown()).start()
-        elif self.path.startswith(LOAD_PREFIX):
-            fname = self.path[len(LOAD_PREFIX):]
+        elif self.path == _RESTART_PATH:
+            raise KeyboardInterrupt()
+        elif self.path.startswith(_LOAD_PATH):
+            fname = self.path[len(_LOAD_PATH):]
             self._send_file_form(fname)
         elif self.path == "/favicon.ico":
             self._send_binary("./favicon.ico")
@@ -114,10 +113,7 @@ class MyHandler(BaseHTTPRequestHandler):
         bound = "--" + type_list[1]  # separates each data item in post_data: k=v
         mark1 = 'Content-Disposition: form-data; name='  # placed before k=
         mark2 = '\r\n\r\n'  # placed after k=
-
-        print(11111111111111111, post_data)
         data_dict = split_to_dict(post_data, bound, mark1, mark2, '\'\" \r\n\t', ' \r\n\t')
-        print(111111111111111111111, data_dict)
 
         if "file_name" not in data_dict or "file_data" not in data_dict:
             self.send_error(402, "Bad Request", "Parsing form data failed")
@@ -127,7 +123,7 @@ class MyHandler(BaseHTTPRequestHandler):
         if not os.path.isfile(fname) or os.path.islink(fname):
             self.send_error(403, "Bad Request", "Parsing form data failed")
             return False
-
+        print(111111111111111111, data_dict, bound, post_data)
         with open(fname, 'w') as f:
             f.write(data_dict["file_data"])
 
@@ -135,10 +131,9 @@ class MyHandler(BaseHTTPRequestHandler):
 
 
 class WebHelper:
-    ip_addr: str = get_ip_address()
     file_form: str = _load_html_file("html/file_form.html")
     tmp: str = _load_html_file("html/config_page.html")
-    tmp = tmp.format(RESTART_PREFIX, RESET_PREFIX, _one_link("./log.txt"),
+    tmp = tmp.format(_RESTART_PATH, _RESET_PATH, _one_link("./log.txt"),
                      _one_link("./main.ini") + _one_link("./local.ini"),
                      _all_links(f"{ConfigName.drum_config_dir}", ".ini"),
                      _all_links(f"./{ConfigName.menu_config_dir}", ".ini"))
@@ -146,10 +141,13 @@ class WebHelper:
 
 
 def webserver_start():
-    print(f"To control looper connect to web address:\nhttp://{WebHelper.ip_addr}:8000")
+    print(f"To control looper connect to:\nhttp://{IP_ADDR}:8000")
     # noinspection PyTypeChecker
-    serv = HTTPServer(('', 8000), MyHandler)
-    serv.serve_forever()
+    server = HTTPServer(('', 8000), MyHandler)
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        server.server_close()
 
 
 if __name__ == "__main__":

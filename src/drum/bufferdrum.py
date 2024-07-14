@@ -10,14 +10,14 @@ from drum._euclidptrnloader import EuclidPtrnLoader
 from drum._ptrnloader import PtrnManager, PtrnLoader
 from drum._styleptrnloader import StylePtrnLoader
 from drum.basedrum import BaseDrum
-from utils.utilconfig import HUGE_INT
 from utils.utilnumpy import from_buff_to_data
 
 
 class BufferDrum(BaseDrum, ABC):
     # Used to skip some drum sounds
-    _COUNT_LST: list[int] = [2, 3, 4, 5]
-    _COUNT_WEIGHT: list[int] = [1, 5, 5, 2]
+    _COUNT_LST: list[int] = [2, 3, 4, 5, 6]
+    _COUNT_WEIGHT: list[int] = [3, 5, 5, 2, 2]
+    _MAX_COUNT: int = max([2, 3, 4, 5, 6])
     _DR_MODIFY_PROB: float = 0.2
 
     def __init__(self, ptrn_loader: PtrnLoader):
@@ -25,7 +25,7 @@ class BufferDrum(BaseDrum, ABC):
         self._pm = PtrnManager(ptrn_loader)
         self._ff = ptrn_loader.ff
         self._play_lst: list[np.ndarray] = list()  # list to play sounds, changed by randomize
-        self._play_count: int = HUGE_INT  # how many arrays will play in the play list, changed by modify
+        self._play_count: int = self._MAX_COUNT  # how many drums will play in the play list, changed by modify
         self._name: str = ""  # pattern name
         self._energy: float = 0  # pattern energy
         self._idx: float = 0  # pattern index
@@ -78,7 +78,7 @@ class BufferDrum(BaseDrum, ABC):
 
     def play_fill(self, idx: int) -> None:
         self._play_lst, self._name, self._energy, self._idx = self._pm.random_loud()
-        self._play_count = HUGE_INT
+        self._play_count = self._MAX_COUNT
         tmp: int = idx % self._bar_len
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2

@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from threading import Event
 
 from drum.basedrum import BaseDrum
-from utils.utilconfig import HUGE_INT
+from utils.utilother import HUGE_INT
 
 
 class LoopCtrl(ABC):

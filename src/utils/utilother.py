@@ -3,9 +3,11 @@ import re
 import subprocess
 from typing import TypeVar, Generic, Iterable
 
-from utils.utilconfig import HUGE_INT, SCR_ROWS, SCR_COLS
+from utils.utilscreen import SCR_ROWS
 
 T = TypeVar('T')
+
+HUGE_INT = 2 ** 32 - 1
 
 
 def split_to_dict(data: str, bound: str, mark1: str, mark2: str,
@@ -33,10 +35,10 @@ def get_ip_address() -> str:
         raise RuntimeError("OS must be posix or nt")
 
 
-def split_key_value(data: str, mark1: str, mark2: str, strip1: str = "", strip2="") -> tuple[str, str]:
-    """ Find 2 substrings using 2 markers and strip some chas from them
-    Used to parse key-value pairs: mark1 k1 mark2 v1  mark1 k2 mark2 v2 """
-    result = re.search(f'{mark1}(.*){mark2}(.*)', data)
+def split_key_value(data: str, mark1: str, mark2: str, strip1: str = "", strip2: str = "") -> tuple[str, str]:
+    """ Find 2 substrings using 2 markers and 2 strips.
+    Used to parse key-value pairs: mark1 k1 mark2 v1 mark1 k2 mark2 v2 """
+    result = re.search(f'{mark1}(.*?){mark2}(.*)', data, re.DOTALL)
     if result:
         return result.group(1).strip(strip1), result.group(2).strip(strip2)
     else:
@@ -122,7 +124,7 @@ class CollectionOwner(Generic[T]):
         self.__idx = 0
         return item
 
-    def get_str(self, next_idx: int = None, pad_str: str = None) -> str:
+    def get_str(self, next_idx: int = None) -> str:
         sub_list_sz: int = SCR_ROWS - 5
         item_sub_list = _stable_sub_list(self.__idx, self.__items, sub_list_sz)
         tmp: list[str] = list()
@@ -133,8 +135,6 @@ class CollectionOwner(Generic[T]):
                 tmp.append(f"~{k:02} {s}")
             else:
                 tmp.append(f"-{k:02} {s}")
-        if pad_str:
-            tmp = [x.ljust(SCR_COLS, pad_str) for x in tmp]
         return '\n'.join(tmp)
 
     def iterate(self, steps: int) -> None:

@@ -20,12 +20,12 @@ if [ ! -d ".save_song" ]; then mkdir -p ".save_song"; fi
 touch local.ini
 
 sudo chmod a+rw ./.save_song/*
-touch log.txt
-chmod a+rw log.txt
-cp log.txt log.bak
+touch log.txt log.bak
+chmod a+rw log.txt log.bak
+cat log.txt >> log.bak
 tail -n 1000 log.bak > log.txt
-echo "===========================" >> log.txt
-date >> log.txt
+mv -v log.txt log.bak
+echo "============= $(date)" > log.txt
 
 # disable assert
 CODE_OPTIMIZE="-O"

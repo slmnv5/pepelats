@@ -4,8 +4,8 @@ from textwrap import wrap
 from threading import Thread
 
 from mvc.basescreen import BaseScreen
-from utils.utilconfig import SCR_COLS
 from utils.utilother import DrawInfo
+from utils.utilscreen import SCR_COLS
 
 _CLEAN_TO_END = '\x1b[0J'  # clean from cursor to end of screen
 _CURSOR_MOVE = "\x1b[1;1H"  # move cursor to line=1 and pos=1
@@ -51,10 +51,9 @@ class TextScreen(BaseScreen):
         self.di.description = '\n'.join([x.center(SCR_COLS) for x in wrap(di.description, SCR_COLS)])
         self.di.content = '\n'.join([self.__add_color(x) for x in di.content.split('\n')])
 
-        print(f"{_CURSOR_MOVE}{self.di.header}")
+        print(f"{_CURSOR_MOVE}{self.di.header}{_CLEAN_TO_END}")
         print(self.di.description)
-        print(self.di.content)
-        print(_CLEAN_TO_END, end='', flush=True)
+        print(self.di.content, flush=True)
 
     def __updater(self):
         while self._alive:

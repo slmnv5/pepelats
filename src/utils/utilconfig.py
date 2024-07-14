@@ -1,15 +1,9 @@
 import os
 from configparser import ConfigParser
 
-from utils.utillog import MyLog
+from utils.utilother import get_ip_address
 
-APP_DIR = os.sep + 'pepelats'
-try:
-    SCR_COLS, SCR_ROWS = os.get_terminal_size()
-except OSError:
-    SCR_COLS, SCR_ROWS = 30, 10
-
-MyLog().info(f"Text screen size: cols={SCR_COLS} rows={SCR_ROWS}")
+IP_ADDR = get_ip_address()
 
 
 class ConfigName:
@@ -75,6 +69,3 @@ def update_ini_section(sect: str, dic: dict[str, str]) -> None:
         cfg.set(sect, k, v)
     with open(local, 'w') as f:
         cfg.write(f)
-
-
-HUGE_INT = 2 ** 32 - 1
