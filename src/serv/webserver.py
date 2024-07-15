@@ -141,9 +141,9 @@ class WebHelper:
     format_dict["l_exit"] = _EXIT_PATH
     format_dict["l_reset"] = _RESET_PATH
 
-    format_dict["l_std_cfg"] = _one_link(ConfigName.main_ini, "./")
-    format_dict["l_custom_cfg"] = _one_link(ConfigName.local_ini, "./")
-    format_dict["l_log"] = _one_link('log.txt', "./")
+    format_dict["l_std_cfg"] = _one_link(ConfigName.main_ini, _SHOW_PATH)
+    format_dict["l_custom_cfg"] = _one_link(ConfigName.local_ini, _EDIT_PATH)
+    format_dict["l_log"] = _one_link('log.txt', _SHOW_PATH)
 
     format_dict["l_drum"] = _all_links(f"{ConfigName.drum_config_dir}", ".ini", _EDIT_PATH)
     format_dict["l_menu"] = _all_links(f"./{ConfigName.menu_config_dir}", ".ini", _EDIT_PATH)
