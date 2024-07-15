@@ -55,16 +55,16 @@ class MyHandler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
         if os.path.islink(fname):
-            self.wfile.write(f"File is link: {fname}".encode("utf-8"))
+            self.wfile.write(f"File is link: {fname}".encode())
         elif not os.path.isfile(fname):
-            self.wfile.write(f"File not found: {fname}".encode("utf-8"))
+            self.wfile.write(f"File not found: {fname}".encode())
         else:
             with open(fname, 'r') as f:
                 data = f.read()
 
         disabled = "disabled" if read_only else ""
         html = WebHelper.file_form.format(disabled=disabled, file_name=fname, file_data=data)
-        self.wfile.write(html.encode('utf-8'))
+        self.wfile.write(html.encode())
 
     def _send_config_page(self) -> None:
         self.send_response(200)
@@ -72,10 +72,16 @@ class MyHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(WebHelper.config_page)
 
+    def _send_main_page(self) -> None:
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
+        self.wfile.write(WebHelper.main_page)
+
     # noinspection PyPep8Naming
     def do_GET(self):
         if self.path == "/":
-            self._send_config_page()
+            self._send_main_page()
         elif self.path == _RESET_PATH:
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
@@ -104,11 +110,11 @@ class MyHandler(BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
-                self.wfile.write("Successfully updated file".encode("utf-8"))
+                self.wfile.write("Successfully updated file".encode())
 
     def _write_to_file(self) -> bool:
         content_length = int(self.headers['Content-Length'])
-        post_data = self.rfile.read(content_length).decode("utf-8")  # <--- Gets the data
+        post_data = self.rfile.read(content_length).decode()  # <--- Gets the data
         type_list = self.headers.get('Content-Type', '').split("boundary=")
 
         if len(type_list) != 2:
@@ -157,7 +163,8 @@ class WebHelper:
 
     format_dict["l_drum"] = _all_links(f"{ConfigName.drum_config_dir}", ".ini", _EDIT_PATH)
     format_dict["l_menu"] = _all_links(f"./{ConfigName.menu_config_dir}", ".ini", _EDIT_PATH)
-    config_page: bytes = tmp.format(**format_dict).encode('utf-8')
+    config_page: bytes = tmp.format(**format_dict).encode()
+    main_page: bytes = _load_html_file("index.html").encode()
 
 
 def webserver_start():
