@@ -1,0 +1,25 @@
+<html>
+<head>
+</head>
+<body>
+<p id="header">hhhhhhhhhhhh</p>
+<p id="description">11111111111</p>
+<p id="content">2222222222</p>
+
+<script type="text/javascript">
+  const HEADER = document.getElementById('header');
+  const CONTENT = document.getElementById('content');
+  const DESCRIPTION = document.getElementById('description');
+  const url = 'http://192.168.1.3:8000/update';
+
+  function startShowingMessage() {
+      setInterval(async function() {
+          const RESPONSE = await fetch(url);
+          const TEXT = await RESPONSE.text();
+      DESCRIPTION.textContent = TEXT;
+    }, 1000);
+  }
+  startShowingMessage1();
+</script>
+</body>
+</html>
