@@ -1,5 +1,6 @@
 import os
 import subprocess
+from configparser import ConfigParser, ParsingError
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from utils.utilconfig import ConfigName, IP_ADDR
@@ -127,9 +128,15 @@ class MyHandler(BaseHTTPRequestHandler):
         if not os.path.isfile(fname) or os.path.islink(fname):
             self.send_error(403, "Bad Request", "Parsing form data failed")
             return False
+        cfg = ConfigParser()
+        try:
+            cfg.read_string(data_dict["file_data"])
+        except ParsingError as ex:
+            self.send_error(405, "Bad Request", f"Parsing form data failed: {ex}")
+            return False
+
         with open(fname, 'w') as f:
             f.write(data_dict["file_data"])
-
         return True
 
 
