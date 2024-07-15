@@ -18,7 +18,7 @@ def _load_html_file(fname: str) -> str:
 
 
 def _one_link(fname: str, prefix: str) -> str:
-    return f"\n<a href = {prefix}{fname}>{fname}</a>"
+    return f"<a href = {prefix}{fname}>{fname}</a>"
 
 
 def _all_links(dname: str, end_with: str, prefix: str) -> str:
@@ -29,7 +29,7 @@ def _all_links(dname: str, end_with: str, prefix: str) -> str:
             file_lst.append(fname)
     link_lst = list()
     for fname in file_lst:
-        link_lst.append(_one_link(fname, prefix) + "<br/>")
+        link_lst.append("\n" + _one_link(fname, prefix) + "<br/>")
     return "".join(link_lst)
 
 
