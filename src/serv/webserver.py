@@ -58,12 +58,14 @@ class MyHandler(BaseHTTPRequestHandler):
             self.wfile.write(f"File is link: {fname}".encode("utf-8"))
         elif not os.path.isfile(fname):
             self.wfile.write(f"File not found: {fname}".encode("utf-8"))
-        elif self.path[-3:] not in ['ini', 'txt', '.md']:
-            self.wfile.write(f"File type is incorrect: {fname}".encode("utf-8"))
         else:
             with open(fname, 'r') as f:
                 data = f.read()
-            html = data if not send_form else WebHelper.file_form.format(file_name=fname, file_data=data)
+            if send_form:
+                html = WebHelper.file_form.format(file_name=fname, file_data=data)
+            else:
+                html = "<html><body>" + data + "</body></html>"
+
             self.wfile.write(html.encode('utf-8'))
 
     def _send_config_page(self) -> None:
@@ -128,12 +130,13 @@ class MyHandler(BaseHTTPRequestHandler):
         if not os.path.isfile(fname) or os.path.islink(fname):
             self.send_error(403, "Bad Request", "Parsing form data failed")
             return False
-        cfg = ConfigParser()
-        try:
-            cfg.read_string(data_dict["file_data"])
-        except ParsingError as ex:
-            self.send_error(405, "Bad Request", f"Parsing form data failed: {ex}")
-            return False
+        if fname[-4:].lower() == ".ini":
+            cfg = ConfigParser()
+            try:
+                cfg.read_string(data_dict["file_data"])
+            except ParsingError as ex:
+                self.send_error(405, "Bad Request", f"Parsing form data failed: {ex}")
+                return False
 
         with open(fname, 'w') as f:
             f.write(data_dict["file_data"])
