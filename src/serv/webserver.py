@@ -5,7 +5,8 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from utils.utilconfig import ConfigName, IP_ADDR
 from utils.utilother import split_to_dict
 
-_LOAD_PATH = "/load?file="
+_EDIT_PATH = "/edit?file="
+_SHOW_PATH = "/show?file="
 _RESET_PATH = "/reset"
 _EXIT_PATH = "/exit"
 
@@ -17,7 +18,7 @@ def _load_html_file(fname: str) -> str:
 
 
 def _one_link(fname: str) -> str:
-    return f"\n<a href = {_LOAD_PATH}{fname}>{fname}</a>"
+    return f"\n<a href = {_EDIT_PATH}{fname}>{fname}</a>"
 
 
 def _all_links(dname: str, end_with: str) -> str:
@@ -48,7 +49,7 @@ class MyHandler(BaseHTTPRequestHandler):
         self.send_header('Location', '/')  # This will navigate to the original page
         self.end_headers()
 
-    def _send_file_form(self, fname: str) -> None:
+    def _send_file(self, fname: str, send_form: bool) -> None:
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
@@ -56,12 +57,12 @@ class MyHandler(BaseHTTPRequestHandler):
             self.wfile.write(f"File is link: {fname}".encode("utf-8"))
         elif not os.path.isfile(fname):
             self.wfile.write(f"File not found: {fname}".encode("utf-8"))
-        elif self.path[-4:] not in ['.ini', '.txt']:
+        elif self.path[-4:] not in ['.ini', '.txt'] or self.path[-3:] not in ['.md']:
             self.wfile.write(f"File type is incorrect: {fname}".encode("utf-8"))
         else:
             with open(fname, 'r') as f:
                 data = f.read()
-            html = WebHelper.file_form.format(file_name=fname, file_data=data)
+            html = data if not send_form else WebHelper.file_form.format(file_name=fname, file_data=data)
             self.wfile.write(html.encode('utf-8'))
 
     def _send_config_page(self) -> None:
@@ -82,9 +83,12 @@ class MyHandler(BaseHTTPRequestHandler):
             self.wfile.write(result.stdout)
         elif self.path == _EXIT_PATH:
             raise KeyboardInterrupt()
-        elif self.path.startswith(_LOAD_PATH):
-            fname = self.path[len(_LOAD_PATH):]
-            self._send_file_form(fname)
+        elif self.path.startswith(_EDIT_PATH):
+            fname = self.path[len(_EDIT_PATH):]
+            self._send_file(fname, True)
+        elif self.path.startswith(_SHOW_PATH):
+            fname = self.path[len(_SHOW_PATH):]
+            self._send_file(fname, False)
         elif self.path == "/favicon.ico":
             self._send_binary("./favicon.ico")
         else:
