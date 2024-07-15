@@ -50,6 +50,16 @@ class _MenuLoader:
         return f"{self._section}.{self._sect_idx}"
 
 
+def convert_param(param):
+    param = param.replace(' ', '')
+    if param.strip('+-').isdigit():
+        return int(param)
+    elif param.strip('+-').replace('.', '', 1).isdigit():
+        return float(param)
+    else:
+        return param
+
+
 class MenuHost(_MenuLoader):
     """Translate notes to menu command and put into queue """
 
@@ -75,7 +85,6 @@ class MenuHost(_MenuLoader):
         while self._is_alive():
             sleep(5)
         self.__queue.put([ConfigName.client_stop])
-        sleep(2)
         MyLog().info(f"{self.__class__.__name__} stop working as MenuHost")
 
     def _menu_update(self, fname: str) -> None:
@@ -104,19 +113,15 @@ class MenuHost(_MenuLoader):
     def __process_list(self, cmd: list) -> None:
         if not (cmd and isinstance(cmd, list)):
             return
-        elif cmd[0] == ConfigName.menu_update:
+
+        cmd = [cmd[0], *[convert_param(x) for x in cmd[1:]]]
+        if cmd[0] == ConfigName.menu_update:
             self._menu_update(cmd[1])
         elif cmd[0] == ConfigName.section_update:
             self._section_update(cmd[1])
         elif cmd[0] == ConfigName.client_stop:
             self.__alive = False
         else:
-            for k in range(1, len(cmd)):
-                if cmd[k].strip('+-').isdigit():
-                    cmd[k] = int(cmd[k])
-                elif cmd[k].strip('+-').replace('.', '', 1).isdigit():
-                    cmd[k] = float(cmd[k])
-
             MyLog().debug(f"{self.__class__.__name__} send command: {cmd}")
             self.__queue.put(cmd)
 
