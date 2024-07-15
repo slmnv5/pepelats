@@ -7,7 +7,7 @@ from utils.utilother import split_to_dict
 
 _LOAD_PATH = "/load?file="
 _RESET_PATH = "/reset"
-_RESTART_PATH = "/restart"
+_EXIT_PATH = "/exit"
 
 
 def _load_html_file(fname: str) -> str:
@@ -17,7 +17,7 @@ def _load_html_file(fname: str) -> str:
 
 
 def _one_link(fname: str) -> str:
-    return f"<a href = {_LOAD_PATH}{fname}>{fname}</a><br/>"
+    return f"<a href = {_LOAD_PATH}{fname}>{fname}</a>"
 
 
 def _all_links(dname: str, end_with: str) -> str:
@@ -80,7 +80,7 @@ class MyHandler(BaseHTTPRequestHandler):
             self.end_headers()
             result = subprocess.run(['git', 'reset', '--hard'], stdout=subprocess.PIPE)
             self.wfile.write(result.stdout)
-        elif self.path == _RESTART_PATH:
+        elif self.path == _EXIT_PATH:
             raise KeyboardInterrupt()
         elif self.path.startswith(_LOAD_PATH):
             fname = self.path[len(_LOAD_PATH):]
@@ -133,10 +133,19 @@ class MyHandler(BaseHTTPRequestHandler):
 class WebHelper:
     file_form: str = _load_html_file("html/file_form.html")
     tmp: str = _load_html_file("html/config_page.html")
-    tmp = tmp.format(_RESTART_PATH, _RESET_PATH, _one_link("./log.txt"),
-                     _one_link("./main.ini") + _one_link("./local.ini"),
-                     _all_links(f"{ConfigName.drum_config_dir}", ".ini"),
-                     _all_links(f"./{ConfigName.menu_config_dir}", ".ini"))
+    format_lst: list[str] = list()
+    format_lst.append(_EXIT_PATH)
+    format_lst.append(_RESET_PATH)
+
+    format_lst.append(_one_link("./main.ini"))
+    format_lst.append(_one_link("./local.ini"))
+    format_lst.append(_one_link("./log.txt"))
+
+    format_lst.append(_all_links(f"{ConfigName.drum_config_dir}", ".ini"))
+    format_lst.append(_all_links(f"./{ConfigName.menu_config_dir}", ".ini"))
+    format_lst.append(_all_links(f"./{ConfigName.documents_dir}", ".md"))
+    tmp.format(*format_lst)
+
     config_page: bytes = tmp.encode('utf-8')
 
 

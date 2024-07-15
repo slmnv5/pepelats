@@ -44,6 +44,7 @@ class ConfigName:
     drum_samples_dir: str = "config/drum/wav"
     menu_config_dir: str = "config/menu"
     drum_config_dir: str = "config/drum"
+    documents_dir: str = "doc"
     main_ini: str = "main.ini"
     local_ini: str = "local.ini"
 
