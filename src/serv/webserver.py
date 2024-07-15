@@ -57,7 +57,7 @@ class MyHandler(BaseHTTPRequestHandler):
             self.wfile.write(f"File is link: {fname}".encode("utf-8"))
         elif not os.path.isfile(fname):
             self.wfile.write(f"File not found: {fname}".encode("utf-8"))
-        elif self.path[-4:] not in ['.ini', '.txt'] or self.path[-3:] not in ['.md']:
+        elif self.path[-3:] not in ['ini', 'txt', '.md']:
             self.wfile.write(f"File type is incorrect: {fname}".encode("utf-8"))
         else:
             with open(fname, 'r') as f:

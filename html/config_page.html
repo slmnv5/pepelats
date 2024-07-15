@@ -3,20 +3,14 @@
 <body>
 <table style="width:100%" border="2">
     <tr>
-        <th>style="width:33%"</th>
-        <th>style="width:33%"</th>
-        <th>style="width:33%"</th>
-
+        <th style="width:33%"><a href={l_exit}>Exit, return to looper</a></th>
+        <th style="width:33%"><a href={l_reset}>Reset all config to factory</a></th>
+        <th style="width:33%"></th>
     </tr>
     <tr>
-        <td><a href={l_exit}>Exit, return to looper</a></td>
-        <td><a href={l_reset}>Reset all config to factory</a></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>Standard Config {l_std_cfg}</td>
-        <td>Customized Config {l_custom_cfg}</td>
-        <td>Log file {l_log}</td>
+        <td>Standard Config: {l_std_cfg}</td>
+        <td>Customized Config (edit): {l_custom_cfg}</td>
+        <td>Log file: {l_log}</td>
     </tr>
     <tr>
         <td>Menu Files:<br/>{l_menu}</td>
