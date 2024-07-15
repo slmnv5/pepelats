@@ -22,9 +22,8 @@ class MyLog:
         for h in self._logger.handlers:
             self._logger.removeHandler(h)
         formatter = logging.Formatter(fmt=self.__fmt_str, datefmt="%Y-%m-%d %H:%M:%S")
-        fname: str = "./log.txt"
 
-        self._logger.addHandler(logging.FileHandler(fname, mode='a'))
+        self._logger.addHandler(logging.FileHandler('./log.txt', mode='a'))
         self._logger.addHandler(logging.StreamHandler(sys.stderr))
         for h in self._logger.handlers:
             h.setFormatter(formatter)

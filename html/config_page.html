@@ -1,40 +1,27 @@
 <html>
 <head></head>
 <body>
-<table style="width:100%% border: 3px solid black;">
+<table style="width:100%" border="2">
     <tr>
-        <td><a href={}>Exit, return to looper</a></td>
-        <td><a href={}>Reset all config to factory</a></td>
-    </tr>
-</table>
-<p></p>
+        <th>style="width:33%"</th>
+        <th>style="width:33%"</th>
+        <th>style="width:33%"</th>
 
-
-<table style="width:100%%">
-    <tr>
-        <td>Standard Config</td>
-        <td>Customized Config</td>
-        <td>Log file</td>
     </tr>
     <tr>
-        <td>{}</td>
-        <td>{}</td>
-        <td>{}</td>
-    </tr>
-</table>
-<p></p>
-
-
-<table style="width:100%%">
-    <tr>
-        <td>Drum Config</td>
-        <td>Menu Config</td>
-        <td>Documents</td>
+        <td><a href={l_exit}>Exit, return to looper</a></td>
+        <td><a href={l_reset}>Reset all config to factory</a></td>
+        <td></td>
     </tr>
     <tr>
-        <td>{}</td>
-        <td>{}</td>
-        <td>{}</td>
+        <td>Standard Config {l_std_cfg}</td>
+        <td>Customized Config {l_custom_cfg}</td>
+        <td>Log file {l_log}</td>
+    </tr>
+    <tr>
+        <td>Menu Files:<br/>{l_menu}</td>
+        <td>Drum Files:<br/>{l_drum}</td>
+        <td>Documents:<br/>{l_doc}</td>
     </tr>
 </table>
 

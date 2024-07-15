@@ -17,8 +17,8 @@ def _load_html_file(fname: str) -> str:
         return f.read()
 
 
-def _one_link(fname: str) -> str:
-    return f"\n<a href = {_EDIT_PATH}{fname}>{fname}</a>"
+def _one_link(fname: str, prefix: str) -> str:
+    return f"\n<a href = {prefix}{fname}>{fname}</a>"
 
 
 def _all_links(dname: str, end_with: str, prefix: str) -> str:
@@ -29,7 +29,7 @@ def _all_links(dname: str, end_with: str, prefix: str) -> str:
             file_lst.append(fname)
     link_lst = list()
     for fname in file_lst:
-        link_lst.append(_one_link(fname) + "<br/>")
+        link_lst.append(_one_link(fname, prefix) + "<br/>")
     return "".join(link_lst)
 
 
@@ -137,19 +137,18 @@ class WebHelper:
     file_form: str = _load_html_file("html/file_form.html")
     tmp: str = _load_html_file("html/config_page.html")
 
-    format_lst: list[str] = list()
-    format_lst.append(_EXIT_PATH)
-    format_lst.append(_RESET_PATH)
+    format_dict: dict[str, str] = dict()
+    format_dict["l_exit"] = _EXIT_PATH
+    format_dict["l_reset"] = _RESET_PATH
 
-    format_lst.append(_one_link("./main.ini"))
-    format_lst.append(_one_link("./local.ini"))
-    format_lst.append(_one_link("./log.txt"))
+    format_dict["l_std_cfg"] = _one_link(ConfigName.main_ini, "./")
+    format_dict["l_custom_cfg"] = _one_link(ConfigName.local_ini, "./")
+    format_dict["l_log"] = _one_link('log.txt', "./")
 
-    format_lst.append(_all_links(f"{ConfigName.drum_config_dir}", ".ini", _EDIT_PATH))
-    format_lst.append(_all_links(f"./{ConfigName.menu_config_dir}", ".ini", _EDIT_PATH))
-    format_lst.append(_all_links(f"./{ConfigName.documents_dir}", ".md", _SHOW_PATH))
-    assert len(format_lst) == tmp.count('{}')
-    config_page: bytes = tmp.format(*format_lst).encode('utf-8')
+    format_dict["l_drum"] = _all_links(f"{ConfigName.drum_config_dir}", ".ini", _EDIT_PATH)
+    format_dict["l_menu"] = _all_links(f"./{ConfigName.menu_config_dir}", ".ini", _EDIT_PATH)
+    format_dict["l_doc"] = _all_links(f"./{ConfigName.documents_dir}", ".md", _SHOW_PATH)
+    config_page: bytes = tmp.format(**format_dict).encode('utf-8')
 
 
 def webserver_start():
