@@ -1,12 +1,15 @@
-<html><head></head><body>
+<html>
+<head></head>
+<body>
 <form action="save_file" method="post" enctype='multipart/form-data'>
     <p>
         <b>File name:</b>
         <input type="text" name="file_name" value="{file_name}" readonly/>
-        <input type="submit" value="Save file"/>
+        <input type="submit" value="Save file" {disabled}/>
     </p>
     <textarea autocapitalize="off" cols="150" name="file_data" rows="30" spellcheck="false">
     {file_data}
     </textarea>
 </form>
-</body></html>
+</body>
+</html>
