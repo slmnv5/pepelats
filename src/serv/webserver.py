@@ -17,7 +17,7 @@ def _load_html_file(fname: str) -> str:
 
 
 def _one_link(fname: str) -> str:
-    return f"<a href = {_LOAD_PATH}{fname}>{fname}</a>"
+    return f"\n<a href = {_LOAD_PATH}{fname}>{fname}</a>"
 
 
 def _all_links(dname: str, end_with: str) -> str:
@@ -28,8 +28,8 @@ def _all_links(dname: str, end_with: str) -> str:
             file_lst.append(fname)
     link_lst = list()
     for fname in file_lst:
-        link_lst.append(_one_link(fname))
-    return "\n".join(link_lst)
+        link_lst.append(_one_link(fname) + "<br/>")
+    return "".join(link_lst)
 
 
 class MyHandler(BaseHTTPRequestHandler):
@@ -123,7 +123,6 @@ class MyHandler(BaseHTTPRequestHandler):
         if not os.path.isfile(fname) or os.path.islink(fname):
             self.send_error(403, "Bad Request", "Parsing form data failed")
             return False
-        print(111111111111111111, data_dict, bound, post_data)
         with open(fname, 'w') as f:
             f.write(data_dict["file_data"])
 
@@ -133,6 +132,7 @@ class MyHandler(BaseHTTPRequestHandler):
 class WebHelper:
     file_form: str = _load_html_file("html/file_form.html")
     tmp: str = _load_html_file("html/config_page.html")
+
     format_lst: list[str] = list()
     format_lst.append(_EXIT_PATH)
     format_lst.append(_RESET_PATH)
@@ -144,9 +144,8 @@ class WebHelper:
     format_lst.append(_all_links(f"{ConfigName.drum_config_dir}", ".ini"))
     format_lst.append(_all_links(f"./{ConfigName.menu_config_dir}", ".ini"))
     format_lst.append(_all_links(f"./{ConfigName.documents_dir}", ".md"))
-    tmp.format(*format_lst)
-
-    config_page: bytes = tmp.encode('utf-8')
+    assert len(format_lst) == tmp.count('{}')
+    config_page: bytes = tmp.format(*format_lst).encode('utf-8')
 
 
 def webserver_start():
