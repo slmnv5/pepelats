@@ -21,7 +21,7 @@ def _one_link(fname: str) -> str:
     return f"\n<a href = {_EDIT_PATH}{fname}>{fname}</a>"
 
 
-def _all_links(dname: str, end_with: str) -> str:
+def _all_links(dname: str, end_with: str, prefix: str) -> str:
     file_lst = list()
 
     for root, _, files in os.walk(dname):
@@ -145,9 +145,9 @@ class WebHelper:
     format_lst.append(_one_link("./local.ini"))
     format_lst.append(_one_link("./log.txt"))
 
-    format_lst.append(_all_links(f"{ConfigName.drum_config_dir}", ".ini"))
-    format_lst.append(_all_links(f"./{ConfigName.menu_config_dir}", ".ini"))
-    format_lst.append(_all_links(f"./{ConfigName.documents_dir}", ".md"))
+    format_lst.append(_all_links(f"{ConfigName.drum_config_dir}", ".ini", _EDIT_PATH))
+    format_lst.append(_all_links(f"./{ConfigName.menu_config_dir}", ".ini", _EDIT_PATH))
+    format_lst.append(_all_links(f"./{ConfigName.documents_dir}", ".md", _SHOW_PATH))
     assert len(format_lst) == tmp.count('{}')
     config_page: bytes = tmp.format(*format_lst).encode('utf-8')
 
