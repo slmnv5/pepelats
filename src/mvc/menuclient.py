@@ -1,7 +1,6 @@
 from abc import abstractmethod
 from multiprocessing import Queue
 
-from utils.utilconfig import ConfigName
 from utils.utillog import MyLog
 from utils.utilother import DrawInfo
 
@@ -11,16 +10,13 @@ class MenuClient:
         self.__queue: Queue = queue
         self._alive: bool = True
 
-    def _clean_up(self) -> None:
+    def _client_stop(self) -> None:
         self._alive = False
 
     def menu_client_start(self):
         while self._alive:
             command = self.__queue.get()
             method_name, *params = command
-            if method_name == ConfigName.looper_stop:
-                self._clean_up()
-                break
             # noinspection PyBroadException
             try:
                 method = getattr(self, method_name)

@@ -9,88 +9,14 @@ from utils.utillog import MyLog
 from utils.utilother import DrawInfo
 
 
-class MenuHost:
-    """Translate menu command with parameters and sends to a connection. """
-
-    def __init__(self, queue: Queue):
-        dic = load_ini_section("MENU")
-        dname = dic.get(ConfigName.menu_choice, "")
-        dname = f"{ConfigName.menu_config_dir}/{dname}"
-        if not os.path.isdir(dname):
-            raise RuntimeError(f"Directory not found: {dname}. Check main.ini and local.ini files")
-        self._menu_loader = _MenuLoader(dname)
-        self._di = DrawInfo()
-        self.__queue = queue
-        self._menu_update(ConfigName.play_section)
-        self.__queue.put([ConfigName.client_redraw, self._di])
-        self.min_velo = MidiInfo().MIDI_MIN_VELO
-        self.std_velo = MidiInfo().MIDI_STD_VELO
-        self.midi_dict = MidiInfo().MIDI_DICT
-
-    def _is_alive(self) -> bool:
-        return True
-
-    def start_menu_host(self) -> None:
-        MyLog().info(f"{self.__class__.__name__} start working as MenuHost")
-        while self._is_alive():
-            sleep(5)
-        self.__queue.put([ConfigName.looper_stop])
-        MyLog().info(f"{self.__class__.__name__} stop working as MenuHost")
-
-    def _menu_update(self, fname: str):
-        self._menu_loader.update_menu(fname)
-        self._di.description = self._menu_loader.get(ConfigName.description)
-        self._di.update_method = self._menu_loader.get(ConfigName.update_method)
-
-    def _update_section(self, go_next: bool):
-        self._menu_loader.update_section(go_next)
-        self._di.description = self._menu_loader.get(ConfigName.description)
-        self._di.update_method = self._menu_loader.get(ConfigName.update_method)
-
-    def _send(self, note: int, velo: int) -> None:
-        if note not in self.midi_dict:
-            MyLog().error(f"MIDI note: {note} is not expected. Check main.ini file")
-
-        menu_key: str = f"{self.midi_dict[note]}-{velo}"
-        menu_cmd = self._menu_loader.get(menu_key)
-        if not menu_cmd:
-            return
-
-        lst = menu_cmd.split(":")  # if there are many commands we need the list
-        for cmd in lst:
-            lst1 = cmd.split()  # method name and arguments if any
-            self.__process_list(lst1)
-        # after all commands send _redraw
-        self.__queue.put([ConfigName.client_redraw, self._di])
-
-    def __process_list(self, cmd: list) -> None:
-        if not (cmd and isinstance(cmd, list)):
-            return
-        elif cmd[0] == "_menu_update":
-            self._menu_update(cmd[1])
-        elif cmd[0] == "_menu_prev_section":
-            self._update_section(False)
-        elif cmd[0] == "_menu_next_section":
-            self._update_section(True)
-        else:
-            for k in range(1, len(cmd)):
-                if cmd[k].strip('+-').isdigit():
-                    cmd[k] = int(cmd[k])
-                elif cmd[k].strip('+-').replace('.', '', 1).isdigit():
-                    cmd[k] = float(cmd[k])
-
-            MyLog().debug(f"{self.__class__.__name__} send command: {cmd}")
-            self.__queue.put(cmd)
-
-
 class _MenuLoader:
-    """ class loading mapping dict. from JSON files
-    It parses directory for JSON files """
+    """ class loading menu mapping from INI files in a directory """
 
     def __init__(self, dname: str):
+        if not os.path.isdir(dname):
+            raise RuntimeError(f"Menu directory not found: {dname}. Check main.ini and local.ini files")
         self._sect_idx: int = 0
         self._section: str = ConfigName.play_section
-        assert os.path.isdir(dname)
         self._dict = dict()
         fname1 = f"{dname}/navigate.ini"
         for fname in ["play.ini", "song.ini", "drum.ini", "serv.ini"]:
@@ -111,18 +37,88 @@ class _MenuLoader:
 
         return ""
 
-    def update_menu(self, section: str) -> None:
+    def _menu_update(self, section: str) -> None:
         assert f"{section}.0" in self._dict
         self._section = section
         self._sect_idx = 0
 
-    def update_section(self, go_next: bool = True) -> None:
+    def _section_update(self, k: int) -> None:
         lst = [x for x in self._dict.keys() if self._section in x]
-        self._sect_idx += (1 if go_next else -1)
-        self._sect_idx %= len(lst)
+        self._sect_idx = (self._sect_idx + k) % len(lst)
 
     def __str__(self):
         return f"{self._section}.{self._sect_idx}"
+
+
+class MenuHost(_MenuLoader):
+    """Translate notes to menu command and put into queue """
+
+    def __init__(self, queue: Queue):
+        dic = load_ini_section("MENU")
+        dname = dic.get(ConfigName.menu_choice, "")
+        dname = f"{ConfigName.menu_config_dir}/{dname}"
+        _MenuLoader.__init__(self, dname)
+        self._di = DrawInfo()
+        self.__queue = queue
+        self._menu_update(ConfigName.play_section)
+        self.__queue.put([ConfigName.client_redraw, self._di])
+        self.min_velo = MidiInfo().MIDI_MIN_VELO
+        self.std_velo = MidiInfo().MIDI_STD_VELO
+        self.midi_dict = MidiInfo().MIDI_DICT
+        self.__alive: bool = True
+
+    def _is_alive(self) -> bool:
+        return self.__alive
+
+    def start_menu_host(self) -> None:
+        MyLog().info(f"{self.__class__.__name__} start working as MenuHost")
+        while self._is_alive():
+            sleep(5)
+        self.__queue.put([ConfigName.client_stop])
+        sleep(2)
+        MyLog().info(f"{self.__class__.__name__} stop working as MenuHost")
+
+    def _menu_update(self, fname: str) -> None:
+        super()._menu_update(fname)
+        self._di.description = self.get(ConfigName.description)
+        self._di.update_method = self.get(ConfigName.update_method)
+
+    def _section_update(self, k: int) -> None:
+        super()._section_update(k)
+        self._di.description = self.get(ConfigName.description)
+        self._di.update_method = self.get(ConfigName.update_method)
+
+    def _send(self, note: int, velo: int) -> None:
+        if note not in self.midi_dict:
+            MyLog().error(f"MIDI note: {note} is not expected. Check main.ini file")
+
+        menu_key: str = f"{self.midi_dict[note]}-{velo}"
+        menu_cmd = self.get(menu_key)
+        lst = menu_cmd.split(":")  # if there are many commands we need the list
+        for cmd in lst:
+            lst1 = cmd.split()  # method name and arguments if any
+            self.__process_list(lst1)
+        # after all commands send _redraw
+        self.__queue.put([ConfigName.client_redraw, self._di])
+
+    def __process_list(self, cmd: list) -> None:
+        if not (cmd and isinstance(cmd, list)):
+            return
+        elif cmd[0] == ConfigName.menu_update:
+            self._menu_update(cmd[1])
+        elif cmd[0] == ConfigName.section_update:
+            self._section_update(cmd[1])
+        elif cmd[0] == ConfigName.client_stop:
+            self.__alive = False
+        else:
+            for k in range(1, len(cmd)):
+                if cmd[k].strip('+-').isdigit():
+                    cmd[k] = int(cmd[k])
+                elif cmd[k].strip('+-').replace('.', '', 1).isdigit():
+                    cmd[k] = float(cmd[k])
+
+            MyLog().debug(f"{self.__class__.__name__} send command: {cmd}")
+            self.__queue.put(cmd)
 
 
 if __name__ == "__main__":

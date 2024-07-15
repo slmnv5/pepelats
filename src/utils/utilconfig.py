@@ -7,14 +7,17 @@ IP_ADDR = get_ip_address()
 
 
 class ConfigName:
-    # Kill command
     # kill_command = "killall -9 -qw python > /dev/null"
     # menu INI config files related
     update_method: str = "update_method"
     description: str = "description"
-    client_redraw: str = "_client_redraw"
-    looper_stop: str = "_looper_stop"
     play_section: str = "play"
+    # method names
+    client_redraw: str = "_client_redraw"
+    client_stop: str = "_client_stop"
+    menu_update: str = "_menu_update"
+    section_update: str = "_section_update"
+
     # main INI file options
     menu_choice: str = "menu_choice"
     midi_out: str = "midi_out"

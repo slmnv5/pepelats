@@ -29,7 +29,7 @@ def test_1():
     looper.stop_never()
     Timer(3, looper.stop_at_bound, args=[0]).start()
     part.play_loop(looper)  # playing recorded sound + drum
-    queue1.put([ConfigName.looper_stop])
+    queue1.put([ConfigName.client_stop])
     assert looper.get_drum().get_bar_len() == part.get_len()
 
 
@@ -54,7 +54,7 @@ def test_2():
     looper.stop_never()
     Timer(3, looper.stop_at_bound, args=[0]).start()
     loop.play_loop(looper)  # playing recorded sound + drum
-    queue1.put([ConfigName.looper_stop])
+    queue1.put([ConfigName.client_stop])
     assert looper.get_drum().get_bar_len() == loop.get_len()
 
 

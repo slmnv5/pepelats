@@ -61,7 +61,7 @@ class CountMidiControl(MenuHost):
         self._midi_in.set_callback(self._process_msg)
 
     def _is_alive(self) -> bool:
-        return self._midi_in.get_port_count() >= self._p_count
+        return super()._is_alive() and self._midi_in.get_port_count() >= self._p_count
 
     # noinspection PyUnusedLocal
     def _process_msg(self, event, data=None) -> None:

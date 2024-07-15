@@ -22,10 +22,10 @@ class Looper(SongCtrl):
         self.__send_q = send_q
         self.drum_create(0)
 
-    def _clean_up(self) -> None:
-        super()._clean_up()
+    def _client_stop(self) -> None:
+        super()._client_stop()
         self._song_stop()
-        self.__send_q.put([ConfigName.looper_stop])
+        self.__send_q.put([ConfigName.client_stop])
 
     def drum_create(self, bar_len: int, **kwargs) -> None:
         self.menu_client_queue(['_drum_create', bar_len, {**kwargs}])
