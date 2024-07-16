@@ -1,4 +1,3 @@
-from abc import abstractmethod
 from multiprocessing import Queue
 
 from mvc.drawinfo import DrawInfo
@@ -25,7 +24,6 @@ class MenuClient:
             except Exception as ex:
                 MyLog().exception(ex)
 
-    @abstractmethod
     def _client_redraw(self, di: DrawInfo) -> None:
         di.recalculate()
         self._di = di
