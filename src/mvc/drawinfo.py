@@ -1,3 +1,5 @@
+import json
+
 from basic.audioinfo import AudioInfo
 from utils.utilother import HUGE_INT
 
@@ -13,13 +15,15 @@ class DrawInfo:
         self.max_loop_len: int = HUGE_INT
         self.idx: int = 0
         self.is_rec: bool = False
-
         self.max_factor: float = 1.0
         self.part_delta: float = 0.0
         self.max_delta: float = 0.0
         self.sleep: float = 1.0
         self.pos: float = 0
         self.max_pos: float = 0
+
+    def to_json(self) -> str:
+        return json.dumps(self, default=vars)
 
     def recalculate(self) -> None:
         self.pos = (self.idx % self.part_len) / self.part_len
@@ -28,3 +32,9 @@ class DrawInfo:
         self.part_delta = self.part_len / self._UPDATES_PER_LOOP
         self.max_delta = self.part_delta / self.max_factor
         self.sleep = self.part_len / AudioInfo().SD_RATE / self._UPDATES_PER_LOOP
+
+
+if __name__ == "__main__":
+    di = DrawInfo()
+    di.recalculate()
+    print(di.to_json())

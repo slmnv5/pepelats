@@ -65,9 +65,3 @@ def test_6() -> None:
     assert get_dtype_max('int16') == 32767
     assert get_dtype_max('float32') == 1
     assert get_dtype_max('float64') == 1
-
-
-if __name__ == "__main__":
-    test_3()
-    test_4()
-    test_5()

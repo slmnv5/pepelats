@@ -1,4 +1,3 @@
-import json
 import os
 import subprocess
 from configparser import ConfigParser, ParsingError
@@ -100,8 +99,7 @@ class MyHandler(BaseHTTPRequestHandler):
         self.send_header('Content-type', "application/json")
         self.end_headers()
         di = self.get_update()
-        resp_str = json.dumps(di, indent=4)
-        self.wfile.write(resp_str.encode())
+        self.wfile.write(di.to_json().encode())
 
     def _send_page(self, page: bytes) -> None:
         self.send_response(200)
