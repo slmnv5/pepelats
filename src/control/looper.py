@@ -60,7 +60,7 @@ class Looper(SongCtrl):
 
     def _client_redraw(self, di: DrawInfo) -> None:
         super()._client_redraw(di)
-
+        print(2333333333331111111)
         di.header = f"{self._drum}"
         if di.update_method:
             # noinspection PyBroadException
