@@ -55,7 +55,7 @@ class MyHandler(BaseHTTPRequestHandler):
     main_page: bytes = ""
     config_page: bytes = ""
     file_form: str = ""
-    get_update: Callable[[], DrawInfo] = None
+    get_updates: Callable[[], DrawInfo] = None
 
     def _send_binary(self, fname):
         self.send_response(200)
@@ -97,11 +97,7 @@ class MyHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type', "application/json")
         self.end_headers()
-        try:
-            print(111111111111, type(MyHandler.main_page))
-        except Exception:
-            print(22222222222222222222)
-        di = MyHandler.get_update()
+        di = MyHandler.get_updates()
         self.wfile.write(di.to_json().encode())
 
     def _send_page(self, page: bytes) -> None:

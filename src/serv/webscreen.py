@@ -10,11 +10,11 @@ class WebScreen(MenuClient, MyServer):
     def __init__(self, q: Queue):
         MenuClient.__init__(self, q)
         MyServer.__init__(self)
-        self.handler_class.get_update = self.get_update
+        MyHandler.get_updates = self.get_updates
         self._has_update: Event = Event()
         Thread(target=self.serve_forever(), name="updater", daemon=True).start()
 
-    def get_update(self) -> DrawInfo:
+    def get_updates(self) -> DrawInfo:
         self._has_update.wait()
         self._has_update.clear()
         return self._di
