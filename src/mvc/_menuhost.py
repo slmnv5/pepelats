@@ -68,7 +68,7 @@ class MenuHost(_MenuLoader):
         dname = dic.get(ConfigName.menu_choice, "")
         dname = f"{ConfigName.menu_config_dir}/{dname}"
         _MenuLoader.__init__(self, dname)
-        self._di = DrawInfo()
+        self._di: DrawInfo = DrawInfo()
         self.__queue = queue
         self._menu_update(ConfigName.play_section)
         self.__queue.put([ConfigName.client_redraw, self._di])

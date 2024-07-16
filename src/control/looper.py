@@ -6,7 +6,7 @@ from control._songctrl import SongCtrl
 from drum.bufferdrum import EuclidDrum, StyleDrum
 from drum.loopdrum import LoopDrum
 from drum.mididrum import MidiDrum
-from serv.webserver import webserver_start
+from serv.webserver import MyServer
 from utils.utilconfig import ConfigName
 from utils.utilconfig import load_ini_section, update_ini_section
 from utils.utillog import MyLog
@@ -18,7 +18,6 @@ class Looper(SongCtrl):
 
     def __init__(self, recv_q: Queue, send_q: Queue):
         SongCtrl.__init__(self, recv_q)
-        self._di = DrawInfo()
         self.__send_q = send_q
         self.drum_create(0)
 
@@ -59,7 +58,7 @@ class Looper(SongCtrl):
         self.menu_client_queue([ConfigName.client_redraw, self._di])
 
     def _client_redraw(self, di: DrawInfo) -> None:
-        self._di = di
+        super()._client_redraw(di)
 
         di.header = f"{self._drum}"
         if di.update_method:
@@ -102,7 +101,7 @@ class Looper(SongCtrl):
     def _server_start(self) -> None:
         self._song_stop()
         print("HTTP server starting")
-        webserver_start()
+        MyServer()
         print("HTTP server stopped")
 
     #  ============ all parts methods ===============

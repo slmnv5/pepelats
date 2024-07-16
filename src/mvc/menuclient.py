@@ -9,6 +9,7 @@ class MenuClient:
     def __init__(self, queue: Queue):
         self.__queue: Queue = queue
         self._alive: bool = True
+        self._di: DrawInfo = DrawInfo()
 
     def _client_stop(self) -> None:
         self._alive = False
@@ -25,8 +26,9 @@ class MenuClient:
                 MyLog().exception(ex)
 
     @abstractmethod
-    def _client_redraw(self, draw_info: DrawInfo) -> None:
-        pass
+    def _client_redraw(self, di: DrawInfo) -> None:
+        di.recalculate()
+        self._di = di
 
     def menu_client_queue(self, command: list) -> None:
         self.__queue.put(command)

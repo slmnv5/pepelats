@@ -3,6 +3,7 @@ import re
 import subprocess
 from typing import TypeVar, Generic, Iterable
 
+from basic.audioinfo import AudioInfo
 from utils.utilscreen import SCR_ROWS
 
 T = TypeVar('T')
@@ -63,6 +64,7 @@ def _stable_sub_list(idx: int, items: list[any], sub_list_size: int) -> list[tup
 
 class DrawInfo:
     def __init__(self):
+        self._UPDATES_PER_LOOP: int = 16
         self.update_method: str = ""
         self.header: str = ""
         self.description: str = ""
@@ -71,6 +73,24 @@ class DrawInfo:
         self.max_loop_len: int = 0
         self.idx: int = 0
         self.is_rec: bool = False
+        self.max_factor: float = 1.0
+        self.part_delta: float = 0.01
+        self.max_delta: float = 0.01
+        self.sleep: float = 10.0
+        self.pos: float = 0
+        self.max_pos: float = 0
+        self.max_factor: float = 1.0
+        self.part_delta: float = 0.01
+        self.max_delta: float = 0.01
+        self.sleep: float = 10.0
+
+    def recalculate(self) -> None:
+        self.pos = (self.idx % self.part_len) / self.part_len
+        self.max_factor = self.max_loop_len / self.part_len
+        self.max_pos = (self.idx % self.max_loop_len) / self.max_loop_len
+        self.part_delta = self.part_len / self._UPDATES_PER_LOOP
+        self.max_delta = self.part_delta / self.max_factor
+        self.sleep = self.part_len / AudioInfo().SD_RATE / self._UPDATES_PER_LOOP
 
     def __str__(self):
         return f"CALL:{self.update_method}|L:{self.part_len}|" \

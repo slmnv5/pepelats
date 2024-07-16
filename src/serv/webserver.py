@@ -3,7 +3,8 @@ import os
 import subprocess
 from configparser import ConfigParser, ParsingError
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from multiprocessing import Event
+from random import random
+from typing import Callable
 
 from utils.utilconfig import ConfigName, IP_ADDR
 from utils.utilother import split_to_dict, DrawInfo
@@ -55,8 +56,7 @@ class MyHandler(BaseHTTPRequestHandler):
     main_page: bytes = ""
     config_page: bytes = ""
     file_form: str = ""
-    has_update: Event = Event()
-    di: DrawInfo = DrawInfo()
+    get_update: Callable[[], DrawInfo]
 
     def _send_binary(self, fname):
         self.send_response(200)
@@ -85,21 +85,21 @@ class MyHandler(BaseHTTPRequestHandler):
                 data = f.read()
 
         disabled = "disabled" if read_only else ""
-        html = self.server.file_form.format(disabled=disabled, file_name=fname, file_data=data)
+        html = self.file_form.format(disabled=disabled, file_name=fname, file_data=data)
         self.wfile.write(html.encode())
 
     def _send_config_page(self) -> None:
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
-        self.wfile.write(self.server.config_page)
+        self.wfile.write(self.config_page)
 
     def _send_update(self) -> None:
         self.send_response(200)
         self.send_header('Content-type', "application/json")
         self.end_headers()
-        self.has_update.wait()
-        resp_str = json.dumps(self.di, indent=4)
+        di = self.get_update()
+        resp_str = json.dumps(di, indent=4)
         self.wfile.write(resp_str.encode())
 
     def _send_page(self, page: bytes) -> None:
@@ -107,7 +107,6 @@ class MyHandler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
         self.wfile.write(page)
-        self.has_update.clear()
 
     # noinspection PyPep8Naming
     def do_GET(self):
@@ -180,7 +179,7 @@ class MyHandler(BaseHTTPRequestHandler):
         return True
 
 
-class WebHelper(HTTPServer):
+class MyServer(HTTPServer):
     def __init__(self):
         # noinspection PyTypeChecker
         HTTPServer.__init__(self, ('', 8000), MyHandler)
@@ -188,16 +187,19 @@ class WebHelper(HTTPServer):
         MyHandler.file_form = _load_html_file("html/file_form.html")
         MyHandler.config_page = _load_html_file("html/config_page.html").format(**FORMAT_DICT).encode()
         MyHandler.main_page = _load_html_file("html/main_page.html").encode()
+        MyHandler.get_update = self.get_update
+        print(f"To control looper connect to:\nhttp://{IP_ADDR}:8000")
+        try:
+            self.serve_forever()
+        except KeyboardInterrupt:
+            self.server_close()
 
-
-def webserver_start():
-    print(f"To control looper connect to:\nhttp://{IP_ADDR}:8000")
-    server = WebHelper()
-    try:
-        server.serve_forever()
-    except KeyboardInterrupt:
-        server.server_close()
+    # noinspection PyMethodMayBeStatic
+    def get_update(self) -> DrawInfo:
+        di = DrawInfo()
+        di.header = f"22222222222{random()}111111111111111111"
+        return DrawInfo()
 
 
 if __name__ == "__main__":
-    webserver_start()
+    MyServer()

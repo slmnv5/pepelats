@@ -3,7 +3,7 @@ from multiprocessing import Queue
 from textwrap import wrap
 from threading import Thread
 
-from mvc.basescreen import BaseScreen
+from mvc.menuclient import MenuClient
 from utils.utilother import DrawInfo
 from utils.utilscreen import SCR_COLS
 
@@ -27,16 +27,16 @@ _GRN_CLR: str = f"\x1b[1;{_GREEN}m"
 _BLU_CLR: str = f"\x1b[1;{_BLUE}m"
 
 
-class TextScreen(BaseScreen):
+class TextScreen(MenuClient):
 
     def __init__(self, q: Queue):
-        BaseScreen.__init__(self, q)
+        MenuClient.__init__(self, q)
         Thread(target=self.__updater, name="updater", daemon=True).start()
 
     def __add_color(self, line: str) -> str:
         line = line.ljust(SCR_COLS)
         if line[0] == "*":
-            if self.di.is_rec:
+            if self._di.is_rec:
                 return _RED_CLR + line + _END_ALL
             else:
                 return _GRN_CLR + line + _END_ALL
@@ -47,29 +47,29 @@ class TextScreen(BaseScreen):
 
     def _client_redraw(self, di: DrawInfo) -> None:
         super()._client_redraw(di)
-        self.di.header = di.header[:SCR_COLS].center(SCR_COLS)
-        self.di.description = '\n'.join([x.center(SCR_COLS) for x in wrap(di.description, SCR_COLS)])
-        self.di.content = '\n'.join([self.__add_color(x) for x in di.content.split('\n')])
+        self._di.header = di.header[:SCR_COLS].center(SCR_COLS)
+        self._di.description = '\n'.join([x.center(SCR_COLS) for x in wrap(di.description, SCR_COLS)])
+        self._di.content = '\n'.join([self.__add_color(x) for x in di.content.split('\n')])
 
-        print(f"{_CURSOR_MOVE}{self.di.header}{_CLEAN_TO_END}")
-        print(self.di.description)
-        print(self.di.content, flush=True)
+        print(f"{_CURSOR_MOVE}{self._di.header}{_CLEAN_TO_END}")
+        print(self._di.description)
+        print(self._di.content, flush=True)
 
     def __updater(self):
         while self._alive:
-            time.sleep(self._sleep)
-            line = self.di.header
-            self._pos += self._delta
-            if self._pos > 1:
-                self._pos = 0
+            time.sleep(self._di.sleep)
+            line = self._di.header
+            self._di.pos += self._di.part_delta
+            if self._di.pos > 1:
+                self._di.pos = 0
 
-            if self._max_factor > 1:
-                self._max_pos += self._delta_max
-                if self._max_pos > 1:
-                    self._max_pos = 0
-                pos = round(self._max_pos * SCR_COLS)
+            if self._di.max_factor > 1:
+                self._di.max_pos += self._di.max_delta
+                if self._di.max_pos > 1:
+                    self._di.max_pos = 0
+                pos = round(self._di.max_pos * SCR_COLS)
                 line = line[:pos] + '▒' + line[pos + 1:]
 
-            pos = round(self._pos * SCR_COLS)  # shown by inverse color
+            pos = round(self._di.pos * SCR_COLS)  # shown by inverse color
             line = _REV_CLR + line[:pos] + _END_ALL + line[pos:]
             print(f"{_CURSOR_MOVE}{line}", end='', flush=True)

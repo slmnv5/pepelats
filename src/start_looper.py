@@ -2,7 +2,7 @@ from multiprocessing import Process, Queue
 
 from control.looper import Looper
 from mvc.countmidicontrol import CountMidiControl
-from mvc.textscreen import TextScreen
+from serv.webscreen import WebScreen
 from utils.utillog import MyLog
 
 
@@ -13,8 +13,8 @@ def do_looper(q_looper: Queue, q_screen: Queue) -> None:
 
 # noinspection PyBroadException
 def do_screen(q_screen: Queue) -> None:
-    scr_view = TextScreen(q_screen)
-    scr_view.menu_client_start()
+    scr = WebScreen(q_screen)  # TextScreen(q_screen)
+    scr.menu_client_start()
 
 
 if __name__ == "__main__":
