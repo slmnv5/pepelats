@@ -2,15 +2,21 @@
 <html>
 <head></head>
 <body>
+
 <form action="save_file" method="post" enctype='multipart/form-data'>
     <p>
         <b>File name:</b>
         <input type="text" name="file_name" value="{file_name}" readonly/>
         <input type="submit" value="Save file" {disabled}/>
     </p>
-    <textarea autocapitalize="off" cols="150" name="file_data" rows="30" spellcheck="false">
+    
+    <div style="display: block;">
+    <label>File content:</label>
+    <textarea autocapitalize="off" style="width:100%" name="file_data" rows="30" spellcheck="false">
     {file_data}
     </textarea>
+    </div>
 </form>
+
 </body>
 </html>

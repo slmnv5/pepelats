@@ -1,0 +1,30 @@
+<html>
+<head>
+</head>
+<body>
+<p id="header"></p>
+<p id="description"></p>
+<p id="content"></p>
+
+<script type="text/javascript">
+    "use strict";
+    const HEADER = document.getElementById('header');
+    const CONTENT = document.getElementById('content');
+    const DESCRIPTION = document.getElementById('description');
+    const URL = 'http://{ip_address}/update';
+
+    var getStuff = async () => {
+      while(true) {
+          let res = await fetch(URL);
+          let data = await res.json();
+          HEADER.textContent = data.header
+          DESCRIPTION.textContent = data.description
+          CONTENT.textContent = data.content.replace(/(?:\n)/g, '<br/>');
+      };
+    };
+
+    getStuff();
+
+</script>
+</body>
+</html>
