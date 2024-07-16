@@ -35,4 +35,4 @@ class WebScreen(MenuClient, HTTPServer):
 
 
 if __name__ == "__main__":
-    WebScreen(Queue())
+    pass

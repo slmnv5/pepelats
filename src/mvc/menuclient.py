@@ -15,6 +15,7 @@ class MenuClient:
         self._alive = False
 
     def menu_client_start(self):
+        print(8888888888888, type(self))
         while self._alive:
             command = self.__queue.get()
             method_name, *params = command
