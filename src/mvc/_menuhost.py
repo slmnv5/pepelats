@@ -4,9 +4,9 @@ from multiprocessing import Queue
 from time import sleep
 
 from basic.midiinfo import MidiInfo
+from mvc.drawinfo import DrawInfo
 from utils.utilconfig import ConfigName, load_ini_section
 from utils.utillog import MyLog
-from utils.utilother import DrawInfo
 
 
 class _MenuLoader:

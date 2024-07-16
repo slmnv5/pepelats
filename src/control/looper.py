@@ -6,11 +6,12 @@ from control._songctrl import SongCtrl
 from drum.bufferdrum import EuclidDrum, StyleDrum
 from drum.loopdrum import LoopDrum
 from drum.mididrum import MidiDrum
+from mvc.drawinfo import DrawInfo
 from serv.webserver import MyServer
 from utils.utilconfig import ConfigName
 from utils.utilconfig import load_ini_section, update_ini_section
 from utils.utillog import MyLog
-from utils.utilother import DrawInfo, FileFinder
+from utils.utilother import FileFinder
 
 
 class Looper(SongCtrl):

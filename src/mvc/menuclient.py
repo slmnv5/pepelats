@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from multiprocessing import Queue
 
+from mvc.drawinfo import DrawInfo
 from utils.utillog import MyLog
-from utils.utilother import DrawInfo
 
 
 class MenuClient:

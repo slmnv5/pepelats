@@ -3,8 +3,8 @@ from multiprocessing import Queue
 from textwrap import wrap
 from threading import Thread
 
+from mvc.drawinfo import DrawInfo
 from mvc.menuclient import MenuClient
-from utils.utilother import DrawInfo
 from utils.utilscreen import SCR_COLS
 
 _CLEAN_TO_END = '\x1b[0J'  # clean from cursor to end of screen

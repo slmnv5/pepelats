@@ -6,8 +6,9 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from random import random
 from typing import Callable
 
+from mvc.drawinfo import DrawInfo
 from utils.utilconfig import ConfigName, IP_ADDR
-from utils.utilother import split_to_dict, DrawInfo
+from utils.utilother import split_to_dict
 
 _EDIT_PATH = "/edit?file="
 _SHOW_PATH = "/show?file="

@@ -1,9 +1,9 @@
 from multiprocessing import Queue
 from threading import Thread
 
+from mvc.drawinfo import DrawInfo
 from mvc.menuclient import MenuClient
 from serv.webserver import MyServer
-from utils.utilother import DrawInfo
 
 
 class WebScreen(MenuClient, MyServer):
