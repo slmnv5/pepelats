@@ -1,54 +1,12 @@
 import os
 import subprocess
 from configparser import ConfigParser, ParsingError
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler
 from typing import Callable
 
 from mvc.drawinfo import DrawInfo
-from utils.utilconfig import ConfigName, IP_ADDR
 from utils.utilother import split_to_dict
-
-_EDIT_PATH = "/edit?file="
-_SHOW_PATH = "/show?file="
-_RESET_PATH = "/reset"
-_EXIT_PATH = "/exit"
-_UPDATE_PATH = "/update"
-
-
-def _load_html_file(fname: str) -> str:
-    assert os.path.isfile(fname)
-    with open(fname, 'r') as f:
-        return f.read()
-
-
-def _one_link(fname: str, prefix: str) -> str:
-    return f"<a href = {prefix}{fname}>{fname}</a>"
-
-
-def _all_links(dname: str, end_with: str, prefix: str) -> str:
-    file_lst = list()
-
-    for root, _, files in os.walk(dname):
-        for fname in [os.path.join(root, x) for x in files if x.endswith(end_with)]:
-            file_lst.append(fname)
-    link_lst = list()
-    for fname in file_lst:
-        link_lst.append("\n" + _one_link(fname, prefix) + "<br/>")
-    return "".join(link_lst)
-
-
-FORMAT_DICT: dict[str, str] = dict()
-FORMAT_DICT["l_exit"] = _EXIT_PATH
-FORMAT_DICT["l_reset"] = _RESET_PATH
-
-FORMAT_DICT["l_std_cfg"] = _one_link(ConfigName.main_ini, _SHOW_PATH)
-FORMAT_DICT["l_custom_cfg"] = _one_link(ConfigName.local_ini, _EDIT_PATH)
-
-FORMAT_DICT["l_curr_log"] = _one_link('log.txt', _SHOW_PATH)
-FORMAT_DICT["l_old_log"] = _one_link('log.bak', _SHOW_PATH)
-
-FORMAT_DICT["l_drum"] = _all_links(f"{ConfigName.drum_config_dir}", ".ini", _EDIT_PATH)
-FORMAT_DICT["l_menu"] = _all_links(f"./{ConfigName.menu_config_dir}", ".ini", _EDIT_PATH)
+from utils.utilweb import RESET_PATH, UPDATE_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH
 
 
 class MyHandler(BaseHTTPRequestHandler):
@@ -110,21 +68,21 @@ class MyHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/":
             self._send_page(self.main_page)
-        elif self.path == _UPDATE_PATH:
+        elif self.path == UPDATE_PATH:
             self._send_update()
-        elif self.path == _RESET_PATH:
+        elif self.path == RESET_PATH:
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             result = subprocess.run(['git', 'reset', '--hard'], stdout=subprocess.PIPE)
             self.wfile.write(result.stdout)
-        elif self.path == _EXIT_PATH:
+        elif self.path == EXIT_PATH:
             raise KeyboardInterrupt()
-        elif self.path.startswith(_EDIT_PATH):
-            fname = self.path[len(_EDIT_PATH):]
+        elif self.path.startswith(EDIT_PATH):
+            fname = self.path[len(EDIT_PATH):]
             self._send_file(fname, False)
-        elif self.path.startswith(_SHOW_PATH):
-            fname = self.path[len(_SHOW_PATH):]
+        elif self.path.startswith(SHOW_PATH):
+            fname = self.path[len(SHOW_PATH):]
             self._send_file(fname, True)
         elif self.path == "/favicon.ico":
             self._send_binary("./favicon.ico")
@@ -175,22 +133,3 @@ class MyHandler(BaseHTTPRequestHandler):
         with open(fname, 'w') as f:
             f.write(data_dict["file_data"])
         return True
-
-
-class MyServer(HTTPServer):
-    def __init__(self):
-        # noinspection PyTypeChecker
-        HTTPServer.__init__(self, ('', 8000), MyHandler)
-        self.handler_class: type = MyHandler
-        MyHandler.file_form = _load_html_file("html/file_form.html")
-        MyHandler.config_page = _load_html_file("html/config_page.html").format(**FORMAT_DICT).encode()
-        MyHandler.main_page = _load_html_file("html/main_page.html").encode()
-        print(f"To control looper connect to:\nhttp://{IP_ADDR}:8000")
-        try:
-            self.serve_forever()
-        except KeyboardInterrupt:
-            self.server_close()
-
-
-if __name__ == "__main__":
-    MyServer()
