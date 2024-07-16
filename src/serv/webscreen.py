@@ -16,7 +16,7 @@ class WebScreen(MenuClient, HTTPServer):
         WebHandler.get_updates = self.get_updates
         self._has_updates: Event = Event()
         print(f"To control looper connect to:\nhttp://{IP_ADDR}:8000")
-        Thread(target=self.serve_forever(), name="updater").start()
+        Thread(target=self.serve_forever, name="updater", daemon=True).start()
         print(989898989898989811111111111111111)
 
     def _client_stop(self) -> None:
