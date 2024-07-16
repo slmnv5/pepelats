@@ -15,8 +15,8 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
     """added playback thread and Song.
      Song is collection of song parts with related methods"""
 
-    def __init__(self, recv_q: Queue):
-        MenuClient.__init__(self, recv_q)
+    def __init__(self, queue: Queue):
+        MenuClient.__init__(self, queue)
         LoopCtrl.__init__(self)
         self._song: Song = Song(self)
         self.__next_id: int = 0

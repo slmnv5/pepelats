@@ -17,12 +17,13 @@ class MenuClient:
         while self._alive:
             command = self.__queue.get()
             method_name, *params = command
-            print(444444444444444, id(self.__queue), command)
+            print(444444444444444, str(self), command)
             # noinspection PyBroadException
             try:
                 method = getattr(self, method_name)
                 method(*params)
             except Exception as ex:
+                print(999999999999999999)
                 MyLog().exception(ex)
 
     def _client_redraw(self, di: DrawInfo) -> None:
