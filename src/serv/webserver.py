@@ -1,15 +1,18 @@
+import json
 import os
 import subprocess
 from configparser import ConfigParser, ParsingError
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from multiprocessing import Event
 
 from utils.utilconfig import ConfigName, IP_ADDR
-from utils.utilother import split_to_dict
+from utils.utilother import split_to_dict, DrawInfo
 
 _EDIT_PATH = "/edit?file="
 _SHOW_PATH = "/show?file="
 _RESET_PATH = "/reset"
 _EXIT_PATH = "/exit"
+_UPDATE_PATH = "/update"
 
 
 def _load_html_file(fname: str) -> str:
@@ -34,7 +37,26 @@ def _all_links(dname: str, end_with: str, prefix: str) -> str:
     return "".join(link_lst)
 
 
+FORMAT_DICT: dict[str, str] = dict()
+FORMAT_DICT["l_exit"] = _EXIT_PATH
+FORMAT_DICT["l_reset"] = _RESET_PATH
+
+FORMAT_DICT["l_std_cfg"] = _one_link(ConfigName.main_ini, _SHOW_PATH)
+FORMAT_DICT["l_custom_cfg"] = _one_link(ConfigName.local_ini, _EDIT_PATH)
+
+FORMAT_DICT["l_curr_log"] = _one_link('log.txt', _SHOW_PATH)
+FORMAT_DICT["l_old_log"] = _one_link('log.bak', _SHOW_PATH)
+
+FORMAT_DICT["l_drum"] = _all_links(f"{ConfigName.drum_config_dir}", ".ini", _EDIT_PATH)
+FORMAT_DICT["l_menu"] = _all_links(f"./{ConfigName.menu_config_dir}", ".ini", _EDIT_PATH)
+
+
 class MyHandler(BaseHTTPRequestHandler):
+    main_page: bytes = ""
+    config_page: bytes = ""
+    file_form: str = ""
+    has_update: Event = Event()
+    di: DrawInfo = DrawInfo()
 
     def _send_binary(self, fname):
         self.send_response(200)
@@ -63,25 +85,36 @@ class MyHandler(BaseHTTPRequestHandler):
                 data = f.read()
 
         disabled = "disabled" if read_only else ""
-        html = WebHelper.file_form.format(disabled=disabled, file_name=fname, file_data=data)
+        html = self.server.file_form.format(disabled=disabled, file_name=fname, file_data=data)
         self.wfile.write(html.encode())
 
     def _send_config_page(self) -> None:
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
-        self.wfile.write(WebHelper.config_page)
+        self.wfile.write(self.server.config_page)
 
-    def _send_main_page(self) -> None:
+    def _send_update(self) -> None:
+        self.send_response(200)
+        self.send_header('Content-type', "application/json")
+        self.end_headers()
+        self.has_update.wait()
+        resp_str = json.dumps(self.di, indent=4)
+        self.wfile.write(resp_str.encode())
+
+    def _send_page(self, page: bytes) -> None:
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
-        self.wfile.write(WebHelper.main_page)
+        self.wfile.write(page)
+        self.has_update.clear()
 
     # noinspection PyPep8Naming
     def do_GET(self):
         if self.path == "/":
-            self._send_main_page()
+            self._send_page(self.main_page)
+        elif self.path == _UPDATE_PATH:
+            self._send_update()
         elif self.path == _RESET_PATH:
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
@@ -147,30 +180,19 @@ class MyHandler(BaseHTTPRequestHandler):
         return True
 
 
-class WebHelper:
-    file_form: str = _load_html_file("html/file_form.html")
-    tmp: str = _load_html_file("html/config_page.html")
-
-    format_dict: dict[str, str] = dict()
-    format_dict["l_exit"] = _EXIT_PATH
-    format_dict["l_reset"] = _RESET_PATH
-
-    format_dict["l_std_cfg"] = _one_link(ConfigName.main_ini, _SHOW_PATH)
-    format_dict["l_custom_cfg"] = _one_link(ConfigName.local_ini, _EDIT_PATH)
-
-    format_dict["l_curr_log"] = _one_link('log.txt', _SHOW_PATH)
-    format_dict["l_old_log"] = _one_link('log.bak', _SHOW_PATH)
-
-    format_dict["l_drum"] = _all_links(f"{ConfigName.drum_config_dir}", ".ini", _EDIT_PATH)
-    format_dict["l_menu"] = _all_links(f"./{ConfigName.menu_config_dir}", ".ini", _EDIT_PATH)
-    config_page: bytes = tmp.format(**format_dict).encode()
-    main_page: bytes = _load_html_file("index.html").encode()
+class WebHelper(HTTPServer):
+    def __init__(self):
+        # noinspection PyTypeChecker
+        HTTPServer.__init__(self, ('', 8000), MyHandler)
+        self.handler_class: type = MyHandler
+        MyHandler.file_form = _load_html_file("html/file_form.html")
+        MyHandler.config_page = _load_html_file("html/config_page.html").format(**FORMAT_DICT).encode()
+        MyHandler.main_page = _load_html_file("html/main_page.html").encode()
 
 
 def webserver_start():
     print(f"To control looper connect to:\nhttp://{IP_ADDR}:8000")
-    # noinspection PyTypeChecker
-    server = HTTPServer(('', 8000), MyHandler)
+    server = WebHelper()
     try:
         server.serve_forever()
     except KeyboardInterrupt:

@@ -9,7 +9,7 @@ class BaseScreen(MenuClient):
     def __init__(self, q: Queue):
         MenuClient.__init__(self, q)
         self.updates_per_loop: float = 16.0
-        self.di: DrawInfo()
+        self.di: DrawInfo = DrawInfo()
         self._pos: float = 0
         self._max_pos: float = 0
         self._max_factor: float = 1.0
