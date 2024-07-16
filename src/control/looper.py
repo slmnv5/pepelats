@@ -19,13 +19,13 @@ class Looper(SongCtrl):
 
     def __init__(self, recv_q: Queue, send_q: Queue):
         SongCtrl.__init__(self, recv_q)
-        self.__send_q = send_q
+        self.__queue = send_q
         self.drum_create(0)
 
     def _client_stop(self) -> None:
         super()._client_stop()
         self._song_stop()
-        self.__send_q.put([ConfigName.client_stop])
+        self.__queue.put([ConfigName.client_stop])
 
     def drum_create(self, bar_len: int, **kwargs) -> None:
         self.menu_client_queue(['_drum_create', bar_len, {**kwargs}])
@@ -60,7 +60,7 @@ class Looper(SongCtrl):
 
     def _client_redraw(self, di: DrawInfo) -> None:
         super()._client_redraw(di)
-        print(2333333333331111111, id(self.__send_q))
+        print(2333333333331111111, id(self.__queue))
         di.header = f"{self._drum}"
         if di.update_method:
             # noinspection PyBroadException
@@ -75,7 +75,7 @@ class Looper(SongCtrl):
         di.max_loop_len = part.get_max_len(di.part_len)
         di.idx = self.idx
         di.is_rec = self.get_is_rec()
-        self.__send_q.put([ConfigName.client_redraw, di])
+        self.__queue.put([ConfigName.client_redraw, di])
 
     # ===============+ other methods ===============================
 

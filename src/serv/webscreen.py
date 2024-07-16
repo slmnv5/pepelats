@@ -9,8 +9,8 @@ from utils.utilconfig import IP_ADDR
 
 
 class WebScreen(MenuClient, HTTPServer):
-    def __init__(self, q: Queue):
-        MenuClient.__init__(self, q)
+    def __init__(self, queue: Queue):
+        MenuClient.__init__(self, queue)
         # noinspection PyTypeChecker
         HTTPServer.__init__(self, ('', 8000), WebHandler)
         self.handler_class: type = WebHandler

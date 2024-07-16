@@ -29,8 +29,8 @@ _BLU_CLR: str = f"\x1b[1;{_BLUE}m"
 
 class TextScreen(MenuClient):
 
-    def __init__(self, q: Queue):
-        MenuClient.__init__(self, q)
+    def __init__(self, queue: Queue):
+        MenuClient.__init__(self, queue)
         Thread(target=self.__updater, name="updater", daemon=True).start()
 
     def __add_color(self, line: str) -> str:
