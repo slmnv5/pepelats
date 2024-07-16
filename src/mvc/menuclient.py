@@ -15,9 +15,9 @@ class MenuClient:
 
     def menu_client_start(self):
         while self._alive:
-            print(444444444444444, id(self.__queue))
             command = self.__queue.get()
             method_name, *params = command
+            print(444444444444444, id(self.__queue), command)
             # noinspection PyBroadException
             try:
                 method = getattr(self, method_name)
