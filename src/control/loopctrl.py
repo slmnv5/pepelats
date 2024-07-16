@@ -53,11 +53,6 @@ class LoopCtrl(ABC):
         else:
             self.__stop_len = self.idx + (bound_value - over)
 
-    def __str__(self):
-        return f"IsRec:{self.get_is_rec()} " \
-               f"StopLen: {self.__stop_len} Stop: {self.__stop_event.is_set()} " \
-               f"Idx: {self.idx}"
-
     # ===================== drum methods
 
     def _drum_iterate_config(self, steps: int) -> None:
