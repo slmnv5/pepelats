@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from multiprocessing import Queue
 
 from mvc.drawinfo import DrawInfo
@@ -26,9 +27,9 @@ class MenuClient:
                 print(999999999999999999)
                 MyLog().exception(ex)
 
+    @abstractmethod
     def _client_redraw(self, di: DrawInfo) -> None:
-        di.recalculate()
-        self._di = di
+        pass
 
     def menu_client_queue(self, command: list) -> None:
         self.__queue.put(command)

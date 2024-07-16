@@ -23,8 +23,8 @@ class WebScreen(MenuClient, HTTPServer):
         self.shutdown()
 
     def _client_redraw(self, di: DrawInfo) -> None:
-        super()._client_redraw(di)
         print(1111111111111, self._di.idx)
+        self._di = di
         self._has_updates.set()
 
     def get_updates(self) -> DrawInfo:

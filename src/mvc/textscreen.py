@@ -46,7 +46,7 @@ class TextScreen(MenuClient):
             return line
 
     def _client_redraw(self, di: DrawInfo) -> None:
-        super()._client_redraw(di)
+        self._di = di
         self._di.header = di.header[:SCR_COLS].center(SCR_COLS)
         self._di.description = '\n'.join([x.center(SCR_COLS) for x in wrap(di.description, SCR_COLS)])
         self._di.content = '\n'.join([self.__add_color(x) for x in di.content.split('\n')])

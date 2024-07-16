@@ -59,8 +59,6 @@ class Looper(SongCtrl):
         self.menu_client_queue([ConfigName.client_redraw, self._di])
 
     def _client_redraw(self, di: DrawInfo) -> None:
-        super()._client_redraw(di)
-        print(2333333333331111111, str(self))
         di.header = f"{self._drum}"
         if di.update_method:
             # noinspection PyBroadException
@@ -69,13 +67,15 @@ class Looper(SongCtrl):
                 di.content = method()
             except Exception as ex:
                 MyLog().exception(ex)
-                di.content = ""
+
         part = self._song.get_item()
         di.part_len = part.get_len()
         di.max_loop_len = part.get_max_len(di.part_len)
         di.idx = self.idx
         di.is_rec = self.get_is_rec()
-        self.__queue.put([ConfigName.client_redraw, di])
+        di.recalculate()
+        self._di = di
+        self.__queue.put([ConfigName.client_redraw, self._di])
 
     # ===============+ other methods ===============================
 
