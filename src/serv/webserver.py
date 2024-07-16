@@ -3,6 +3,7 @@ import subprocess
 from configparser import ConfigParser, ParsingError
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from random import random
+from time import sleep
 from typing import Callable
 
 from mvc.drawinfo import DrawInfo
@@ -195,9 +196,11 @@ class MyServer(HTTPServer):
 
     # noinspection PyMethodMayBeStatic
     def get_update(self) -> DrawInfo:
+        print(11111111111111111, 99)
+        sleep(5)
         di = DrawInfo()
         di.header = f"22222222222{random()}111111111111111111"
-        return DrawInfo()
+        return di
 
 
 if __name__ == "__main__":
