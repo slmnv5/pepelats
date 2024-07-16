@@ -9,7 +9,7 @@ from utils.utilother import split_to_dict
 from utils.utilweb import RESET_PATH, UPDATE_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH
 
 
-class MyHandler(BaseHTTPRequestHandler):
+class WebHandler(BaseHTTPRequestHandler):
     main_page: bytes = ""
     config_page: bytes = ""
     file_form: str = ""
@@ -55,7 +55,7 @@ class MyHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type', "application/json")
         self.end_headers()
-        di = MyHandler.get_updates()
+        di = WebHandler.get_updates()
         self.wfile.write(di.to_json().encode())
 
     def _send_page(self, page: bytes) -> None:

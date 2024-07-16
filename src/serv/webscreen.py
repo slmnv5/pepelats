@@ -4,7 +4,7 @@ from threading import Thread
 
 from mvc.drawinfo import DrawInfo
 from mvc.menuclient import MenuClient
-from serv.webserver import MyHandler
+from serv.webserver import WebHandler
 from utils.utilconfig import IP_ADDR
 
 
@@ -12,9 +12,9 @@ class WebScreen(MenuClient, HTTPServer):
     def __init__(self, q: Queue):
         MenuClient.__init__(self, q)
         # noinspection PyTypeChecker
-        HTTPServer.__init__(self, ('', 8000), MyHandler)
-        self.handler_class: type = MyHandler
-        MyHandler.get_updates = self.get_updates
+        HTTPServer.__init__(self, ('', 8000), WebHandler)
+        self.handler_class: type = WebHandler
+        WebHandler.get_updates = self.get_updates
         self._has_updates: Event = Event()
 
         print(f"To control looper connect to:\nhttp://{IP_ADDR}:8000")
