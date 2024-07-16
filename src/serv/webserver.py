@@ -185,15 +185,11 @@ class MyServer(HTTPServer):
         MyHandler.file_form = _load_html_file("html/file_form.html")
         MyHandler.config_page = _load_html_file("html/config_page.html").format(**FORMAT_DICT).encode()
         MyHandler.main_page = _load_html_file("html/main_page.html").encode()
-        MyHandler.get_update = self.get_update
         print(f"To control looper connect to:\nhttp://{IP_ADDR}:8000")
         try:
             self.serve_forever()
         except KeyboardInterrupt:
             self.server_close()
-
-    def get_update(self) -> DrawInfo:
-        raise RuntimeError("Method of this class: {self.__class__.name} should not be called")
 
 
 if __name__ == "__main__":
