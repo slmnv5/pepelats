@@ -4,7 +4,7 @@ from threading import Thread
 
 from mvc.drawinfo import DrawInfo
 from mvc.menuclient import MenuClient
-from serv.webserver import WebHandler
+from serv.webhandler import WebHandler
 from utils.utilconfig import IP_ADDR
 
 

@@ -6,13 +6,11 @@ from typing import Callable
 
 from mvc.drawinfo import DrawInfo
 from utils.utilother import split_to_dict
-from utils.utilweb import RESET_PATH, UPDATE_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH
+from utils.utilweb import RESET_PATH, UPDATE_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH, FILE_FORM_PAGE, CONFIG_PAGE, \
+    MAIN_PAGE
 
 
 class WebHandler(BaseHTTPRequestHandler):
-    main_page: bytes = ""
-    config_page: bytes = ""
-    file_form: str = ""
     get_updates: Callable[[], DrawInfo] = None
 
     def _send_binary(self, fname):
@@ -42,14 +40,14 @@ class WebHandler(BaseHTTPRequestHandler):
                 data = f.read()
 
         disabled = "disabled" if read_only else ""
-        html = self.file_form.format(disabled=disabled, file_name=fname, file_data=data)
+        html = FILE_FORM_PAGE.format(disabled=disabled, file_name=fname, file_data=data)
         self.wfile.write(html.encode())
 
     def _send_config_page(self) -> None:
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
-        self.wfile.write(self.config_page)
+        self.wfile.write(CONFIG_PAGE)
 
     def _send_update(self) -> None:
         self.send_response(200)
@@ -67,7 +65,7 @@ class WebHandler(BaseHTTPRequestHandler):
     # noinspection PyPep8Naming
     def do_GET(self):
         if self.path == "/":
-            self._send_page(self.main_page)
+            self._send_page(MAIN_PAGE)
         elif self.path == UPDATE_PATH:
             self._send_update()
         elif self.path == RESET_PATH:
