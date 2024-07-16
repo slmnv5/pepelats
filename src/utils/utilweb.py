@@ -30,6 +30,7 @@ SHOW_PATH = "/show?file="
 RESET_PATH = "/reset"
 EXIT_PATH = "/exit"
 UPDATE_PATH = "/update"
+CONFIG_PATH = "/config"
 
 _FORMAT_DICT: dict[str, str] = dict()
 _FORMAT_DICT["l_exit"] = EXIT_PATH

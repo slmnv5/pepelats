@@ -7,7 +7,7 @@ from drum.bufferdrum import EuclidDrum, StyleDrum
 from drum.loopdrum import LoopDrum
 from drum.mididrum import MidiDrum
 from mvc.drawinfo import DrawInfo
-from serv.webhandler import MyServer
+from serv.webscreen import WebScreen
 from utils.utilconfig import ConfigName
 from utils.utilconfig import load_ini_section, update_ini_section
 from utils.utillog import MyLog
@@ -102,7 +102,7 @@ class Looper(SongCtrl):
     def _server_start(self) -> None:
         self._song_stop()
         print("HTTP server starting")
-        MyServer()
+        WebScreen(Queue())
         print("HTTP server stopped")
 
     #  ============ all parts methods ===============

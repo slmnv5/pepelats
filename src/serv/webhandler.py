@@ -7,7 +7,7 @@ from typing import Callable
 from mvc.drawinfo import DrawInfo
 from utils.utilother import split_to_dict
 from utils.utilweb import RESET_PATH, UPDATE_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH, FILE_FORM_PAGE, CONFIG_PAGE, \
-    MAIN_PAGE
+    MAIN_PAGE, CONFIG_PATH
 
 
 class WebHandler(BaseHTTPRequestHandler):
@@ -66,6 +66,8 @@ class WebHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/":
             self._send_page(MAIN_PAGE)
+        elif self.path == CONFIG_PATH:
+            self._send_page(CONFIG_PAGE)
         elif self.path == UPDATE_PATH:
             self._send_update()
         elif self.path == RESET_PATH:
