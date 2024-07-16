@@ -17,7 +17,7 @@
           let res = await fetch(URL);
           let data = await res.json();
           HEADER.textContent = data.header
-          DESCRIPTION.textContent = data.description
+          DESCRIPTION.textContent = data.description.replace(/(?:\r\n|\r|\n)/g, '<br/>');
           CONTENT.textContent = data.content
       };
     };
