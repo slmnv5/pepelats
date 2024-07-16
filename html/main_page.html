@@ -7,17 +7,6 @@
 <p id="content">2222222222</p>
 
 <script type="text/javascript">
-    function test(data) {
-      console.log(typeof data)
-      try {
-            JSON.parse(data);
-            console.log(data);
-        }
-        catch (e) {
-            console.log(e);
-        }
-    };
-
     const HEADER = document.getElementById('header');
     const CONTENT = document.getElementById('content');
     const DESCRIPTION = document.getElementById('description');
@@ -27,11 +16,9 @@
       while(true) {
           let res = await fetch(URL);
           let data = await res.json();
-          test(data)
-          let parsed = JSON.parse(data);
-          HEADER.textContent = parsed.header
-          DESCRIPTION.textContent = parsed.description
-          CONTENT.textContent = parsed.content
+          HEADER.textContent = data.header
+          DESCRIPTION.textContent = data.description
+          CONTENT.textContent = data.content
       };
     };
 
