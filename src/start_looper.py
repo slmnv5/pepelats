@@ -14,7 +14,6 @@ def do_looper(q_looper: Queue, q_screen: Queue) -> None:
 # noinspection PyBroadException
 def do_screen(q_screen: Queue) -> None:
     scr = WebScreen(q_screen)  # TextScreen(q_screen)
-    print(1111111111111, "aaaaaaaaaaaaaaaaaaaaa")
     scr.menu_client_start()
 
 

@@ -8,7 +8,7 @@ from mvc.menuclient import MenuClient
 from utils.utilscreen import SCR_COLS
 
 _CLEAN_TO_END = '\x1b[0J'  # clean from cursor to end of screen
-_CURSOR_MOVE = ""  # "\x1b[1;1H"  # move cursor to line=1 and pos=1
+_CURSOR_MOVE = "\x1b[1;1H"  # move cursor to line=1 and pos=1
 
 _BLACK = 30
 _RED = 31

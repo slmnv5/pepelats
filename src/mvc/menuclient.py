@@ -15,17 +15,14 @@ class MenuClient:
         self._alive = False
 
     def menu_client_start(self):
-        print(8888888888888, type(self))
         while self._alive:
             command = self.__queue.get()
             method_name, *params = command
-            print(444444444444444, str(self), command)
             # noinspection PyBroadException
             try:
                 method = getattr(self, method_name)
                 method(*params)
             except Exception as ex:
-                print(999999999999999999)
                 MyLog().exception(ex)
 
     @abstractmethod
