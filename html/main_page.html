@@ -7,19 +7,27 @@
 <p id="content">2222222222</p>
 
 <script type="text/javascript">
-  const HEADER = document.getElementById('header');
-  const CONTENT = document.getElementById('content');
-  const DESCRIPTION = document.getElementById('description');
-  const url = 'http://192.168.1.3:8000/update';
+    const HEADER = document.getElementById('header');
+    const CONTENT = document.getElementById('content');
+    const DESCRIPTION = document.getElementById('description');
+    const URL = 'http://192.168.1.3:8000/update';
 
-  function startShowingMessage() {
-      setInterval(async function() {
-          const RESPONSE = await fetch(url);
-          const TEXT = await RESPONSE.text();
-      DESCRIPTION.textContent = TEXT;
-    }, 1000);
+    var getStuff = async () => {
+      while(true) {
+          let res = await fetch(URL);
+          let data = await res.json();
+          let parsed = JSON.parse(data);
+          HEADER.textContent = parsed.header
+          DESCRIPTION.textContent = parsed.description
+          CONTENT.textContent = parsed.content
+      };
+
+  };
   }
-  startShowingMessage();
+
+    startShowingMessage();
+
+
 </script>
 </body>
 </html>
