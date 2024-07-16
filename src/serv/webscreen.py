@@ -13,7 +13,6 @@ class WebScreen(MenuClient, HTTPServer):
         MenuClient.__init__(self, queue)
         # noinspection PyTypeChecker
         HTTPServer.__init__(self, ('', 8000), WebHandler)
-        self.handler_class: type = WebHandler
         WebHandler.get_updates = self.get_updates
         self._has_updates: Event = Event()
         print(f"To control looper connect to:\nhttp://{IP_ADDR}:8000")
