@@ -93,15 +93,16 @@
             CONTENT.innerHTML = tmp
           }
         };
-     setTimeout(() => {
-     HEADER.textContent = 'Start fetching updates'
-     getStuff();
-    }, 3000)
+
+    setTimeout(() => {
+    HEADER.textContent = 'Start fetching updates'
+    getStuff();
+    }, 3000);
 
     function recalc_width() {
         win_pixels = document.getElementById("header_container").offsetWidth;
         win_chars = Math.floor(win_pixels / 25);
-    }
+    };
 </script>
 </body>
 </html>
