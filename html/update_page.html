@@ -33,10 +33,10 @@
           let res = await fetch(URL);
           let data = await res.json();
           console.log(data)
-          update_progress(data, 0)
+          update_progress(data)
           // {sleep_tm, pos, max_loop_pos, delta, max_loop_delta}
           DESCRIPTION.textContent = data.description
-          setInterval(update_progress,data.sleep_tm, update_progress, delta);
+          setInterval(update_progress, data.sleep_tm, data);
 
           const cont_arr = data.content.split("\n");
           tmp = ''
