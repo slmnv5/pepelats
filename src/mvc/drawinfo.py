@@ -28,6 +28,7 @@ class DrawInfo:
         tmp["header"] = self.header
         tmp["description"] = self.description
         tmp["content"] = self.content
+        tmp["is_rec"] = self.is_rec
         tmp["pos"] = (self.idx % self.len) / self.len
         tmp["delta"] = 1 / self._UPDATES_PER_LOOP
         if self.max_loop_len > self.len:
