@@ -13,16 +13,19 @@ class WebHandler(BaseHTTPRequestHandler):
         self.send_header('Location', '/')  # This will navigate to the original page
         self.end_headers()
 
-    def _send_page(self, page: bytes) -> None:
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
-        self.wfile.write(page)
-
     # noinspection PyPep8Naming
     def do_GET(self):
-        print(self.path, 1111111111111111, self.headers)
+        print(11111, self.path, 1111111111111111, self.headers)
         if self.path == "/":
-            self._send_page(UPDATE_PAGE)
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            self.wfile.write(UPDATE_PAGE)
+        elif self.path == "/update":
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            json_str = self.get_updates()
+            self.wfile.write(json_str.encode())
         else:
-            self.send_error(400, "Not found", f"Not found: {self.path}")
+            pass
