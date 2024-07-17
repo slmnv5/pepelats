@@ -80,8 +80,9 @@
     }, 3000);
 
     function recalc_width() {
-        win_pixels = document.getElementById("header_container").offsetWidth;
+        win_pixels = document.getElementById("header").offsetWidth;
         win_chars = Math.floor(win_pixels / 25);
+        console.log(win_pixels)
     };
 </script>
 </body>
