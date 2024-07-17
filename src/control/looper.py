@@ -68,8 +68,8 @@ class Looper(SongCtrl):
                 MyLog().exception(ex)
 
         part = self._song.get_item()
-        di.part_len = part.get_len()
-        di.max_loop_len = part.get_max_len(di.part_len)
+        di.len = part.get_len()
+        di.max_loop_len = part.get_max_len(di.len)
         di.idx = self.idx
         di.is_rec = self.get_is_rec()
         self._di = di

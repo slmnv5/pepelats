@@ -32,17 +32,11 @@
       while(true) {
           let res = await fetch(URL);
           let data = await res.json();
+          console.log(data)
+          update_progress(data, 0)
+          // {sleep_tm, pos, max_loop_pos, delta, max_loop_delta}
           DESCRIPTION.textContent = data.description
-          setInterval(runFunction,1000);
-          let tmp = data.header.padStart(win_chars / 2) + data.header.padEnd(win_chars / 2)
-          if (data.???????????? > 10000) {
-            let pos = data.max_pos * win_chars
-            tmp = tmp.substring(0,pos) + '@' + tmp.substring(pos+1);
-          }
-          let pos = data.pos * win_chars
-          console.log(tmp, 111111111, HEADER.innerHTML)
-          tmp = "<span class='b_on_w' >" + tmp.substring(0,pos) + "</span><span class='w_on_b' >" + tmp.substring(pos) + "</span>"
-          HEADER.innerHTML = tmp
+          setInterval(update_progress,data.sleep_tm, update_progress, delta);
 
           const cont_arr = data.content.split("\n");
           tmp = ''
@@ -64,10 +58,22 @@
         getStuff();
     }, 3000);
 
-    function update_progress(pos, delta, ) {
-        win_pixels = window.innerWidth;
-        win_chars = Math.floor(win_pixels / 25);
-    };
+    function update_progress(data) {
+          let tmp = data.header.padStart(win_chars / 2) + data.header.padEnd(win_chars / 2)
+          if (data.max_loop_delta > 0) {
+            data.max_loop_pos += data.max_loop_delta
+            let pos = data.max_loop_pos * win_chars
+            tmp = tmp.substring(0,pos) + '@' + tmp.substring(pos+1);
+          }
+          data.pos += delta
+          let pos = data.pos * win_chars
+          console.log(tmp, 111111111, HEADER.innerHTML)
+          tmp = "<span class='b_on_w' >" + tmp.substring(0,pos) +
+          "</span><span class='w_on_b' >" + tmp.substring(pos) + "</span>"
+          HEADER.innerHTML = tmp
+
+
+
 
     function recalc_width() {
         win_pixels = window.innerWidth;

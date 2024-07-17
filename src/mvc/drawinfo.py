@@ -15,22 +15,27 @@ class DrawInfo:
 
         self.idx: int = 0
         self.is_rec: bool = False
-        self.part_len: int = HUGE_INT
+        self.len: int = HUGE_INT
         self.max_loop_len: int = HUGE_INT
         self.sleep: float = 1.0
 
     def to_json(self) -> str:
-        return json.dumps(self, default=vars)
+        dic = self.get_dict()
+        dic["sleep_tm"] = self.get_sleep_tm()
+        return json.dumps(dic)
 
     def get_sleep_tm(self) -> float:
-        return self.part_len / self._RATE / self._UPDATES_PER_LOOP
+        return self.len / self._RATE / self._UPDATES_PER_LOOP
 
     def get_dict(self) -> dict[str, float]:
-        dic = dict()
-        self.idx += self.part_len / self._UPDATES_PER_LOOP
-        dic["pos"] = (self.idx % self.part_len) / self.part_len
-        if self.max_loop_len > self.part_len:
-            dic["max_loop_pos"] = (self.idx % self.max_loop_len) / self.max_loop_len
+        tmp = dict()
+        self.idx += self.len / self._UPDATES_PER_LOOP
+        tmp["pos"] = (self.idx % self.len) / self.len
+        tmp["delta"] = 1 / self._UPDATES_PER_LOOP
+        if self.max_loop_len > self.len:
+            tmp["max_loop_pos"] = (self.idx % self.max_loop_len) / self.max_loop_len
+            tmp["max_loop_delta"] = 1 / self._UPDATES_PER_LOOP / self.max_loop_len * self.len
         else:
-            dic["max_loop_pos"] = -1
-        return dic
+            tmp["max_loop_pos"] = -1
+            tmp["max_loop_delta"] = 0
+        return tmp
