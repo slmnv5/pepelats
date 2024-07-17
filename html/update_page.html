@@ -65,7 +65,7 @@
             let pos = data.max_loop_pos * win_chars
             tmp = tmp.substring(0,pos) + '@' + tmp.substring(pos+1);
           }
-          data.pos += delta
+          data.pos += data.delta
           let pos = data.pos * win_chars
           console.log(tmp, 111111111, HEADER.innerHTML)
           tmp = "<span class='b_on_w' >" + tmp.substring(0,pos) +
