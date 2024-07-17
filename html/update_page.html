@@ -11,72 +11,77 @@
 </head>
 <body>
 
-<p id="header">------------------ ------------ ------- </p>
+<p id="header"> Welcome! </p>
+<p id="progress1"></p>
+<p id="progress2"></p>
 <p id="description">description</p>
 <div id="content">content</div>
 
 <script type="text/javascript">
     "use strict";
-     let win_pixels = 25
-     let win_chars = 1
+     let WIN_CHARS = 10
      recalculate_width()
      window.onresize = recalculate_width
-     let header = ''
-
+    
     const HEADER = document.getElementById('header');
+    const P1 = document.getElementById('progress1')
+    const P2 = document.getElementById('progress2')
     const DESCRIPTION = document.getElementById('description');
     const CONTENT = document.getElementById('content');
     const URL = '/update';
+    let DATA = {'sleep_tm':2, "header":"Not started yet","description":"content",
+    "pos":0,"delta":0,"max_loop_pos":-1,"max_loop_delta":0}
+    let POS = 0 // position in the song part
+    let MAX_LOOP_POS = 0 // position in the max loop of the song part
+    setTimeout(update_progress, 1000, DATA)
 
     var getStuff = async () => {
       while(true) {
           let res = await fetch(URL);
-          let data = await res.json();
-          console.log(data)
-          update_progress(data)
-          // {sleep_tm, pos, max_loop_pos, delta, max_loop_delta}
-          DESCRIPTION.textContent = data.description
-          setInterval(update_progress, data.sleep_tm * 1000, data);
-
-          const cont_arr = data.content.split("\n");
-          let tmp = ''
-          for (const s of cont_arr) {
-                if (s[0] == '*') {
-                    tmp += (data.is_rec ? '<p class="red">' : '<p class="green">') + s + '</p>'
-                } else if (s[0] == '~') {
-                    tmp += '<p class="yellow">' + s + '</p>'
-                } else {
-                    tmp += '<p>' + s + '</p>'
-                }
-            }
-            CONTENT.innerHTML = tmp
-          }
-        };
+          if (!res.ok) continue;
+          DATA = await res.json();
+          console.log(DATA)
+          DESCRIPTION.textContent = DATA.description
+        }
+    };
 
     setTimeout(() => {
         HEADER.textContent = 'Start fetching updates from: ' + URL
         getStuff();
     }, 3000);
 
-    function update_progress(data) {
-          let tmp = data.header.padStart(win_chars / 2) + data.header.padEnd(win_chars / 2)
-          if (data.max_loop_delta > 0) {
-            data.max_loop_pos += data.max_loop_delta
-            let pos = data.max_loop_pos * win_chars
-            tmp = tmp.substring(0,pos) + '@' + tmp.substring(pos+1);
-          }
-          data.pos += data.delta
-          let pos = data.pos * win_chars
-          tmp = "<span class='b_on_w' >" + tmp.substring(0,pos) +
-          "</span><span class='w_on_b' >" + tmp.substring(pos) + "</span>"
-          HEADER.innerHTML = tmp
+    function update_progress() {
+        POS += DATA.delta
+        let s_len = POS * WIN_CHARS
+        P1.textContent = '#'.repeat(s_len) + ' '.repeat(WIN_CHARS - s_len)
+        if (DATA.max_loop_delta > 0) {
+            s_len = DATA.max_loop_pos * WIN_CHARS
+            P2.textContent = '*'.repeat('s_len') + ' '.repeat(WIN_CHARS - s_len)
+        } else {
+            P2.textContent = ''
+        }
+        setTimeout(update_progress, DATA.sleep_tm * 1000)
     }
 
+    function update_content() {
+        const cont_arr = DATA.content.split("\n");
+        let tmp = ''
+        for (const s of cont_arr) {
+            if (s[0] == '*') {
+                tmp += (DATA.is_rec ? '<p class="red">' : '<p class="green">') + s + '</p>'
+            } else if (s[0] == '~') {
+                tmp += '<p class="yellow">' + s + '</p>'
+            } else {
+                tmp += '<p>' + s + '</p>'
+            }
+        }
+        CONTENT.innerHTML = tmp
+    }
 
     function recalculate_width() {
-        win_pixels = window.innerWidth;
-        win_chars = Math.floor(win_pixels / 25);
+        WIN_CHARS = Math.floor(window.innerWidth / 25);
     };
+
 </script>
 </body>
 </html>
