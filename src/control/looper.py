@@ -19,6 +19,7 @@ class Looper(SongCtrl):
     def __init__(self, recv_q: Queue, send_q: Queue):
         SongCtrl.__init__(self, recv_q)
         self.__queue = send_q
+        self._prev_di: DrawInfo = DrawInfo()
         self.drum_create(0)
 
     def _client_stop(self) -> None:
@@ -55,7 +56,7 @@ class Looper(SongCtrl):
             self._drum.set_bar_len(bar_len)
 
     def _update_view(self) -> None:
-        self.menu_client_queue([ConfigName.client_redraw, self._di])
+        self.menu_client_queue([ConfigName.client_redraw, self._prev_di])
 
     def _client_redraw(self, di: DrawInfo) -> None:
         di.header = f"{self._drum}"
@@ -72,8 +73,8 @@ class Looper(SongCtrl):
         di.max_loop_len = part.get_max_len(di.len)
         di.idx = self.idx
         di.is_rec = self.get_is_rec()
-        self._di = di
-        self.__queue.put([ConfigName.client_redraw, self._di])
+        self._prev_di = di
+        self.__queue.put([ConfigName.client_redraw, self._prev_di])
 
     # ===============+ other methods ===============================
 

@@ -31,7 +31,7 @@ class TextScreen(MenuClient):
 
     def __init__(self, queue: Queue):
         MenuClient.__init__(self, queue)
-        self._dic: dict = dict()
+        self._dic: dict = DrawInfo().get_dict()
         Thread(target=self.__updater, name="updater", daemon=True).start()
 
     @staticmethod
