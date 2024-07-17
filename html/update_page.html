@@ -1,10 +1,63 @@
 <html>
+<style>
+
+
+    .container {
+      position: relative;
+      height: 300px;
+      width: 400px;
+      display: flex;
+    }
+
+    .color-1 {
+      width: 33%;
+      background-color: red;
+    }
+
+    .color-2 {
+      width: 33%;
+      background-color: violet;
+    }
+
+    p {
+     margin: 0;
+     width: 100%;
+     position: absolute;
+     font-family: 'Helvetica', sans-serif;
+     font-weight: 600;
+     text-align: center;
+     font-size: 50px;
+     top: 100px;
+     left: 0;
+     right: 0;
+     color: white;
+     mix-blend-mode: difference;
+    }
+    body {
+      background-color:Tomato;
+      background: Blue;
+      color: #0F0;
+      font-family: monospace;
+      height: 500;
+      box-sizing: border-box;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      word-break: break-all;
+      margin: 0;
+      padding: 16px;
+    }
+</style>
 <head>
 </head>
 <body>
-<p id="header"></p>
-<p id="description"></p>
-<p id="content"></p>
+
+
+<div class="container">
+    <div class="color-1"></div>
+    <div class="color-2"></div>
+    <div class="image"></div>
+    <p>Inverting Text</p>
+</div>
 
 <script type="text/javascript">
     "use strict";
@@ -22,9 +75,12 @@
           CONTENT.textContent = data.content.replace(/(?:\n)/g, '<br/>');
       };
     };
+    setTimeout(() => {
+     HEADER.textContent = 'Start fetching updates'
+     getStuff();
+    }, 3000)
 
-    getStuff();
-
+<h1>
 </script>
 </body>
 </html>
