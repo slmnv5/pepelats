@@ -20,15 +20,19 @@ class DrawInfo:
         self.sleep: float = 1.0
 
     def to_json(self) -> str:
-        dic = self.get_dict()
-        dic["sleep_tm"] = self.get_sleep_tm()
-        return json.dumps(dic)
+        tmp: dict[str, float | str] = self.get_dict()
+        tmp["sleep_tm"] = self.get_sleep_tm()
+        tmp["header"] = self.header
+        tmp["description"] = self.description
+        tmp["content"] = self.content
+
+        return json.dumps(tmp)
 
     def get_sleep_tm(self) -> float:
         return self.len / self._RATE / self._UPDATES_PER_LOOP
 
     def get_dict(self) -> dict[str, float]:
-        tmp = dict()
+        tmp: dict[str, float] = dict()
         self.idx += self.len / self._UPDATES_PER_LOOP
         tmp["pos"] = (self.idx % self.len) / self.len
         tmp["delta"] = 1 / self._UPDATES_PER_LOOP
