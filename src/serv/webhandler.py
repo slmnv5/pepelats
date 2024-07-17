@@ -25,4 +25,4 @@ class WebHandler(BaseHTTPRequestHandler):
         if self.path == "/":
             self._send_page(UPDATE_PAGE)
         else:
-            self._send_redirect()
+            self.send_error(400, "Not found", f"Not found: {self.path}")

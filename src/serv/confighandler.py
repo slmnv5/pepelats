@@ -90,7 +90,7 @@ class ConfigHandler(BaseHTTPRequestHandler):
             fname = self.path[len(SHOW_PATH):]
             self._send_file(fname, True)
         else:
-            self._send_redirect()
+            self.send_error(400, "Not found", f"Not found: {self.path}")
 
     # noinspection PyPep8Naming
     def do_POST(self):
