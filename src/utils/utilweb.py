@@ -1,6 +1,7 @@
 import os
 
-from utils.utilconfig import ConfigName
+from utils.utilconfig import ConfigName, IP_ADDR
+from utils.utillog import MyLog
 
 
 def _one_link(fname: str, prefix: str) -> str:
@@ -47,4 +48,6 @@ _FORMAT_DICT["l_menu"] = _all_links(f"./{ConfigName.menu_config_dir}", ".ini", E
 
 FILE_FORM_PAGE: str = _load_html_file("html/file_form.html")
 CONFIG_PAGE: bytes = _load_html_file("html/config_page.html").format(**_FORMAT_DICT).encode()
-UPDATE_PAGE: bytes = _load_html_file("html/update_page.html").encode()
+UPDATE_PAGE: bytes = _load_html_file("html/update_page.html").format(ip_addr=IP_ADDR).encode()
+
+MyLog().info(f"Loaded update page:\n\n{UPDATE_PAGE}")
