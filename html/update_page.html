@@ -9,6 +9,8 @@
         .red {color: red;}
         .yellow {color: yellow;}
         .green {color: green;}
+        .w_on_b {color: white; background-color: black;}
+        .b_on_w {color: black; background-color: white;}
         p {width: 100%;font-family: "Noto Sans Mono", monospace;font-size: 25px;}
     </style>
 </head>
@@ -45,7 +47,7 @@
           let pos = data.pos * win_chars
           console.log(tmp)
           tmp = "<span class='b_on_w' >" + tmp.substring(0,pos) + "<span class='w_on_b' >" + tmp.substring(pos)
-          console.lof(HEADER.innerHTML)
+          console.log(HEADER.innerHTML)
           HEADER.innerHTML = tmp
 
           const cont_arr = data.content.split("\n");
