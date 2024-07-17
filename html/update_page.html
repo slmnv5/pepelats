@@ -45,18 +45,20 @@
     };
 
     function update_progress() {
-        POS += DATA.delta
-        let s_len = POS * WIN_CHARS
-        P1.textContent = '#'.repeat(s_len) + ' '.repeat(WIN_CHARS - s_len)
+        POS = (POS + DATA.delta) % 1
+        P1.textContent = repeat_str(POS * WIN_CHARS)
         if (DATA.max_loop_delta > 0) {
-            s_len = DATA.max_loop_pos * WIN_CHARS
-            P2.textContent = '*'.repeat('s_len') + ' '.repeat(WIN_CHARS - s_len)
+            MAX_LOOP_POS = (MAX_LOOP_POS + DATA.max_loop_pos) % 1
+            P2.textContent = repeat_str(MAX_LOOP_POS * WIN_CHARS)
         } else {
             P2.textContent = ''
         }
         setTimeout(update_progress, DATA.sleep_tm * 1000)
     }
 
+    function repeat_str(s_len) {
+        return '#'.repeat(s_len) + ' '.repeat(WIN_CHARS - s_len)
+    }
     function update_content() {
         const cont_arr = DATA.content.split("\n");
         let tmp = ''
