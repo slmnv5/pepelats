@@ -72,7 +72,6 @@ class Looper(SongCtrl):
         di.max_loop_len = part.get_max_len(di.part_len)
         di.idx = self.idx
         di.is_rec = self.get_is_rec()
-        di.recalculate()
         self._di = di
         self.__queue.put([ConfigName.client_redraw, self._di])
 

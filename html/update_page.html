@@ -1,8 +1,3 @@
-<!--
-        _UPDATES_PER_LOOP update_method header description content
-        part_len max_loop_len idx is_rec max_factor part_delta max_delta sleep pos max_pos
-        -->
-
 <html>
 <head>
     <style>
@@ -38,22 +33,20 @@
           let res = await fetch(URL);
           let data = await res.json();
           DESCRIPTION.textContent = data.description
-
+          setInterval(runFunction,1000);
           let tmp = data.header.padStart(win_chars / 2) + data.header.padEnd(win_chars / 2)
-          if (data.max_factor > 10000) {
+          if (data.???????????? > 10000) {
             let pos = data.max_pos * win_chars
             tmp = tmp.substring(0,pos) + '@' + tmp.substring(pos+1);
           }
           let pos = data.pos * win_chars
-          console.log(tmp)
-          tmp = "<span class='b_on_w' >" + tmp.substring(0,pos) + "<span class='w_on_b' >" + tmp.substring(pos)
-          console.log(HEADER.innerHTML)
+          console.log(tmp, 111111111, HEADER.innerHTML)
+          tmp = "<span class='b_on_w' >" + tmp.substring(0,pos) + "</span><span class='w_on_b' >" + tmp.substring(pos) + "</span>"
           HEADER.innerHTML = tmp
 
           const cont_arr = data.content.split("\n");
           tmp = ''
           for (const s of cont_arr) {
-                console.log(data.is_rec, data.idx)
                 if (s[0] == '*') {
                     tmp += (data.is_rec ? '<p class="red">' : '<p class="green">') + s + '</p>'
                 } else if (s[0] == '~') {
@@ -67,14 +60,18 @@
         };
 
     setTimeout(() => {
-    HEADER.textContent = 'Start fetching updates from: ' + URL
-    getStuff();
+        HEADER.textContent = 'Start fetching updates from: ' + URL
+        getStuff();
     }, 3000);
+
+    function update_progress(pos, delta, ) {
+        win_pixels = window.innerWidth;
+        win_chars = Math.floor(win_pixels / 25);
+    };
 
     function recalc_width() {
         win_pixels = window.innerWidth;
         win_chars = Math.floor(win_pixels / 25);
-        console.log(win_pixels)
     };
 </script>
 </body>

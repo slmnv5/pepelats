@@ -31,6 +31,7 @@ class TextScreen(MenuClient):
 
     def __init__(self, queue: Queue):
         MenuClient.__init__(self, queue)
+        self._sleep_tm: float = 10
         Thread(target=self.__updater, name="updater", daemon=True).start()
 
     def __add_color(self, line: str) -> str:
@@ -55,21 +56,19 @@ class TextScreen(MenuClient):
         print(self._di.description)
         print(self._di.content, flush=True)
 
+        self._sleep_tm = self._di.get_sleep_tm()
+
     def __updater(self):
         while self._alive:
-            time.sleep(self._di.sleep)
+            time.sleep(self._sleep_tm)
             line = self._di.header
-            self._di.pos += self._di.part_delta
-            if self._di.pos > 1:
-                self._di.pos = 0
-
-            if self._di.max_factor > 1:
-                self._di.max_pos += self._di.max_delta
-                if self._di.max_pos > 1:
-                    self._di.max_pos = 0
-                pos = round(self._di.max_pos * SCR_COLS)
+            dic = self._di.get_dict()
+            pos = dic["max_loop_pos"]
+            if pos >= 0:
+                pos = round(pos * SCR_COLS)
                 line = line[:pos] + '▒' + line[pos + 1:]
 
-            pos = round(self._di.pos * SCR_COLS)  # shown by inverse color
+            pos = dic["pos"]
+            pos = round(pos * SCR_COLS)  # shown by inverse color
             line = _REV_CLR + line[:pos] + _END_ALL + line[pos:]
             print(f"{_CURSOR_MOVE}{line}", end='', flush=True)
