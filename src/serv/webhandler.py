@@ -13,12 +13,6 @@ class WebHandler(BaseHTTPRequestHandler):
         self.send_header('Location', '/')  # This will navigate to the original page
         self.end_headers()
 
-    def _send_update(self) -> None:
-        self.send_response(200)
-        self.send_header('Content-type', "application/json")
-        self.end_headers()
-        self.wfile.write(WebHandler.get_updates().encode())
-
     def _send_page(self, page: bytes) -> None:
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
