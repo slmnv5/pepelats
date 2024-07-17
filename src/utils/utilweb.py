@@ -25,12 +25,12 @@ def _load_html_file(fname: str) -> str:
         return f.read()
 
 
-EDIT_PATH = "/edit?file="
-SHOW_PATH = "/show?file="
-RESET_PATH = "/reset"
-EXIT_PATH = "/exit"
-UPDATE_PATH = "/update"
-CONFIG_PATH = "/config"
+EDIT_PATH: str = "/edit?file="
+SHOW_PATH: str = "/show?file="
+RESET_PATH: str = "/reset"
+EXIT_PATH: str = "/exit"
+CONFIG_PATH: str = "/config"
+UPDATE_PATH: str = "/update"
 
 _FORMAT_DICT: dict[str, str] = dict()
 _FORMAT_DICT["l_exit"] = EXIT_PATH
@@ -47,4 +47,4 @@ _FORMAT_DICT["l_menu"] = _all_links(f"./{ConfigName.menu_config_dir}", ".ini", E
 
 FILE_FORM_PAGE: str = _load_html_file("html/file_form.html")
 CONFIG_PAGE: bytes = _load_html_file("html/config_page.html").format(**_FORMAT_DICT).encode()
-MAIN_PAGE: bytes = _load_html_file("html/main_page.html").encode()
+UPDATE_PAGE: bytes = _load_html_file("html/update_page.html").encode()

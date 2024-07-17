@@ -6,8 +6,8 @@ from typing import Callable
 
 from mvc.drawinfo import DrawInfo
 from utils.utilother import split_to_dict
-from utils.utilweb import RESET_PATH, UPDATE_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH, FILE_FORM_PAGE, CONFIG_PAGE, \
-    MAIN_PAGE, CONFIG_PATH
+from utils.utilweb import RESET_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH, FILE_FORM_PAGE, CONFIG_PAGE, \
+    CONFIG_PATH, UPDATE_PATH, UPDATE_PAGE
 
 
 class WebHandler(BaseHTTPRequestHandler):
@@ -65,11 +65,11 @@ class WebHandler(BaseHTTPRequestHandler):
     # noinspection PyPep8Naming
     def do_GET(self):
         if self.path == "/":
-            self._send_page(MAIN_PAGE)
-        elif self.path == CONFIG_PATH:
-            self._send_page(CONFIG_PAGE)
+            self._send_page(UPDATE_PAGE)
         elif self.path == UPDATE_PATH:
             self._send_update()
+        elif self.path == CONFIG_PATH:
+            self._send_page(CONFIG_PAGE)
         elif self.path == RESET_PATH:
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
