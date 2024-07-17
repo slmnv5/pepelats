@@ -32,7 +32,7 @@
     "pos":0,"delta":0,"max_loop_pos":-1,"max_loop_delta":0}
     let POS = 0 // position in the song part
     let MAX_LOOP_POS = 0 // position in the max loop of the song part
-    setTimeout(update_progress, 1000, DATA)
+    setTimeout(updateProgress, 1000, DATA)
 
     var get_stuff = async () => {
       while(true) {
@@ -40,41 +40,41 @@
           if (!res.ok) continue;
           DATA = await res.json();
           DESCRIPTION.textContent = DATA.description
+          HEADER.textContent = DATA.header
           POS = DATA.pos
           MAX_LOOP_POS = DATA.max_loop_pos
-          update_content()
+          CONTENT.innerHTML = getContent(DATA.content, DATA.is_rec)
         }
     };
 
-    function update_progress() {
+    function updateProgress() {
         POS = (POS + DATA.delta) % 1
-        P1.textContent = repeat_str(POS * WIN_CHARS)
+        P1.textContent = getStr(POS * WIN_CHARS)
         if (DATA.max_loop_delta > 0) {
-            MAX_LOOP_POS = (MAX_LOOP_POS + DATA.max_loop_pos) % 1
-            P2.textContent = repeat_str(MAX_LOOP_POS * WIN_CHARS)
+            MAX_LOOP_POS = (MAX_LOOP_POS + DATA.max_loop_delta) % 1
+            P2.textContent = getStr(MAX_LOOP_POS * WIN_CHARS)
         } else {
-            P2.textContent = ''
+            P2.textContent = getStr(0)
         }
-        setTimeout(update_progress, DATA.sleep_tm * 1000)
+        setTimeout(updateProgress, DATA.sleep_tm * 1000)
     }
 
-    function repeat_str(s_len) {
+    function getStr(s_len) {
         return '#'.repeat(s_len) + ' '.repeat(WIN_CHARS - s_len)
     }
-    function update_content() {
-        console.log(DATA)
-        const cont_arr = DATA.content.split("\n");
+    function getContent(str, is_rec) {
+        const cont_arr = str.split("\n");
         let tmp = ''
         for (const s of cont_arr) {
             if (s[0] == '*') {
-                tmp += (DATA.is_rec ? '<p class="red">' : '<p class="green">') + s + '</p>'
+                tmp += (is_rec ? '<p class="red">' : '<p class="green">') + s + '</p>'
             } else if (s[0] == '~') {
                 tmp += '<p class="yellow">' + s + '</p>'
             } else {
                 tmp += '<p>' + s + '</p>'
             }
         }
-        CONTENT.innerHTML = tmp
+        return tmp
     }
 
     function recalculate_width() {

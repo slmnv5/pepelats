@@ -64,7 +64,7 @@ class WebHandler(BaseHTTPRequestHandler):
 
     # noinspection PyPep8Naming
     def do_GET(self):
-        print(11111111111, self.path, 1111111111111111, self.headers, 111111111111, self.request)
+        print(self.path, 1111111111111111, self.headers)
         if self.path == "/":
             self._send_page(UPDATE_PAGE)
         elif self.path == UPDATE_PATH:
