@@ -1,5 +1,6 @@
 import os
 import time
+from http.server import HTTPServer
 from multiprocessing import Queue
 
 from control._songctrl import SongCtrl
@@ -7,7 +8,8 @@ from drum.bufferdrum import EuclidDrum, StyleDrum
 from drum.loopdrum import LoopDrum
 from drum.mididrum import MidiDrum
 from mvc.drawinfo import DrawInfo
-from utils.utilconfig import ConfigName
+from serv.confighandler import ConfigHandler
+from utils.utilconfig import ConfigName, IP_ADDR
 from utils.utilconfig import load_ini_section, update_ini_section
 from utils.utillog import MyLog
 from utils.utilother import FileFinder
@@ -98,11 +100,16 @@ class Looper(SongCtrl):
         os.system("git reset --hard; clear; git pull")
         time.sleep(5)
 
-    def _server_start(self) -> None:
+    def _web_config(self) -> None:
         self._song_stop()
-        print("HTTP server starting")
-        pass
-        print("HTTP server stopped")
+        print(f"HTTP server starting at: {IP_ADDR}:9000")
+        # noinspection PyTypeChecker
+        server = HTTPServer(('', 9000), ConfigHandler)
+        try:
+            server.serve_forever()
+        except KeyboardInterrupt:
+            server.server_close()
+        print(f"HTTP server stopped at: {IP_ADDR}:9000")
 
     #  ============ all parts methods ===============
 
