@@ -36,7 +36,7 @@
           update_progress(data)
           // {sleep_tm, pos, max_loop_pos, delta, max_loop_delta}
           DESCRIPTION.textContent = data.description
-          setInterval(update_progress, data.sleep_tm, data);
+          setInterval(update_progress, data.sleep_tm * 1000, data);
 
           const cont_arr = data.content.split("\n");
           let tmp = ''
@@ -67,7 +67,6 @@
           }
           data.pos += data.delta
           let pos = data.pos * win_chars
-          console.log(tmp, 111111111, HEADER.innerHTML)
           tmp = "<span class='b_on_w' >" + tmp.substring(0,pos) +
           "</span><span class='w_on_b' >" + tmp.substring(pos) + "</span>"
           HEADER.innerHTML = tmp
