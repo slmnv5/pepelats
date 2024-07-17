@@ -38,12 +38,14 @@
           DESCRIPTION.textContent = data.description
 
           let tmp = data.header.padStart(win_chars / 2) + data.header.padEnd(win_chars / 2)
-          if (data.max_factor > 1) {
+          if (data.max_factor > 10000) {
             let pos = data.max_pos * win_chars
             tmp = tmp.substring(0,pos) + '@' + tmp.substring(pos+1);
           }
           let pos = data.pos * win_chars
+          console.log(tmp)
           tmp = "<span class='b_on_w' >" + tmp.substring(0,pos) + "<span class='w_on_b' >" + tmp.substring(pos)
+          console.lof(HEADER.innerHTML)
           HEADER.innerHTML = tmp
 
           const cont_arr = data.content.split("\n");
@@ -51,7 +53,7 @@
           for (const s of cont_arr) {
                 console.log(data.is_rec, data.idx)
                 if (s[0] == '*') {
-                    tmp += (data.is_rec ? '<p class="red">' : '<p class="green">' + s + '</p>')
+                    tmp += (data.is_rec ? '<p class="red">' : '<p class="green">') + s + '</p>'
                 } else if (s[0] == '~') {
                     tmp += '<p class="yellow">' + s + '</p>'
                 } else {
@@ -68,7 +70,7 @@
     }, 3000);
 
     function recalc_width() {
-        win_pixels = document.getElementById("header").offsetWidth;
+        win_pixels = window.innerWidth;
         win_chars = Math.floor(win_pixels / 25);
         console.log(win_pixels)
     };
