@@ -39,7 +39,7 @@
           setInterval(update_progress, data.sleep_tm, data);
 
           const cont_arr = data.content.split("\n");
-          tmp = ''
+          let tmp = ''
           for (const s of cont_arr) {
                 if (s[0] == '*') {
                     tmp += (data.is_rec ? '<p class="red">' : '<p class="green">') + s + '</p>'
