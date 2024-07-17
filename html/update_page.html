@@ -1,11 +1,10 @@
 <html>
 <head>
     <style>
+        body {background-color: grey; font-weight: bold;}
         .red {color: red;}
         .yellow {color: yellow;}
         .green {color: green;}
-        .w_on_b {color: white; background-color: black;}
-        .b_on_w {color: black; background-color: white;}
         p {width: 100%;font-family: "Noto Sans Mono", monospace;font-size: 25px;}
     </style>
 </head>
@@ -45,11 +44,6 @@
         }
     };
 
-    setTimeout(() => {
-        HEADER.textContent = 'Start fetching updates from: ' + URL
-        getStuff();
-    }, 3000);
-
     function update_progress() {
         POS += DATA.delta
         let s_len = POS * WIN_CHARS
@@ -82,6 +76,8 @@
         WIN_CHARS = Math.floor(window.innerWidth / 25);
     };
 
+    getStuff();
+   
 </script>
 </body>
 </html>
