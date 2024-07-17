@@ -2,9 +2,9 @@
 <head>
     <style>
         body {background-color: grey; font-weight: bold;}
-        .red {color: red;}
-        .yellow {color: yellow;}
-        .green {color: green;}
+        .redClr {color: red;}
+        .ylwClr {color: yellow;}
+        .grnClr {color: green;}
         p {width: 100%;font-family: "Noto Sans Mono", monospace;font-size: 25px;}
     </style>
 </head>
@@ -67,9 +67,9 @@
         let tmp = ''
         for (const s of cont_arr) {
             if (s[0] == '*') {
-                tmp += (is_rec ? '<p class="red">' : '<p class="green">') + s + '</p>'
+                tmp += (is_rec ? '<p class="redClr">' : '<p class="grnClr">') + s + '</p>'
             } else if (s[0] == '~') {
-                tmp += '<p class="yellow">' + s + '</p>'
+                tmp += '<p class="ylwClr">' + s + '</p>'
             } else {
                 tmp += '<p>' + s + '</p>'
             }
