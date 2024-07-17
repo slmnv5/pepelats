@@ -4,6 +4,7 @@ from control.looper import Looper
 from mvc.countmidicontrol import CountMidiControl
 from mvc.textscreen import TextScreen
 from serv.webscreen import WebScreen
+from utils.utilconfig import SCREEN_TYPE
 from utils.utillog import MyLog
 
 
@@ -14,7 +15,10 @@ def do_looper(q_looper: Queue, q_screen: Queue) -> None:
 
 # noinspection PyBroadException
 def do_screen(q_screen: Queue) -> None:
-    scr = WebScreen(q_screen)  # TextScreen(q_screen)
+    if SCREEN_TYPE == 'web':
+        scr = WebScreen(q_screen)
+    else:
+        scr = TextScreen(q_screen)
     scr.menu_client_start()
 
 
