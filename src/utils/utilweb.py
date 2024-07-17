@@ -2,6 +2,11 @@ import os
 
 from utils.utilconfig import ConfigName
 
+EDIT_PATH: str = "/edit?file="
+SHOW_PATH: str = "/show?file="
+RESET_PATH: str = "/reset"
+EXIT_PATH: str = "/exit"
+
 
 def _one_link(fname: str, prefix: str) -> str:
     return f"<a href = {prefix}{fname}>{fname}</a>"
@@ -24,13 +29,6 @@ def _load_html_file(fname: str) -> str:
     with open(fname, 'r') as f:
         return f.read()
 
-
-EDIT_PATH: str = "/edit?file="
-SHOW_PATH: str = "/show?file="
-RESET_PATH: str = "/reset"
-EXIT_PATH: str = "/exit"
-CONFIG_PATH: str = "/config"
-UPDATE_PATH: str = "/update"
 
 _FORMAT_DICT: dict[str, str] = dict()
 _FORMAT_DICT["l_exit"] = EXIT_PATH
