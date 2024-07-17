@@ -40,7 +40,6 @@
            font-size: 25px;
         }
     </style>
-
 </head>
 <body>
 
@@ -63,7 +62,7 @@
     const HEADER = document.getElementById('header');
     const DESCRIPTION = document.getElementById('description');
     const CONTENT = document.getElementById('content');
-    const URL = 'http://{ip_address}/update';
+    const URL = 'http://{ip_address}/';
 
     var getStuff = async () => {
       while(true) {
@@ -92,12 +91,9 @@
                 }
             }
             CONTENT.innerHTML = tmp
-
-
           }
-             };
-    };
-    setTimeout(() => {
+        };
+     setTimeout(() => {
      HEADER.textContent = 'Start fetching updates'
      getStuff();
     }, 3000)
