@@ -33,13 +33,12 @@ class DrawInfo:
 
     def get_dict(self) -> dict[str, float]:
         tmp: dict[str, float] = dict()
-        self.idx += self.len / self._UPDATES_PER_LOOP
         tmp["pos"] = (self.idx % self.len) / self.len
         tmp["delta"] = 1 / self._UPDATES_PER_LOOP
         if self.max_loop_len > self.len:
             tmp["max_loop_pos"] = (self.idx % self.max_loop_len) / self.max_loop_len
             tmp["max_loop_delta"] = 1 / self._UPDATES_PER_LOOP / self.max_loop_len * self.len
         else:
-            tmp["max_loop_pos"] = -1
+            tmp["max_loop_pos"] = 0
             tmp["max_loop_delta"] = 0
         return tmp

@@ -32,12 +32,14 @@ class TextScreen(MenuClient):
     def __init__(self, queue: Queue):
         MenuClient.__init__(self, queue)
         self._sleep_tm: float = 10
+        self._dic: dict = dict()
         Thread(target=self.__updater, name="updater", daemon=True).start()
 
-    def __add_color(self, line: str) -> str:
+    @staticmethod
+    def __add_color(line: str, is_rec: bool) -> str:
         line = line.ljust(SCR_COLS)
         if line[0] == "*":
-            if self._di.is_rec:
+            if is_rec:
                 return _RED_CLR + line + _END_ALL
             else:
                 return _GRN_CLR + line + _END_ALL
@@ -47,28 +49,31 @@ class TextScreen(MenuClient):
             return line
 
     def _client_redraw(self, di: DrawInfo) -> None:
-        self._di = di
-        self._di.header = di.header[:SCR_COLS].center(SCR_COLS)
-        self._di.description = '\n'.join([x.center(SCR_COLS) for x in wrap(di.description, SCR_COLS)])
-        self._di.content = '\n'.join([self.__add_color(x) for x in di.content.split('\n')])
+        di.header = di.header[:SCR_COLS].center(SCR_COLS)
+        di.description = '\n'.join([x.center(SCR_COLS) for x in wrap(di.description, SCR_COLS)])
+        di.content = '\n'.join([self.__add_color(x, di.is_rec) for x in di.content.split('\n')])
 
-        print(f"{_CURSOR_MOVE}{self._di.header}{_CLEAN_TO_END}")
-        print(self._di.description)
-        print(self._di.content, flush=True)
+        print(f"{_CURSOR_MOVE}{di.header}{_CLEAN_TO_END}")
+        print(di.description)
+        print(di.content, flush=True)
 
-        self._sleep_tm = self._di.get_sleep_tm()
+        self._sleep_tm = di.get_sleep_tm()
+        self._dic = di.get_dict()
 
     def __updater(self):
         while self._alive:
             time.sleep(self._sleep_tm)
-            line = self._di.header
-            dic = self._di.get_dict()
-            pos = dic["max_loop_pos"]
-            if pos >= 0:
+            line = self._dic["header"]
+            delta = self._dic["max_loop_delta"]
+            if delta > 0:
+                pos = (self._dic["max_loop_pos"] + delta) % 1
+                self._dic["max_loop_pos"] = pos
                 pos = round(pos * SCR_COLS)
                 line = line[:pos] + '▒' + line[pos + 1:]
 
-            pos = dic["pos"]
+            delta = self._dic["delta"]
+            pos = (self._dic["pos"] + delta) % 1
+            self._dic["pos"] = pos
             pos = round(pos * SCR_COLS)  # shown by inverse color
             line = _REV_CLR + line[:pos] + _END_ALL + line[pos:]
             print(f"{_CURSOR_MOVE}{line}", end='', flush=True)

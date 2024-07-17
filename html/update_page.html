@@ -10,10 +10,10 @@
 </head>
 <body>
 
-<p id="header"> Welcome! </p>
+<p id="header" style="text-align: center"> Welcome! </p>
 <p id="progress1"></p>
 <p id="progress2"></p>
-<p id="description">description</p>
+<p id="description" style="text-align: center; color: blue">description</p>
 <div id="content">content</div>
 
 <script type="text/javascript">
@@ -39,11 +39,11 @@
           let res = await fetch(URL);
           if (!res.ok) continue;
           DATA = await res.json();
-          DESCRIPTION.textContent = DATA.description
           HEADER.textContent = DATA.header
+          DESCRIPTION.textContent = DATA.description
           POS = DATA.pos
           MAX_LOOP_POS = DATA.max_loop_pos
-          CONTENT.innerHTML = getContent(DATA.content, DATA.is_rec)
+          CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec)
         }
     };
 
@@ -62,7 +62,7 @@
     function getStr(s_len) {
         return '#'.repeat(s_len) + ' '.repeat(WIN_CHARS - s_len)
     }
-    function getContent(str, is_rec) {
+    function getContentHtml(str, is_rec) {
         const cont_arr = str.split("\n");
         let tmp = ''
         for (const s of cont_arr) {

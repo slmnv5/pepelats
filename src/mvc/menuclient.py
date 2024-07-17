@@ -9,7 +9,6 @@ class MenuClient:
     def __init__(self, queue: Queue):
         self.__queue: Queue = queue
         self._alive: bool = True
-        self._di: DrawInfo = DrawInfo()
 
     def _client_stop(self) -> None:
         self._alive = False
