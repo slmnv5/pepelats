@@ -19,8 +19,8 @@
     "use strict";
      let win_pixels = 25
      let win_chars = 1
-     recalc_width()
-     window.onresize = recalc_width
+     recalculate_width()
+     window.onresize = recalculate_width
      let header = ''
 
     const HEADER = document.getElementById('header');
@@ -71,11 +71,10 @@
           tmp = "<span class='b_on_w' >" + tmp.substring(0,pos) +
           "</span><span class='w_on_b' >" + tmp.substring(pos) + "</span>"
           HEADER.innerHTML = tmp
+    }
 
 
-
-
-    function recalc_width() {
+    function recalculate_width() {
         win_pixels = window.innerWidth;
         win_chars = Math.floor(win_pixels / 25);
     };
