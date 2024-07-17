@@ -1,53 +1,33 @@
 <!--
-        _UPDATES_PER_LOOP: int = 16
-        update_method: str = ""
-        header: str = ""
-        description: str = ""
-        content: str = ""
-        part_len: int = HUGE_INT
-        max_loop_len: int = HUGE_INT
-        idx: int = 0
-        is_rec: bool = False
-        max_factor: float = 1.0
-        part_delta: float = 0.0
-        max_delta: float = 0.0
-        sleep: float = 1.0
-        pos: float = 0
-        max_pos: float = 0
+        _UPDATES_PER_LOOP
+        update_method
+        header
+        description
+        content
+        part_len
+        max_loop_len
+        idx = 0
+        is_rec
+        max_factor
+        part_delta
+        max_delta
+        sleep
+        pos
+        max_pos
         -->
 
 <html>
 <head>
     <style>
-        .red {
-          color: red;
-        }
-        .yellow {
-            color: yellow;
-        }
-        .green {
-            color: yellow;
-        }
-        #header {
-            width: 100%;
-            position: absolute;
-            text-align: center;
-            mix-blend-mode: difference;
-           }
-        p {
-           width: 100%;
-           font-family: "Noto Sans Mono", monospace;
-           font-size: 25px;
-        }
+        .red {color: red;}
+        .yellow {color: yellow;}
+        .green {color: yellow;}
+        p {width: 100%;font-family: "Noto Sans Mono", monospace;font-size: 25px;}
     </style>
 </head>
 <body>
 
-<div class="container" id="header_container">
-    <div class="color1"></div>
-    <div class="color2"></div>
-    <p id="header">------------------ ------------ ------- </p>
-</div>
+<p id="header">------------------ ------------ ------- </p>
 <p id="description">description</p>
 <div id="content">content</div>
 
@@ -62,7 +42,7 @@
     const HEADER = document.getElementById('header');
     const DESCRIPTION = document.getElementById('description');
     const CONTENT = document.getElementById('content');
-    const URL = 'http://{ip_addr}/update';
+    const URL = '/update';
 
     var getStuff = async () => {
       while(true) {
