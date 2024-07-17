@@ -22,17 +22,22 @@
          width: 100%;
          position: absolute;
          text-align: center;
-         font-size: 25px;
          color: white;
          mix-blend-mode: difference;
         }
 
+
+         p {
+            width: 100%;
+            font-family: "Noto Sans Mono", monospace;
+            font-size: 25px;
+         }
     </style>
 
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="header_container">
     <div class="color1"></div>
     <div class="color2"></div>
     <p id="header">Baraban caraban</p>
@@ -41,8 +46,16 @@
 <p id="content">content</p>
 
 
+<button id="checkButton" onclick="checkWidth()">
+    Check Width
+</button>
+
 <script type="text/javascript">
     "use strict";
+    let win_pixels = 10
+     recalc_width()
+     window.onresize = recalc_width
+
     const HEADER = document.getElementById('header');
     const CONTENT = document.getElementById('content');
     const DESCRIPTION = document.getElementById('description');
@@ -62,6 +75,9 @@
      getStuff();
     }, 3000)
 
+    function recalc_width() {
+        win_pixels = document.getElementById("header_container").offsetWidth;
+    }
 </script>
 </body>
 </html>
