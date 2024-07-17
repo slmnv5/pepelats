@@ -4,14 +4,13 @@ from configparser import ConfigParser, ParsingError
 from http.server import BaseHTTPRequestHandler
 from typing import Callable
 
-from mvc.drawinfo import DrawInfo
 from utils.utilother import split_to_dict
 from utils.utilweb import RESET_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH, FILE_FORM_PAGE, CONFIG_PAGE, \
     CONFIG_PATH, UPDATE_PATH, UPDATE_PAGE
 
 
 class WebHandler(BaseHTTPRequestHandler):
-    get_updates: Callable[[], DrawInfo] = None
+    get_updates: Callable[[], str] = None
 
     def _send_binary(self, fname):
         self.send_response(200)
@@ -53,8 +52,7 @@ class WebHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type', "application/json")
         self.end_headers()
-        di = WebHandler.get_updates()
-        self.wfile.write(di.to_json().encode())
+        self.wfile.write(WebHandler.get_updates().encode())
 
     def _send_page(self, page: bytes) -> None:
         self.send_response(200)

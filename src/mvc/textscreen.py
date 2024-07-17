@@ -31,7 +31,6 @@ class TextScreen(MenuClient):
 
     def __init__(self, queue: Queue):
         MenuClient.__init__(self, queue)
-        self._sleep_tm: float = 10
         self._dic: dict = dict()
         Thread(target=self.__updater, name="updater", daemon=True).start()
 
@@ -57,12 +56,11 @@ class TextScreen(MenuClient):
         print(di.description)
         print(di.content, flush=True)
 
-        self._sleep_tm = di.get_sleep_tm()
         self._dic = di.get_dict()
 
     def __updater(self):
         while self._alive:
-            time.sleep(self._sleep_tm)
+            time.sleep(self._dic["sleep_tm"])
             line = self._dic["header"]
             delta = self._dic["max_loop_delta"]
             if delta > 0:

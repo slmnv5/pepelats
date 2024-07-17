@@ -1,7 +1,6 @@
 import json
 
 from basic.audioinfo import AudioInfo
-from utils.utilother import HUGE_INT
 
 
 class DrawInfo:
@@ -15,24 +14,20 @@ class DrawInfo:
 
         self.idx: int = 0
         self.is_rec: bool = False
-        self.len: int = HUGE_INT
-        self.max_loop_len: int = HUGE_INT
+        self.len: int = 100_000
+        self.max_loop_len: int = 100_000
         self.sleep: float = 1.0
 
     def to_json(self) -> str:
-        tmp: dict[str, float | str] = self.get_dict()
-        tmp["sleep_tm"] = self.get_sleep_tm()
+        tmp: dict[str, any] = self.get_dict()
+        return json.dumps(tmp)
+
+    def get_dict(self) -> dict[str, any]:
+        tmp: dict[str, any] = dict()
+        tmp["sleep_tm"] = self.len / self._RATE / self._UPDATES_PER_LOOP
         tmp["header"] = self.header
         tmp["description"] = self.description
         tmp["content"] = self.content
-
-        return json.dumps(tmp)
-
-    def get_sleep_tm(self) -> float:
-        return self.len / self._RATE / self._UPDATES_PER_LOOP
-
-    def get_dict(self) -> dict[str, float]:
-        tmp: dict[str, float] = dict()
         tmp["pos"] = (self.idx % self.len) / self.len
         tmp["delta"] = 1 / self._UPDATES_PER_LOOP
         if self.max_loop_len > self.len:
