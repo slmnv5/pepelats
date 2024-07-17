@@ -1,19 +1,6 @@
 <!--
-        _UPDATES_PER_LOOP
-        update_method
-        header
-        description
-        content
-        part_len
-        max_loop_len
-        idx = 0
-        is_rec
-        max_factor
-        part_delta
-        max_delta
-        sleep
-        pos
-        max_pos
+        _UPDATES_PER_LOOP update_method header description content
+        part_len max_loop_len idx is_rec max_factor part_delta max_delta sleep pos max_pos
         -->
 
 <html>
@@ -21,7 +8,7 @@
     <style>
         .red {color: red;}
         .yellow {color: yellow;}
-        .green {color: yellow;}
+        .green {color: green;}
         p {width: 100%;font-family: "Noto Sans Mono", monospace;font-size: 25px;}
     </style>
 </head>
@@ -62,8 +49,9 @@
           const cont_arr = data.content.split("\n");
           tmp = ''
           for (const s of cont_arr) {
+                console.log(data.is_rec, data.idx)
                 if (s[0] == '*') {
-                    tmp += data.is_rec ? '<p class="red">': '<p class="green">' + s + '</p>'
+                    tmp += (data.is_rec ? '<p class="red">' : '<p class="green">' + s + '</p>')
                 } else if (s[0] == '~') {
                     tmp += '<p class="yellow">' + s + '</p>'
                 } else {
