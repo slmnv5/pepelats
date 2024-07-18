@@ -92,6 +92,9 @@ class ConfigHandler(BaseHTTPRequestHandler):
             fname = self.path[len(SHOW_PATH):]
             self._send_file(fname, True)
         elif self.path == "/favicon.ico":
+            self.send_response(200)
+            self.send_header('Content-type', 'application/octet-stream')
+            self.end_headers()
             with open("./favicon.ico", 'rb') as f:
                 self.wfile.write(f.read())
         else:

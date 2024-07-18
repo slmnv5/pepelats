@@ -28,9 +28,9 @@ class WebHandler(BaseHTTPRequestHandler):
             self.end_headers()
             json_str = self.get_updates()
             self.wfile.write(json_str.encode())
-        elif self.path == "/aaafavicon.ico":
+        elif self.path == "/favicon.ico":
             self.send_response(200)
-            self.send_header('Content-type', 'text/html')
+            self.send_header('Content-type', 'application/octet-stream')
             self.end_headers()
             with open("./favicon.ico", 'rb') as f:
                 self.wfile.write(f.read())
