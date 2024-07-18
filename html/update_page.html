@@ -54,14 +54,17 @@
         setTimeout(updateProgress, DATA.sleep_tm * 1000)
     }
 
-    function getStr(len1, len2) {
+    function getStr(l1, l2) {
+        l1 = l1 * WIN_CHARS
+        l2 = l2 * WIN_CHARS
         const chr1 = '\u2588';
-        let s = '<span style="color: blue;">' + chr1.repeat(len1) + ' '.repeat(WIN_CHARS - len1) + "<br/></span>";
-        if (len2 > 0) {
-            s += '<span style="color: cyan;">' + chr1.repeat(len2) + ' '.repeat(WIN_CHARS - len2) + "<br/></span>";
+        let s = '<span style="color: blue;">' + chr1.repeat(l1) + ' '.repeat(WIN_CHARS - l1) + "<br/></span>";
+        if (l2 > 0) {
+            s += '<span style="color: cyan;">' + chr1.repeat(l2) + ' '.repeat(WIN_CHARS - l2) + "<br/></span>";
         } else { 
             s += s;
         }
+        return s
     }
 
     function getContentHtml(str, is_rec) {
