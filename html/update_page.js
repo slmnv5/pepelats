@@ -8,11 +8,16 @@
     let DATA = {"sleep_tm":0.5, "header":"Not started yet","description":"content",
     "pos":0,"delta":0,"max_loop_pos":-1,"max_loop_delta":0};
     let WIN_CHARS = 10;
+    const recalcWidth = () => {
+        WIN_CHARS = Math.floor(window.innerWidth / (25 * 0.63));
+    };
+
     recalculate_width();
-    window.onresize = recalculate_width;
+    window.onresize = recalcWidth;
 
-    async function main_loop() {
 
+    async function fetchLoop() {
+        
         function getContentHtml(str, is_rec) {
             let tmp = ''
             for (const s of str.split("\n")) {
@@ -27,19 +32,21 @@
             return tmp
         };
 
-        while(true) {
-            let res = await fetch;
-            if (res.ok) {
+        async function getUpdate(url) {
+            try {
+                let res = await fetch(url);
                 DATA = await res.json();
+                HEADER.textContent = DATA.header
+                DESCRIPTION.textContent = DATA.description
+                CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec)    
+            } catch {
+                HEADER.textContent = "Failed to fetch and parse: " + url;
             }
-            HEADER.textContent = DATA.header
-            DESCRIPTION.textContent = DATA.description
-            CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec)
-            await update_loop(DATA)
+            setTimeout(getUpdate, 0)
         };
     };
 
-    async function update_loop(DATA) {
+    async function redrawLoop() {
 
         function getStr (l1, l2) {
             [l1, l2] = [l1 * WIN_CHARS, l2 * WIN_CHARS]
@@ -60,17 +67,10 @@
             return getStr(pos1, pos2);
         };
 
-        while(true) {
-            DATA.header.innerHTML = getProgressHtml(DATA);
-            await sleep(DATA.sleep_tm * 1000);
-        };
+        DATA.header.innerHTML = getProgressHtml(DATA);
+        setTimeout(redrawLoop, DATA.sleep_tm * 1000);
     };
 
-    async function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    };
-    function recalculate_width() {
-        WIN_CHARS = Math.floor(window.innerWidth / (25 * 0.63));
-    };
-
+    
+    
     main_loop();
