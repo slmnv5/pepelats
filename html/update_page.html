@@ -49,7 +49,7 @@
         if (DATA.max_loop_delta > 0) {
             MAX_LOOP_POS = (MAX_LOOP_POS + DATA.max_loop_delta) % 1
         }
-        PROGRESS.textContent = getStr(POS, MAX_LOOP_POS)
+        PROGRESS.innerHTML = getStr(POS, MAX_LOOP_POS)
         
         setTimeout(updateProgress, DATA.sleep_tm * 1000)
     }
