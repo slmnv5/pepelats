@@ -1,6 +1,7 @@
 from http.server import BaseHTTPRequestHandler
 from typing import Callable
 
+from utils.utillog import MyLog
 from utils.utilweb import UPDATE_PAGE
 
 
@@ -15,6 +16,7 @@ class WebHandler(BaseHTTPRequestHandler):
 
     # noinspection PyPep8Naming
     def do_GET(self):
+        MyLog().info(f"path:{self.path}\nheaders:{self.headers}")
         if self.path == "/":
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
@@ -26,5 +28,8 @@ class WebHandler(BaseHTTPRequestHandler):
             self.end_headers()
             json_str = self.get_updates()
             self.wfile.write(json_str.encode())
+        elif self.path == "/favicon.ico":
+            with open("./favicon.ico", 'rb') as f:
+                self.wfile.write(f.read())
         else:
-            pass
+            self.send_error(400, "Not found", f"Not found: {self.path}")

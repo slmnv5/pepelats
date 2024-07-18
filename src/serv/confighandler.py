@@ -4,6 +4,7 @@ from configparser import ConfigParser, ParsingError
 from http.server import BaseHTTPRequestHandler
 from typing import Callable
 
+from utils.utillog import MyLog
 from utils.utilother import split_to_dict
 from utils.utilweb import FILE_FORM_PAGE, CONFIG_PAGE, RESET_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH
 
@@ -73,6 +74,7 @@ class ConfigHandler(BaseHTTPRequestHandler):
 
     # noinspection PyPep8Naming
     def do_GET(self):
+        MyLog().info(f"path:{self.path}\nheaders:{self.headers}")
         if self.path == "/":
             self._send_page(CONFIG_PAGE)
         elif self.path == RESET_PATH:
@@ -89,6 +91,9 @@ class ConfigHandler(BaseHTTPRequestHandler):
         elif self.path.startswith(SHOW_PATH):
             fname = self.path[len(SHOW_PATH):]
             self._send_file(fname, True)
+        elif self.path == "/favicon.ico":
+            with open("./favicon.ico", 'rb') as f:
+                self.wfile.write(f.read())
         else:
             self.send_error(400, "Not found", f"Not found: {self.path}")
 
