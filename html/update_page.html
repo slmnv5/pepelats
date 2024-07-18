@@ -10,18 +10,14 @@
 <body>
 
 <p id="header" style="text-align: center;"> Welcome! </p>
-<div style="line-height: 25px;margin: 0px; display: block;">
-    <p id="progress1" style="color: blue;"> </p>
-    <p id="progress2" style="color: violet;"> </p>
-</div>
+<p id="progress" style="line-height: 25px;margin: 0px;"> </p>
 <p id="description" style="text-align: center;">description</p>
 <div id="content">content</div>
 
 <script type="text/javascript">
     "use strict";
     const HEADER = document.getElementById('header');
-    const P1 = document.getElementById('progress1')
-    const P2 = document.getElementById('progress2')
+    const PROGRESS = document.getElementById('progress')
     const DESCRIPTION = document.getElementById('description');
     const CONTENT = document.getElementById('content');
     const URL = '/update';
@@ -50,19 +46,22 @@
 
     function updateProgress() {
         POS = (POS + DATA.delta) % 1
-        P1.textContent = getStr(POS * WIN_CHARS)
         if (DATA.max_loop_delta > 0) {
             MAX_LOOP_POS = (MAX_LOOP_POS + DATA.max_loop_delta) % 1
-            P2.textContent = getStr(MAX_LOOP_POS * WIN_CHARS)
-        } else {
-            P2.textContent = getStr(0)
         }
+        PROGRESS.textContent = getStr(POS, MAX_LOOP_POS)
+        
         setTimeout(updateProgress, DATA.sleep_tm * 1000)
     }
 
-    function getStr(s_len) {
-        const chr1 = '\u2588'
-        return chr1.repeat(s_len) + ' '.repeat(WIN_CHARS - s_len)
+    function getStr(len1, len2) {
+        const chr1 = '\u2588';
+        let s = '<span style="color: blue;">' + chr1.repeat(len1) + ' '.repeat(WIN_CHARS - len1) + "<br/></span>";
+        if (len2 > 0) {
+            s += '<span style="color: cyan;">' + chr1.repeat(len2) + ' '.repeat(WIN_CHARS - len2) + "<br/></span>";
+        } else { 
+            s += s;
+        }
     }
 
     function getContentHtml(str, is_rec) {
