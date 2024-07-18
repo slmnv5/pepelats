@@ -142,6 +142,7 @@ def get_in_port() -> rtmidi.MidiIn | KbdMidiIn:
         if pname in port_name:
             midi_in.open_port(k, name="In")
             if midi_in.is_port_open():
+                MyLog().info(f"Found requested MIDI IN port: {port_name}")
                 return midi_in
 
     if _IS_LINUX and not _HAS_KBD:
@@ -162,7 +163,7 @@ def get_out_port() -> rtmidi.MidiOut | FakeMidiOut:
         if pname in port_name:
             midi_out.open_port(k, name="Out")
             if midi_out.is_port_open():
-                MyLog().info(f"MIDI OUT port is open: {pname}")
+                MyLog().info(f"Found requested MIDI OUT port: {port_name}")
                 return midi_out
 
     MyLog().error(f"MIDI OUT port is not open: {pname}, using fake port")

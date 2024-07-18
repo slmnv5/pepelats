@@ -68,7 +68,7 @@ class AudioInfo:
             self.DEV_IN: dict[str, any] = sd.query_devices(None, kind='input')
             self.DEV_OUT: dict[str, any] = sd.query_devices(None, kind='output')
 
-        MyLog().warning(f"Using IN/OUT devices:\n{self.DEV_IN}\n\n{self.DEV_OUT}\n\n")
+        MyLog().debug(f"Using IN/OUT devices:\n{self.DEV_IN}\n\n{self.DEV_OUT}\n\n")
 
         # =======================================
         if self.DEV_IN["max_input_channels"] not in [1, 2]:

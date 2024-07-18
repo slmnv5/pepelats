@@ -2,10 +2,7 @@
 <head>
     <style>
         body {background-color: grey; font-weight: bold;}
-        .redClr {color: red;}
-        .ylwClr {color: yellow;}
-        .grnClr {color: green;}
-        p {width: 100%;font-family: "Noto Sans Mono", monospace;font-size: 25px;}
+        p {width: 100%;font-size: 25px; font-family: 'Courier New',monospace,Courier}
     </style>
 </head>
 <body>
@@ -18,20 +15,20 @@
 
 <script type="text/javascript">
     "use strict";
-     let WIN_CHARS = 10
-     recalculate_width()
-     window.onresize = recalculate_width
-    
     const HEADER = document.getElementById('header');
     const P1 = document.getElementById('progress1')
     const P2 = document.getElementById('progress2')
     const DESCRIPTION = document.getElementById('description');
     const CONTENT = document.getElementById('content');
     const URL = '/update';
-    let DATA = {'sleep_tm':2, "header":"Not started yet","description":"content",
+    let DATA = {"sleep_tm":0.5, "header":"Not started yet","description":"content",
     "pos":0,"delta":0,"max_loop_pos":-1,"max_loop_delta":0}
     let POS = 0 // position in the song part
     let MAX_LOOP_POS = 0 // position in the max loop of the song part
+    let WIN_CHARS = 10
+    recalculate_width()
+    window.onresize = recalculate_width
+
     setTimeout(updateProgress, 1000, DATA)
 
     var get_stuff = async () => {
@@ -68,9 +65,9 @@
         let tmp = ''
         for (const s of cont_arr) {
             if (s[0] == '*') {
-                tmp += (is_rec ? '<p class="redClr">' : '<p class="grnClr">') + s + '</p>'
+                tmp += (is_rec ? '<p style="color: brown;">' : '<p style="color: green;">') + s + '</p>'
             } else if (s[0] == '~') {
-                tmp += '<p class="ylwClr">' + s + '</p>'
+                tmp += '<p style="color: yellow;">' + s + '</p>'
             } else {
                 tmp += '<p>' + s + '</p>'
             }
@@ -79,7 +76,7 @@
     }
 
     function recalculate_width() {
-        WIN_CHARS = Math.floor(window.innerWidth / 25);
+        WIN_CHARS = Math.floor(window.innerWidth / (25 * 0.63));
     };
 
     get_stuff();
