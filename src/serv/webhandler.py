@@ -15,7 +15,6 @@ class WebHandler(BaseHTTPRequestHandler):
 
     # noinspection PyPep8Naming
     def do_GET(self):
-        print(11111, self.path, 1111111111111111, self.headers)
         if self.path == "/":
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
