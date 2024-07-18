@@ -1,5 +1,6 @@
 <html>
 <head>
+    <meta charset='utf-8'>
     <style>
         body {background-color: grey; font-weight: bold;}
         p {width: 100%;font-size: 25px; font-family: 'Courier New',monospace,Courier}
@@ -57,6 +58,7 @@
     }
 
     function getStr(s_len) {
+        chr = '\u2588'
         return '█'.repeat(s_len) + ' '.repeat(WIN_CHARS - s_len)
     }
 
