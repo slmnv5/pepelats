@@ -28,6 +28,12 @@ class WebHandler(BaseHTTPRequestHandler):
             self.end_headers()
             json_str = self.get_updates()
             self.wfile.write(json_str.encode())
+        elif self.path == "/update_page.js":
+            self.send_response(200)
+            self.send_header('Content-type', 'text/javascript')
+            self.end_headers()
+            with open("./update_page.js", 'r') as f:
+                self.wfile.write(f.read().encode())
         elif self.path == "/favicon.ico":
             self.send_response(200)
             self.send_header('Content-type', 'application/octet-stream')
