@@ -83,7 +83,7 @@
             };
             
             while(true) {
-                HEADER.innerHTML = getProgressHtml(DATA);
+                PROGRESS.innerHTML = getProgressHtml(DATA);
                 console.log("Redraw done sleep for " + DATA.sleep_tm + " seconds")
                 await new Promise(r => setTimeout(r, DATA.sleep_tm * 1000));
             };
