@@ -45,7 +45,6 @@ window.onload = () => {
     const CONTENT = document.getElementById('content');
     recalcWidth();
 
-    console.log(">>>>", DATA)
     Promise.all([fetchData(), redrawData()])
     .then((values) => console.log("Resolved:\n", values))  
     .catch((values) => console.log("Rejected:\n", values))
@@ -59,7 +58,8 @@ window.onload = () => {
                 DATA = await res.json();
                 HEADER.textContent = DATA.header
                 DESCRIPTION.textContent = DATA.description
-                CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec)    
+                CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec)
+                console.log(">>>Fetched: " + URL);    
             } catch {
                 console.log("Failed to fetch and parse: " + URL + " sleep 3 seconds and retry");
                 await new Promise(r => setTimeout(r, 3000));
