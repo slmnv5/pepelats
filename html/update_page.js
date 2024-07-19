@@ -1,5 +1,30 @@
 "use strict";
 
+// calculate 2 stringhs showing 2 progerss lines 
+function getStr (l1, l2, max_chars) {
+    [l1, l2] = [l1 * max_chars, l2 * max_chars]
+    const chr1 = '\u2588';
+    let s1 = '<span style="color: blue;">' + chr1.repeat(l1) + ' '.repeat(max_chars - l1) + "<br/></span>";
+    let s2 = '<span style="color: cyan;">' + chr1.repeat(l2) + ' '.repeat(max_chars - l2) + "<br/></span>";
+    return  (l2 > 0) ? s1 + s2 : s1 + s1
+};
+
+// decorate string with color based on 1st char
+function getContentHtml(str, is_rec) {
+    let tmp = ''
+    for (const s of str.split("\n")) {
+        if (s[0] === '*') {
+            tmp += (is_rec ? '<p style="color: brown;">' : '<p style="color: green;">') + s + '</p>'
+        } else if (s[0] === '~') {
+            tmp += '<p style="color: yellow;">' + s + '</p>'
+        } else {
+            tmp += '<p>' + s + '</p>'
+        }
+    }
+    return tmp
+};
+
+
 let WIN_CHARS = 10;
 const recalcWidth = () => {
     WIN_CHARS = Math.floor(window.innerWidth / (25 * 0.63));
@@ -34,23 +59,9 @@ window.onload = () => {
                 DESCRIPTION.textContent = DATA.description
                 CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec)    
             } catch {
-                console.log("Failed to fetch and parse: " + URL + " sleep for: 3 seconds" );
+                console.log("Failed to fetch and parse: " + URL + " sleep 3 seconds and retry");
                 await new Promise(r => setTimeout(r, 3000));
             }                
-        };
-
-        function getContentHtml(str, is_rec) {
-            let tmp = ''
-            for (const s of str.split("\n")) {
-                if (s[0] === '*') {
-                    tmp += (is_rec ? '<p style="color: brown;">' : '<p style="color: green;">') + s + '</p>'
-                } else if (s[0] === '~') {
-                    tmp += '<p style="color: yellow;">' + s + '</p>'
-                } else {
-                    tmp += '<p>' + s + '</p>'
-                }
-            }
-            return tmp
         };
 
         while(true) {
@@ -58,30 +69,13 @@ window.onload = () => {
         }
     };
 
-    async function redrawData() {
-
-        function getStr (l1, l2) {
-            [l1, l2] = [l1 * WIN_CHARS, l2 * WIN_CHARS]
-            const chr1 = '\u2588';
-            let s1 = '<span style="color: blue;">' + chr1.repeat(l1) + ' '.repeat(WIN_CHARS - l1) + "<br/></span>";
-            let s2 = '<span style="color: cyan;">' + chr1.repeat(l2) + ' '.repeat(WIN_CHARS - l2) + "<br/></span>";
-            return  (l2 > 0) ? s1 + s2 : s1 + s1
-        };
-
-        function getProgressHtml(DATA) {
-            let pos1 = 0; // position in the song part
-            let pos2 = 0; // position in the max loop of the song part, if there is max loop
-
-            pos1 = (pos1 + DATA.delta) % 1;
-            if (DATA.max_loop_delta > 0) {
-                pos2 = (pos2 + DATA.max_loop_delta) % 1
-            };
-            return getStr(pos1, pos2);
-        };
-        
+    async function redrawData() {        
         while(true) {
-            PROGRESS.innerHTML = getProgressHtml(DATA);
-            console.log("Redraw done sleep for " + DATA.sleep_tm + " seconds")
+            DATA.pos = (DATA.pos + DATA.delta) % 1; // position in the song part
+            if (DATA.max_loop_delta > 0) {
+                DATA.max_loop_pos = (DATA.max_loop_pos + DATA.max_loop_delta) % 1 // position in the max loop
+            };
+            PROGRESS.innerHTML = getStr(DATA.pos, DATA.max_loop_pos, WIN_CHARS);
             await new Promise(r => setTimeout(r, DATA.sleep_tm * 1000));
         };
     };
