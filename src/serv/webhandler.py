@@ -32,7 +32,7 @@ class WebHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/javascript')
             self.end_headers()
-            with open("./update_page.js", 'r') as f:
+            with open("./html/update_page.js", 'r') as f:
                 self.wfile.write(f.read().encode())
         elif self.path == "/favicon.ico":
             self.send_response(200)
