@@ -1,12 +1,14 @@
 "use strict";
 
-// calculate 2 stringhs showing 2 progerss lines 
-function getStr (l1, l2, max_chars) {
+// calculate string showing progerss line, X - position in max. length loop 
+function getProgressStr (l1, l2, max_chars) {
     [l1, l2] = [l1 * max_chars, l2 * max_chars]
     const chr1 = '\u2588';
-    let s1 = '<span style="color: blue;">' + chr1.repeat(l1) + ' '.repeat(max_chars - l1) + "<br/></span>";
-    let s2 = '<span style="color: cyan;">' + chr1.repeat(l2) + ' '.repeat(max_chars - l2) + "<br/></span>";
-    return  (l2 > 0) ? s1 + s2 : s1 + s1
+    let s = chr1.repeat(l1) + ' '.repeat(max_chars - l1);
+    if (l2 > 0) {
+        s = s.substring(0, l2) + 'X' + s.substring(l2 + 1);
+    };
+    return  s;
 };
 
 // decorate string with color based on 1st char
@@ -75,7 +77,7 @@ window.onload = () => {
             if (DATA.max_loop_delta > 0) {
                 DATA.max_loop_pos = (DATA.max_loop_pos + DATA.max_loop_delta) % 1 // position in the max loop
             };
-            PROGRESS.innerHTML = getStr(DATA.pos, DATA.max_loop_pos, WIN_CHARS);
+            PROGRESS.textContent = getProgressStr(DATA.pos, DATA.max_loop_pos, WIN_CHARS);
             await new Promise(r => setTimeout(r, DATA.sleep_tm * 1000));
         };
     };
