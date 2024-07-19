@@ -6,7 +6,7 @@ from typing import Callable
 
 from utils.utillog import MyLog
 from utils.utilother import split_to_dict
-from utils.utilweb import FILE_FORM_PAGE, CONFIG_PAGE, RESET_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH
+from utils.utilweb import CONFIG_PAGE, RESET_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH, send_headers, load_file
 
 
 class ConfigHandler(BaseHTTPRequestHandler):
@@ -51,36 +51,26 @@ class ConfigHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def _send_file(self, fname: str, read_only: bool) -> None:
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
+        send_headers(self, 'text/plain')
         if os.path.islink(fname):
             self.wfile.write(f"File is link: {fname}".encode())
         elif not os.path.isfile(fname):
             self.wfile.write(f"File not found: {fname}".encode())
         else:
-            with open(fname, 'r') as f:
-                data = f.read()
-
-        disabled = "disabled" if read_only else ""
-        html = FILE_FORM_PAGE.format(disabled=disabled, file_name=fname, file_data=data)
-        self.wfile.write(html.encode())
-
-    def _send_page(self, page: bytes) -> None:
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
-        self.wfile.write(page)
+            data = load_file(fname)
+            disabled = "disabled" if read_only else ""
+            html = load_file("html/file_form.html")
+            html = html.format(disabled=disabled, file_name=fname, file_data=data)
+            self.wfile.write(html.encode())
 
     # noinspection PyPep8Naming
     def do_GET(self):
         MyLog().info(f"path:{self.path}\nheaders:{self.headers}")
         if self.path == "/":
-            self._send_page(CONFIG_PAGE)
+            send_headers(self)
+            self.wfile.write(CONFIG_PAGE)
         elif self.path == RESET_PATH:
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
+            send_headers(self)
             result = subprocess.run(['git', 'reset', '--hard'], stdout=subprocess.PIPE)
             self.wfile.write(result.stdout)
         elif self.path == EXIT_PATH:
@@ -92,11 +82,8 @@ class ConfigHandler(BaseHTTPRequestHandler):
             fname = self.path[len(SHOW_PATH):]
             self._send_file(fname, True)
         elif self.path == "/favicon.ico":
-            self.send_response(200)
-            self.send_header('Content-type', 'application/octet-stream')
-            self.end_headers()
-            with open("./favicon.ico", 'rb') as f:
-                self.wfile.write(f.read())
+            send_headers(self, 'application/octet-stream')
+            self.wfile.write(load_file('favicon.ico').encode())
         else:
             self.send_error(400, "Not found", f"Not found: {self.path}")
 
@@ -106,9 +93,6 @@ class ConfigHandler(BaseHTTPRequestHandler):
             self._send_redirect()
         else:
             if self._write_to_file():
-                self.send_response(200)
-                self.send_header('Content-type', 'text/html')
-                self.end_headers()
-                self.wfile.write("Successfully updated file".encode())
+                self._send_redirect()
             else:
                 self.send_error(400, "Bad Request", "Parsing form data failed")

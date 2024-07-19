@@ -1,4 +1,5 @@
 import os
+from http.server import BaseHTTPRequestHandler
 
 from utils.utilconfig import ConfigName
 
@@ -6,6 +7,18 @@ EDIT_PATH: str = "/edit?file="
 SHOW_PATH: str = "/show?file="
 RESET_PATH: str = "/reset"
 EXIT_PATH: str = "/exit"
+
+
+def load_file(fname: str) -> str:
+    assert os.path.isfile(fname)
+    with open(fname, 'r') as f:
+        return f.read()
+
+
+def send_headers(handler: BaseHTTPRequestHandler, content_type: str = 'text/html') -> None:
+    handler.send_response(200)
+    handler.send_header('Content-type', content_type)
+    handler.end_headers()
 
 
 def _one_link(fname: str, prefix: str) -> str:
@@ -24,12 +37,6 @@ def _all_links(dname: str, end_with: str, prefix: str) -> str:
     return "".join(link_lst)
 
 
-def _load_html_file(fname: str) -> str:
-    assert os.path.isfile(fname)
-    with open(fname, 'r') as f:
-        return f.read()
-
-
 _FORMAT_DICT: dict[str, str] = dict()
 _FORMAT_DICT["l_exit"] = EXIT_PATH
 _FORMAT_DICT["l_reset"] = RESET_PATH
@@ -43,6 +50,4 @@ _FORMAT_DICT["l_old_log"] = _one_link('log.bak', SHOW_PATH)
 _FORMAT_DICT["l_drum"] = _all_links(f"{ConfigName.drum_config_dir}", ".ini", EDIT_PATH)
 _FORMAT_DICT["l_menu"] = _all_links(f"./{ConfigName.menu_config_dir}", ".ini", EDIT_PATH)
 
-FILE_FORM_PAGE: str = _load_html_file("html/file_form.html")
-CONFIG_PAGE: bytes = _load_html_file("html/config_page.html").format(**_FORMAT_DICT).encode()
-UPDATE_PAGE: bytes = _load_html_file("html/update_page.html").encode()
+CONFIG_PAGE: bytes = load_file("html/config_page.html").format(**_FORMAT_DICT).encode()

@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler
 from typing import Callable
 
 from utils.utillog import MyLog
-from utils.utilweb import UPDATE_PAGE
+from utils.utilweb import send_headers, load_file
 
 
 class WebHandler(BaseHTTPRequestHandler):
@@ -18,27 +18,17 @@ class WebHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         MyLog().info(f"path:{self.path}\nheaders:{self.headers}")
         if self.path == "/":
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
-            self.wfile.write(UPDATE_PAGE)
+            send_headers(self)
+            self.wfile.write(load_file("html/update_page.html").encode())
         elif self.path == "/update":
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
+            send_headers(self, 'application/json')
             json_str = self.get_updates()
             self.wfile.write(json_str.encode())
         elif self.path == "/update_page.js":
-            self.send_response(200)
-            self.send_header('Content-type', 'text/javascript')
-            self.end_headers()
-            with open("./html/update_page.js", 'r') as f:
-                self.wfile.write(f.read().encode())
+            send_headers(self, 'text/javascript')
+            self.wfile.write(load_file("html/update_page.js").encode())
         elif self.path == "/favicon.ico":
-            self.send_response(200)
-            self.send_header('Content-type', 'application/octet-stream')
-            self.end_headers()
-            with open("./favicon.ico", 'rb') as f:
-                self.wfile.write(f.read())
+            send_headers(self, 'application/octet-stream')
+            self.wfile.write(load_file('favicon.ico').encode())
         else:
             self.send_error(400, "Not found", f"Not found: {self.path}")
