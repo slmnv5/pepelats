@@ -29,15 +29,15 @@
 
         async function fetchData() {
             
-            async function getUpdate(url) {
+            async function getUpdate() {
                 try {
-                    let res = await fetch(url);
+                    let res = await fetch(URL);
                     DATA = await res.json();
                     HEADER.textContent = DATA.header
                     DESCRIPTION.textContent = DATA.description
                     CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec)    
                 } catch {
-                    console.log("Failed to fetch and parse: " + url + " sleep for: 3 seconds" );
+                    console.log("Failed to fetch and parse: " + URL + " sleep for: 3 seconds" );
                     await new Promise(r => setTimeout(r, 3000));
                 }                
             };
