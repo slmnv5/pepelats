@@ -2,7 +2,7 @@ import numpy as np
 
 from control.loopctrl import LoopCtrl
 from song.loopsimple import LoopSimple
-from utils.utilother import CollectionOwner
+from utils.util_other import CollectionOwner
 
 
 class SongPart(LoopSimple, CollectionOwner[LoopSimple]):
@@ -13,11 +13,9 @@ class SongPart(LoopSimple, CollectionOwner[LoopSimple]):
         CollectionOwner.__init__(self, self)
         self.__undo: list[LoopSimple] = list()
 
-    def get_max_len(self, start_value: int) -> int:
-        max_len = start_value
-        for x in [x for x in self.get_list() if not x.is_empty]:
-            max_len = max(LoopSimple.get_len(x), max_len)
-        return max_len
+    def get_max_len(self, count_empty: bool = False) -> int:
+        lst = [LoopSimple.get_len(x) for x in self.get_list() if count_empty or not x.is_empty]
+        return 0 if not lst else max(lst)
 
     def correct_buffer(self) -> None:
         for x in self.__undo:
@@ -30,8 +28,8 @@ class SongPart(LoopSimple, CollectionOwner[LoopSimple]):
         if not loop.is_empty:
             return
         bar_len = ctrl.get_drum().get_bar_len()
-        base_len = self.get_max_len(bar_len)
-        loop.finalize(ctrl.idx, base_len)
+        base_len = self.get_max_len()
+        loop.finalize(ctrl.idx, max(base_len, bar_len))
         if not bar_len:
             ctrl.drum_create(ctrl.idx)
 

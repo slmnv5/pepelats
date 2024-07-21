@@ -5,8 +5,8 @@ import numpy as np
 
 from basic.audioinfo import correct_sound, AudioInfo
 from drum._utilalsa import read_wav_slow
-from utils.utilconfig import ConfigName
-from utils.utillog import MyLog
+from utils.util_name import AppName
+from utils.util_log import MY_LOG
 
 
 class SampleLoader:
@@ -24,10 +24,9 @@ class SampleLoader:
         if self.__initialized:
             return
         self.__initialized = True
-        MyLog().warning(f"=========== Created SampleLoader in process id: {os.getpid()} ==========")
         # sound names and loaded sound samples
         self._sounds: dict[str, np.ndarray] = dict()
-        fname = ConfigName.pickled_drum_samples
+        fname = AppName.pickled_drum_samples
         if os.path.isfile(fname):
             with open(fname, 'rb') as f:
                 try:
@@ -39,18 +38,18 @@ class SampleLoader:
                         raise RuntimeError(f"Pickled drum samples have wrong channels: {sound.shape[1]}")
                 except Exception as ex:
                     self._sounds = dict()
-                    MyLog().error(ex)
+                    MY_LOG.error(ex)
 
         if not self._sounds:
-            self._sounds = self._load_audio_samples(ConfigName.drum_samples_dir)
+            self._sounds = self._load_audio_samples(AppName.drum_samples_dir)
             try:
                 with open(fname, 'wb') as f:
                     pickle.dump(self._sounds, f)
             except pickle.PicklingError as ex:
-                MyLog().error(ex)
-            MyLog().warning("Loaded drum samples from WAV file")
+                MY_LOG.error(ex)
+            MY_LOG.warning("Loaded drum samples from WAV file")
         else:
-            MyLog().warning("Loaded drum samples from pickle file")
+            MY_LOG.warning("Loaded drum samples from pickle file")
 
         m_amp = AudioInfo().MAX_SD_TYPE
         m_amp2 = m_amp * m_amp / 1000
@@ -60,9 +59,9 @@ class SampleLoader:
 
         # _adjusted has normal and accented sound, used to change volume up/down, _sounds do not change
         self._adjusted: dict[str, tuple[np.ndarray, np.ndarray]] = dict()
-        MyLog().debug(f"Loaded sounds:\nvariance:{variance}")
-        MyLog().debug(f"Loaded sounds:\nduration:{duration}")
-        MyLog().debug(f"Loaded sounds:\nmaximum:{maximum}")
+        MY_LOG.debug(f"Loaded sounds:\nvariance:{variance}")
+        MY_LOG.debug(f"Loaded sounds:\nduration:{duration}")
+        MY_LOG.debug(f"Loaded sounds:\nmaximum:{maximum}")
         # _energy has energy of each drum sound = variance * duration
         self._energy = {k: variance[k] * duration[k] for k in self._sounds}
         self.set_volume(1.0)
@@ -79,7 +78,7 @@ class SampleLoader:
             sound = correct_sound(sound, AudioInfo().SD_CH, AudioInfo().SD_TYPE)
             assert sound.dtype == AudioInfo().SD_TYPE and sound.ndim == 2 and sound.shape[1] == AudioInfo().SD_CH
             result[fname[:-4]] = sound
-        MyLog().info(f"Loaded samples from {len(result)} WAV files")
+        MY_LOG.info(f"Loaded samples from {len(result)} WAV files")
         return result
 
     def set_volume(self, vol: float) -> None:

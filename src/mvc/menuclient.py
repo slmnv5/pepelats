@@ -1,11 +1,10 @@
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 from multiprocessing import Queue
 
-from mvc.drawinfo import DrawInfo
-from utils.utillog import MyLog
+from utils.util_log import MY_LOG
 
 
-class MenuClient:
+class MenuClient(ABC):
     def __init__(self, queue: Queue):
         self.__queue: Queue = queue
         self._alive: bool = True
@@ -13,7 +12,10 @@ class MenuClient:
     def _client_stop(self) -> None:
         self._alive = False
 
-    def menu_client_start(self):
+    def _client_log(self, msg: str) -> None:
+        pass
+
+    def client_start(self):
         while self._alive:
             command = self.__queue.get()
             method_name, *params = command
@@ -22,12 +24,15 @@ class MenuClient:
                 method = getattr(self, method_name)
                 method(*params)
             except Exception as ex:
-                MyLog().exception(ex)
+                MY_LOG.exception(ex)
 
     @abstractmethod
-    def _client_redraw(self, di: DrawInfo) -> None:
-        pass
+    def _client_redraw(self, dic: dict) -> None:
+        raise RuntimeError("This method should NOT be called()")
 
-    def menu_client_queue(self, command: list) -> None:
+    def client_enqueue(self, command: list) -> None:
         self.__queue.put(command)
-        MyLog().debug(f"Added to queue command: {command}")
+        MY_LOG.debug(f"Added to queue command: {command}")
+
+    def client_clear_queue(self) -> None:
+        self.__queue.empty()

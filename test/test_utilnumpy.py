@@ -3,7 +3,7 @@ import random
 import numpy as np
 
 from basic.audioinfo import AudioInfo
-from utils.utilnumpy import from_buff_to_data, from_data_to_buff, trim_buffer
+from utils.util_numpy import from_buff_to_data, from_data_to_buff, trim_buffer
 
 
 def _record(buff_len, data_len, idx):
@@ -23,7 +23,6 @@ def _record(buff_len, data_len, idx):
         is_good = np.all(np.unique(buff) == [1, 3])
 
     assert is_good, f"==={buff_len}=={data_len}=={idx}==RECORD"
-    print(f"=== RECORD: {buff_len}, {data_len}, {idx}")
 
 
 def _play(buff_len, data_len, idx):
@@ -44,7 +43,6 @@ def _play(buff_len, data_len, idx):
         is_good = np.all(np.unique(data) == [2, 3])
 
     assert is_good, f"==={buff_len}=={data_len}=={idx}==PLAY"
-    print(f"=== PLAY: {buff_len}, {data_len}, {idx}")
 
 
 def _trim(buff_len, data_len, idx):
@@ -59,7 +57,6 @@ def _trim(buff_len, data_len, idx):
     else:
         check1 = len(z) == min_len
         check2 = np.all(z[0] == y[idx % len(y)])
-        print(f"=== TRIM: {buff_len}, {data_len}, {idx}")
         assert check1 and check2
 
 

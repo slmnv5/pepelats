@@ -16,16 +16,13 @@ if pidof -o %PPID -x "looper.sh">/dev/null; then
     exit 1
 fi
 
-if [ ! -d ".save_song" ]; then mkdir -p ".save_song"; fi
-touch local.ini
-
-sudo chmod a+rw ./.save_song/*
-touch log.txt log.bak
+sudo chmod a+rw ./save_song/*
+touch local.ini log.txt log.bak
 chmod a+rw log.txt log.bak
 cat log.txt >> log.bak
 tail -n 1000 log.bak > log.txt
-mv -v log.txt log.bak
-echo "============= $(date)" > log.txt
+mv log.txt log.bak
+echo "============= $(date) ==================" > log.txt
 
 # disable assert
 CODE_OPTIMIZE="-O"

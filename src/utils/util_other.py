@@ -1,9 +1,17 @@
 import os
+import random
 import re
 import subprocess
 from typing import TypeVar, Generic, Iterable
 
-from utils.utilscreen import SCR_ROWS
+from utils.util_log import MY_LOG
+
+try:
+    SCR_COLS, SCR_ROWS = os.get_terminal_size()
+except OSError:
+    SCR_COLS, SCR_ROWS = 30, 10  # if running inside python IDE
+
+MY_LOG.info(f"Text screen size: cols={SCR_COLS} rows={SCR_ROWS}")
 
 T = TypeVar('T')
 
@@ -206,6 +214,26 @@ class EuclidSlicer:
 
     def __str__(self):
         return f"{self._steps},{self._beats},{self._shift}: {self.get_ptrn_str()}"
+
+
+def song_name_generate() -> str:
+    words1 = ["brave", "slim", "wise", "smart", "good", "new", "first", "last", "long", "great", "little", "my",
+              "another",
+              "old", "right", "big", "high", "his", "small", "large", "next", "early", "young", "fast", "her",
+              "fit", "same", "able", "happy", "nice", "deep", "black", "blue", "green"]
+
+    words2 = ["year", "people", "way", "day", "man", "thing", "woman", "life", "child", "world", "school",
+              "state", "family", "student", "group", "country", "chair", "hand", "part", "place", "case",
+              "week", "company", "system", "program", "question", "work", "wife", "number", "night",
+              "point", "home", "water", "room", "mother", "area", "money", "story", "fact", "month", "lot",
+              "right", "study", "book", "eye", "job", "word", "line", "issue", "side", "kind", "head",
+              "house", "service", "friend", "father", "power", "hour", "game", "line", "end", "member", "law",
+              "car", "city", "link", "name", "president", "team", "minute", "idea", "kid", "body",
+              "case", "back", "parent", "face", "others", "level", "office", "door", "health", "person",
+              "art", "war", "history", "party", "result", "change", "morning", "reason", "smile", "girl",
+              "guy", "moment", "air", "teacher", "force", "run", "smile", "moon", "pen", "ring", "square"]
+
+    return f"{random.choice(words1)}_{random.choice(words2)}"
 
 
 if __name__ == "__main__":

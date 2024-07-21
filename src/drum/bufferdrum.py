@@ -10,7 +10,7 @@ from drum._euclidptrnloader import EuclidPtrnLoader
 from drum._ptrnloader import PtrnManager, PtrnLoader
 from drum._styleptrnloader import StylePtrnLoader
 from drum.basedrum import BaseDrum
-from utils.utilnumpy import from_buff_to_data
+from utils.util_numpy import from_buff_to_data
 
 
 class BufferDrum(BaseDrum, ABC):
@@ -79,7 +79,7 @@ class BufferDrum(BaseDrum, ABC):
     def play_fill(self, idx: int) -> None:
         self._play_lst, self._name, self._energy, self._idx = self._pm.random_loud()
         self._play_count = self._MAX_COUNT
-        tmp: int = idx % self._bar_len
+        tmp: int = idx % self._bar_len if self._bar_len else 0
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2
         # return to normal level

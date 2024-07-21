@@ -1,5 +1,5 @@
 # noinspection PyProtectedMember
-from mvc._menuhost import convert_param
+from utils.util_config import convert_param
 
 
 def test_1():

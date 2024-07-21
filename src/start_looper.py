@@ -1,41 +1,57 @@
-from multiprocessing import Process, Queue
+from multiprocessing import Process
+from multiprocessing import Queue
+from time import sleep
 
 from control.looper import Looper
 from mvc.countmidicontrol import CountMidiControl
+from mvc.menuhost import MenuHost
 from mvc.textscreen import TextScreen
 from serv.webscreen import WebScreen
-from utils.utilconfig import SCREEN_TYPE
-from utils.utillog import MyLog
+from utils.util_config import load_ini_section
+from utils.util_log import MY_LOG
+from utils.util_name import AppName
+
+q_scr = Queue()  # screen update messages
+q_lpr = Queue()  # looper control messages
+
+MY_LOG.set_screen_queue(q_scr)
 
 
-def do_looper(q_looper: Queue, q_screen: Queue) -> None:
+def _do_looper(q_looper: Queue, q_screen: Queue) -> None:
     looper = Looper(q_looper, q_screen)
-    looper.menu_client_start()
+    looper.client_start()
 
 
-# noinspection PyBroadException
-def do_screen(q_screen: Queue) -> None:
-    if SCREEN_TYPE == 'web':
+def _do_screen(q_screen: Queue, choice: int) -> None:
+    if choice == 1:
         scr = WebScreen(q_screen)
     else:
         scr = TextScreen(q_screen)
-    scr.menu_client_start()
+    scr.client_start()
+
+
+def do_start(midi_ctrl: MenuHost, q_screen: Queue, q_looper: Queue, choice: int) -> None:
+    p1 = Process(target=_do_screen, args=[q_screen, choice], name="screen", daemon=True)
+    p1.start()
+
+    p2 = Process(target=_do_looper, args=[q_looper, q_screen], name="looper", daemon=True)
+    p2.start()
+
+    midi_ctrl.host_start()
+    q_screen.put([AppName.client_stop])
+
+    for _ in range(5):
+        if p1.is_alive() or p2.is_alive():
+            MY_LOG.warning(f"Still running. screen: {p1.is_alive()}, looper: {p2.is_alive()}")
+            sleep(5)
 
 
 if __name__ == "__main__":
-    # noinspection PyBroadException
     try:
-        q_scr = Queue()  # screen update messages
-        q_lpr = Queue()  # looper control messages
-        midi_ctrl = CountMidiControl(q_lpr)
-
-        p1 = Process(target=do_looper, args=[q_lpr, q_scr], name="looper", daemon=True)
-        p1.start()
-        p2 = Process(target=do_screen, args=[q_scr], name="screen", daemon=True)
-        p2.start()
-
-        midi_ctrl.start_menu_host()
+        ch: int = load_ini_section("SCREEN", True).get(AppName.screen_type, 0)
+        midi_control: MenuHost = CountMidiControl(q_lpr)
+        do_start(midi_control, q_scr, q_lpr, ch)
     except Exception as ex:
-        MyLog().exception(ex)
+        MY_LOG.exception(ex)
     finally:
-        print("Exit done")
+        MY_LOG.warning("Done.")

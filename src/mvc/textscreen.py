@@ -1,11 +1,11 @@
-import time
 from multiprocessing import Queue
 from textwrap import wrap
 from threading import Thread
+from time import sleep
 
-from mvc.drawinfo import DrawInfo
 from mvc.menuclient import MenuClient
-from utils.utilscreen import SCR_COLS
+from utils.util_other import SCR_COLS
+from utils.util_screen import get_screen_dict, get_default_dict
 
 _CLEAN_TO_END = '\x1b[0J'  # clean from cursor to end of screen
 _CURSOR_MOVE = "\x1b[1;1H"  # move cursor to line=1 and pos=1
@@ -31,7 +31,7 @@ class TextScreen(MenuClient):
 
     def __init__(self, queue: Queue):
         MenuClient.__init__(self, queue)
-        self._dic: dict = DrawInfo().get_dict()
+        self.__dic: dict = get_default_dict()
         Thread(target=self.__updater, name="updater", daemon=True).start()
 
     @staticmethod
@@ -47,31 +47,40 @@ class TextScreen(MenuClient):
         else:
             return line
 
-    def _client_redraw(self, di: DrawInfo) -> None:
-        di.header = di.header[:SCR_COLS].center(SCR_COLS)
-        di.description = '\n'.join([x.center(SCR_COLS) for x in wrap(di.description, SCR_COLS)])
-        di.content = '\n'.join([self.__add_color(x, di.is_rec) for x in di.content.split('\n')])
+    def _client_log(self, msg: str) -> None:
+        print(f"{_CURSOR_MOVE}\n{msg}")
 
-        print(f"{_CURSOR_MOVE}{di.header}{_CLEAN_TO_END}")
-        print(di.description)
-        print(di.content, flush=True)
+    def _client_redraw(self, dic: dict) -> None:
+        assert "header" in dic
+        assert "description" in dic
+        assert "content" in dic
+        assert "is_rec" in dic
+        assert "len" in dic
 
-        self._dic = di.get_dict()
+        dic["header"] = dic["header"][:SCR_COLS].center(SCR_COLS)
+        dic["description"] = '\n'.join([x.center(SCR_COLS) for x in wrap(dic["description"], SCR_COLS)])
+        dic["content"] = '\n'.join([self.__add_color(x, dic["is_rec"]) for x in dic["content"].split('\n')])
+
+        print(f'{_CURSOR_MOVE}{dic["header"]}{_CLEAN_TO_END}')
+        print(dic["description"])
+        print(dic["content"], flush=True)
+
+        self.__dic = get_screen_dict(dic)
 
     def __updater(self):
         while self._alive:
-            time.sleep(self._dic["sleep_tm"])
-            line = self._dic["header"]
-            delta = self._dic["max_loop_delta"]
+            sleep(self.__dic["sleep_tm"])
+            line = self.__dic["header"]
+            delta = self.__dic["max_loop_delta"]
             if delta > 0:
-                pos = (self._dic["max_loop_pos"] + delta) % 1
-                self._dic["max_loop_pos"] = pos
+                pos = (self.__dic["max_loop_pos"] + delta) % 1
+                self.__dic["max_loop_pos"] = pos
                 pos = round(pos * SCR_COLS)
                 line = line[:pos] + '▒' + line[pos + 1:]
 
-            delta = self._dic["delta"]
-            pos = (self._dic["pos"] + delta) % 1
-            self._dic["pos"] = pos
+            delta = self.__dic["delta"]
+            pos = (self.__dic["pos"] + delta) % 1
+            self.__dic["pos"] = pos
             pos = round(pos * SCR_COLS)  # shown by inverse color
             line = _REV_CLR + line[:pos] + _END_ALL + line[pos:]
             print(f"{_CURSOR_MOVE}{line}", end='', flush=True)

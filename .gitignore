@@ -5,19 +5,24 @@ dist
 build
 *.spec
 *.pyc
+
 #PyCharm
 .idea
 .run
 *.iml
-#app
-.save_song
+
+#looper
+save_song/*
+!save_song/readme.txt
 midiconverter
-rules.txt
-kbdmap.txt
 log.bak
 log.txt
 local.ini
 pickled_drum_samples.pkl
+
+#unused
+rules.txt
+kbdmap.txt
 
 
 

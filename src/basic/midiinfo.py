@@ -3,11 +3,12 @@ import os
 import keyboard
 import rtmidi
 
-from utils.utilconfig import load_ini_section, ConfigName
-from utils.utillog import MyLog
+from utils.util_config import load_ini_section
+from utils.util_log import MY_LOG
+from utils.util_name import AppName
 
 _IS_LINUX = os.name == "posix"
-_HAS_KBD = os.environ.get('HAS_KBD', "").upper() in ["Y", "YES", "TRUE", "1"]
+_HAS_KBD = not _IS_LINUX or os.environ.get('HAS_KBD', "").upper() in ["Y", "YES", "TRUE", "1"]
 
 
 class KbdMidiIn:
@@ -18,22 +19,22 @@ class KbdMidiIn:
         if not _IS_LINUX:
             notes_str = "1, 2, 3, 4, q, w"
         else:
-            notes_str = dic.get(ConfigName.kbd_notes_linux, '')
+            notes_str = dic.get(AppName.kbd_notes_linux, '')
 
         kbd_lst: list[str] = [x.strip() for x in notes_str.split(',')]
         if len(kbd_lst) != 6:
-            raise RuntimeError(f"Option {ConfigName.kbd_notes_linux} in main.ini must have 6 values: {notes_str}")
+            raise RuntimeError(f"Option {AppName.kbd_notes_linux} in main.ini must have 6 values: {notes_str}")
 
-        notes_str = dic.get(ConfigName.kbd_notes_midi, '')
+        notes_str = dic.get(AppName.kbd_notes_midi, '')
         midi_lst = [x.strip() for x in notes_str.split(',')]
         if len(midi_lst) != 6:
-            raise RuntimeError(f"Option {ConfigName.kbd_notes_midi} in main.ini must have 6 values: {notes_str}")
+            raise RuntimeError(f"Option {AppName.kbd_notes_midi} in main.ini must have 6 values: {notes_str}")
         if not all([x.isdigit() for x in midi_lst]):
-            raise RuntimeError(f"Option {ConfigName.kbd_notes_midi} in main.ini must be 6 integers: {notes_str}")
+            raise RuntimeError(f"Option {AppName.kbd_notes_midi} in main.ini must be 6 integers: {notes_str}")
         midi_lst = [int(x) for x in midi_lst]
 
         if not all([0 <= x < 128 for x in midi_lst]):
-            raise RuntimeError(f"Option {ConfigName.kbd_notes_midi} in main.ini must be 0<=x<128: {notes_str}")
+            raise RuntimeError(f"Option {AppName.kbd_notes_midi} in main.ini must be 0<=x<128: {notes_str}")
 
         self.__kbd_notes: dict[str, int] = dict(zip(kbd_lst, midi_lst))
         self._func = None
@@ -58,7 +59,7 @@ class KbdMidiIn:
     def on_press(self, kbd_event):
         if kbd_event.name == "esc":
             keyboard.unhook_all()
-            MyLog().debug("Done unhook_all")
+            MY_LOG.debug("Done unhook_all")
             self._port_count = 0
 
         val = self.__kbd_notes.get(kbd_event.name, None)
@@ -92,7 +93,7 @@ class FakeMidiOut:
         if not msg or msg[0] == 0xF8 or msg[0] == 0xFE:
             return  # do not log too much
 
-        MyLog().info(f"~~~~~~~~~~~~Send MIDI message: {msg}")
+        MY_LOG.info(f"~~~~~~~~~~~~Send MIDI message: {msg}")
 
 
 class MidiInfo:
@@ -109,31 +110,30 @@ class MidiInfo:
         if self.__initialized:
             return
         self.__initialized = True
-        MyLog().warning(f"=========== Created MidiInfo in process id: {os.getpid()} ==========")
         # min note velocity to consider, counted notes have small velocity
         self.MIDI_MIN_VELO: int = 10
         # standard note velocity used in menu files, note louder than MIDI_MIN_VELO is converted to MIDI_STD_VELO
         self.MIDI_STD_VELO: int = 100
 
         dic = load_ini_section("MIDI")
-        notes_str = dic.get(ConfigName.kbd_notes_midi, '')
+        notes_str = dic.get(AppName.kbd_notes_midi, '')
         midi_lst = [x.strip() for x in notes_str.split(',')]
         if len(midi_lst) != 6:
-            raise RuntimeError(f"Option {ConfigName.kbd_notes_midi} in main.ini must have 6 values: {notes_str}")
+            raise RuntimeError(f"Option {AppName.kbd_notes_midi} in main.ini must have 6 values: {notes_str}")
 
         if not all([x.isdigit() for x in midi_lst]):
-            raise RuntimeError(f"Option {ConfigName.kbd_notes_midi} in main.ini must be 6 integers: {notes_str}")
+            raise RuntimeError(f"Option {AppName.kbd_notes_midi} in main.ini must be 6 integers: {notes_str}")
         midi_lst = [int(x) for x in midi_lst]
 
         if not all([0 <= x < 128 for x in midi_lst]):
-            raise RuntimeError(f"Option {ConfigName.kbd_notes_midi} in main.ini must be 0<=x<128: {notes_str}")
+            raise RuntimeError(f"Option {AppName.kbd_notes_midi} in main.ini must be 0<=x<128: {notes_str}")
 
         self.MIDI_DICT: dict[int, str] = dict(zip(midi_lst, ['a', 'b', 'c', 'd', 'e', 'f']))
 
 
 def get_in_port() -> rtmidi.MidiIn | KbdMidiIn:
     dic: dict[str, str] = load_ini_section("MIDI")
-    pname = dic.get(ConfigName.midi_in, "")
+    pname = dic.get(AppName.midi_in, "")
     midi_in: rtmidi.MidiIn = rtmidi.MidiIn()
     midi_in.close_port()
     p_count: int = midi_in.get_port_count()
@@ -142,19 +142,19 @@ def get_in_port() -> rtmidi.MidiIn | KbdMidiIn:
         if pname in port_name:
             midi_in.open_port(k, name="In")
             if midi_in.is_port_open():
-                MyLog().info(f"Found requested MIDI IN port: {port_name}")
+                MY_LOG.info(f"Found requested MIDI IN port: {port_name}")
                 return midi_in
 
-    if _IS_LINUX and not _HAS_KBD:
+    if not _HAS_KBD:
         raise RuntimeError(f"Failed to open MIDI IN port: {pname}")
 
-    MyLog().error(f"MIDI IN port is not open: {pname}, using computer keyboard")
+    MY_LOG.warning(f"MIDI IN port is not open: {pname}, using computer keyboard")
     return KbdMidiIn()
 
 
 def get_out_port() -> rtmidi.MidiOut | FakeMidiOut:
     dic: dict[str, str] = load_ini_section("MIDI")
-    pname = dic.get(ConfigName.midi_out, "")
+    pname = dic.get(AppName.midi_out, "")
 
     midi_out: rtmidi.MidiOut = rtmidi.MidiOut()
     midi_out.close_port()
@@ -163,8 +163,8 @@ def get_out_port() -> rtmidi.MidiOut | FakeMidiOut:
         if pname in port_name:
             midi_out.open_port(k, name="Out")
             if midi_out.is_port_open():
-                MyLog().info(f"Found requested MIDI OUT port: {port_name}")
+                MY_LOG.info(f"Found requested MIDI OUT port: {port_name}")
                 return midi_out
 
-    MyLog().error(f"MIDI OUT port is not open: {pname}, using fake port")
+    MY_LOG.error(f"MIDI OUT port is not open: {pname}, using fake port")
     return FakeMidiOut()

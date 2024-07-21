@@ -7,14 +7,14 @@ from random import randrange
 import numpy as np
 
 from drum._sampleloader import SampleLoader
-from utils.utillog import MyLog
-from utils.utilother import FileFinder
+from utils.util_log import MY_LOG
+from utils.util_other import FileFinder
 
 
 # noinspection PyUnusedLocal
 class PtrnLoader:
     """ Load drum pattern from INI patterns and create playable lists numpy arrays """
-    sl: SampleLoader = SampleLoader()
+    sample_loader: SampleLoader = SampleLoader()
 
     def __init__(self, ptrn_dir: str):
         self.ff = FileFinder(ptrn_dir, True, ".ini")
@@ -45,7 +45,7 @@ class PtrnManager:
     _QUIET_PTRN_FRACTION: float = 0.7
 
     def __init__(self, drum_loader: PtrnLoader):
-        self._dl = drum_loader
+        self._drum_loader = drum_loader
         # split quiet and loud patterns based on intensity
         self._quiet_slice: slice = slice(None, None)
         self._loud_slice: slice = slice(None, None)
@@ -67,16 +67,16 @@ class PtrnManager:
         l3: list[float] = []
         for ptn_name in dic:
             ptn_dic: dict[str, str] = dict()
-            self._dl.fn_load(ptn_name, dic[ptn_name], ptn_dic)
+            self._drum_loader.fn_load(ptn_name, dic[ptn_name], ptn_dic)
             assert ptn_dic, f"Empty pattern name: {ptn_name} in file: {fname}"
             l1.append(ptn_dic)
             l2.append(ptn_name)
-            l3.append(self._dl.fn_intensity(ptn_dic))  # pattern energy
+            l3.append(self._drum_loader.fn_intensity(ptn_dic))  # pattern energy
         if not l1:
             raise RuntimeError(f"No patterns found in file: {fname}")
         # sort patterns by intensity
         self.__ptn = sorted(zip(l1, l2, l3), key=lambda x: x[2])
-        MyLog().debug(f"Done loading from: {fname}\n{self.__ptn}")
+        MY_LOG.debug(f"Done loading from: {fname}\n{self.__ptn}")
         ptn_len = len(self.__ptn)
         split_id = floor(ptn_len * self._QUIET_PTRN_FRACTION)
 
@@ -88,12 +88,12 @@ class PtrnManager:
 
     def prepare_patterns(self, bar_len: int, volume: float, par: float) -> None:
         self.__snd.clear()
-        self._dl.sl.set_volume(volume)
+        self._drum_loader.sample_loader.set_volume(volume)
         assert self.__ptn, "Empty string patterns list!"
         # INI patterns are already sorted by intensity
         for ptn_dic, name, energy in self.__ptn:
-            self.__snd.append(self._dl.fn_convert(bar_len, par, ptn_dic))
-            MyLog().debug(f"Converted pattern name: {name}, intensity: {energy}")
+            self.__snd.append(self._drum_loader.fn_convert(bar_len, par, ptn_dic))
+            MY_LOG.debug(f"Converted pattern name: {name}, intensity: {energy}")
 
     def random_quiet(self) -> tuple[list[np.ndarray], str, float, int]:
         """ get random quiet sound, it's name, energy and index. Patterns sorted by energy   """

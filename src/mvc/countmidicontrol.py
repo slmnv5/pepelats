@@ -1,48 +1,14 @@
 from multiprocessing import Queue
 from threading import Timer
 
-import rtmidi.midiconstants
+from rtmidi.midiconstants import NOTE_ON
 
-from basic.midiinfo import KbdMidiIn, get_in_port
-from mvc._menuhost import MenuHost
-from utils.utillog import MyLog
-
-_CTRL = rtmidi.midiconstants.CONTROL_CHANGE
-_ON = rtmidi.midiconstants.NOTE_ON
-_OFF = rtmidi.midiconstants.NOTE_OFF
+from mvc.menuhost import MenuHost
+from mvc.midicontrol import MidiAdapter
+from utils.util_log import MY_LOG
 
 
-class MidiCcToNote:
-    """Convert MIDI CC to note ON/OFF messages.
-    Used for expression pedal to send note ON/OF when pedal goes Down/Up """
-
-    def __init__(self):
-        self.__prev_msg: list[int] = [0, 0, 0]
-        self.__sent_on = False
-
-    def convert(self, msg: list[int]) -> list[int]:
-        if msg[1] != self.__prev_msg[1] or msg[0] != self.__prev_msg[0]:
-            self.__prev_msg = msg
-            self.__sent_on = False
-            return []
-
-        # expression pedal goes down, hence value goes down
-        if self.__prev_msg[2] > msg[2] and not self.__sent_on:
-            self.__prev_msg = msg
-            self.__sent_on = True
-            return [0x90, msg[1], 100]
-
-        # expression pedal goes up, hence value goes down
-        if self.__prev_msg[2] < msg[2] and self.__sent_on:
-            self.__prev_msg = msg
-            self.__sent_on = False
-            return [0x80, msg[1], 0]
-
-        self.__prev_msg = msg
-        return []
-
-
-class CountMidiControl(MenuHost):
+class CountMidiControl(MidiAdapter, MenuHost):
     """Count MIDI notes to increase number of messages MIDI pedal can send,
     tap, double tap, long tap - send notes with different velocity. Count algorithm:
     take the original note, count taps, +5 if the last tap is long,
@@ -52,42 +18,20 @@ class CountMidiControl(MenuHost):
 
     def __init__(self, queue: Queue):
         MenuHost.__init__(self, queue)
-        self._midi_in: rtmidi.MidiIn | KbdMidiIn = get_in_port()
-        self._p_count: int = self._midi_in.get_port_count()
+        MidiAdapter.__init__(self)
         self.__on_count: int = 0
         self.__off_count: int = 0
         self.__past_note: int = -1  # original MIDI note
-        self.__midi_cc_to_note = MidiCcToNote()
-        self._midi_in.set_callback(self._process_msg)
 
-    def _is_alive(self) -> bool:
-        return super()._is_alive() and self._midi_in.get_port_count() >= self._p_count
-
-    # noinspection PyUnusedLocal
-    def _process_msg(self, event, data=None) -> None:
-        msg, _ = event
-        assert msg and isinstance(msg, list) and all(isinstance(x, int) for x in msg), f"msg: {msg}, type: {type(msg)}"
-        if msg[0] & 0xF0 == _CTRL:
-            msg = self.__midi_cc_to_note.convert(msg)
-        if not msg:
-            return
-
-        note_on: bool = msg[0] & 0xF0 == _ON
-        note: int = msg[1]
-        velo: int = msg[2]
-        if note_on and velo < self.min_velo:
-            return
-        else:
-            velo = self.std_velo
-
+    def _send_note(self, msg_type: int, note: int, velo: int) -> None:
+        note_on: bool = msg_type == NOTE_ON
         if self.__past_note != note:
             self.__on_count, self.__off_count, self.__past_note = 0, 0, note  # init counters for new note
             if note_on:
-                MyLog().debug(f"Sending non-counted MIDI note: {note}")  # new note ON, send it
-                self._send(note, velo)
-
-        if not note_on and self.__on_count == 0:
-            return  # old OFF came before new ON, we ignore
+                MY_LOG.debug(f"Sending non-counted MIDI note: {note}")  # new note ON, send it
+                self._send_command(note, velo)
+            elif self.__on_count == 0:
+                return  # old OFF came before new ON, ignore2
 
         if note_on:
             self.__on_count += 1
@@ -103,11 +47,11 @@ class CountMidiControl(MenuHost):
                 or self.__off_count != off_count):
             return
 
-        # note and count did not change for long time, we send MIDI
-        count = self.__on_count
+        # note and count did not change for long time, calculate velocity
+        new_velo = self.__on_count
         if self.__on_count > self.__off_count:
-            count += 5
+            new_velo += 5  # long hold on the last tap
 
         self.__on_count, self.__off_count, self.__past_note = 0, 0, -1
-        MyLog().debug(f"Sending counted MIDI note: {note}, {count}")
-        self._send(note, count)
+        MY_LOG.debug(f"Sending counted MIDI note: {note}, {new_velo}")
+        self._send_command(note, new_velo)

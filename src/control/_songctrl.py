@@ -8,7 +8,7 @@ from mvc.menuclient import MenuClient
 from song.loopsimple import LoopSimple
 from song.song import Song
 from song.songpart import SongPart
-from utils.utilconfig import ConfigName
+from utils.util_name import AppName
 
 
 class SongCtrl(MenuClient, LoopCtrl, ABC):
@@ -24,7 +24,7 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
         self._start_with_rec: bool = False  # if start non-empty loop with recording
         Thread(target=self.__play_loop, name="play_loop", daemon=True).start()
 
-    # ================ song part methods
+    # song part methods
 
     def _show_loops(self) -> str:
         part = self._song.get_item()
@@ -104,7 +104,7 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
             return
         if not self.get_is_rec():
             return
-        self.idx = self.idx % part.get_max_len(0)
+        self.idx = self.idx % part.get_max_len()
         part.get_item().max_buffer()
 
     def _part_clear(self, part_id: int) -> None:
@@ -123,7 +123,7 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
             while part.redo():
                 pass
 
-        # ================= song methods =============================
+    # song methods
 
     def _song_delete(self) -> None:
         self._song_stop()
@@ -156,7 +156,7 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
         self._song_stop()
         if drum_type != self._drum.get_class_name():
             bar_len = self._drum.get_bar_len()
-            drum_info = {ConfigName.drum_type: drum_type}
+            drum_info = {AppName.drum_type: drum_type}
             self.drum_create(bar_len, **drum_info)
 
     def _drum_type_show(self) -> str:

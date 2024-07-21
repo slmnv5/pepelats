@@ -1,4 +1,4 @@
 
 
-python.exe ./src/start_looper.py --info
+python.exe ./src/start_looper.py %*
 

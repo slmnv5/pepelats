@@ -1,22 +1,15 @@
 from http.server import BaseHTTPRequestHandler
 from typing import Callable
 
-from utils.utillog import MyLog
-from utils.utilweb import send_headers, load_file
+from utils.util_log import MY_LOG
+from utils.util_web import send_headers, load_file, send_redirect
 
 
 class WebHandler(BaseHTTPRequestHandler):
     get_updates: Callable[[], str] = None
 
-    def _send_redirect(self) -> None:
-        self.send_response(303)
-        self.send_header('Content-type', 'text/html')
-        self.send_header('Location', '/')  # This will navigate to the original page
-        self.end_headers()
-
     # noinspection PyPep8Naming
     def do_GET(self):
-        MyLog().info(f"path:{self.path}\nheaders:{self.headers}")
         if self.path == "/":
             send_headers(self)
             self.wfile.write(load_file("html/update_page.html").encode())
@@ -29,6 +22,12 @@ class WebHandler(BaseHTTPRequestHandler):
             self.wfile.write(load_file("html/update_page.js").encode())
         elif self.path == "/favicon.ico":
             send_headers(self, 'application/octet-stream')
-            self.wfile.write(load_file('favicon.ico').encode())
+            self.wfile.write(load_file('favicon.ico', True))
         else:
-            self.send_error(400, "Not found", f"Not found: {self.path}")
+            send_redirect(self)
+
+    def log_message(self, msg, *args) -> None:
+        pass
+
+    def log_error(self, msg: str, *args) -> None:
+        MY_LOG.error(msg % args)

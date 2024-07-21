@@ -1,6 +1,6 @@
 import random
 
-from utils.utilother import FileFinder, CollectionOwner, EuclidSlicer, split_key_value
+from utils.util_other import FileFinder, CollectionOwner, EuclidSlicer, split_key_value
 
 
 def test_1():
@@ -8,7 +8,6 @@ def test_1():
     co = CollectionOwner(lst)
     co.select_idx(8)
     list_str = co.get_str(9)
-    print(list_str)
     assert "-07 H" in list_str
     assert "*08 I" in list_str
     assert "~09 J" in list_str
@@ -16,9 +15,7 @@ def test_1():
 
 def test_2():
     ff = FileFinder(".", True, "")
-    for x in ff.get_list():
-        print(x)
-    print(f"count: {ff.item_count()}")
+    assert ff.item_count() > 2
 
 
 def test_3():

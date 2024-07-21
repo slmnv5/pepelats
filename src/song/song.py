@@ -2,11 +2,11 @@ import pickle
 
 from control.loopctrl import LoopCtrl
 # noinspection PyUnresolvedReferences
-from song._utilname import generate_name
 # noinspection PyUnresolvedReferences
 from song.songpart import SongPart
-from utils.utillog import MyLog
-from utils.utilother import FileFinder, CollectionOwner
+from utils.util_log import MY_LOG
+from utils.util_name import AppName
+from utils.util_other import FileFinder, CollectionOwner, song_name_generate
 
 
 class Song(CollectionOwner[SongPart]):
@@ -16,16 +16,16 @@ class Song(CollectionOwner[SongPart]):
     def __init__(self, ctrl: LoopCtrl):
         tmp = [SongPart(), SongPart(), SongPart(), SongPart()]
         CollectionOwner.__init__(self, tmp)
-        self._name: str = generate_name()
+        self._name: str = song_name_generate()
         self._ctrl: LoopCtrl = ctrl
-        self._ff = FileFinder(".save_song", True, ".sng")
+        self._ff = FileFinder(AppName.save_song, True, ".sng")
 
     def clear(self) -> None:
         for k, x in enumerate(self.get_list()):
             if not x.is_empty:
                 self.set_at_idx(k, SongPart())
         self.select_idx(0)
-        self._name = generate_name()
+        self._name = song_name_generate()
 
     def get_complete_name(self) -> str:
         drum_type = self._ctrl.get_drum().get_class_name()[0]
@@ -44,12 +44,12 @@ class Song(CollectionOwner[SongPart]):
         with open(fname, 'wb') as f:
             pickle.dump((parts_lst, bar_len, drum_info), f)
 
-        MyLog().info(f"Saved song file: {fname}")
+        MY_LOG.info(f"Saved song file: {fname}")
 
     def load_song(self) -> None:
         self._name = self._ff.get_item().split(".")[0]
         fname = self._ff.get_full_name()
-        MyLog().info(f"Loading song file: {fname}")
+        MY_LOG.info(f"Loading song file: {fname}")
         part_lst: list[SongPart | None]
         with open(fname, 'rb') as f:
             parts_lst, bar_len, drum_info = pickle.load(f)

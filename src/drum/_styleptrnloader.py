@@ -4,9 +4,9 @@ import numpy as np
 
 from basic.audioinfo import make_buffer
 from drum._ptrnloader import PtrnLoader
-from utils.utilconfig import ConfigName
-from utils.utillog import MyLog
-from utils.utilnumpy import from_data_to_buff
+from utils.util_name import AppName
+from utils.util_log import MY_LOG
+from utils.util_numpy import from_data_to_buff
 
 
 class StylePtrnLoader(PtrnLoader):
@@ -14,7 +14,7 @@ class StylePtrnLoader(PtrnLoader):
 
     def __init__(self):
         # drum patterns from INI file
-        PtrnLoader.__init__(self, f"{ConfigName.drum_config_dir}/style")
+        PtrnLoader.__init__(self, f"{AppName.drum_config_dir}/style")
         # name of accent pattern
         self.__ACCENT: str = "ac"
 
@@ -27,7 +27,7 @@ class StylePtrnLoader(PtrnLoader):
             assert isinstance(notes, str) and len(notes) > 0
             notes = (notes * ceil(max_steps / len(notes)))[:max_steps]
             ptn_dic[sname] = notes
-        MyLog().debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
+        MY_LOG.debug(f"Loaded drum pattern: {ptn_name}\n{ptn_dic}")
 
     def fn_convert(self, bar_len: int, par: float, ptn_dic: dict[str, str]) -> list[np.ndarray]:
         result = list()
@@ -41,7 +41,7 @@ class StylePtrnLoader(PtrnLoader):
             for k, s in enumerate(notes):
                 if s not in "!":
                     continue
-                sound_arr = self.sl.get_sound(sname, accents[k] == "!")
+                sound_arr = self.sample_loader.get_sound(sname, accents[k] == "!")
                 idx = round(k * step_len)
                 if k % 2 != 0:
                     chg = round(step_len * par * 0.25)
@@ -58,5 +58,5 @@ class StylePtrnLoader(PtrnLoader):
                 if s not in "!":
                     continue
                 is_accent = accents[k] == '!'
-                result += self.sl.get_energy(sname, is_accent) / len(notes)
+                result += self.sample_loader.get_energy(sname, is_accent) / len(notes)
         return result

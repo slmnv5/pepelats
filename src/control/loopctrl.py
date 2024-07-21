@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from threading import Event
 
 from drum.basedrum import BaseDrum
-from utils.utilother import HUGE_INT
+from utils.util_other import HUGE_INT
 
 
 class LoopCtrl(ABC):
@@ -53,7 +53,7 @@ class LoopCtrl(ABC):
         else:
             self.__stop_len = self.idx + (bound_value - over)
 
-    # ===================== drum methods
+    # drum methods
 
     def _drum_iterate_config(self, steps: int) -> None:
         self._drum.iterate_config(steps)

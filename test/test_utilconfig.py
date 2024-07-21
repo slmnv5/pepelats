@@ -1,6 +1,7 @@
-from utils.utilconfig import load_ini_section, ConfigName
+from utils.util_config import load_ini_section
+from utils.util_name import AppName
 
 
 def test_1():
     dic = load_ini_section("AUDIO")
-    assert dic[ConfigName.max_len_seconds] == "60"
+    assert dic[AppName.max_len_seconds] == "60"

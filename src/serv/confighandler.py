@@ -4,9 +4,9 @@ from configparser import ConfigParser, ParsingError
 from http.server import BaseHTTPRequestHandler
 from typing import Callable
 
-from utils.utillog import MyLog
-from utils.utilother import split_to_dict
-from utils.utilweb import CONFIG_PAGE, RESET_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH, send_headers, load_file
+from utils.util_other import split_to_dict
+from utils.util_web import CONFIG_PAGE, RESET_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH, send_headers, load_file, \
+    send_redirect
 
 
 class ConfigHandler(BaseHTTPRequestHandler):
@@ -44,14 +44,8 @@ class ConfigHandler(BaseHTTPRequestHandler):
             f.write(data_dict["file_data"])
         return True
 
-    def _send_redirect(self) -> None:
-        self.send_response(303)
-        self.send_header('Content-type', 'text/html')
-        self.send_header('Location', '/')  # This will navigate to the original page
-        self.end_headers()
-
     def _send_file(self, fname: str, read_only: bool) -> None:
-        send_headers(self, 'text/plain')
+        send_headers(self)
         if os.path.islink(fname):
             self.wfile.write(f"File is link: {fname}".encode())
         elif not os.path.isfile(fname):
@@ -65,7 +59,6 @@ class ConfigHandler(BaseHTTPRequestHandler):
 
     # noinspection PyPep8Naming
     def do_GET(self):
-        MyLog().info(f"path:{self.path}\nheaders:{self.headers}")
         if self.path == "/":
             send_headers(self)
             self.wfile.write(CONFIG_PAGE)
@@ -85,14 +78,17 @@ class ConfigHandler(BaseHTTPRequestHandler):
             send_headers(self, 'application/octet-stream')
             self.wfile.write(load_file('favicon.ico').encode())
         else:
-            self.send_error(400, "Not found", f"Not found: {self.path}")
+            send_redirect(self)
 
     # noinspection PyPep8Naming
     def do_POST(self):
         if self.path != "/save_file":
-            self._send_redirect()
+            send_redirect(self)
         else:
             if self._write_to_file():
-                self._send_redirect()
+                send_redirect(self)
             else:
-                self.send_error(400, "Bad Request", "Parsing form data failed")
+                self.send_error(400, "Bad Request", "Could not save file")
+
+    def log_message(self, msg, *args) -> None:
+        pass

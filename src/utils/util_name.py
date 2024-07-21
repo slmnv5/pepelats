@@ -1,18 +1,11 @@
-import os
-from configparser import ConfigParser
-
-from utils.utilother import get_ip_address
-
-IP_ADDR = get_ip_address()
-
-
-class ConfigName:
-    # kill_command = "killall -9 -qw python > /dev/null"
+class AppName:
+    app_name: str = "pepelats"
     # menu INI config files related
     update_method: str = "update_method"
     description: str = "description"
     play_section: str = "play"
     # method names
+    client_log: str = "_client_log"
     client_redraw: str = "_client_redraw"
     client_stop: str = "_client_stop"
     menu_update: str = "_menu_update"
@@ -47,29 +40,4 @@ class ConfigName:
     documents_dir: str = "doc"
     main_ini: str = "main.ini"
     local_ini: str = "local.ini"
-
-
-def load_ini_section(sect: str) -> dict[str, str]:
-    main = ConfigName.main_ini
-    local = ConfigName.local_ini
-    assert os.path.isfile(main)
-    cfg = ConfigParser()
-    cfg.read([main, local])  # local file overwrites main
-    if sect not in cfg.sections():
-        return dict()
-    return dict(cfg.items(sect))
-
-
-SCREEN_TYPE = load_ini_section("SCREEN").get(ConfigName.screen_type, 'lcd')
-
-
-def update_ini_section(sect: str, dic: dict[str, str]) -> None:
-    local = ConfigName.local_ini
-    cfg = ConfigParser()
-    cfg.read(local)
-    if sect not in cfg.sections():
-        cfg.add_section(sect)
-    for k, v in dic.items():
-        cfg.set(sect, k, v)
-    with open(local, 'w') as f:
-        cfg.write(f)
+    save_song: str = "save_song"

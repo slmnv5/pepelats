@@ -3,8 +3,8 @@ from abc import abstractmethod
 import numpy as np
 
 from basic.audioinfo import AudioInfo
-from utils.utilconfig import ConfigName
-from utils.utillog import MyLog
+from utils.util_name import AppName
+from utils.util_log import MY_LOG
 
 
 class BaseDrum:
@@ -39,10 +39,10 @@ class BaseDrum:
 
     def get_drum_info(self) -> dict[str, str | float]:
         drum_info: dict[str, str | float] = dict()
-        drum_info[ConfigName.drum_type] = self.get_class_name()
-        drum_info[ConfigName.drum_config_file] = self.get_config()
-        drum_info[ConfigName.drum_volume] = self.get_volume()
-        drum_info[ConfigName.drum_par] = self.get_par()
+        drum_info[AppName.drum_type] = self.get_class_name()
+        drum_info[AppName.drum_config_file] = self.get_config()
+        drum_info[AppName.drum_volume] = self.get_volume()
+        drum_info[AppName.drum_par] = self.get_par()
         return drum_info
 
     def get_bpm(self) -> float:
@@ -56,7 +56,7 @@ class BaseDrum:
             raise RuntimeError("Method set_bar_len must be called only once with positive bar_len")
         self._bar_len = bar_len
         self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / AudioInfo().SD_RATE)
-        MyLog().info(f"Set bar len {self._bar_len} for drum: {self}")
+        MY_LOG.info(f"Set bar len {self._bar_len} for drum: {self}")
 
     def stop(self) -> None:
         self._is_stopped = True

@@ -1,7 +1,7 @@
 import os
 from http.server import BaseHTTPRequestHandler
 
-from utils.utilconfig import ConfigName
+from utils.util_name import AppName
 
 EDIT_PATH: str = "/edit?file="
 SHOW_PATH: str = "/show?file="
@@ -9,9 +9,17 @@ RESET_PATH: str = "/reset"
 EXIT_PATH: str = "/exit"
 
 
-def load_file(fname: str) -> str:
+def send_redirect(handler: BaseHTTPRequestHandler) -> None:
+    handler.send_response(303)
+    handler.send_header('Content-type', 'text/html')
+    handler.send_header('Location', '/')  # This will navigate to the original page
+    handler.end_headers()
+
+
+def load_file(fname: str, is_binary: bool = False) -> str | bytes:
     assert os.path.isfile(fname)
-    with open(fname, 'r') as f:
+    mode = "rb" if is_binary else "r"
+    with open(fname, mode) as f:
         return f.read()
 
 
@@ -41,13 +49,13 @@ _FORMAT_DICT: dict[str, str] = dict()
 _FORMAT_DICT["l_exit"] = EXIT_PATH
 _FORMAT_DICT["l_reset"] = RESET_PATH
 
-_FORMAT_DICT["l_std_cfg"] = _one_link(ConfigName.main_ini, SHOW_PATH)
-_FORMAT_DICT["l_custom_cfg"] = _one_link(ConfigName.local_ini, EDIT_PATH)
+_FORMAT_DICT["l_std_cfg"] = _one_link(AppName.main_ini, SHOW_PATH)
+_FORMAT_DICT["l_custom_cfg"] = _one_link(AppName.local_ini, EDIT_PATH)
 
 _FORMAT_DICT["l_curr_log"] = _one_link('log.txt', SHOW_PATH)
 _FORMAT_DICT["l_old_log"] = _one_link('log.bak', SHOW_PATH)
 
-_FORMAT_DICT["l_drum"] = _all_links(f"{ConfigName.drum_config_dir}", ".ini", EDIT_PATH)
-_FORMAT_DICT["l_menu"] = _all_links(f"./{ConfigName.menu_config_dir}", ".ini", EDIT_PATH)
+_FORMAT_DICT["l_drum"] = _all_links(f"{AppName.drum_config_dir}", ".ini", EDIT_PATH)
+_FORMAT_DICT["l_menu"] = _all_links(f"./{AppName.menu_config_dir}", ".ini", EDIT_PATH)
 
 CONFIG_PAGE: bytes = load_file("html/config_page.html").format(**_FORMAT_DICT).encode()
