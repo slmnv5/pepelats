@@ -19,7 +19,7 @@ class LoopSimple(WrapBuffer):
         bar_len = ctrl.get_drum().get_bar_len()
         self.finalize(ctrl.idx, bar_len)
         if not bar_len:
-            ctrl.drum_create(ctrl.idx)
+            ctrl.drum_create_async(ctrl.idx, dict())
 
     def play_loop(self, ctrl: LoopCtrl):
         # noinspection PyUnusedLocal

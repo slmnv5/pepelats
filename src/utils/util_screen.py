@@ -13,7 +13,6 @@ def get_default_dict() -> dict:
     tmp["is_rec"] = False
     tmp["len"] = 100_000
     tmp["max_loop_len"] = 100_000
-    tmp["sleep_tm"] = 1.0
     return tmp
 
 

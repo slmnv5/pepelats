@@ -7,13 +7,13 @@ from control._songctrl import SongCtrl
 from drum.bufferdrum import EuclidDrum, StyleDrum
 from drum.loopdrum import LoopDrum
 from drum.mididrum import MidiDrum
-from utils.util_screen import get_default_dict
 from serv.confighandler import ConfigHandler
 from utils.util_config import IP_ADDR
 from utils.util_config import load_ini_section, update_ini_section
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
 from utils.util_other import FileFinder
+from utils.util_screen import get_default_dict
 
 
 class Looper(SongCtrl):
@@ -23,17 +23,17 @@ class Looper(SongCtrl):
         SongCtrl.__init__(self, recv_q)
         self.__queue = send_q
         self.__dic: dict = get_default_dict()
-        self.drum_create(0)
+        self._drum_create(0, dict())
 
     def _client_stop(self) -> None:
         super()._client_stop()
         self._song_stop()
         self.__queue.put([AppName.client_stop])
 
-    def drum_create(self, bar_len: int, **kwargs) -> None:
-        self.client_enqueue(['_drum_create', bar_len, {**kwargs}])
+    def drum_create_async(self, bar_len: int, drum_info: dict) -> None:
+        self.client_enqueue(['_drum_create', bar_len, drum_info])
 
-    def _drum_create(self, bar_len: int, drum_info: dict[str: any]) -> None:
+    def _drum_create(self, bar_len: int, drum_info: dict) -> None:
         drum_type: str = drum_info.get(AppName.drum_type, self._drum.get_class_name())
 
         if drum_type == AppName.EuclidDrum:

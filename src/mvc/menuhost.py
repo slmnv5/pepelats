@@ -63,7 +63,7 @@ class MenuHost(_MenuLoader, ABC):
         self.__queue: Queue = queue
         self._menu_update(AppName.play_section)
         self.__queue.put([AppName.client_redraw, self.__dic])
-        self.midi_dict = MidiInfo().MIDI_DICT
+        self._midi_dict = MidiInfo().MIDI_DICT
         self._alive: bool = True
 
     @abstractmethod
@@ -71,11 +71,11 @@ class MenuHost(_MenuLoader, ABC):
         raise RuntimeError("This method should NOT be called()")
 
     def host_start(self) -> None:
-        MY_LOG.info(f"{self.__class__.__name__} start working as MenuHost")
+        MY_LOG.info(f"MenuHost start working")
         while self._alive and not self.is_broken():
             sleep(5)
         self.__queue.put([AppName.client_stop])
-        MY_LOG.info(f"{self.__class__.__name__} stop working as MenuHost")
+        MY_LOG.info(f"MenuHost stop working")
 
     def _menu_update(self, fname: str) -> None:
         super()._menu_update(fname)
@@ -88,10 +88,10 @@ class MenuHost(_MenuLoader, ABC):
         self.__dic["update_method"] = self.get(AppName.update_method)
 
     def _send_command(self, note: int, velo: int) -> None:
-        if note not in self.midi_dict:
+        if note not in self._midi_dict:
             MY_LOG.error(f"MIDI note: {note} is not expected. Check main.ini file")
 
-        menu_key: str = f"{self.midi_dict[note]}-{velo}"
+        menu_key: str = f"{self._midi_dict[note]}-{velo}"
         menu_cmd = self.get(menu_key)
         lst = menu_cmd.split(":")  # if there are many commands we need the list
         for cmd in lst:
@@ -112,7 +112,7 @@ class MenuHost(_MenuLoader, ABC):
         elif cmd[0] == AppName.client_stop:
             self._alive = False
         else:
-            MY_LOG.debug(f"{self.__class__.__name__} send command: {cmd}")
+            MY_LOG.debug(f"MenuHost send command: {cmd}")
             self.__queue.put(cmd)
 
 

@@ -61,7 +61,7 @@ def test_3():
     t.start()  # start processing message queue
     assert looper.get_drum().get_bar_len() == 0
 
-    looper.drum_create(100_000, drum_type="MidiDrum")
+    looper.drum_create_async(100_000, {"drum_type": "MidiDrum"})
     while not looper.get_drum().get_bar_len():
         sleep(1)  # wait for another thread to create drum
 

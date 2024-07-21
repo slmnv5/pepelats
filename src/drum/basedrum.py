@@ -3,8 +3,8 @@ from abc import abstractmethod
 import numpy as np
 
 from basic.audioinfo import AudioInfo
-from utils.util_name import AppName
 from utils.util_log import MY_LOG
+from utils.util_name import AppName
 
 
 class BaseDrum:
@@ -35,7 +35,7 @@ class BaseDrum:
         return self._par
 
     def get_class_name(self) -> str:
-        return self.__class__.__name__
+        return f"{type(self).__name__}"
 
     def get_drum_info(self) -> dict[str, str | float]:
         drum_info: dict[str, str | float] = dict()

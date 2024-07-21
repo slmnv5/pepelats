@@ -150,14 +150,14 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
         self._song_stop()
         self._song.clear()
         drum_info = self._drum.get_drum_info()
-        self.drum_create(0, **drum_info)
+        self._drum_create(0, **drum_info)
 
     def _drum_type_change(self, drum_type: str) -> None:
         self._song_stop()
         if drum_type != self._drum.get_class_name():
             bar_len = self._drum.get_bar_len()
             drum_info = {AppName.drum_type: drum_type}
-            self.drum_create(bar_len, **drum_info)
+            self._drum_create(bar_len, **drum_info)
 
     def _drum_type_show(self) -> str:
         return "Current drum type: " + self._drum.get_class_name()

@@ -26,7 +26,11 @@ class LoopCtrl(ABC):
         pass
 
     @abstractmethod
-    def drum_create(self, bar_len: int, **kwargs) -> None:
+    def drum_create_async(self, bar_len: int, drum_info: dict) -> None:
+        pass
+
+    @abstractmethod
+    def _drum_create(self, bar_len: int, drum_info: dict) -> None:
         pass
 
     def get_is_rec(self) -> bool:

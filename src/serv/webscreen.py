@@ -3,17 +3,17 @@ from http.server import HTTPServer
 from multiprocessing import Queue, Event
 from threading import Thread
 
-from utils.util_screen import get_screen_dict
 from mvc.menuclient import MenuClient
 from serv.webhandler import WebHandler
 from utils.util_config import IP_ADDR
 from utils.util_log import MY_LOG
+from utils.util_screen import get_screen_dict, get_default_dict
 
 
 class WebScreen(MenuClient, HTTPServer):
     def __init__(self, queue: Queue):
         MenuClient.__init__(self, queue)
-        self.__dic: dict = dict()
+        self.__dic: dict = get_screen_dict(get_default_dict())
         # noinspection PyTypeChecker
         HTTPServer.__init__(self, ('', 8000), WebHandler)
         WebHandler.get_updates = self.get_updates
