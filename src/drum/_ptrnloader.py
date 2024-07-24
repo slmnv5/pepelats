@@ -92,13 +92,13 @@ class PtrnManager:
 
     def random_quiet(self) -> tuple[list[np.ndarray], str, float, int]:
         """ get random quiet sound, it's name, energy and index.  """
-        self.__idx = randrange(len(self._quiet))
+        self.__idx = randrange(len(self.__quiet))
         ptn, snd = self.__quiet[self.__idx]
         return snd, ptn[1], ptn[2], self.__idx
 
     def random_loud(self) -> tuple[list[np.ndarray], str, float, int]:
         """ get random loud sound, it's name, energy and index. """
-        self.__idx = randrange(len(self._loud))
+        self.__idx = randrange(len(self.__loud))
         ptn, snd = self.__loud[self.__idx]
         return snd, ptn[1], ptn[2], self.__idx
 
