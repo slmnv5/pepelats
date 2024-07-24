@@ -11,7 +11,7 @@ from utils.util_config import IP_ADDR, BRANCH
 from utils.util_config import load_ini_section, update_ini_section
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
-from utils.util_screen import get_default_dict, SCREEN_TYPE
+from utils.util_screen import get_default_dict
 
 
 class Looper(SongCtrl):
@@ -81,7 +81,8 @@ class Looper(SongCtrl):
 
     @staticmethod
     def _info_show() -> str:
-        return f"IP addr: {IP_ADDR} screen type: {SCREEN_TYPE} (0-lcd, 1-web) version: {BRANCH}"
+        scr_type: int = load_ini_section("SCREEN", True).get(AppName.screen_type, 0)
+        return f"IP addr: {IP_ADDR}\nscreen type: {scr_type} (0-lcd, 1-web)\nversion: {BRANCH}"
 
     @staticmethod
     def _screen_type_change() -> None:
