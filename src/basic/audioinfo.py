@@ -89,7 +89,7 @@ class AudioInfo:
 
         self.MAX_SD_TYPE = get_dtype_max(self.SD_TYPE)
 
-        self.MAX_LEN = dic.get(AppName.max_len_seconds, "60")
+        self.MAX_LEN = dic.get(AppName.max_len_seconds, 60)
         self.MAX_LEN *= self.SD_RATE
 
         sd.check_output_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)

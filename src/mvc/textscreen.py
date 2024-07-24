@@ -86,4 +86,4 @@ class TextScreen(MenuClient):
             self.__dic["pos"] = pos
             pos = round(pos * SCR_COLS)  # shown by inverse color
             line = _REV_CLR + line[:pos] + _END_ALL + line[pos:]
-            print(f"{_CURSOR_MOVE}{line}", end='', flush=True)
+            print(f"{_CURSOR_MOVE}{line}", end="", flush=True)

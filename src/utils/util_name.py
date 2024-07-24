@@ -19,8 +19,8 @@ class AppName:
     device_name: str = "device_name"
     device_type: str = "device_type"
     sample_rate: str = "sample_rate"
-    kbd_notes_linux: str = "kbd_notes_linux"
-    kbd_notes_midi: str = "kbd_notes_midi"
+    keyboard_keys: str = "keyboard_keys"
+    keyboard_notes: str = "keyboard_notes"
     screen_type: str = "screen_type"
     # drum config related
     drum_type: str = "drum_type"

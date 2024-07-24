@@ -169,7 +169,7 @@ class EuclidSlicer:
         for k in self._beat_steps:
             is_accent = k % self._accent == 0
             pattern_lst[k] = '*' if is_accent else '+'
-        return ''.join(pattern_lst)
+        return "".join(pattern_lst)
 
     def beat_steps(self) -> list[int]:
         return self._beat_steps

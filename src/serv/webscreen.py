@@ -15,10 +15,10 @@ class WebScreen(MenuClient, HTTPServer):
         MenuClient.__init__(self, queue)
         self.__dic: dict = get_screen_dict(get_default_dict())
         # noinspection PyTypeChecker
-        HTTPServer.__init__(self, ('', 8000), WebHandler)
+        HTTPServer.__init__(self, ("", 8000), WebHandler)
         WebHandler.get_updates = self.get_updates
         self._has_updates: Event = Event()
-        self._update_json: str = ''
+        self._update_json: str = ""
         MY_LOG.warning(f"To control looper connect to:\nhttp://{IP_ADDR}:8000")
         Thread(target=self.serve_forever, name="updater", daemon=True).start()
 

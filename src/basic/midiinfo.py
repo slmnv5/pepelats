@@ -16,25 +16,21 @@ class KbdMidiIn:
 
     def __init__(self):
         dic = load_ini_section("MIDI")
-        if not _IS_LINUX:
-            notes_str = "1, 2, 3, 4, q, w"
-        else:
-            notes_str = dic.get(AppName.kbd_notes_linux, '')
-
+        notes_str = dic.get(AppName.keyboard_keys, "")
         kbd_lst: list[str] = [x.strip() for x in notes_str.split(',')]
         if len(kbd_lst) != 6:
-            raise ConfigError(f"Option {AppName.kbd_notes_linux} in main.ini must have 6 values: {notes_str}")
+            raise ConfigError(f"Option {AppName.keyboard_keys} in main.ini must have 6 values: {notes_str}")
 
-        notes_str = dic.get(AppName.kbd_notes_midi, '')
+        notes_str = dic.get(AppName.keyboard_notes, "")
         midi_lst = [x.strip() for x in notes_str.split(',')]
         if len(midi_lst) != 6:
-            raise ConfigError(f"Option {AppName.kbd_notes_midi} in main.ini must have 6 values: {notes_str}")
+            raise ConfigError(f"Option {AppName.keyboard_notes} in main.ini must have 6 values: {notes_str}")
         if not all([x.isdigit() for x in midi_lst]):
-            raise ConfigError(f"Option {AppName.kbd_notes_midi} in main.ini must be 6 integers: {notes_str}")
+            raise ConfigError(f"Option {AppName.keyboard_notes} in main.ini must be 6 integers: {notes_str}")
         midi_lst = [int(x) for x in midi_lst]
 
         if not all([0 <= x < 128 for x in midi_lst]):
-            raise ConfigError(f"Option {AppName.kbd_notes_midi} in main.ini must be 0<=x<128: {notes_str}")
+            raise ConfigError(f"Option {AppName.keyboard_notes} in main.ini must be 0<=x<128: {notes_str}")
 
         self.__kbd_notes: dict[str, int] = dict(zip(kbd_lst, midi_lst))
         self._func = None
@@ -116,17 +112,17 @@ class MidiInfo:
         self.MIDI_STD_VELO: int = 100
 
         dic = load_ini_section("MIDI")
-        notes_str = dic.get(AppName.kbd_notes_midi, '')
+        notes_str = dic.get(AppName.keyboard_notes, "")
         midi_lst = [x.strip() for x in notes_str.split(',')]
         if len(midi_lst) != 6:
-            raise ConfigError(f"Option {AppName.kbd_notes_midi} in main.ini must have 6 values: {notes_str}")
+            raise ConfigError(f"Option {AppName.keyboard_notes} in main.ini must have 6 values: {notes_str}")
 
         if not all([x.isdigit() for x in midi_lst]):
-            raise ConfigError(f"Option {AppName.kbd_notes_midi} in main.ini must be 6 integers: {notes_str}")
+            raise ConfigError(f"Option {AppName.keyboard_notes} in main.ini must be 6 integers: {notes_str}")
         midi_lst = [int(x) for x in midi_lst]
 
         if not all([0 <= x < 128 for x in midi_lst]):
-            raise ConfigError(f"Option {AppName.kbd_notes_midi} in main.ini must be 0<=x<128: {notes_str}")
+            raise ConfigError(f"Option {AppName.keyboard_notes} in main.ini must be 0<=x<128: {notes_str}")
 
         self.MIDI_DICT: dict[int, str] = dict(zip(midi_lst, ['a', 'b', 'c', 'd', 'e', 'f']))
 

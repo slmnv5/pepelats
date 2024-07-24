@@ -4,19 +4,19 @@ from configparser import ConfigParser
 
 from utils.util_name import AppName
 
-s = subprocess.run(['git', 'branch'], stdout=subprocess.PIPE)
+s = subprocess.run(["git", "branch"], stdout=subprocess.PIPE)
 s = s.stdout.decode()
 s = s[s.find("* ") + 2:]
 BRANCH = s[:s.find("\n")].strip()
 
-if os.name == 'posix':
-    s = subprocess.run(['hostname', '-I'], stdout=subprocess.PIPE)
+if os.name == "posix":
+    s = subprocess.run(["hostname", "-I"], stdout=subprocess.PIPE)
     IP_ADDR = s.stdout.decode()
-elif os.name == 'nt':
-    s = subprocess.run(['ipconfig'], stdout=subprocess.PIPE)
+elif os.name == "nt":
+    s = subprocess.run(["ipconfig"], stdout=subprocess.PIPE)
     s = s.stdout.decode()
     IP_ADDR = s[s.rfind(": ") + 2:].strip()
-    assert all(x.isdigit() or x == '.' for x in IP_ADDR)
+    assert all(x.isdigit() or x == "." for x in IP_ADDR)
 else:
     raise RuntimeError("OS must be posix or nt")
 
@@ -44,15 +44,15 @@ def update_ini_section(sect: str, dic: dict[str, str]) -> None:
         cfg.add_section(sect)
     for k, v in dic.items():
         cfg.set(sect, k, v)
-    with open(local, 'w') as f:
+    with open(local, "w") as f:
         cfg.write(f)
 
 
 def convert_param(param: str) -> str | int | float:
-    tmp = param.replace(' ', '')
-    if tmp.strip('+-').isdigit():
+    tmp = param.replace(" ", "")
+    if tmp.strip("+-").isdigit():
         return int(tmp)
-    elif tmp.strip('+-').replace('.', '', 1).isdigit():
+    elif tmp.strip("+-").replace(".", "", 1).isdigit():
         return float(tmp)
     else:
         return param

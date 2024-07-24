@@ -13,7 +13,7 @@ from utils.util_web import CONFIG_PAGE, RESET_PATH, EXIT_PATH, EDIT_PATH, SHOW_P
 
 def web_config():
     # noinspection PyTypeChecker
-    server = HTTPServer(('', 9000), ConfigHandler)
+    server = HTTPServer(("", 9000), ConfigHandler)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
@@ -26,7 +26,7 @@ class ConfigHandler(BaseHTTPRequestHandler):
     def _write_to_file(self) -> bool:
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length).decode()  # <--- Gets the data
-        type_list = self.headers.get('Content-Type', '').split("boundary=")
+        type_list = self.headers.get('Content-Type', "").split("boundary=")
 
         if len(type_list) != 2:
             return False
