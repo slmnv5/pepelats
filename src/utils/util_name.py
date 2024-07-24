@@ -1,9 +1,11 @@
 class AppName:
     app_name: str = "pepelats"
+
     # menu INI config files related
     update_method: str = "update_method"
     description: str = "description"
     play_section: str = "play"
+
     # method names
     client_log: str = "_client_log"
     client_redraw: str = "_client_redraw"
@@ -22,16 +24,21 @@ class AppName:
     keyboard_keys: str = "keyboard_keys"
     keyboard_notes: str = "keyboard_notes"
     screen_type: str = "screen_type"
+    euclid_break: str = "euclid_break"
+    style_break: str = "style_break"
+
     # drum config related
     drum_type: str = "drum_type"
     drum_config_file: str = "drum_config_file"
     drum_volume: str = "drum_volume"
     drum_par: str = "drum_par"
+
     # drum types
     EuclidDrum: str = "EuclidDrum"
     StyleDrum: str = "StyleDrum"
     MidiDrum: str = "MidiDrum"
     LoopDrum: str = "LoopDrum"
+
     # directories and files
     pickled_drum_samples: str = "pickled_drum_samples.pkl"  # saved dictionary with drum samples
     drum_samples_dir: str = "config/drum/wav"

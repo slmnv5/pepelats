@@ -1,7 +1,7 @@
 import os.path
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 from configparser import ConfigParser
-from math import floor
+from math import ceil
 from random import randrange
 
 import numpy as np
@@ -12,14 +12,13 @@ from utils.util_other import FileFinder
 
 
 # noinspection PyUnusedLocal
-class PtrnLoader:
+class PtrnLoader(ABC):
     """ Load drum pattern from INI patterns and create playable lists numpy arrays """
     sample_loader: SampleLoader = SampleLoader()
 
-    def __init__(self, ptrn_dir: str):
-        self.ff = FileFinder(ptrn_dir, True, ".ini")
-        if not self.ff.get_item():
-            raise RuntimeError(f"No INI files found in pattern directory: {ptrn_dir}")
+    def __init__(self):
+        self.break_marker: str = ""
+        self.ff: FileFinder | None = None
 
     @abstractmethod
     def fn_load(self, ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
@@ -42,13 +41,12 @@ class PtrnManager:
     Loaded patterns are converted to playable patterns - ready to play sound """
 
     # patterns sorted by energy. Low energy patterns used for rhythm, high energy for drum fills/breaks
-    _QUIET_PTRN_FRACTION: float = 0.7
+    _BREAK_FRACTION: float = 0.2
 
     def __init__(self, drum_loader: PtrnLoader):
+        self._loud = None  # list for breaks
+        self._quiet = None  # normal rithm
         self._drum_loader = drum_loader
-        # split quiet and loud patterns based on intensity
-        self._quiet_slice: slice = slice(None, None)
-        self._loud_slice: slice = slice(None, None)
         # dict of patterns from INI file. It has ptn dict, name, intensity. Sorted by intensity
         self.__ptn: list[tuple[dict[str, str], str, float]] = list()
         # list of patterns converted to sounds, sorted by intensity
@@ -77,32 +75,39 @@ class PtrnManager:
         # sort patterns by intensity
         self.__ptn = sorted(zip(l1, l2, l3), key=lambda x: x[2])
         MY_LOG.debug(f"Done loading from: {fname}\n{self.__ptn}")
-        ptn_len = len(self.__ptn)
-        split_id = floor(ptn_len * self._QUIET_PTRN_FRACTION)
-
-        if split_id:
-            self._quiet_slice = slice(0, split_id)
-            self._loud_slice = slice(split_id, ptn_len)
-        else:
-            self._quiet_slice = self._loud_slice = slice(0, ptn_len)
 
     def prepare_patterns(self, bar_len: int, volume: float, par: float) -> None:
         self.__snd.clear()
         self._drum_loader.sample_loader.set_volume(volume)
-        assert self.__ptn, "Empty string patterns list!"
+        assert self.__ptn, "Empty patterns!"
         # INI patterns are already sorted by intensity
         for ptn_dic, name, energy in self.__ptn:
             self.__snd.append(self._drum_loader.fn_convert(bar_len, par, ptn_dic))
             MY_LOG.debug(f"Converted pattern name: {name}, intensity: {energy}")
 
+        if self._drum_loader.break_marker:
+            self._separate_by_name()
+        else:
+            self._separate_by_energy()
+
     def random_quiet(self) -> tuple[list[np.ndarray], str, float, int]:
-        """ get random quiet sound, it's name, energy and index. Patterns sorted by energy   """
-        self.__idx = randrange(self._quiet_slice.start, self._quiet_slice.stop)
-        snd, ptn = self.__snd[self.__idx], self.__ptn[self.__idx]
+        """ get random quiet sound, it's name, energy and index.  """
+        self.__idx = randrange(len(self._quiet))
+        ptn, snd = self.__quiet[self.__idx]
         return snd, ptn[1], ptn[2], self.__idx
 
     def random_loud(self) -> tuple[list[np.ndarray], str, float, int]:
-        """ get random loud sound, it's name, energy and index. Patterns sorted by energy  """
-        self.__idx = randrange(self._loud_slice.start, self._loud_slice.stop)
-        snd, ptn = self.__snd[self.__idx], self.__ptn[self.__idx]
+        """ get random loud sound, it's name, energy and index. """
+        self.__idx = randrange(len(self._loud))
+        ptn, snd = self.__loud[self.__idx]
         return snd, ptn[1], ptn[2], self.__idx
+
+    def _separate_by_name(self) -> None:
+        marker = self._drum_loader.break_marker
+        self.__quiet = [(x, self.__snd[k]) for k, x in enumerate(self.__ptn) if marker not in x[1]]
+        self.__loud = [(x, self.__snd[k]) for k, x in enumerate(self.__ptn) if marker in x[1]]
+
+    def _separate_by_energy(self) -> None:
+        split_idx = ceil((1 - self._BREAK_FRACTION) * len(self.__snd))
+        self.__quiet = self.__snd[:split_idx]
+        self.__loud = self.__snd[split_idx:]

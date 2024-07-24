@@ -4,17 +4,23 @@ import numpy as np
 
 from basic.audioinfo import make_buffer
 from drum._ptrnloader import PtrnLoader
+from utils.util_config import load_ini_section
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
 from utils.util_numpy import from_data_to_buff
+from utils.util_other import FileFinder
 
 
 class StylePtrnLoader(PtrnLoader):
     """Pattern based drum"""
 
     def __init__(self):
-        # drum patterns from INI file
-        PtrnLoader.__init__(self, f"{AppName.drum_config_dir}/style")
+        PtrnLoader.__init__(self)
+        self.break_marker = load_ini_section("DRUM").get(AppName.style_break, "")
+        dname = f"{AppName.drum_config_dir}/style"
+        self.ff = FileFinder(dname, True, ".ini")
+        if not self.ff.get_item():
+            raise RuntimeError(f"No INI files in: {dname}")
         # name of accent pattern
         self.__ACCENT: str = "ac"
 

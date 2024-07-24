@@ -2,17 +2,23 @@ import numpy as np
 
 from basic.audioinfo import make_buffer
 from drum._ptrnloader import PtrnLoader
+from utils.util_config import load_ini_section
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
 from utils.util_numpy import from_data_to_buff
-from utils.util_other import EuclidSlicer
+from utils.util_other import EuclidSlicer, FileFinder
 
 
 class EuclidPtrnLoader(PtrnLoader):
     _BAR_STEPS: int = 16  # each bar has so many steps
 
     def __init__(self):
-        PtrnLoader.__init__(self, f"{AppName.drum_config_dir}/euclid")
+        PtrnLoader.__init__(self)
+        self.break_marker = load_ini_section("DRUM").get(AppName.euclid_break, "")
+        dname = f"{AppName.drum_config_dir}/euclid"
+        self.ff = FileFinder(dname, True, ".ini")
+        if not self.ff.get_item():
+            raise RuntimeError(f"No INI files in: {dname}")
 
     def fn_load(self, ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
         """One Drum pattern put into dictionary"""
