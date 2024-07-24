@@ -6,7 +6,7 @@ from time import sleep
 
 from basic.midiinfo import MidiInfo
 from utils.util_config import load_ini_section, convert_param
-from utils.util_log import MY_LOG
+from utils.util_log import MY_LOG, ConfigError
 from utils.util_name import AppName
 
 
@@ -15,7 +15,7 @@ class _MenuLoader:
 
     def __init__(self, dname: str):
         if not os.path.isdir(dname):
-            raise RuntimeError(f"Menu directory not found: {dname}. Check main.ini and local.ini files")
+            raise ConfigError(f"Menu directory not found: {dname}. Check main.ini and local.ini files")
         self.__sect_idx: int = 0
         self.__section: str = AppName.play_section
         self.__dic = dict()

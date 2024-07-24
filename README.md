@@ -12,15 +12,17 @@
 - Songs saved to and loaded from SD card
 
 ### Looper control and display
-- Display looper state in attached terminal or in a web browser on another device
-- Control of looper via MIDI or computer keyboard
+- Display looper state in attached terminal or via web server
+- Web page to edit configurations in web browser
+- Control of looper via MIDI or computer keyboard emulating MIDI
 - Configurable menu files. Pre-made configurations are 6x4 and 4x2. (default is 6 buttons x 4 parts)
-- Scrollable lists to select saved songs and drum patterns
+- Scrollable lists to select options using MIDI control
+
 
 ### Drum machine
 - Drum machine with four drum types: MIDI, Pattern, Euclidean and Loop
 - Drums have volume control, automatic random variations and can play breaks/fills
-- MIDI drum can sync and control external MIDI device via SysEx messages, good for IOS drums.
+- MIDI drum may sync and control external MIDI device via SysEx messages, good for IOS drums.
 - Pattern drum and Euclidean drum have adjustable swing parameter
 - Loop drum uses recorded audio loop, good for beat boxing
 

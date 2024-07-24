@@ -71,7 +71,7 @@ class WrapBuffer:
         case 2) base_len != 0 trim to multiple of base_len i.e.  1/4 1/2 1 2 3 ...
         """
         if not self.is_empty:
-            raise RuntimeError(f"Trimming loop that is not empty")
+            raise RuntimeError(f"Trimming buffer that is not empty")
         if not base_len < AudioInfo().MAX_LEN:
             raise RuntimeError(f"Trimming base_len is not correct: {base_len}")
 

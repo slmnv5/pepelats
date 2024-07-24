@@ -6,9 +6,10 @@ from control.looper import Looper
 from mvc.countmidicontrol import CountMidiControl
 from mvc.menuhost import MenuHost
 from mvc.textscreen import TextScreen
+from serv.confighandler import web_config
 from serv.webscreen import WebScreen
-from utils.util_config import load_ini_section
-from utils.util_log import MY_LOG
+from utils.util_config import load_ini_section, IP_ADDR
+from utils.util_log import MY_LOG, NoMidiInputFound, ConfigError
 from utils.util_name import AppName
 
 q_scr = Queue()  # screen update messages
@@ -40,17 +41,26 @@ def do_start(midi_ctrl: MenuHost, q_screen: Queue, q_looper: Queue, choice: int)
     midi_ctrl.host_start()
     q_screen.put([AppName.client_stop])
 
-    for _ in range(5):
+    for k in range(12):
         if p1.is_alive() or p2.is_alive():
-            MY_LOG.warning(f"Still running. screen: {p1.is_alive()}, looper: {p2.is_alive()}")
-            sleep(5)
+            MY_LOG.warning(f"Still running {k}\nscreen: {p1.is_alive()}\nlooper: {p2.is_alive()}\n")
+            sleep(7)
 
 
 if __name__ == "__main__":
     try:
+        midi_control = CountMidiControl(q_lpr)
         ch: int = load_ini_section("SCREEN", True).get(AppName.screen_type, 0)
-        midi_control: MenuHost = CountMidiControl(q_lpr)
         do_start(midi_control, q_scr, q_lpr, ch)
+    except ConfigError as ex:
+        MY_LOG.warning(f"HTTP server starting at: {IP_ADDR}:9000")
+        MY_LOG.warning(f"Edit local.ini file to correct: {ex}")
+        web_config()
+    except NoMidiInputFound as ex:
+        MY_LOG.warning(ex)
+        pname = load_ini_section("MIDI").get("midi_in", "")
+        MY_LOG.error("Connect MIDI IN controller {pname} or connect computer keyboard")
+        sleep(10)
     except Exception as ex:
         MY_LOG.exception(ex)
     finally:

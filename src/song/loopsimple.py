@@ -12,13 +12,11 @@ class LoopSimple(WrapBuffer):
     def __init__(self, sz: int = AudioInfo().MAX_LEN):
         WrapBuffer.__init__(self, sz)
 
-    def trim_buffer(self, ctrl: LoopCtrl) -> None:
-        """trims length to multiple of bar length"""
-        if not self.is_empty:
-            return
-        bar_len = ctrl.get_drum().get_bar_len()
-        self.finalize(ctrl.idx, bar_len)
-        if not bar_len:
+    def trim_buffer(self, ctrl: LoopCtrl, base_len: int) -> None:
+        """trims buffer length to multiple of base_len.
+        base_len is length of bar = length of drum """
+        self.finalize(ctrl.idx, base_len)
+        if not base_len:
             ctrl.drum_create_async(ctrl.idx, dict())
 
     def play_loop(self, ctrl: LoopCtrl):
@@ -38,4 +36,5 @@ class LoopSimple(WrapBuffer):
         with sd.Stream(callback=callback):
             ctrl.stop_wait()
 
-        self.trim_buffer(ctrl)
+        if self.is_empty:
+            self.trim_buffer(ctrl, ctrl.get_drum().get_bar_len())

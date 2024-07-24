@@ -5,8 +5,8 @@ import numpy as np
 
 from basic.audioinfo import correct_sound, AudioInfo
 from drum._utilalsa import read_wav_slow
-from utils.util_name import AppName
 from utils.util_log import MY_LOG
+from utils.util_name import AppName
 
 
 class SampleLoader:
@@ -40,17 +40,17 @@ class SampleLoader:
                     self._sounds = dict()
                     MY_LOG.error(ex)
 
-        if not self._sounds:
+        if self._sounds:
+            MY_LOG.info("Loaded drum samples from pickle file")
+        else:
             self._sounds = self._load_audio_samples(AppName.drum_samples_dir)
             try:
                 with open(fname, 'wb') as f:
                     pickle.dump(self._sounds, f)
             except pickle.PicklingError as ex:
                 MY_LOG.error(ex)
-            MY_LOG.warning("Loaded drum samples from WAV file")
-        else:
-            MY_LOG.warning("Loaded drum samples from pickle file")
-
+            MY_LOG.info("Loaded drum samples from WAV file")
+        
         m_amp = AudioInfo().MAX_SD_TYPE
         m_amp2 = m_amp * m_amp / 1000
         maximum: dict[str, float] = {k: round(v.max() / m_amp, 2) for k, v in self._sounds.items()}

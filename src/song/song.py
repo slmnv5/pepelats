@@ -7,6 +7,7 @@ from song.songpart import SongPart
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
 from utils.util_other import FileFinder, CollectionOwner, song_name_generate
+from utils.util_screen import SCR_ROWS
 
 
 class Song(CollectionOwner[SongPart]):
@@ -69,7 +70,7 @@ class Song(CollectionOwner[SongPart]):
         self._ctrl.drum_create_async(bar_len, drum_info)
 
     def show_list(self) -> str:
-        return self._ff.get_str()
+        return self._ff.get_str(SCR_ROWS - 5)
 
     def delete_song(self) -> None:
         self._ff.delete_selected()

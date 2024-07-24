@@ -1,9 +1,18 @@
 import logging
 import os
 import sys
+from datetime import datetime
 from multiprocessing import Queue
 
 from utils.util_name import AppName
+
+
+class NoMidiInputFound(RuntimeError):
+    pass
+
+
+class ConfigError(RuntimeError):
+    pass
 
 
 class MyLog:
@@ -28,7 +37,7 @@ class MyLog:
         if self.__initialized:
             return
         self.__initialized = True
-
+        self.level = logging.WARNING
         self.__queue: Queue | None = None
         self._logger = logging.getLogger()
         for h in self._logger.handlers:
@@ -43,13 +52,15 @@ class MyLog:
         self._logger.addHandler(h2)
 
         if "--debug" in sys.argv:
-            level = logging.DEBUG
+            self.level = logging.DEBUG
         elif "--info" in sys.argv:
-            level = logging.INFO
+            self.level = logging.INFO
         else:
-            level = logging.WARNING
+            self.level = logging.WARNING
 
-        self._logger.setLevel(level)
+        self._logger.setLevel(self.level)
+        self._logger.log(logging.INFO, f"============= Start log at {datetime.now()},"
+                                       f" level: {logging.getLevelName(self.level)}")
 
     def _write_to_screen(self, msg: str) -> None:
         if self.__queue:

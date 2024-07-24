@@ -1,6 +1,6 @@
 import os.path
 from abc import ABC
-from random import choices, random
+from random import random, choices
 from threading import Timer
 
 import numpy as np
@@ -11,13 +11,11 @@ from drum._ptrnloader import PtrnManager, PtrnLoader
 from drum._styleptrnloader import StylePtrnLoader
 from drum.basedrum import BaseDrum
 from utils.util_numpy import from_buff_to_data
+from utils.util_screen import SCR_ROWS
 
 
 class BufferDrum(BaseDrum, ABC):
     # Used to skip some drum sounds
-    _COUNT_LST: list[int] = [2, 3, 4, 5, 6]
-    _COUNT_WEIGHT: list[int] = [3, 5, 5, 2, 2]
-    _MAX_COUNT: int = max([2, 3, 4, 5, 6])
     _DR_MODIFY_PROB: float = 0.2
 
     def __init__(self, ptrn_loader: PtrnLoader):
@@ -25,7 +23,7 @@ class BufferDrum(BaseDrum, ABC):
         self._pm = PtrnManager(ptrn_loader)
         self._ff = ptrn_loader.ff
         self._play_lst: list[np.ndarray] = list()  # list to play sounds, changed by randomize
-        self._play_count: int = self._MAX_COUNT  # how many drums will play in the play list, changed by modify
+        self._exclude_lst: list[int] = list()  # drums to exclude, changed randomly
         self._name: str = ""  # pattern name
         self._energy: float = 0  # pattern energy
         self._idx: float = 0  # pattern index
@@ -38,7 +36,7 @@ class BufferDrum(BaseDrum, ABC):
         return f"{base_info}\nidx: {self._idx}, energy: {self._energy:.2F}\nname: {self._name}"
 
     def get_config(self, include_all=False) -> str:
-        return self._ff.get_item() if not include_all else self._ff.get_str()
+        return self._ff.get_item() if not include_all else self._ff.get_str(SCR_ROWS - 5)
 
     def set_config(self, config=None) -> None:
         """ if config changes re-load and re-generate patterns """
@@ -78,19 +76,24 @@ class BufferDrum(BaseDrum, ABC):
 
     def play_fill(self, idx: int) -> None:
         self._play_lst, self._name, self._energy, self._idx = self._pm.random_loud()
-        self._play_count = self._MAX_COUNT
+        self._exclude_lst.clear()
         tmp: int = idx % self._bar_len if self._bar_len else 0
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2
         # return to normal level
         Timer(tmp / AudioInfo().SD_RATE, self.randomize).start()
 
+    def _modify(self) -> None:
+        """ Randomly modify drum by excluding some drums """
+        m: int = len(self._play_lst)
+        self._exclude_lst = choices(range(m), k=m // 3)
+
     def play(self, out_data: np.ndarray, idx: int) -> None:
         if self._is_stopped:
             return
         if idx % self._bar_len == 0 and random() < self._DR_MODIFY_PROB:
-            self._play_count = choices(self._COUNT_LST, weights=self._COUNT_WEIGHT, k=1)[0]
-        for buff in self._play_lst[:self._play_count]:
+            self._modify()
+        for buff in [x for k, x in enumerate(self._play_lst) if k not in self._exclude_lst]:
             from_buff_to_data(buff, out_data, idx)
 
 

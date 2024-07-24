@@ -1,10 +1,24 @@
 import os
+import subprocess
 from configparser import ConfigParser
 
 from utils.util_name import AppName
-from utils.util_other import get_ip_address
 
-IP_ADDR = get_ip_address()
+s = subprocess.run(['git', 'branch'], stdout=subprocess.PIPE)
+s = s.stdout.decode()
+s = s[s.find("* ") + 2:]
+BRANCH = s[:s.find("\n")].strip()
+
+if os.name == 'posix':
+    s = subprocess.run(['hostname', '-I'], stdout=subprocess.PIPE)
+    IP_ADDR = s.stdout.decode()
+elif os.name == 'nt':
+    s = subprocess.run(['ipconfig'], stdout=subprocess.PIPE)
+    s = s.stdout.decode()
+    IP_ADDR = s[s.rfind(": ") + 2:].strip()
+    assert all(x.isdigit() or x == '.' for x in IP_ADDR)
+else:
+    raise RuntimeError("OS must be posix or nt")
 
 
 def load_ini_section(sect: str, convert: bool = False) -> dict[str, str]:

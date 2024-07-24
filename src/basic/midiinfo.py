@@ -4,7 +4,7 @@ import keyboard
 import rtmidi
 
 from utils.util_config import load_ini_section
-from utils.util_log import MY_LOG
+from utils.util_log import MY_LOG, NoMidiInputFound, ConfigError
 from utils.util_name import AppName
 
 _IS_LINUX = os.name == "posix"
@@ -23,18 +23,18 @@ class KbdMidiIn:
 
         kbd_lst: list[str] = [x.strip() for x in notes_str.split(',')]
         if len(kbd_lst) != 6:
-            raise RuntimeError(f"Option {AppName.kbd_notes_linux} in main.ini must have 6 values: {notes_str}")
+            raise ConfigError(f"Option {AppName.kbd_notes_linux} in main.ini must have 6 values: {notes_str}")
 
         notes_str = dic.get(AppName.kbd_notes_midi, '')
         midi_lst = [x.strip() for x in notes_str.split(',')]
         if len(midi_lst) != 6:
-            raise RuntimeError(f"Option {AppName.kbd_notes_midi} in main.ini must have 6 values: {notes_str}")
+            raise ConfigError(f"Option {AppName.kbd_notes_midi} in main.ini must have 6 values: {notes_str}")
         if not all([x.isdigit() for x in midi_lst]):
-            raise RuntimeError(f"Option {AppName.kbd_notes_midi} in main.ini must be 6 integers: {notes_str}")
+            raise ConfigError(f"Option {AppName.kbd_notes_midi} in main.ini must be 6 integers: {notes_str}")
         midi_lst = [int(x) for x in midi_lst]
 
         if not all([0 <= x < 128 for x in midi_lst]):
-            raise RuntimeError(f"Option {AppName.kbd_notes_midi} in main.ini must be 0<=x<128: {notes_str}")
+            raise ConfigError(f"Option {AppName.kbd_notes_midi} in main.ini must be 0<=x<128: {notes_str}")
 
         self.__kbd_notes: dict[str, int] = dict(zip(kbd_lst, midi_lst))
         self._func = None
@@ -119,14 +119,14 @@ class MidiInfo:
         notes_str = dic.get(AppName.kbd_notes_midi, '')
         midi_lst = [x.strip() for x in notes_str.split(',')]
         if len(midi_lst) != 6:
-            raise RuntimeError(f"Option {AppName.kbd_notes_midi} in main.ini must have 6 values: {notes_str}")
+            raise ConfigError(f"Option {AppName.kbd_notes_midi} in main.ini must have 6 values: {notes_str}")
 
         if not all([x.isdigit() for x in midi_lst]):
-            raise RuntimeError(f"Option {AppName.kbd_notes_midi} in main.ini must be 6 integers: {notes_str}")
+            raise ConfigError(f"Option {AppName.kbd_notes_midi} in main.ini must be 6 integers: {notes_str}")
         midi_lst = [int(x) for x in midi_lst]
 
         if not all([0 <= x < 128 for x in midi_lst]):
-            raise RuntimeError(f"Option {AppName.kbd_notes_midi} in main.ini must be 0<=x<128: {notes_str}")
+            raise ConfigError(f"Option {AppName.kbd_notes_midi} in main.ini must be 0<=x<128: {notes_str}")
 
         self.MIDI_DICT: dict[int, str] = dict(zip(midi_lst, ['a', 'b', 'c', 'd', 'e', 'f']))
 
@@ -146,7 +146,7 @@ def get_in_port() -> rtmidi.MidiIn | KbdMidiIn:
                 return midi_in
 
     if not _HAS_KBD:
-        raise RuntimeError(f"Failed to open MIDI IN port: {pname}")
+        raise NoMidiInputFound(f"Failed to open MIDI IN port: {pname}")
 
     MY_LOG.warning(f"MIDI IN port is not open: {pname}, using computer keyboard")
     return KbdMidiIn()

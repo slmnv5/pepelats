@@ -1,5 +1,4 @@
 import os
-from http.server import HTTPServer
 from multiprocessing import Queue
 from time import sleep
 
@@ -7,13 +6,12 @@ from control._songctrl import SongCtrl
 from drum.bufferdrum import EuclidDrum, StyleDrum
 from drum.loopdrum import LoopDrum
 from drum.mididrum import MidiDrum
-from serv.confighandler import ConfigHandler
-from utils.util_config import IP_ADDR
+from serv.confighandler import web_config
+from utils.util_config import IP_ADDR, BRANCH
 from utils.util_config import load_ini_section, update_ini_section
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
-from utils.util_other import FileFinder
-from utils.util_screen import get_default_dict
+from utils.util_screen import get_default_dict, SCREEN_TYPE
 
 
 class Looper(SongCtrl):
@@ -26,12 +24,12 @@ class Looper(SongCtrl):
         self._drum_create(0, dict())
 
     def _client_stop(self) -> None:
+        self._client_enqueue([AppName.client_stop])
         super()._client_stop()
         self._song_stop()
-        self.__queue.put([AppName.client_stop])
 
     def drum_create_async(self, bar_len: int, drum_info: dict) -> None:
-        self.client_enqueue(['_drum_create', bar_len, drum_info])
+        self._client_enqueue(['_drum_create', bar_len, drum_info])
 
     def _drum_create(self, bar_len: int, drum_info: dict) -> None:
         drum_type: str = drum_info.get(AppName.drum_type, self._drum.get_class_name())
@@ -59,7 +57,7 @@ class Looper(SongCtrl):
             self._drum.set_bar_len(bar_len)
 
     def _update_view(self) -> None:
-        self.client_enqueue([AppName.client_redraw, self.__dic])
+        self._client_enqueue([AppName.client_redraw, self.__dic])
 
     def _client_redraw(self, dic: dict) -> None:
         dic["header"] = f"{self._drum}"
@@ -82,19 +80,15 @@ class Looper(SongCtrl):
     # other methods
 
     @staticmethod
-    def _menu_config_show() -> str:
-        dic = load_ini_section("MENU")
-        return "Menu: " + dic.get(AppName.menu_choice, "")
+    def _info_show() -> str:
+        return f"IP addr: {IP_ADDR} screen type: {SCREEN_TYPE} (0-lcd, 1-web) version: {BRANCH}"
 
     @staticmethod
-    def _menu_config_iterate() -> None:
-        tmp = load_ini_section("MENU")
-        config = tmp.get(AppName.menu_choice, "")
-        ff = FileFinder(AppName.menu_config_dir, False, "")
-        ff.add_item(config)
-        ff.iterate(1)  # next menu
-        tmp[AppName.menu_choice] = ff.get_item()
-        update_ini_section("MENU", tmp)
+    def _screen_type_change() -> None:
+        dic = load_ini_section("SCREEN", True)
+        scr_type: int = dic.get(AppName.screen_type, 0)
+        dic[AppName.screen_type] = str((scr_type + 1) % 2)
+        update_ini_section("SCREEN", dic)
 
     @staticmethod
     def _looper_update() -> None:
@@ -104,14 +98,8 @@ class Looper(SongCtrl):
     def _web_config(self) -> None:
         self._song_stop()
         MY_LOG.warning(f"HTTP server starting at: {IP_ADDR}:9000")
-        # noinspection PyTypeChecker
-        server = HTTPServer(('', 9000), ConfigHandler)
-        try:
-            server.serve_forever()
-        except KeyboardInterrupt:
-            server.server_close()
-        MY_LOG.warning(f"HTTP server stopped at: {IP_ADDR}:9000")
-        self.client_clear_queue()
+        web_config()
+        self._client_clear_queue()
 
     #  parts methods
 

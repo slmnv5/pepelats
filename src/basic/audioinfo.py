@@ -4,7 +4,7 @@ import numpy as np
 import sounddevice as sd
 
 from utils.util_config import load_ini_section
-from utils.util_log import MY_LOG
+from utils.util_log import MY_LOG, ConfigError
 from utils.util_name import AppName
 
 
@@ -70,9 +70,9 @@ class AudioInfo:
         MY_LOG.debug(f"Using IN/OUT devices:\n{self.DEV_IN}\n\n{self.DEV_OUT}\n\n")
 
         if self.DEV_IN["max_input_channels"] not in [1, 2]:
-            raise RuntimeError(f"ALSA IN device must have 1 or 2 channels, got {self.DEV_IN['max_input_channels']}")
+            raise ConfigError(f"ALSA IN device must have 1 or 2 channels, got {self.DEV_IN['max_input_channels']}")
         if self.DEV_OUT["max_output_channels"] not in [1, 2]:
-            raise RuntimeError(f"ALSA OUT device must have 1 or 2 channels, got {self.DEV_OUT['max_output_channels']}")
+            raise ConfigError(f"ALSA OUT device must have 1 or 2 channels, got {self.DEV_OUT['max_output_channels']}")
         # make all mono if IN or OUT is mono
         self.SD_CH = min(self.DEV_IN["max_input_channels"], self.DEV_OUT["max_output_channels"])
         sd.default.channels = self.SD_CH, self.SD_CH

@@ -37,10 +37,10 @@ Each line looks like:
 Note-Velocity : _command1 [p1, p2, ...] [:_command2 [p1, p2, ...]] ....
 ```
 
-Notes are: A, B, C, D, E, F and they correspond to integer values in kbd_notes_midi option in the main.ini
-Velocity=100 : is the standard velocity assigned to all original MIDI notes from controller
-Velocity=1, 2, 3, ... 10: is velocity of counted note as explained above
-_command1, _command2 : are commands of the looper. Multiple commands are separated by colon
+Notes are: A, B, C, D, E, F and they correspond to integer values in **kbd_notes_midi** option in the main.ini  
+Velocity=100 : is the standard velocity assigned to all original MIDI notes from controller  
+Velocity=1, 2, 3, ... 10: is velocity of counted note as explained above  
+_command1, _command2 : are commands of the looper. Multiple commands are separated by colon  
 p1, p2, ... : optional parameters of commands. Each one may be a number or text
 
 ```
@@ -50,17 +50,19 @@ A-2 : _part_record 0
 B-2 : _part_record 1
 ```
 
-## Control changes
+## Control change messages
 
-If foot controller sends control change (CC) messages the looper can convert them into notes. E.g. CC 12 will be
-converted to Note 12 ON/OFF.
-As an example in **iRig BlueBoard MIDI foot controller** there are two expression pedal inputs.
-Plugging ON/OFF momentarily switches into these inputs will send CC messages converted into note messages.
+If foot controller sends control change (CC) messages from expression pedal the looper can convert them into notes. E.g.
+CC 12 will be converted to Note 12 ON/OFF.  
+As an example in **iRig BlueBoard MIDI foot controller** there are two expression pedal inputs. Plugging ON/OFF
+momentarily switches into these inputs will send CC messages converted into note messages.
 
 ## Changing configurations
 
-There are 2 predefined configurations: using 4 buttons [4x2](./../config/menu/4x2) and 6
-buttons [6x4](./../config/menu/6x4). Service view is used to select active menu configuration.
-(see also [menu_config.md](menu_config.md))
+There are 2 predefined configurations:
+
+- using 4 buttons [4x2](./../config/menu/4x2)
+- using 6 buttons [6x4](./../config/menu/6x4).  
+  (see also [menu_config.md](menu_config.md))
 
 

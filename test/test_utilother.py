@@ -7,7 +7,7 @@ def test_1():
     lst = [chr(k) for k in range(65, 80)]
     co = CollectionOwner(lst)
     co.select_idx(8)
-    list_str = co.get_str(9)
+    list_str = co.get_str(10, 9)
     assert "-07 H" in list_str
     assert "*08 I" in list_str
     assert "~09 J" in list_str

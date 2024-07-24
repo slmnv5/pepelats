@@ -16,10 +16,15 @@ def send_redirect(handler: BaseHTTPRequestHandler) -> None:
     handler.end_headers()
 
 
-def load_file(fname: str, is_binary: bool = False) -> str | bytes:
+def load_file(fname: str) -> str:
     assert os.path.isfile(fname)
-    mode = "rb" if is_binary else "r"
-    with open(fname, mode) as f:
+    with open(fname, 'r') as f:
+        return f.read()
+
+
+def load_bin_file(fname: str) -> bytes:
+    assert os.path.isfile(fname)
+    with open(fname, 'rb') as f:
         return f.read()
 
 

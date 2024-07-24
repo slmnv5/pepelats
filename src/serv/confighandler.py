@@ -1,12 +1,23 @@
+import logging
 import os
 import subprocess
 from configparser import ConfigParser, ParsingError
-from http.server import BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Callable
 
+from utils.util_log import MY_LOG
 from utils.util_other import split_to_dict
 from utils.util_web import CONFIG_PAGE, RESET_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH, send_headers, load_file, \
-    send_redirect
+    send_redirect, load_bin_file
+
+
+def web_config():
+    # noinspection PyTypeChecker
+    server = HTTPServer(('', 9000), ConfigHandler)
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        server.server_close()
 
 
 class ConfigHandler(BaseHTTPRequestHandler):
@@ -76,7 +87,7 @@ class ConfigHandler(BaseHTTPRequestHandler):
             self._send_file(fname, True)
         elif self.path == "/favicon.ico":
             send_headers(self, 'application/octet-stream')
-            self.wfile.write(load_file('favicon.ico').encode())
+            self.wfile.write(load_bin_file('favicon.ico'))
         else:
             send_redirect(self)
 
@@ -91,4 +102,9 @@ class ConfigHandler(BaseHTTPRequestHandler):
                 self.send_error(400, "Bad Request", "Could not save file")
 
     def log_message(self, msg, *args) -> None:
-        pass
+        if MY_LOG.level <= logging.INFO:
+            super().log_message(msg, *args)
+
+
+if __name__ == "__main__":
+    web_config()

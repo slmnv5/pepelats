@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler
 from typing import Callable
 
 from utils.util_log import MY_LOG
-from utils.util_web import send_headers, load_file, send_redirect
+from utils.util_web import send_headers, load_file, send_redirect, load_bin_file
 
 
 class WebHandler(BaseHTTPRequestHandler):
@@ -22,7 +22,7 @@ class WebHandler(BaseHTTPRequestHandler):
             self.wfile.write(load_file("html/update_page.js").encode())
         elif self.path == "/favicon.ico":
             send_headers(self, 'application/octet-stream')
-            self.wfile.write(load_file('favicon.ico', True))
+            self.wfile.write(load_bin_file('favicon.ico'))
         else:
             send_redirect(self)
 

@@ -30,9 +30,9 @@ class MenuClient(ABC):
     def _client_redraw(self, dic: dict) -> None:
         raise RuntimeError("This method should NOT be called()")
 
-    def client_enqueue(self, command: list) -> None:
+    def _client_enqueue(self, command: list) -> None:
         self.__queue.put(command)
         MY_LOG.debug(f"Added to queue command: {command}")
 
-    def client_clear_queue(self) -> None:
+    def _client_clear_queue(self) -> None:
         self.__queue.empty()

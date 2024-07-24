@@ -1,17 +1,7 @@
 import os
 import random
 import re
-import subprocess
 from typing import TypeVar, Generic, Iterable
-
-from utils.util_log import MY_LOG
-
-try:
-    SCR_COLS, SCR_ROWS = os.get_terminal_size()
-except OSError:
-    SCR_COLS, SCR_ROWS = 30, 10  # if running inside python IDE
-
-MY_LOG.info(f"Text screen size: cols={SCR_COLS} rows={SCR_ROWS}")
 
 T = TypeVar('T')
 
@@ -28,19 +18,6 @@ def split_to_dict(data: str, bound: str, mark1: str, mark2: str,
         k, v = split_key_value(x, mark1, mark2, strip1, strip2)
         result[k] = v
     return result
-
-
-def get_ip_address() -> str:
-    if os.name == 'posix':
-        result = subprocess.run(['hostname', '-I'], stdout=subprocess.PIPE)
-        return result.stdout.decode()
-    elif os.name == 'nt':
-        result = subprocess.run(['ipconfig'], stdout=subprocess.PIPE)
-        dic = split_to_dict(result.stdout.decode(), '\r\n', 'IPv4 Address', ': ', '. ')
-        assert len(dic) == 1 and '' in dic
-        return dic['']
-    else:
-        raise RuntimeError("OS must be posix or nt")
 
 
 def split_key_value(data: str, mark1: str, mark2: str, strip1: str = "", strip2: str = "") -> tuple[str, str]:
@@ -116,9 +93,8 @@ class CollectionOwner(Generic[T]):
         self.__idx = 0
         return item
 
-    def get_str(self, next_idx: int = None) -> str:
-        sub_list_sz: int = SCR_ROWS - 5
-        item_sub_list = _stable_sub_list(self.__idx, self.__items, sub_list_sz)
+    def get_str(self, items: int, next_idx: int = None) -> str:
+        item_sub_list = _stable_sub_list(self.__idx, self.__items, items)
         tmp: list[str] = list()
         for (k, s) in item_sub_list:
             if k == self.__idx:

@@ -4,7 +4,7 @@ from threading import Thread
 from time import sleep
 
 from mvc.menuclient import MenuClient
-from utils.util_other import SCR_COLS
+from utils.util_screen import SCR_COLS
 from utils.util_screen import get_screen_dict, get_default_dict
 
 _CLEAN_TO_END = '\x1b[0J'  # clean from cursor to end of screen
@@ -46,6 +46,9 @@ class TextScreen(MenuClient):
             return _YEL_CLR + line + _END_ALL
         else:
             return line
+
+    def _client_stop(self) -> None:
+        super()._client_stop()
 
     def _client_log(self, msg: str) -> None:
         print(f"{_CURSOR_MOVE}\n{msg}")

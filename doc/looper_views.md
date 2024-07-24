@@ -16,5 +16,6 @@ Each view has INI file that configures available MIDI messages and respective co
 * [service view](../config/menu/6x4/serv.ini) -- restart looper, check for updates. Select one of
   four drum types.
 
+More about this is in [menu_config](./menu_config.md)
 
 

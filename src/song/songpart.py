@@ -1,6 +1,5 @@
 import numpy as np
 
-from control.loopctrl import LoopCtrl
 from song.loopsimple import LoopSimple
 from utils.util_other import CollectionOwner
 
@@ -22,16 +21,6 @@ class SongPart(LoopSimple, CollectionOwner[LoopSimple]):
             x.correct_buffer()
         for x in self.get_list():
             LoopSimple.correct_buffer(x)
-
-    def trim_buffer(self, ctrl: LoopCtrl) -> None:
-        loop = self.get_item()
-        if not loop.is_empty:
-            return
-        bar_len = ctrl.get_drum().get_bar_len()
-        base_len = self.get_max_len()
-        loop.finalize(ctrl.idx, max(base_len, bar_len))
-        if not bar_len:
-            ctrl.drum_create_async(ctrl.idx, dict())
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
         for x in self.get_list():

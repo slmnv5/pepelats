@@ -9,6 +9,7 @@ from song.loopsimple import LoopSimple
 from song.song import Song
 from song.songpart import SongPart
 from utils.util_name import AppName
+from utils.util_screen import SCR_ROWS
 
 
 class SongCtrl(MenuClient, LoopCtrl, ABC):
@@ -28,10 +29,10 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
 
     def _show_loops(self) -> str:
         part = self._song.get_item()
-        return part.get_str()
+        return part.get_str(SCR_ROWS - 5)
 
     def _show_parts(self) -> str:
-        return self._song.get_str(self.__next_id)
+        return self._song.get_str(SCR_ROWS - 5, self.__next_id)
 
     def __play_loop(self) -> None:
         """runs in a thread, play and record current song part"""
@@ -81,7 +82,9 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
             else:  # we call with same pid 2nd time
                 if self.get_is_rec():
                     self._set_is_rec(False)
-                    part.trim_buffer(self)
+                    loop = part.get_item()
+                    if loop.is_empty:
+                        loop.trim_buffer(self, part.get_max_len())
                 else:
                     part.add_item(LoopSimple(part.get_len()))
                     part.clear_undo()
@@ -89,7 +92,9 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
         else:  # asked to play another part
             if self.get_is_rec():
                 self._set_is_rec(False)
-                part.trim_buffer(self)
+                loop = part.get_item()
+                if loop.is_empty:
+                    loop.trim_buffer(self, part.get_max_len())
 
             self.stop_at_bound(part.get_len())
 
@@ -150,14 +155,14 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
         self._song_stop()
         self._song.clear()
         drum_info = self._drum.get_drum_info()
-        self._drum_create(0, **drum_info)
+        self._drum_create(0, drum_info)
 
     def _drum_type_change(self, drum_type: str) -> None:
         self._song_stop()
         if drum_type != self._drum.get_class_name():
             bar_len = self._drum.get_bar_len()
             drum_info = {AppName.drum_type: drum_type}
-            self._drum_create(bar_len, **drum_info)
+            self._drum_create(bar_len, drum_info)
 
     def _drum_type_show(self) -> str:
         return "Current drum type: " + self._drum.get_class_name()

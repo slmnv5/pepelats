@@ -1,14 +1,11 @@
-
-
 import numpy as np
 
 from basic.audioinfo import make_buffer
-
 from drum._ptrnloader import PtrnLoader
 from utils.util_log import MY_LOG
+from utils.util_name import AppName
 from utils.util_numpy import from_data_to_buff
 from utils.util_other import EuclidSlicer
-from utils.util_name import AppName
 
 
 class EuclidPtrnLoader(PtrnLoader):
@@ -53,4 +50,4 @@ class EuclidPtrnLoader(PtrnLoader):
                     continue
                 is_accent = s == '*'
                 result += self.sample_loader.get_energy(sname, is_accent) / len(notes)
-        return result
+        return round(result, 2)
