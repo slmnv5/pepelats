@@ -59,9 +59,9 @@ if __name__ == "__main__":
     except NoMidiInputFound as ex:
         MY_LOG.warning(ex)
         pname = load_ini_section("MIDI").get("midi_in", "")
-        MY_LOG.error("Connect MIDI IN controller {pname} or connect computer keyboard")
+        MY_LOG.error(f"Connect MIDI IN controller {pname} or connect computer keyboard")
         sleep(10)
     except Exception as ex:
         MY_LOG.exception(ex)
     finally:
-        MY_LOG.warning("Done.")
+        pass
