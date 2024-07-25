@@ -6,7 +6,7 @@ from utils.util_web import send_headers, load_file, send_redirect, load_bin_file
 
 
 class WebHandler(BaseHTTPRequestHandler):
-    get_updates: Callable[[], str] = None
+    get_updates: Callable[[], bytes] = None
 
     # noinspection PyPep8Naming
     def do_GET(self):
@@ -15,8 +15,7 @@ class WebHandler(BaseHTTPRequestHandler):
             self.wfile.write(load_file("html/update_page.html").encode())
         elif self.path == "/update":
             send_headers(self, 'application/json')
-            json_str = self.get_updates()
-            self.wfile.write(json_str.encode())
+            self.wfile.write(self.get_updates())
         elif self.path == "/update_page.js":
             send_headers(self, 'text/javascript')
             self.wfile.write(load_file("html/update_page.js").encode())

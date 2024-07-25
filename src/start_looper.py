@@ -8,7 +8,7 @@ from mvc.menuhost import MenuHost
 from mvc.textscreen import TextScreen
 from serv.confighandler import web_config
 from serv.webscreen import WebScreen
-from utils.util_config import load_ini_section, IP_ADDR
+from utils.util_config import load_ini_section, LOCAL_IP
 from utils.util_log import MY_LOG, NoMidiInputFound, ConfigError
 from utils.util_name import AppName
 
@@ -53,7 +53,7 @@ if __name__ == "__main__":
         ch: int = load_ini_section("SCREEN", True).get(AppName.screen_type, 0)
         do_start(midi_control, q_scr, q_lpr, ch)
     except ConfigError as ex:
-        MY_LOG.warning(f"HTTP server starting at: {IP_ADDR}:9000")
+        MY_LOG.warning(f"HTTP server starting at: {LOCAL_IP}:{CONFIG_PORT}")
         MY_LOG.warning(f"Edit local.ini file to correct: {ex}")
         web_config()
     except NoMidiInputFound as ex:

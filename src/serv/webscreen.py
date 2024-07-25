@@ -5,7 +5,7 @@ from threading import Thread
 
 from mvc.menuclient import MenuClient
 from serv.webhandler import WebHandler
-from utils.util_config import IP_ADDR
+from utils.util_config import LOCAL_IP, LOCAL_PORT
 from utils.util_log import MY_LOG
 from utils.util_screen import get_screen_dict, get_default_dict
 
@@ -15,16 +15,16 @@ class WebScreen(MenuClient, HTTPServer):
         MenuClient.__init__(self, queue)
         self.__dic: dict = get_screen_dict(get_default_dict())
         # noinspection PyTypeChecker
-        HTTPServer.__init__(self, ("", 8000), WebHandler)
+        HTTPServer.__init__(self, ("", LOCAL_PORT), WebHandler)
         WebHandler.get_updates = self.get_updates
         self._has_updates: Event = Event()
-        self._update_json: str = ""
-        MY_LOG.warning(f"To control looper connect to:\nhttp://{IP_ADDR}:8000")
+        self._update_json: bytes = b""
+        MY_LOG.warning(f"To control looper connect to:\nhttp://{LOCAL_IP}:{LOCAL_PORT}")
         Thread(target=self.serve_forever, name="updater", daemon=True).start()
 
     def _client_log(self, msg: str) -> None:
         self.__dic["description"] = msg
-        self._update_json = json.dumps(self.__dic)
+        self._update_json = json.dumps(self.__dic).encode()
         self._has_updates.set()
 
     def _client_stop(self) -> None:
@@ -36,7 +36,7 @@ class WebScreen(MenuClient, HTTPServer):
         self._update_json = json.dumps(self.__dic)
         self._has_updates.set()
 
-    def get_updates(self) -> str:
+    def get_updates(self) -> bytes:
         self._has_updates.wait()
         self._has_updates.clear()
         return self._update_json

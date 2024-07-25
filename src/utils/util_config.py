@@ -9,14 +9,18 @@ s: str = subprocess.run(["git", "branch"], stdout=subprocess.PIPE).stdout.decode
 s = s[s.find("* ") + 2:]
 BRANCH = s[:s.find("\n")].strip()
 
+LOCAL_PORT: int = 8000
+CONFIG_PORT: int = 9000
+SOCK_PORT: int = 10000
+LOCAL_IP: str = ""
 if os.name == "posix":
-    IP_ADDR = subprocess.run(["hostname", "-I"], stdout=subprocess.PIPE).stdout.decode()
+    LOCAL_IP = subprocess.run(["hostname", "-I"], stdout=subprocess.PIPE).stdout.decode()
 elif os.name == "nt":
     s = subprocess.run(["ipconfig"], stdout=subprocess.PIPE).stdout.decode()
-    IP_ADDR = split_to_dict(s, "\n", "IPv4", ": ", " .", " \r\n\t").get("Address", "")
-    assert all(x.isdigit() or x == "." for x in IP_ADDR)
+    LOCAL_IP = split_to_dict(s, "\n", "IPv4", ": ", " .", " \r\n\t").get("Address", "")
+    assert all(x.isdigit() or x == "." for x in LOCAL_IP)
 else:
-    raise RuntimeError("OS must be posix or nt")
+    pass
 
 
 def load_ini_section(sect: str, convert: bool = False) -> dict[str, str]:
