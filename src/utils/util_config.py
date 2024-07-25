@@ -3,19 +3,17 @@ import subprocess
 from configparser import ConfigParser
 
 from utils.util_name import AppName
+from utils.util_other import split_to_dict
 
-s = subprocess.run(["git", "branch"], stdout=subprocess.PIPE)
-s = s.stdout.decode()
+s: str = subprocess.run(["git", "branch"], stdout=subprocess.PIPE).stdout.decode()
 s = s[s.find("* ") + 2:]
 BRANCH = s[:s.find("\n")].strip()
 
 if os.name == "posix":
-    s = subprocess.run(["hostname", "-I"], stdout=subprocess.PIPE)
-    IP_ADDR = s.stdout.decode()
+    IP_ADDR = subprocess.run(["hostname", "-I"], stdout=subprocess.PIPE).stdout.decode()
 elif os.name == "nt":
-    s = subprocess.run(["ipconfig"], stdout=subprocess.PIPE)
-    s = s.stdout.decode()
-    IP_ADDR = s[s.rfind(": ") + 2:].strip()
+    s = subprocess.run(["ipconfig"], stdout=subprocess.PIPE).stdout.decode()
+    IP_ADDR = split_to_dict(s, "\n", "IPv4", ": ", " .", " \r\n\t").get("Address", "")
     assert all(x.isdigit() or x == "." for x in IP_ADDR)
 else:
     raise RuntimeError("OS must be posix or nt")
