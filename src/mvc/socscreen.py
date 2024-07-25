@@ -1,15 +1,15 @@
 import json
-from socket import socket, gethostbyname, getfqdn
 from multiprocessing import Queue
+from socket import socket, gethostbyname, getfqdn
 from threading import Thread
 from time import sleep
 
 from mvc.menuclient import MenuClient
+from utils.util_config import SOCK_PORT
 from utils.util_log import MY_LOG
 from utils.util_screen import get_screen_dict, get_default_dict
 
 _GATEWAY_IP = gethostbyname(getfqdn())
-_GATEWAY_PORT = 10000
 
 
 class SocScreen(MenuClient):
@@ -17,7 +17,7 @@ class SocScreen(MenuClient):
         MenuClient.__init__(self, queue)
         self.__dic: dict = get_screen_dict(get_default_dict())
         self._update_json: bytes = b""
-        MY_LOG.warning(f"To control looper connect to:\nhttp://{_GATEWAY_IP}:{_GATEWAY_PORT}")
+        MY_LOG.warning(f"To control looper connect to:\nhttp://{_GATEWAY_IP}:{SOCK_PORT}")
         Thread(target=self.__updater, name="updater", daemon=True).start()
 
     def _client_stop(self) -> None:
@@ -32,8 +32,8 @@ class SocScreen(MenuClient):
 
     def __updater(self):
         s = socket()
-        s.connect((_GATEWAY_IP, _GATEWAY_PORT))
-        MY_LOG.warning(f"Connect to {_GATEWAY_IP}:{_GATEWAY_PORT}")
+        s.connect((_GATEWAY_IP, SOCK_PORT))
+        MY_LOG.warning(f"Connect to {_GATEWAY_IP}:{SOCK_PORT}")
         while self._alive:
             sleep(self.__dic["sleep_tm"])
             s.send(self._update_json)
