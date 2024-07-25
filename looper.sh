@@ -40,7 +40,7 @@ stty -echo
 while true; do
   killall -9 -qw python > /dev/null
   test_keyboard
-  PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./src/start_looper.py $*"
+  PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./src/main.py $*"
   echo "$PYTHON_CMD"
   sleep 5
   $PYTHON_CMD
