@@ -1,16 +1,14 @@
 import json
 from multiprocessing import Queue
-from socket import socket, gethostbyname, getfqdn
+from socket import socket
 from threading import Thread
 from time import sleep
 
 from mvc.menuclient import MenuClient
-from utils.util_config import SOCK_PORT
-from utils.util_log import MY_LOG
+from utils.util_config import SOCK_PORT, GATEWAY_IP
+from utils.util_log import MY_LOG, ConfigError
+from utils.util_name import AppName
 from utils.util_screen import get_screen_dict, get_default_dict
-
-_GATEWAY_IP = gethostbyname(getfqdn())
-MY_LOG.info(f"Gateway IP is: {_GATEWAY_IP}")
 
 
 class SocScreen(MenuClient):
@@ -19,8 +17,15 @@ class SocScreen(MenuClient):
         self.__dic: dict = get_screen_dict(get_default_dict())
         self._update_json: bytes = b""
         self._soc = socket()
-        self._soc.connect((_GATEWAY_IP, SOCK_PORT))
-        MY_LOG.warning(f"To control looper connect to:\nhttp://{_GATEWAY_IP}:{SOCK_PORT}")
+        addr_str = f"{GATEWAY_IP}:{SOCK_PORT}"
+        try:
+            self._soc.connect((GATEWAY_IP, SOCK_PORT))
+        except Exception as ex:
+            MY_LOG.error(ex)
+            raise ConfigError(f"Can not connect to: {addr_str}. "
+                              f"Change config {AppName.screen_type} to use terminal")
+
+        MY_LOG.warning(f"To control looper connect to:\nhttp://{GATEWAY_IP}:{SOCK_PORT}")
         Thread(target=self.__updater, name="updater", daemon=True).start()
 
     def _client_stop(self) -> None:

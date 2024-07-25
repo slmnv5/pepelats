@@ -2,6 +2,7 @@ import os
 import subprocess
 from configparser import ConfigParser
 
+from utils.util_log import MY_LOG
 from utils.util_name import AppName
 from utils.util_other import split_to_dict
 
@@ -13,14 +14,23 @@ LOCAL_PORT: int = 8000
 CONFIG_PORT: int = 9000
 SOCK_PORT: int = 10000
 LOCAL_IP: str = ""
+GATEWAY_IP: str = ""
+
 if os.name == "posix":
     LOCAL_IP = subprocess.run(["hostname", "-I"], stdout=subprocess.PIPE).stdout.decode()
+    s = subprocess.run(["ip", "route"], stdout=subprocess.PIPE).stdout.decode()
+    GATEWAY_IP = split_to_dict(s, "\n", " via ", " dev ", " ", " ").get("default", "")
 elif os.name == "nt":
     s = subprocess.run(["ipconfig"], stdout=subprocess.PIPE).stdout.decode()
     LOCAL_IP = split_to_dict(s, "\n", "IPv4", ": ", " .", " \r\n\t").get("Address", "")
-    assert all(x.isdigit() or x == "." for x in LOCAL_IP)
+    GATEWAY_IP = split_to_dict(s, "\n", "Default", ": ", " .", " \r\n\t").get("Gateway", "")
 else:
     pass
+
+    assert all(x.isdigit() or x == "." for x in LOCAL_IP)
+    assert all(x.isdigit() or x == "." for x in GATEWAY_IP)
+
+MY_LOG.info(f"Gateway IP is: {GATEWAY_IP}, Local IP is: {LOCAL_IP}")
 
 
 def load_ini_section(sect: str, convert: bool = False) -> dict[str, str]:
