@@ -5,6 +5,7 @@ from time import sleep
 from control.looper import Looper
 from mvc.countmidicontrol import CountMidiControl
 from mvc.menuhost import MenuHost
+from mvc.socscreen import SocScreen
 from mvc.textscreen import TextScreen
 from serv.confighandler import web_config
 from serv.webscreen import WebScreen
@@ -26,6 +27,8 @@ def _do_looper(q_looper: Queue, q_screen: Queue) -> None:
 def _do_screen(q_screen: Queue, choice: int) -> None:
     if choice == 1:
         scr = WebScreen(q_screen)
+    elif choice == 2:
+        scr = SocScreen(q_screen)
     else:
         scr = TextScreen(q_screen)
     scr.client_start()

@@ -10,6 +10,7 @@ from utils.util_log import MY_LOG
 from utils.util_screen import get_screen_dict, get_default_dict
 
 _GATEWAY_IP = gethostbyname(getfqdn())
+MY_LOG.info(f"Gateway IP is: {_GATEWAY_IP}")
 
 
 class SocScreen(MenuClient):
@@ -17,6 +18,8 @@ class SocScreen(MenuClient):
         MenuClient.__init__(self, queue)
         self.__dic: dict = get_screen_dict(get_default_dict())
         self._update_json: bytes = b""
+        self._soc = socket()
+        self._soc.connect((_GATEWAY_IP, SOCK_PORT))
         MY_LOG.warning(f"To control looper connect to:\nhttp://{_GATEWAY_IP}:{SOCK_PORT}")
         Thread(target=self.__updater, name="updater", daemon=True).start()
 
@@ -31,10 +34,7 @@ class SocScreen(MenuClient):
         self._update_json = json.dumps(self.__dic)
 
     def __updater(self):
-        s = socket()
-        s.connect((_GATEWAY_IP, SOCK_PORT))
-        MY_LOG.warning(f"Connect to {_GATEWAY_IP}:{SOCK_PORT}")
         while self._alive:
             sleep(self.__dic["sleep_tm"])
-            s.send(self._update_json)
-        s.close()
+            self._soc.send(self._update_json)
+        self._soc.close()

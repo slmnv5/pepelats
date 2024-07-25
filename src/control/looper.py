@@ -98,7 +98,6 @@ class Looper(SongCtrl):
 
     def _web_config(self) -> None:
         self._song_stop()
-        MY_LOG.warning(f"HTTP server starting at: {LOCAL_IP}:")
         web_config()
         self._client_clear_queue()
 

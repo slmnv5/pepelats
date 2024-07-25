@@ -5,7 +5,7 @@ from configparser import ConfigParser, ParsingError
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Callable
 
-from utils.util_config import CONFIG_PORT
+from utils.util_config import CONFIG_PORT, LOCAL_IP
 from utils.util_log import MY_LOG
 from utils.util_other import split_to_dict
 from utils.util_web import CONFIG_PAGE, RESET_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH, send_headers, load_file, \
@@ -15,6 +15,7 @@ from utils.util_web import CONFIG_PAGE, RESET_PATH, EXIT_PATH, EDIT_PATH, SHOW_P
 def web_config():
     # noinspection PyTypeChecker
     server = HTTPServer(("", CONFIG_PORT), ConfigHandler)
+    MY_LOG.warning(f"HTTP server starting at: {LOCAL_IP}:")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
