@@ -8,7 +8,7 @@ from mvc.menuhost import MenuHost
 from mvc.textscreen import TextScreen
 from serv.confighandler import web_config
 from serv.webscreen import WebScreen
-from utils.util_config import load_ini_section, LOCAL_IP
+from utils.util_config import load_ini_section, LOCAL_IP, CONFIG_PORT
 from utils.util_log import MY_LOG, NoMidiInputFound, ConfigError
 from utils.util_name import AppName
 
