@@ -1,7 +1,6 @@
 from http.server import BaseHTTPRequestHandler
 from typing import Callable
 
-from utils.util_log import MY_LOG
 from utils.util_web import send_headers, UPDATE_PAGE_B, FAVICON_B, UPDATE_CODE_B
 
 
@@ -25,9 +24,3 @@ class WebHandler(BaseHTTPRequestHandler):
         else:
             send_headers(self)
             self.wfile.write(UPDATE_PAGE_B)
-
-    def log_message(self, msg, *args) -> None:
-        pass
-
-    def log_error(self, msg: str, *args) -> None:
-        MY_LOG.error(msg % args)

@@ -1,4 +1,3 @@
-import logging
 import os
 import subprocess
 from configparser import ConfigParser, ParsingError
@@ -102,10 +101,6 @@ class ConfigHandler(BaseHTTPRequestHandler):
                 send_redirect(self)
             else:
                 self.send_error(400, "Bad Request", "Could not save file")
-
-    def log_message(self, msg, *args) -> None:
-        if MY_LOG.level <= logging.INFO:
-            super().log_message(msg, *args)
 
 
 if __name__ == "__main__":
