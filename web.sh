@@ -18,3 +18,6 @@ sudo dmesg -E
 sudo setfont Uni1-VGA16
 stty echo
 
+# $ rsync   -avh --dry-run --include *py  ./src pi@192.168.4.1:~/peplats/src
+
+
