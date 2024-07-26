@@ -82,13 +82,17 @@ class Looper(SongCtrl):
     @staticmethod
     def _info_show() -> str:
         scr_type: int = load_ini_section("SCREEN", True).get(AppName.screen_type, 0)
-        return f"local IP: {LOCAL_IP}\ngateway IP: {GATEWAY_IP}\nscreen: {scr_type} (0-lcd 1-web 2-soc)\nversion: {BRANCH}"
+        return f"local IP: {LOCAL_IP}\ngateway IP: {GATEWAY_IP}\nscreen: {scr_type} (0-lcd 1-web)\nversion: {BRANCH}"
 
     @staticmethod
     def _screen_type_change() -> None:
         dic = load_ini_section("SCREEN", True)
         scr_type: int = dic.get(AppName.screen_type, 0)
-        dic[AppName.screen_type] = str((scr_type + 1) % 2)
+        scr_type = (scr_type + 1) % 2
+        if scr_type and (not LOCAL_IP or not GATEWAY_IP):
+            MY_LOG.error(f"Can not set screen type={scr_type} without WiFi connection")
+            return
+        dic[AppName.screen_type] = str(scr_type)
         update_ini_section("SCREEN", dic)
 
     @staticmethod

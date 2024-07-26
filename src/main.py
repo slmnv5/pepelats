@@ -24,7 +24,7 @@ def _do_looper(q_looper: Queue, q_screen: Queue) -> None:
 
 
 def _do_screen(q_screen: Queue, choice: int) -> None:
-    if choice == 1:
+    if choice:
         scr = WebScreen(q_screen)
     else:
         scr = TextScreen(q_screen)
@@ -51,6 +51,9 @@ if __name__ == "__main__":
     try:
         midi_control = CountMidiControl(q_lpr)
         ch: int = load_ini_section("SCREEN", True).get(AppName.screen_type, 0)
+        if ch and (not LOCAL_IP or not GATEWAY_IP):
+            MY_LOG.error(f"Can not set screen type={ch} without WiFi connection")
+            ch = 0
         do_start(midi_control, q_scr, q_lpr, ch)
     except ConfigError as ex:
         MY_LOG.warning(f"HTTP server starting at: {LOCAL_IP}:{CONFIG_PORT}")
