@@ -8,8 +8,8 @@ from typing import Callable
 from utils.util_config import CONFIG_PORT, LOCAL_IP
 from utils.util_log import MY_LOG
 from utils.util_other import split_to_dict
-from utils.util_web import CONFIG_PAGE, RESET_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH, send_headers, load_file, \
-    send_redirect, load_bin_file
+from utils.util_web import CONFIG_PAGE_B, RESET_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH, send_headers, send_redirect, \
+    FAVICON_B, load_file
 
 
 def web_config():
@@ -74,7 +74,7 @@ class ConfigHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/":
             send_headers(self)
-            self.wfile.write(CONFIG_PAGE)
+            self.wfile.write(CONFIG_PAGE_B)
         elif self.path == RESET_PATH:
             send_headers(self)
             result = subprocess.run(['git', 'reset', '--hard'], stdout=subprocess.PIPE)
@@ -89,7 +89,7 @@ class ConfigHandler(BaseHTTPRequestHandler):
             self._send_file(fname, True)
         elif self.path == "/favicon.ico":
             send_headers(self, 'application/octet-stream')
-            self.wfile.write(load_bin_file('favicon.ico'))
+            self.wfile.write(FAVICON_B)
         else:
             send_redirect(self)
 

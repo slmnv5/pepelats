@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler
 from typing import Callable
 
 from utils.util_log import MY_LOG
-from utils.util_web import send_headers, load_file, send_redirect, load_bin_file
+from utils.util_web import send_headers, UPDATE_PAGE_B, FAVICON_B, UPDATE_CODE_B
 
 
 class WebHandler(BaseHTTPRequestHandler):
@@ -10,20 +10,21 @@ class WebHandler(BaseHTTPRequestHandler):
 
     # noinspection PyPep8Naming
     def do_GET(self):
-        if self.path == "/":
-            send_headers(self)
-            self.wfile.write(load_file("html/update_page.html").encode())
-        elif self.path == "/update":
+        if self.path == "/update":
             send_headers(self, 'application/json')
-            self.wfile.write(self.get_updates())
+            updates: bytes = self.get_updates()
+            if updates == b"stop":
+                raise KeyboardInterrupt("Stopped web server")
+            self.wfile.write(updates)
         elif self.path == "/update_page.js":
             send_headers(self, 'text/javascript')
-            self.wfile.write(load_file("html/update_page.js").encode())
+            self.wfile.write(UPDATE_CODE_B)
         elif self.path == "/favicon.ico":
             send_headers(self, 'application/octet-stream')
-            self.wfile.write(load_bin_file('favicon.ico'))
+            self.wfile.write(FAVICON_B)
         else:
-            send_redirect(self)
+            send_headers(self)
+            self.wfile.write(UPDATE_PAGE_B)
 
     def log_message(self, msg, *args) -> None:
         pass

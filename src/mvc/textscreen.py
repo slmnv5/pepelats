@@ -32,7 +32,7 @@ class TextScreen(MenuClient):
     def __init__(self, queue: Queue):
         MenuClient.__init__(self, queue)
         self.__dic: dict = get_screen_dict(get_default_dict())
-        Thread(target=self.__updater, name="updater", daemon=True).start()
+        Thread(target=self.__update, name="update", daemon=True).start()
 
     @staticmethod
     def __add_color(line: str, is_rec: bool) -> str:
@@ -71,7 +71,7 @@ class TextScreen(MenuClient):
 
         self.__dic = get_screen_dict(dic)
 
-    def __updater(self):
+    def __update(self):
         while self._alive:
             sleep(self.__dic["sleep_tm"])
             line = self.__dic["header"]
