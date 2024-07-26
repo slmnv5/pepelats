@@ -22,7 +22,7 @@ def split_to_dict(data: str, bound: str, mark1: str, mark2: str,
 
 def split_key_value(data: str, mark1: str, mark2: str, strip1: str = "", strip2: str = "") -> tuple[str, str]:
     """ Find 2 substrings using 2 markers and 2 strips.
-    Used to parse key-value pairs: mark1 k1 mark2 v1 mark1 k2 mark2 v2 """
+    Used to parse key-value pairs: mark1 <k> mark2 <v>  """
     result = re.search(f'{mark1}(.*?){mark2}(.*)', data, re.DOTALL)
     if result:
         return result.group(1).strip(strip1), result.group(2).strip(strip2)
