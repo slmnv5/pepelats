@@ -14,7 +14,7 @@ sudo apt -y install git
 # clone repository
 git clone https://github.com/slmnv5/pepelats.git
 
-# copy LCD screen driver, check if this is your driver
+# copy LCD screen driver, check if this is correct driver for your screen
 sudo cp -fvn ./pepelats/config/etc/scripts/mhs35.dtbo /boot/overlays/
 
 # copy Raspbian config files
