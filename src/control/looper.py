@@ -82,7 +82,7 @@ class Looper(SongCtrl):
     @staticmethod
     def _info_show() -> str:
         scr_type: int = load_ini_section("SCREEN", True).get(AppName.screen_type, 0)
-        return f"IP: {LOCAL_IP}\ngateway: {GATEWAY_IP}\nscreen: {scr_type} (0-lcd 1-web 2-soc)\nversion: {BRANCH}"
+        return f"local IP: {LOCAL_IP}\ngateway IP: {GATEWAY_IP}\nscreen: {scr_type} (0-lcd 1-web 2-soc)\nversion: {BRANCH}"
 
     @staticmethod
     def _screen_type_change() -> None:
