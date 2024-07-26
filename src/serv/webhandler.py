@@ -10,8 +10,6 @@ class WebHandler(BaseHTTPRequestHandler):
             send_headers(self, 'application/json')
             # noinspection PyUnresolvedReferences
             updates: bytes = self.server.get_updates()
-            if updates == b"stop":
-                raise KeyboardInterrupt("Stopped web server")
             self.wfile.write(updates)
         elif self.path == "/update_page.js":
             send_headers(self, 'text/javascript')

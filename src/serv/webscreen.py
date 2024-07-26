@@ -2,7 +2,6 @@ import json
 from http.server import HTTPServer
 from multiprocessing import Queue, Event
 from threading import Thread
-from time import sleep
 
 from mvc.menuclient import MenuClient
 from serv.webhandler import WebHandler
@@ -19,10 +18,10 @@ class WebScreen(MenuClient, HTTPServer):
         self.__dic: dict = get_screen_dict(get_default_dict())
         self._has_updates: Event = Event()
         self._updates_b: bytes = b" "
-        MY_LOG.warning(f"To control looper connect to:\nhttp://{LOCAL_IP}:{LOCAL_PORT}")
-        Thread(target=self.__update(), name="update", daemon=True).start()
+        Thread(target=self.__update, name="update", daemon=True).start()
 
     def __update(self) -> None:
+        MY_LOG.warning(f"To control looper connect to:\nhttp://{LOCAL_IP}:{LOCAL_PORT}")
         try:
             self.serve_forever()
         except KeyboardInterrupt:
@@ -34,9 +33,8 @@ class WebScreen(MenuClient, HTTPServer):
         self._has_updates.set()
 
     def _client_stop(self) -> None:
-        self._updates_b = b"stop"
-        self._has_updates.set()
-        sleep(2)
+        self.shutdown()
+        self.server_close()
         super()._client_stop()
 
     def _client_redraw(self, dic: dict) -> None:
