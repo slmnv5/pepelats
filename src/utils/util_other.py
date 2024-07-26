@@ -14,6 +14,7 @@ def split_to_dict(data: str, bound: str, mark1: str, mark2: str,
     bound mark1 <k> mark2 <v> bound mark1 <k> mark2 <v> bound ..... """
     result = dict()
     split_data = [x for x in data.split(bound) if mark1 in x and mark2 in x]
+    print(111111111111, split_data)
     for x in split_data:
         k, v = split_key_value(x, mark1, mark2, strip1, strip2)
         result[k] = v
