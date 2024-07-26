@@ -18,13 +18,13 @@ class WebScreen(MenuClient, HTTPServer):
         HTTPServer.__init__(self, ("", LOCAL_PORT), WebHandler)
         WebHandler.get_updates = self.get_updates
         self._has_updates: Event = Event()
-        self._update_json: bytes = b""
+        self._update_b: bytes = b""
         MY_LOG.warning(f"To control looper connect to:\nhttp://{LOCAL_IP}:{LOCAL_PORT}")
         Thread(target=self.serve_forever, name="updater", daemon=True).start()
 
     def _client_log(self, msg: str) -> None:
         self.__dic["description"] = msg
-        self._update_json = json.dumps(self.__dic).encode()
+        self._update_b = json.dumps(self.__dic).encode()
         self._has_updates.set()
 
     def _client_stop(self) -> None:
@@ -33,13 +33,13 @@ class WebScreen(MenuClient, HTTPServer):
 
     def _client_redraw(self, dic: dict) -> None:
         self.__dic = get_screen_dict(dic)
-        self._update_json = json.dumps(self.__dic)
+        self._update_b = json.dumps(self.__dic).encode()
         self._has_updates.set()
 
     def get_updates(self) -> bytes:
         self._has_updates.wait()
         self._has_updates.clear()
-        return self._update_json
+        return self._update_b
 
 
 if __name__ == "__main__":
