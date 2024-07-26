@@ -1,17 +1,15 @@
 from http.server import BaseHTTPRequestHandler
-from typing import Callable
 
 from utils.util_web import send_headers, UPDATE_PAGE_B, FAVICON_B, UPDATE_CODE_B
 
 
 class WebHandler(BaseHTTPRequestHandler):
-    get_updates: Callable[[], bytes] = None
-
     # noinspection PyPep8Naming
     def do_GET(self):
         if self.path == "/update":
             send_headers(self, 'application/json')
-            updates: bytes = self.get_updates()
+            # noinspection PyUnresolvedReferences
+            updates: bytes = self.server.get_updates()
             if updates == b"stop":
                 raise KeyboardInterrupt("Stopped web server")
             self.wfile.write(updates)

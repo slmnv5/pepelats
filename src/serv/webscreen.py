@@ -11,13 +11,12 @@ from utils.util_log import MY_LOG
 from utils.util_screen import get_screen_dict, get_default_dict
 
 
-class WebScreen(MenuClient):
+class WebScreen(MenuClient, HTTPServer):
     def __init__(self, queue: Queue):
         MenuClient.__init__(self, queue)
-        self.__dic: dict = get_screen_dict(get_default_dict())
-        WebHandler.get_updates = self.get_updates
         # noinspection PyTypeChecker
-        self._server = HTTPServer(("", LOCAL_PORT), WebHandler)
+        HTTPServer.__init__(self, ("", LOCAL_PORT), WebHandler)
+        self.__dic: dict = get_screen_dict(get_default_dict())
         self._has_updates: Event = Event()
         self._updates_b: bytes = b" "
         MY_LOG.warning(f"To control looper connect to:\nhttp://{LOCAL_IP}:{LOCAL_PORT}")
@@ -25,9 +24,9 @@ class WebScreen(MenuClient):
 
     def __update(self) -> None:
         try:
-            self._server.serve_forever()
+            self.serve_forever()
         except KeyboardInterrupt:
-            self._server.server_close()
+            self.server_close()
 
     def _client_log(self, msg: str) -> None:
         self.__dic["description"] = msg
@@ -52,5 +51,5 @@ class WebScreen(MenuClient):
 
 
 if __name__ == "__main__":
-    scr = WebScreen(Queue())
+    scr = WebScreen(Queue(), )
     scr.client_start()
