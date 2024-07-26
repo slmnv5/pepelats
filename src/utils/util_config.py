@@ -18,8 +18,8 @@ GATEWAY_IP: str = ""
 
 if os.name == "posix":
     s = subprocess.run(["ip", "route"], stdout=subprocess.PIPE).stdout.decode()
-    LOCAL_IP = split_to_dict(s, "\n", " src ", " metric ", " ", " ").get("dhcp", "")
-    GATEWAY_IP = split_to_dict(s, "\n", " via ", " dev ", " ", " ").get("default", "")
+    LOCAL_IP = split_to_dict(s, "metric ", "dhcp ", "  ", " ", " ").get("src", "")
+    GATEWAY_IP = split_to_dict(s, "dev ", "default ", " ", " ", " ").get("via", "")
 elif os.name == "nt":
     s = subprocess.run(["ipconfig"], stdout=subprocess.PIPE).stdout.decode()
     LOCAL_IP = split_to_dict(s, "\n", "IPv4", ": ", " .", " \r\n\t").get("Address", "")
