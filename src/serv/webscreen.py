@@ -2,6 +2,7 @@ import json
 from http.server import HTTPServer
 from multiprocessing import Queue, Event
 from threading import Thread
+from time import sleep
 
 from mvc.menuclient import MenuClient
 from serv.webhandler import WebHandler
@@ -34,9 +35,10 @@ class WebScreen(MenuClient):
         self._has_updates.set()
 
     def _client_stop(self) -> None:
-        super()._client_stop()
         self._updates_b = b"stop"
         self._has_updates.set()
+        sleep(2)
+        super()._client_stop()
 
     def _client_redraw(self, dic: dict) -> None:
         self.__dic = get_screen_dict(dic)
