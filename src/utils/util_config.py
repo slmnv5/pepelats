@@ -12,7 +12,6 @@ BRANCH = s[:s.find("\n")].strip()
 
 LOCAL_PORT: int = 8000
 CONFIG_PORT: int = 9000
-SOCK_PORT: int = 10000
 LOCAL_IP: str = ""
 GATEWAY_IP: str = ""
 
