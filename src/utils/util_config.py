@@ -68,3 +68,7 @@ def convert_param(param: str) -> str | int | float:
         return float(tmp)
     else:
         return param
+
+
+if __name__ == "__main__":
+    print("IPs:", LOCAL_IP, GATEWAY_IP)
