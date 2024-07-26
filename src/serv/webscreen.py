@@ -18,7 +18,7 @@ class WebScreen(MenuClient, HTTPServer):
         HTTPServer.__init__(self, ("", LOCAL_PORT), WebHandler)
         WebHandler.get_updates = self.get_updates
         self._has_updates: Event = Event()
-        self._update_b: bytes = b""
+        self._update_b: bytes = b" "
         MY_LOG.warning(f"To control looper connect to:\nhttp://{LOCAL_IP}:{LOCAL_PORT}")
         Thread(target=self.serve_forever, name="updater", daemon=True).start()
 

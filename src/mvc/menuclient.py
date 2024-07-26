@@ -12,9 +12,6 @@ class MenuClient(ABC):
     def _client_stop(self) -> None:
         self._alive = False
 
-    def _client_log(self, msg: str) -> None:
-        pass
-
     def client_start(self):
         while self._alive:
             command = self.__queue.get()
