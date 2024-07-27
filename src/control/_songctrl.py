@@ -4,7 +4,7 @@ from multiprocessing import Queue
 from threading import Event, Thread
 
 from control.loopctrl import LoopCtrl
-from mvc.menuclient import MenuClient
+from screen.menuclient import MenuClient
 from song.loopsimple import LoopSimple
 from song.song import Song
 from song.songpart import SongPart

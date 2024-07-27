@@ -3,8 +3,8 @@ from http.server import HTTPServer
 from multiprocessing import Queue, Event
 from threading import Thread
 
-from mvc.menuclient import MenuClient
-from serv.webhandler import WebHandler
+from screen.menuclient import MenuClient
+from screen.webhandler import WebHandler
 from utils.util_config import LOCAL_IP, LOCAL_PORT
 from utils.util_log import MY_LOG
 from utils.util_screen import get_screen_dict, get_default_dict

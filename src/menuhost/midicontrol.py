@@ -4,7 +4,7 @@ from rtmidi import MidiIn
 from rtmidi.midiconstants import CONTROL_CHANGE, NOTE_OFF, NOTE_ON
 
 from basic.midiinfo import KbdMidiIn, get_in_port, MidiInfo
-from mvc.menuhost import MenuHost
+from menuhost.menuhost import MenuHost
 
 
 class _MidiCcToNote:

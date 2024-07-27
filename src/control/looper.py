@@ -6,7 +6,7 @@ from control._songctrl import SongCtrl
 from drum.bufferdrum import EuclidDrum, StyleDrum
 from drum.loopdrum import LoopDrum
 from drum.mididrum import MidiDrum
-from serv.confighandler import web_config
+from screen.confighandler import web_config
 from utils.util_config import LOCAL_IP, BRANCH, GATEWAY_IP
 from utils.util_config import load_ini_section, update_ini_section
 from utils.util_log import MY_LOG

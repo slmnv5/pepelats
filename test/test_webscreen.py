@@ -2,7 +2,7 @@ import time
 from multiprocessing import Queue
 from threading import Timer
 
-from serv.webscreen import WebScreen
+from screen.webscreen import WebScreen
 from utils.util_name import AppName
 
 

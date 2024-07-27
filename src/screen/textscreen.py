@@ -3,7 +3,7 @@ from textwrap import wrap
 from threading import Thread
 from time import sleep
 
-from mvc.menuclient import MenuClient
+from screen.menuclient import MenuClient
 from utils.util_screen import SCR_COLS
 from utils.util_screen import get_screen_dict, get_default_dict
 
