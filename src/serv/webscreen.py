@@ -32,10 +32,9 @@ class WebScreen(MenuClient, HTTPServer):
         self._updates_b = json.dumps(self.__dic).encode()
         self._has_updates.set()
 
-    def _client_stop(self) -> None:
-        self.shutdown()
-        self.server_close()
-        super()._client_stop()
+    def service_actions(self):
+        if not self._alive:
+            raise KeyboardInterrupt("stopped")
 
     def _client_redraw(self, dic: dict) -> None:
         self.__dic = get_screen_dict(dic)

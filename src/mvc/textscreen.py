@@ -47,9 +47,6 @@ class TextScreen(MenuClient):
         else:
             return line
 
-    def _client_stop(self) -> None:
-        super()._client_stop()
-
     # noinspection PyMethodMayBeStatic
     def _client_log(self, msg: str) -> None:
         print(f"{_CURSOR_MOVE}\n{msg}")
