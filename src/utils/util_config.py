@@ -13,23 +13,18 @@ BRANCH = s[:s.find("\n")].strip()
 LOCAL_PORT: int = 8000
 CONFIG_PORT: int = 9000
 LOCAL_IP: str = ""
-GATEWAY_IP: str = ""
 
 if os.name == "posix":
     s = subprocess.run(["ip", "route"], stdout=subprocess.PIPE).stdout.decode()
     LOCAL_IP = split_to_dict(s, "metric ", "dhcp ", " ", " ", " ").get("src", "")
-    GATEWAY_IP = split_to_dict(s, "dev ", "default ", " ", " ", " ").get("via", "")
 elif os.name == "nt":
     s = subprocess.run(["ipconfig"], stdout=subprocess.PIPE).stdout.decode()
     LOCAL_IP = split_to_dict(s, "\n", "IPv4", ": ", " .", " \r\n\t").get("Address", "")
-    GATEWAY_IP = split_to_dict(s, "\n", "Default", ": ", " .", " \r\n\t").get("Gateway", "")
 else:
     pass
 
-    assert all(x.isdigit() or x == "." for x in LOCAL_IP)
-    assert all(x.isdigit() or x == "." for x in GATEWAY_IP)
-
-MY_LOG.info(f"Gateway IP is: {GATEWAY_IP}, Local IP is: {LOCAL_IP}")
+assert len(LOCAL_IP) >= 7 and all(x.isdigit() or x == "." for x in LOCAL_IP)
+MY_LOG.info(f"Local IP is: {LOCAL_IP}")
 
 
 def load_ini_section(sect: str, convert: bool = False) -> dict[str, str]:

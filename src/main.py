@@ -5,10 +5,10 @@ from time import sleep
 from control.looper import Looper
 from menuhost.countmidicontrol import CountMidiControl
 from menuhost.menuhost import MenuHost
-from screen.textscreen import TextScreen
 from screen.confighandler import web_config
+from screen.textscreen import TextScreen
 from screen.webscreen import WebScreen
-from utils.util_config import load_ini_section, LOCAL_IP, CONFIG_PORT, GATEWAY_IP
+from utils.util_config import load_ini_section, LOCAL_IP, CONFIG_PORT
 from utils.util_log import MY_LOG, NoMidiInputFound, ConfigError
 from utils.util_name import AppName
 
@@ -51,7 +51,7 @@ if __name__ == "__main__":
     try:
         midi_control = CountMidiControl(q_lpr)
         ch: int = load_ini_section("SCREEN", True).get(AppName.screen_type, 0)
-        if ch and (not LOCAL_IP or not GATEWAY_IP):
+        if ch and not LOCAL_IP:
             MY_LOG.error(f"Can not set screen type={ch} without WiFi connection")
             ch = 0
         do_start(midi_control, q_scr, q_lpr, ch)

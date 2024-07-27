@@ -7,7 +7,7 @@ from drum.bufferdrum import EuclidDrum, StyleDrum
 from drum.loopdrum import LoopDrum
 from drum.mididrum import MidiDrum
 from screen.confighandler import web_config
-from utils.util_config import LOCAL_IP, BRANCH, GATEWAY_IP
+from utils.util_config import LOCAL_IP, BRANCH
 from utils.util_config import load_ini_section, update_ini_section
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
@@ -82,14 +82,14 @@ class Looper(SongCtrl):
     @staticmethod
     def _info_show() -> str:
         scr_type: int = load_ini_section("SCREEN", True).get(AppName.screen_type, 0)
-        return f"local IP: {LOCAL_IP}\ngateway IP: {GATEWAY_IP}\nscreen: {scr_type} (0-lcd 1-web)\nversion: {BRANCH}"
+        return f"local IP: {LOCAL_IP}\nscreen: {scr_type} (0-lcd 1-web)\nversion: {BRANCH}"
 
     @staticmethod
     def _screen_type_change() -> None:
         dic = load_ini_section("SCREEN", True)
         scr_type: int = dic.get(AppName.screen_type, 0)
         scr_type = (scr_type + 1) % 2
-        if scr_type and (not LOCAL_IP or not GATEWAY_IP):
+        if scr_type and not LOCAL_IP:
             MY_LOG.error(f"Can not set screen type={scr_type} without WiFi connection")
             return
         dic[AppName.screen_type] = str(scr_type)
