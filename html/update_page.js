@@ -2,36 +2,43 @@
 
 const TEXT_SZ = 35; // size for all elements 
 let WIN_CHARS = 10; // how many chars fit in browser window line
-const RED_P = '<p style="color: rgb(250, 30, 30);">';
-const GREEN_P = '<p style="color: rgb(30, 250, 30);">';
-const YELLOW_P = '<p style="color: yellow;">';
-const B_W_S = '<span style="color: black; background-color: rgb(200, 200, 200)";>';
-const W_B_S = '<span style="color: rgb(200, 200, 200);">';
 
 // make html showing progress line, char. X - position of max. length loop
 function getHeaderHtml (header, l1, l2, max_chars) {
+    const BW_S = '<span style="color: black; background-color: rgb(200, 200, 200)";>';
+    const WY_S = '<span style="background-color: yellow";>';
+    const END_S = '</span>'
+
+    function decorateOneChar(s, pos) {
+        if (pos < 0 || pos >= s.length) return s;
+        return s.slice(0, pos) + WY_S + s.slice(pos, pos+1) + END_S + s.slice(pos+1);
+    }
+    
     [l1, l2] = [l1 * max_chars, l2 * max_chars];
     let missing = max_chars - header.length;
-    let s = '.'.repeat(missing / 2) + header + '.'.repeat(missing / 2)
-    if (l2 > 0) {
-        s = s.substring(0, l2) + '\u2588' + s.substring(l2 + 1);
-    };
-    return '<p>' + B_W_S + s.slice(0, l1) + '</span>' + W_B_S + s.slice(l1) + '</span></p>';
+    let s = '.'.repeat(missing / 2) + header + '.'.repeat(missing / 2);
+    [s1, s2] = [s.slice(0, l1), s.slice(l1)];
+    [s1, s2] = [decorateOneChar(s1, l2), decorateOneChar(s2, l2 - l1)];
+    return '<p>' + BW_S + s1 + END_S + WB_S + s2 + END_S + '</p>';
 };
 
 // decorate string with color based on 1st char
 function getContentHtml(content, is_rec) {
-    let tmp = '';
+    const RED_P = '<p style="color: rgb(250, 30, 30);">';
+    const GREEN_P = '<p style="color: rgb(30, 250, 30);">';
+    const YELLOW_P = '<p style="color: yellow;">';
+    
+    let s = '';
     for (const s of content.split("\n")) {
         if (s[0] === '*') {
-            tmp += (is_rec ? RED_P : GREEN_P) + s + '</p>';
+            s += (is_rec ? RED_P : GREEN_P) + s + '</p>';
         } else if (s[0] === '~') {
-            tmp += YELLOW_P + s + '</p>';
+            s += YELLOW_P + s + '</p>';
         } else {
-            tmp += '<p>' + s + '</p>';
+            s += '<p>' + s + '</p>';
         }
     }
-    return tmp;
+    return s;
 };
 
 
@@ -43,11 +50,9 @@ window.onresize = recalcWidth;
 
 window.onload = () => {
     const URL = '/update';
-    let DATA = {"sleep_tm":0.5, "header":"---","description":"content",
-        "pos":0,"delta":0.1,"max_loop_pos":0,"max_loop_delta":0.05};
+    let DATA = {"sleep_tm":0.5,"pos":0,"delta":0.1,"max_loop_pos":0,"max_loop_delta":0.05};
 
     const HEADER = document.getElementById('header');
-    const PROGRESS = document.getElementById('progress');
     const DESCRIPTION = document.getElementById('description');
     const CONTENT = document.getElementById('content');
     recalcWidth();
@@ -62,7 +67,6 @@ window.onload = () => {
             try {
                 let res = await fetch(URL);
                 DATA = await res.json();
-                if (DATA.header === "stop") break;
                 DESCRIPTION.textContent = DATA.description
                 CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec)
                 console.log(">>>Fetched: " + URL);    

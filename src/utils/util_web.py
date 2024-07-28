@@ -64,6 +64,6 @@ _FORMAT_DICT["l_drum"] = _all_links(f"{AppName.drum_config_dir}", ".ini", EDIT_P
 _FORMAT_DICT["l_menu"] = _all_links(f"./{AppName.menu_config_dir}", ".ini", EDIT_PATH)
 
 CONFIG_PAGE_B: bytes = load_file("html/config_page.html").format(**_FORMAT_DICT).encode()
-UPDATE_PAGE_B: bytes = _load_bin_file("html/update_page.html")
+UPDATE_PAGE: str = load_file("html/update_page.html")
 UPDATE_CODE_B: bytes = _load_bin_file("html/update_page.js")
 FAVICON_B: bytes = _load_bin_file("favicon.ico")
