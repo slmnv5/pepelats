@@ -44,5 +44,5 @@ class WebScreen(MenuClient, HTTPServer):
 
 
 if __name__ == "__main__":
-    scr = WebScreen(Queue(), )
+    scr = WebScreen(Queue())
     scr.client_start()
