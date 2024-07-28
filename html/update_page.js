@@ -2,11 +2,11 @@
 
 const TEXT_SZ = 35; // size for all elements 
 let WIN_CHARS = 10; // how many chars fit in browser window line
-const BROWN_P = '<p style="color: brown;">';
-const GREEN_P = '<p style="color: green;">';
+const RED_P = '<p style="color: rgb(250, 30, 30);">';
+const GREEN_P = '<p style="color: rgb(30, 250, 30);">';
 const YELLOW_P = '<p style="color: yellow;">';
-const B_W_S = '<span style="color: black; background-color: white";>';
-const W_B_S = '<span style="color: white;">';
+const B_W_S = '<span style="color: black; background-color: rgb(200, 200, 200)";>';
+const W_B_S = '<span style="color: rgb(200, 200, 200);">';
 
 // make html showing progress line, char. X - position of max. length loop
 function getHeaderHtml (header, l1, l2, max_chars) {
@@ -20,11 +20,11 @@ function getHeaderHtml (header, l1, l2, max_chars) {
 };
 
 // decorate string with color based on 1st char
-function getContentHtml(str, is_rec) {
+function getContentHtml(content, is_rec) {
     let tmp = '';
-    for (const s of str.split("\n")) {
+    for (const s of content.split("\n")) {
         if (s[0] === '*') {
-            tmp += (is_rec ? BROWN_P : GREEN_P) + s + '</p>';
+            tmp += (is_rec ? RED_P : GREEN_P) + s + '</p>';
         } else if (s[0] === '~') {
             tmp += YELLOW_P + s + '</p>';
         } else {
@@ -52,14 +52,13 @@ window.onload = () => {
     const CONTENT = document.getElementById('content');
     recalcWidth();
 
-    Promise.all([fetchData(), redrawData()])
+    Promise.race([fetchData(), redrawData()])
     .then((values) => console.log("Resolved:\n", values))  
     .catch((values) => console.log("Rejected:\n", values))
 
 
-    async function fetchData() {
-        
-        async function getUpdate() {
+    async function fetchData() { 
+        while(true) {
             try {
                 let res = await fetch(URL);
                 DATA = await res.json();
@@ -67,14 +66,10 @@ window.onload = () => {
                 CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec)
                 console.log(">>>Fetched: " + URL);    
             } catch {
-                console.log("Failed to fetch and parse: " + URL + " sleep 3 seconds and retry");
-                await new Promise(r => setTimeout(r, 3000));
-            }                
+                CONTENT.textContent = "Failed to fetch and parse: " + URL;
+                break;
+            };                        
         };
-
-        while(true) {
-            await getUpdate()
-        }
     };
 
     async function redrawData() {        

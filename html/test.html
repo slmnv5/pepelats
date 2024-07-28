@@ -1,0 +1,40 @@
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <style>
+        body {margin:0px; color: rgb(200, 200, 200);background-color: rgb(30, 30, 30); text-align:center; 
+            font-size: 35px; font-weight: bolder; font-family: monospace;}
+        p {width: 100%;}
+    </style>
+        <script>
+        let DATA = 0
+ 
+        async function test() {
+            Promise.all([test1(), test2()])
+        }
+
+        async function test1() {
+        while (true) {
+                document.getElementById("header").textContent = Math.random() + "===" + DATA
+                await new Promise(r => setTimeout(r, 3_000));
+                console.log("Done 11111111111");
+            }
+        };
+
+        async function test2() {
+            await new Promise(r => setTimeout(r, 20_000));
+            DATA = Math.random()
+            console.log("Done 222222222222");
+        };
+       
+
+    </script>
+    </head>
+    <body onload="test()">
+
+        <p id="header">header</p>
+        <p id="description">description</p>
+        <div id="content" style="text-align: left;">content</div>
+
+    </body>
+</html>
