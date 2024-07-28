@@ -62,12 +62,12 @@ window.onload = () => {
             try {
                 let res = await fetch(URL);
                 DATA = await res.json();
+                if (DATA.header === "stop") break;
                 DESCRIPTION.textContent = DATA.description
                 CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec)
                 console.log(">>>Fetched: " + URL);    
             } catch {
-                CONTENT.textContent = "Failed to fetch and parse: " + URL;
-                break;
+                await new Promise(r => setTimeout(r, DATA.sleep_tm * 3000));
             };                        
         };
     };

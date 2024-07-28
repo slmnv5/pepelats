@@ -1,11 +1,8 @@
 import os
 
-from basic.audioinfo import AudioInfo
 from utils.util_config import load_ini_section
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
-
-_UPDATES_PER_LOOP: int = 16
 
 SCREEN_TYPE: int = load_ini_section("SCREEN", True).get(AppName.screen_type, 0)
 
@@ -27,17 +24,4 @@ def get_default_dict() -> dict:
     tmp["is_rec"] = False
     tmp["len"] = 100_000
     tmp["max_loop_len"] = 100_000
-    return tmp
-
-
-def get_screen_dict(dic: dict) -> dict[str, any]:
-    tmp: dict[str, any] = dict(dic)
-    tmp["sleep_tm"] = dic["len"] / AudioInfo().SD_RATE / _UPDATES_PER_LOOP
-    tmp["pos"] = (dic["idx"] % dic["len"]) / dic["len"]
-    tmp["delta"] = 1 / _UPDATES_PER_LOOP
-    if dic["max_loop_len"] > dic["len"]:
-        tmp["max_loop_pos"] = (dic["idx"] % dic["max_loop_len"]) / dic["max_loop_len"]
-        tmp["max_loop_delta"] = 1 / _UPDATES_PER_LOOP / dic["max_loop_len"] * dic["len"]
-    else:
-        tmp["max_loop_pos"], tmp["max_loop_delta"] = 0, 0
     return tmp

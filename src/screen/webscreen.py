@@ -1,24 +1,23 @@
-import json
 from http.server import HTTPServer
-from multiprocessing import Queue
-from threading import Thread
+from multiprocessing import Queue, Event
+from time import time
 
 from screen.menuclient import MenuClient
 from screen.webhandler import WebHandler
 from utils.util_config import LOCAL_IP, LOCAL_PORT
 from utils.util_log import MY_LOG
-from utils.util_screen import get_screen_dict, get_default_dict
+from utils.util_screen import get_default_dict
 
 
 class WebScreen(MenuClient, HTTPServer):
     def __init__(self, queue: Queue):
         MenuClient.__init__(self, queue)
         # noinspection PyTypeChecker
-        HTTPServer.__init__(self, ("", LOCAL_PORT), WebHandler, )
-        self.__dic: dict = get_screen_dict(get_default_dict())
-        Thread(target=self.__update, name="update", daemon=True).start()
-
-    def __update(self) -> None:
+        HTTPServer.__init__(self, ("", LOCAL_PORT), WebHandler)
+        self.request_queue_size = 0  # 1 request at a time
+        self.__dic: dict = dict()
+        self._has_updates: Event = Event()
+        self._client_redraw(get_default_dict())
         MY_LOG.warning(f"To control looper connect to:\nhttp://{LOCAL_IP}:{LOCAL_PORT}")
         try:
             self.serve_forever()
@@ -27,17 +26,21 @@ class WebScreen(MenuClient, HTTPServer):
 
     def _client_log(self, msg: str) -> None:
         self.__dic["description"] = msg
-        WebHandler.updates_b = json.dumps(self.__dic).encode()
-        WebHandler.has_updates.set()
+        self._has_updates.set()
 
     def service_actions(self):
         if not self._alive:
             raise KeyboardInterrupt("stopped")
 
     def _client_redraw(self, dic: dict) -> None:
-        self.__dic = get_screen_dict(dic)
-        WebHandler.updates_b = json.dumps(self.__dic).encode()
-        WebHandler.has_updates.set()
+        self.__dic = dic
+        self.__dic["update_tm"] = time()
+        self._has_updates.set()
+
+    def get_updates(self) -> dict[str, str | float]:
+        self._has_updates.wait()
+        self._has_updates.clear()
+        return self.__dic
 
 
 if __name__ == "__main__":

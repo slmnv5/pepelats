@@ -3,9 +3,10 @@ from textwrap import wrap
 from threading import Thread
 from time import sleep
 
+from basic.audioinfo import AudioInfo
 from screen.menuclient import MenuClient
 from utils.util_screen import SCR_COLS
-from utils.util_screen import get_screen_dict, get_default_dict
+from utils.util_screen import get_default_dict
 
 _CLEAN_TO_END = '\x1b[0J'  # clean from cursor to end of screen
 _CURSOR_MOVE = "\x1b[1;1H"  # move cursor to line=1 and pos=1
@@ -26,12 +27,26 @@ _YEL_CLR: str = f"\x1b[1;{_YELLOW}m"
 _GRN_CLR: str = f"\x1b[1;{_GREEN}m"
 _BLU_CLR: str = f"\x1b[1;{_BLUE}m"
 
+_UPDATES_PER_LOOP: int = 16
+
+
+def _recalc_dic(dic: dict) -> None:
+    dic["sleep_tm"] = dic["len"] / AudioInfo().SD_RATE / _UPDATES_PER_LOOP
+    dic["pos"] = (dic["idx"] % dic["len"]) / dic["len"]
+    dic["delta"] = 1 / _UPDATES_PER_LOOP
+    if dic["max_loop_len"] > dic["len"]:
+        dic["max_loop_pos"] = (dic["idx"] % dic["max_loop_len"]) / dic["max_loop_len"]
+        dic["max_loop_delta"] = 1 / _UPDATES_PER_LOOP / dic["max_loop_len"] * dic["len"]
+    else:
+        dic["max_loop_pos"], dic["max_loop_delta"] = 0, 0
+
 
 class TextScreen(MenuClient):
 
     def __init__(self, queue: Queue):
         MenuClient.__init__(self, queue)
-        self.__dic: dict = get_screen_dict(get_default_dict())
+        self.__dic: dict = get_default_dict()
+        _recalc_dic(self.__dic)
         Thread(target=self.__update, name="update", daemon=True).start()
 
     @staticmethod
@@ -52,12 +67,6 @@ class TextScreen(MenuClient):
         print(f"{_CURSOR_MOVE}\n{msg}")
 
     def _client_redraw(self, dic: dict) -> None:
-        assert "header" in dic
-        assert "description" in dic
-        assert "content" in dic
-        assert "is_rec" in dic
-        assert "len" in dic
-
         dic["header"] = dic["header"][:SCR_COLS].center(SCR_COLS)
         dic["description"] = '\n'.join([x.center(SCR_COLS) for x in wrap(dic["description"], SCR_COLS)])
         dic["content"] = '\n'.join([self.__add_color(x, dic["is_rec"]) for x in dic["content"].split('\n')])
@@ -66,7 +75,8 @@ class TextScreen(MenuClient):
         print(dic["description"])
         print(dic["content"], flush=True)
 
-        self.__dic = get_screen_dict(dic)
+        self.__dic = dic
+        _recalc_dic(self.__dic)
 
     def __update(self):
         while self._alive:
