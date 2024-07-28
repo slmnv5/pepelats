@@ -2,7 +2,6 @@ import os
 import subprocess
 from configparser import ConfigParser, ParsingError
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from typing import Callable
 
 from utils.util_config import CONFIG_PORT, LOCAL_IP
 from utils.util_log import MY_LOG
@@ -22,7 +21,6 @@ def web_config():
 
 
 class ConfigHandler(BaseHTTPRequestHandler):
-    get_updates: Callable[[], str] = None
 
     def _write_to_file(self) -> bool:
         content_length = int(self.headers['Content-Length'])
