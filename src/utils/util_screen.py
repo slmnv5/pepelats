@@ -16,7 +16,6 @@ MY_LOG.info(f"Text screen size: cols={SCR_COLS} rows={SCR_ROWS}")
 
 def get_default_dict() -> dict:
     tmp: dict = dict()
-    tmp["update_method"] = ""
     tmp[AppName.header] = ""
     tmp[AppName.description] = ""
     tmp[AppName.content] = ""

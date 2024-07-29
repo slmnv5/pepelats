@@ -61,13 +61,13 @@ class Looper(SongCtrl):
 
     def _client_redraw(self, dic: dict) -> None:
         dic[AppName.header] = f"{self._drum}"
-        if "update_method" in dic:
-            # noinspection PyBroadException
-            try:
-                method = getattr(self, dic["update_method"])
-                dic[AppName.content] = method()
-            except Exception as ex:
-                MY_LOG.exception(ex)
+        # noinspection PyBroadException
+        try:
+            method = getattr(self, dic[AppName.content])
+            dic[AppName.content] = method()
+        except Exception as ex:
+            dic[AppName.content] = ""
+            MY_LOG.exception(ex)
 
         part = self._song.get_item()
         dic["len"] = part.get_len()
