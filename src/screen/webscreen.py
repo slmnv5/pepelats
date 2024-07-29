@@ -2,12 +2,14 @@ import json
 from functools import partial
 from http.server import HTTPServer
 from multiprocessing import Queue
+from threading import Thread
 from time import time
 
 from screen.menuclient import MenuClient
 from screen.webhandler import WebHandler
 from utils.util_config import LOCAL_IP, LOCAL_PORT
 from utils.util_log import MY_LOG
+from utils.util_name import AppName
 from utils.util_screen import get_default_dict
 
 
@@ -19,15 +21,18 @@ class WebScreen(MenuClient):
         self._updates_b: bytes = json.dumps(self.__dic).encode()
         handler_class = partial(WebHandler, self._updates_b)
         self._serv = HTTPServer(("", LOCAL_PORT), handler_class)
-        self._client_redraw(get_default_dict())
+        Thread(target=self.__update, name="update", daemon=True).start()
         MY_LOG.warning(f"To control looper connect to:\nhttp://{LOCAL_IP}:{LOCAL_PORT}")
-        try:
-            self._serv.serve_forever()
-        except KeyboardInterrupt:
-            self._serv.server_close()
+
+    def __update(self) -> None:
+        self._serv.serve_forever()
+
+    def _client_stop(self) -> None:
+        super()._client_stop()
+        self._serv.shutdown()
 
     def _client_log(self, msg: str) -> None:
-        self.__dic["description"] = msg
+        self.__dic[AppName.description] = msg
         self._updates_b = json.dumps(self.__dic).encode()
 
     def _client_redraw(self, dic: dict) -> None:

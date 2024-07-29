@@ -2,7 +2,8 @@ class AppName:
     app_name: str = "pepelats"
 
     # menu INI config files related
-    update_method: str = "update_method"
+    header: str = "header"
+    content: str = "content"
     description: str = "description"
     play_section: str = "play"
 

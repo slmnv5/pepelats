@@ -86,24 +86,30 @@ window.onload = () => {
                 let tmp = await res.json();
                 if (tmp.update_tm > DATA.update_tm) {
                     DATA = tmp;
+                    DATA.pos = (DATA.idx % DATA.len) / DATA.len
+                    if DATA.max_loop_len                   
                     DESCRIPTION.textContent = DATA.description;
                     CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec);
-                }; 
+                };
+                await new Promise(r => setTimeout(r, 1000)); 
             } catch(err) {
-                console.log("Error:", err)
+                console.log("Error fetching:", err)
             }
         };
-        await new Promise(r => setTimeout(r, 1000));    
     };
 
     async function redrawData() {        
         while(true) {
-            DATA.pos = (DATA.pos + DATA.delta) % 1; // position in the song part
-            if (DATA.max_loop_delta > 0) {
-                DATA.max_loop_pos = (DATA.max_loop_pos + DATA.max_loop_delta) % 1 // position in the max loop
-            };
-            HEADER.innerHTML = getHeaderHtml(DATA.header, DATA.pos, DATA.max_loop_pos, WIN_CHARS);
-            await new Promise(r => setTimeout(r, DATA.sleep_tm * 1000));
+            try {
+                DATA.pos = (DATA.pos + DATA.delta) % 1; // position in the song part
+                if (DATA.max_loop_delta > 0) {
+                    DATA.max_loop_pos = (DATA.max_loop_pos + DATA.max_loop_delta) % 1 // position in the max loop
+                };
+                HEADER.innerHTML = getHeaderHtml(DATA.header, DATA.pos, DATA.max_loop_pos, WIN_CHARS);
+                await new Promise(r => setTimeout(r, DATA.sleep_tm * 1000));
+            } catch(err) {
+                console.log("Error re-drawing:", err)
+            }
         };
     };
 };

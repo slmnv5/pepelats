@@ -60,12 +60,12 @@ class Looper(SongCtrl):
         self._client_enqueue([AppName.client_redraw, self.__dic])
 
     def _client_redraw(self, dic: dict) -> None:
-        dic["header"] = f"{self._drum}"
+        dic[AppName.header] = f"{self._drum}"
         if "update_method" in dic:
             # noinspection PyBroadException
             try:
                 method = getattr(self, dic["update_method"])
-                dic["content"] = method()
+                dic[AppName.content] = method()
             except Exception as ex:
                 MY_LOG.exception(ex)
 

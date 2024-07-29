@@ -13,10 +13,7 @@ class WebHandler(BaseHTTPRequestHandler):
 
     # noinspection PyPep8Naming
     def do_GET(self):
-        if not self._update_b:
-            self.send_error(500, "server stopped")
-            raise KeyboardInterrupt("server stopped")
-        elif self.path == "/update":
+        if self.path == "/update":
             send_headers(self, 'application/json')
             self.wfile.write(self._update_b)
         elif self.path == "/update_page.js":

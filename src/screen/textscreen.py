@@ -5,6 +5,7 @@ from time import sleep
 
 from basic.audioinfo import AudioInfo
 from screen.menuclient import MenuClient
+from utils.util_name import AppName
 from utils.util_screen import SCR_COLS
 from utils.util_screen import get_default_dict
 
@@ -67,13 +68,13 @@ class TextScreen(MenuClient):
         print(f"{_CURSOR_MOVE}\n{msg}")
 
     def _client_redraw(self, dic: dict) -> None:
-        dic["header"] = dic["header"][:SCR_COLS].center(SCR_COLS)
-        dic["description"] = '\n'.join([x.center(SCR_COLS) for x in wrap(dic["description"], SCR_COLS)])
-        dic["content"] = '\n'.join([self.__add_color(x, dic["is_rec"]) for x in dic["content"].split('\n')])
+        dic[AppName.header] = dic[AppName.header][:SCR_COLS].center(SCR_COLS)
+        dic[AppName.description] = '\n'.join([x.center(SCR_COLS) for x in wrap(dic[AppName.description], SCR_COLS)])
+        dic[AppName.content] = '\n'.join([self.__add_color(x, dic["is_rec"]) for x in dic[AppName.content].split('\n')])
 
-        print(f'{_CURSOR_MOVE}{dic["header"]}{_CLEAN_TO_END}')
-        print(dic["description"])
-        print(dic["content"], flush=True)
+        print(f'{_CURSOR_MOVE}{dic[AppName.header]}{_CLEAN_TO_END}')
+        print(dic[AppName.description])
+        print(dic[AppName.content], flush=True)
 
         self.__dic = dic
         _recalc_dic(self.__dic)
@@ -81,7 +82,7 @@ class TextScreen(MenuClient):
     def __update(self):
         while self._alive:
             sleep(self.__dic["sleep_tm"])
-            line = self.__dic["header"]
+            line = self.__dic[AppName.header]
             delta = self.__dic["max_loop_delta"]
             if delta > 0:
                 pos = (self.__dic["max_loop_pos"] + delta) % 1

@@ -79,13 +79,13 @@ class MenuHost(_MenuLoader, ABC):
 
     def _menu_update(self, fname: str) -> None:
         super()._menu_update(fname)
-        self.__dic["description"] = self.get(AppName.description)
-        self.__dic["update_method"] = self.get(AppName.update_method)
+        self.__dic[AppName.description] = self.get(AppName.description)
+        self.__dic[AppName.content] = self.get(AppName.content)
 
     def _section_update(self, k: int) -> None:
         super()._section_update(k)
-        self.__dic["description"] = self.get(AppName.description)
-        self.__dic["update_method"] = self.get(AppName.update_method)
+        self.__dic[AppName.description] = self.get(AppName.description)
+        self.__dic[AppName.content] = self.get(AppName.content)
 
     def _send_command(self, note: int, velo: int) -> None:
         if note not in self._midi_dict:
