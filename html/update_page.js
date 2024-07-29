@@ -65,7 +65,9 @@ window.onload = () => {
 
     setStyle()
     const URL = '/update';
-    let DATA = {"update_tm":0, "sleep_tm":0.5,"pos":0,"delta":0.1,"max_loop_pos":0,"max_loop_delta":0.05};
+    let DATA = {"header":"---", "contents":"---", "description":"---", 
+        "update_tm":0, "sleep_tm":0.5, "pos":0, 
+        "delta":0.1, "max_loop_pos":0, "max_loop_delta":0.05};
 
     const HEADER = document.getElementById('header');
     const DESCRIPTION = document.getElementById('description');
