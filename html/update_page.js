@@ -75,21 +75,25 @@ window.onload = () => {
     recalcWidth();
 
     Promise.race([fetchData(), redrawData()])
-    .then((values) => console.log("Resolved:\n", values))  
-    .catch((values) => console.log("Rejected:\n", values))
+    .then((values) => console.log("Resolved:", values))  
+    .catch((values) => console.log("Rejected:", values))
 
 
     async function fetchData() { 
         while(true) {
-            let res = await fetch(URL);
-            let tmp = await res.json();
-            if (tmp.update_tm > DATA.update_tm) {
-                DATA = tmp;
-                DESCRIPTION.textContent = DATA.description;
-                CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec);
-            };
-            await new Promise(r => setTimeout(r, 1000));    
+            try { 
+                let res = await fetch(URL);
+                let tmp = await res.json();
+                if (tmp.update_tm > DATA.update_tm) {
+                    DATA = tmp;
+                    DESCRIPTION.textContent = DATA.description;
+                    CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec);
+                }; 
+            } catch(err) {
+                console.log("Error:", err)
+            }
         };
+        await new Promise(r => setTimeout(r, 1000));    
     };
 
     async function redrawData() {        
