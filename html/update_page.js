@@ -3,15 +3,11 @@
 const TEXT_SZ = 35; // size for all elements 
 let WIN_CHARS = 10; // how many chars fit in browser window line
 
-const sleepFunc = (ms) => new Promise((r) => setTimeout(r, ms));
-
-function fetchTest(url) {
-    let data = {foo: "bar"};
-    let blob = new Blob([JSON.stringify(data, null, 2)], {type : 'application/json'});
-    let init = { "status" : 200 , "statusText" : "SuperSmashingGreat!" };
-    let theResponse = new Response(blob, init);
-    return theResponse;
+function sleepFunc(ms) {
+    if (!Number.isFinite(ms) || ms < 0) ms = 1_000;
+    return new Promise((r) => {setTimeout(r, ms)});
 }
+
 
 function setStyle() {
     const body_style = document.body.style;
@@ -39,7 +35,7 @@ function getHeaderHtml (header, l1, l2, max_chars) {
     [l1, l2] = [l1 * max_chars, l2 * max_chars];
     let missing = max_chars - header.length;
     let s = '.'.repeat(missing / 2) + header + '.'.repeat(missing / 2);
-    let s1 = "", s2 = "";
+    let s1, s2;
     [s1, s2] = [s.slice(0, l1), s.slice(l1)];
     [s1, s2] = [decorateOneChar(s1, l2), decorateOneChar(s2, l2 - l1)];
     return '<p>' + BW_S + s1 + END_S + s2 + '</p>';
@@ -71,6 +67,17 @@ function recalcWidth() {
 
 window.onresize = recalcWidth;
 
+
+async function fetchTest(url) {
+    await sleepFunc(10_000);
+    let data = {"sleep_tm":0.5, "header":"---", "description": "---", "content":"---",
+        "pos":0, "delta":0.1, "max_loop_pos":0, "max_loop_delta":0.05};
+    let blob = new Blob([JSON.stringify(data, null, 2)], {type : 'application/json'});
+    let init = { "status" : 200 , "statusText" : "OK" };
+    let resp = new Response(blob, init);
+    return resp;
+}
+
 window.onload = () => {
 
     setStyle()
@@ -88,7 +95,7 @@ window.onload = () => {
 
 
     async function fetchData() {
-        const processData = (x) => {
+        function processData(x) {
             if (x.update_tm <= DATA.update_tm) return;
             DATA = x;
             DESCRIPTION.textContent = DATA.description;
@@ -96,27 +103,30 @@ window.onload = () => {
         }
      
         while(true) {
-            await sleepFunc(1000)
-                .then(fetch(URL))
-                .then(x => x.json())
-                .then(processData)
-                .catch(console.error)
+            try {
+                let resp = await fetchTest(URL);
+                let data = await resp.json();
+                processData(data);
+            } catch(err) {
+                console.error(err)
+            }
         };
     };
 
     async function redrawData() {
-        const oneCycle = async () => {
-            DATA.pos = (DATA.pos + DATA.delta) % 1; // position in the song part
-            if (DATA.max_loop_delta > 0) {
-                DATA.max_loop_pos = (DATA.max_loop_pos + DATA.max_loop_delta) % 1 // position in the max loop
-            };
-            HEADER.innerHTML = getHeaderHtml(DATA.header, DATA.pos, DATA.max_loop_pos, WIN_CHARS);                
-        }
-
         while(true) {
-            await sleepFunc(DATA.sleep_tm * 1000)
-            .then(oneCycle)
-            .catch(console.error);            
+            try {
+                await sleepFunc(DATA.sleep_tm * 1000);
+                DATA.pos += DATA.delta // position in the song part
+                DATA.pos %= 1;
+                if (DATA.max_loop_delta > 0) {
+                    DATA.max_loop_pos += DATA.max_loop_delta // position in the max loop
+                    DATA.max_loop_pos %= 1;
+                };
+                HEADER.innerHTML = getHeaderHtml(DATA.header, DATA.pos, DATA.max_loop_pos, WIN_CHARS);                        
+            } catch(err) {
+                console.error(err);
+            }            
         };
     };
 };
