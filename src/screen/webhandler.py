@@ -6,9 +6,8 @@ from utils.util_web import send_headers, FAVICON_B, UPDATE_CODE_B, UPDATE_PAGE
 
 
 class WebHandler(BaseHTTPRequestHandler):
-    def __init__(self, has_update: Event, update_dic: dict[str, any], *args, **kwargs):
-        self.has_update = has_update
-        self.update_dic = update_dic
+    def __init__(self, update_b: bytes, *args, **kwargs):
+        self.update_b = update_b
         # BaseHTTPRequestHandler calls do_GET inside __init__
         # So we have to call super().__init__ after setting attributes.
         super().__init__(*args, **kwargs)
@@ -17,10 +16,7 @@ class WebHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/update":
             send_headers(self, 'application/json')
-            if self.has_update.wait(timeout=3):
-                self.wfile.write(json.dumps(self.update_dic).encode())
-            else:
-                self.wfile.write(b"")
+            self.wfile.write(self.update_b)
         elif self.path == "/update_page.js":
             send_headers(self, 'text/javascript')
             self.wfile.write(UPDATE_CODE_B)
