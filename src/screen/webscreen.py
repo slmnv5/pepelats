@@ -10,15 +10,15 @@ from screen.webhandler import WebHandler
 from utils.util_config import LOCAL_IP, LOCAL_PORT
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
-from utils.util_screen import get_default_dict
+from utils.util_screen import get_default_dict, recalc_dic
 
 
 class WebScreen(MenuClient):
     def __init__(self, queue: Queue):
         MenuClient.__init__(self, queue)
-        self.__dic: dict = get_default_dict()
-        self.__dic["update_tm"] = time()
-        self._updates_b: bytes = json.dumps(self.__dic).encode()
+        self.__dic: dict = dict()
+        self._updates_b: bytes = b""
+        self._client_redraw(get_default_dict())
         handler_class = partial(WebHandler, self._updates_b)
         self._serv = HTTPServer(("", LOCAL_PORT), handler_class)
         Thread(target=self.__update, name="update", daemon=True).start()
@@ -33,10 +33,11 @@ class WebScreen(MenuClient):
 
     def _client_log(self, msg: str) -> None:
         self.__dic[AppName.description] = msg
-        self._updates_b = json.dumps(self.__dic).encode()
+        self._client_redraw(self.__dic)
 
     def _client_redraw(self, dic: dict) -> None:
         self.__dic = dic
+        recalc_dic(self.__dic)
         self.__dic["update_tm"] = time()
         self._updates_b = json.dumps(self.__dic).encode()
 

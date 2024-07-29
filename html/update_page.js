@@ -29,7 +29,7 @@ function getHeaderHtml (header, l1, l2, max_chars) {
     [l1, l2] = [l1 * max_chars, l2 * max_chars];
     let missing = max_chars - header.length;
     let s = '.'.repeat(missing / 2) + header + '.'.repeat(missing / 2);
-    let s1, s2;
+    let s1 = "", s2 = "";
     [s1, s2] = [s.slice(0, l1), s.slice(l1)];
     [s1, s2] = [decorateOneChar(s1, l2), decorateOneChar(s2, l2 - l1)];
     return '<p>' + BW_S + s1 + END_S + s2 + '</p>';
@@ -41,17 +41,17 @@ function getContentHtml(content, is_rec) {
     const GREEN_P = '<p style="color: rgb(30, 250, 30);">';
     const YELLOW_P = '<p style="color: yellow;">';
     
-    let s = '';
-    for (const s of content.split("\n")) {
+    let s = "", result = "";
+    for (s of content.split("\n")) {
         if (s[0] === '*') {
-            s += (is_rec ? RED_P : GREEN_P) + s + '</p>';
+            result += (is_rec ? RED_P : GREEN_P) + s + '</p>';
         } else if (s[0] === '~') {
-            s += YELLOW_P + s + '</p>';
+            result += YELLOW_P + s + '</p>';
         } else {
-            s += '<p>' + s + '</p>';
+            result += '<p>' + s + '</p>';
         }
     }
-    return s;
+    return result;
 };
 
 
@@ -78,37 +78,35 @@ window.onload = () => {
     .then((values) => console.log("Resolved:", values))  
     .catch((values) => console.log("Rejected:", values))
 
+    function processData(x) {
+        if (x.update_tm <= DATA.update_tm) return;
+
+        DATA = x;
+        DESCRIPTION.textContent = DATA.description;
+        CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec);
+    }
 
     async function fetchData() { 
         while(true) {
-            try { 
-                let res = await fetch(URL);
-                let tmp = await res.json();
-                if (tmp.update_tm > DATA.update_tm) {
-                    DATA = tmp;
-                    DATA.pos = (DATA.idx % DATA.len) / DATA.len
-                    if DATA.max_loop_len                   
-                    DESCRIPTION.textContent = DATA.description;
-                    CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec);
-                };
-                await new Promise(r => setTimeout(r, 1000)); 
-            } catch(err) {
-                console.log("Error fetching:", err)
-            }
+            await new Promise(r => setTimeout(r, 1000));
+            await fetch(URL)
+                .then(x => x.json())
+                .then(processData)
+                .catch(console.error)
         };
     };
 
     async function redrawData() {        
         while(true) {
+            await new Promise(r => setTimeout(r, DATA.sleep_tm * 1000));
             try {
                 DATA.pos = (DATA.pos + DATA.delta) % 1; // position in the song part
                 if (DATA.max_loop_delta > 0) {
                     DATA.max_loop_pos = (DATA.max_loop_pos + DATA.max_loop_delta) % 1 // position in the max loop
                 };
-                HEADER.innerHTML = getHeaderHtml(DATA.header, DATA.pos, DATA.max_loop_pos, WIN_CHARS);
-                await new Promise(r => setTimeout(r, DATA.sleep_tm * 1000));
+                HEADER.innerHTML = getHeaderHtml(DATA.header, DATA.pos, DATA.max_loop_pos, WIN_CHARS);                
             } catch(err) {
-                console.log("Error re-drawing:", err)
+                console.error(err)
             }
         };
     };

@@ -3,10 +3,9 @@ from textwrap import wrap
 from threading import Thread
 from time import sleep
 
-from basic.audioinfo import AudioInfo
 from screen.menuclient import MenuClient
 from utils.util_name import AppName
-from utils.util_screen import SCR_COLS
+from utils.util_screen import SCR_COLS, recalc_dic
 from utils.util_screen import get_default_dict
 
 _CLEAN_TO_END = '\x1b[0J'  # clean from cursor to end of screen
@@ -28,26 +27,13 @@ _YEL_CLR: str = f"\x1b[1;{_YELLOW}m"
 _GRN_CLR: str = f"\x1b[1;{_GREEN}m"
 _BLU_CLR: str = f"\x1b[1;{_BLUE}m"
 
-_UPDATES_PER_LOOP: int = 16
-
-
-def _recalc_dic(dic: dict) -> None:
-    dic["sleep_tm"] = dic["len"] / AudioInfo().SD_RATE / _UPDATES_PER_LOOP
-    dic["pos"] = (dic["idx"] % dic["len"]) / dic["len"]
-    dic["delta"] = 1 / _UPDATES_PER_LOOP
-    if dic["max_loop_len"] > dic["len"]:
-        dic["max_loop_pos"] = (dic["idx"] % dic["max_loop_len"]) / dic["max_loop_len"]
-        dic["max_loop_delta"] = 1 / _UPDATES_PER_LOOP / dic["max_loop_len"] * dic["len"]
-    else:
-        dic["max_loop_pos"], dic["max_loop_delta"] = 0, 0
-
 
 class TextScreen(MenuClient):
 
     def __init__(self, queue: Queue):
         MenuClient.__init__(self, queue)
         self.__dic: dict = get_default_dict()
-        _recalc_dic(self.__dic)
+        recalc_dic(self.__dic)
         Thread(target=self.__update, name="update", daemon=True).start()
 
     @staticmethod
@@ -77,7 +63,7 @@ class TextScreen(MenuClient):
         print(dic[AppName.content], flush=True)
 
         self.__dic = dic
-        _recalc_dic(self.__dic)
+        recalc_dic(self.__dic)
 
     def __update(self):
         while self._alive:
