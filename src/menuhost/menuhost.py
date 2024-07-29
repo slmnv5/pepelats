@@ -92,12 +92,12 @@ class MenuHost(_MenuLoader, ABC):
             MY_LOG.error(f"MIDI note: {note} is not expected. Check main.ini file")
 
         menu_key: str = f"{self._midi_dict[note]}-{velo}"
-        menu_cmd: str = self.get(menu_key)
-        for cmd in menu_cmd.split(":"):  # commands separated by ":"
+        menu_item: str = self.get(menu_key)
+        for cmd in [x for x in menu_item.split(":") if x.strip()]:  # commands separated by ":"
             lst = cmd.split()  # method name and arguments if any
             MY_LOG.debug(f"MenuHost sent command: {lst}")
             self.__process_list(lst)
-            
+
         # after all commands send _redraw
         self.__queue.put([AppName.client_redraw, self.__dic])
 
