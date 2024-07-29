@@ -104,7 +104,7 @@ window.onload = () => {
      
         while(true) {
             try {
-                let resp = await fetchTest(URL);
+                let resp = await fetch(URL);
                 let data = await resp.json();
                 processData(data);
             } catch(err) {

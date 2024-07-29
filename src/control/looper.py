@@ -11,7 +11,6 @@ from utils.util_config import LOCAL_IP, BRANCH
 from utils.util_config import load_ini_section, update_ini_section
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
-from utils.util_screen import get_default_dict
 
 
 class Looper(SongCtrl):
@@ -20,7 +19,8 @@ class Looper(SongCtrl):
     def __init__(self, recv_q: Queue, send_q: Queue):
         SongCtrl.__init__(self, recv_q)
         self.__queue = send_q
-        self.__dic: dict = get_default_dict()
+        self._description: str = ""
+        self._content: str = ""
         self._drum_create(0, dict())
 
     def _client_stop(self) -> None:
@@ -57,13 +57,22 @@ class Looper(SongCtrl):
             self._drum.set_bar_len(bar_len)
 
     def _update_view(self) -> None:
-        self._client_enqueue([AppName.client_redraw, self.__dic])
+        self._client_enqueue([AppName.client_redraw, dict()])
 
     def _client_redraw(self, dic: dict) -> None:
         dic[AppName.header] = f"{self._drum}"
+
+        if AppName.description in dic:
+            self._description = dic[AppName.description]
+        else:
+            dic[AppName.description] = self._description
+
+        if AppName.content in dic:
+            self._content = dic[AppName.content]
+
         # noinspection PyBroadException
         try:
-            method = getattr(self, dic[AppName.content])
+            method = getattr(self, self._content)
             dic[AppName.content] = method()
         except Exception as ex:
             dic[AppName.content] = ""
@@ -74,8 +83,7 @@ class Looper(SongCtrl):
         dic["max_loop_len"] = part.get_max_len(True)
         dic["idx"] = self.idx
         dic["is_rec"] = self.get_is_rec()
-        self.__dic.update(dic)
-        self.__queue.put([AppName.client_redraw, self.__dic])
+        self.__queue.put([AppName.client_redraw, dic])
 
     # other methods
 
