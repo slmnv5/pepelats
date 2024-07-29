@@ -16,7 +16,7 @@ class WebScreen(MenuClient, HTTPServer):
         HTTPServer.__init__(self, ("", LOCAL_PORT), WebHandler)
         self.request_queue_size = 0  # 1 request at a time
         self.__dic: dict = dict()
-        self._has_update: Event = Event()
+        self.has_update: Event = Event()
         self._client_redraw(get_default_dict())
         MY_LOG.warning(f"To control looper connect to:\nhttp://{LOCAL_IP}:{LOCAL_PORT}")
         try:
@@ -26,7 +26,7 @@ class WebScreen(MenuClient, HTTPServer):
 
     def _client_log(self, msg: str) -> None:
         self.__dic["description"] = msg
-        self._has_update.set()
+        self.has_update.set()
 
     def service_actions(self):
         if not self._alive:
@@ -35,14 +35,9 @@ class WebScreen(MenuClient, HTTPServer):
     def _client_redraw(self, dic: dict) -> None:
         self.__dic = dic
         self.__dic["update_tm"] = time()
-        self._has_update.set()
+        self.has_update.set()
 
-    def wait_update(self) -> dict[str, str | float]:
-        self._has_update.wait()
-        self._has_update.clear()
-        return self.__dic
-
-    def nowait_update(self) -> dict[str, str | float]:
+    def get_update(self) -> dict[str, str | float]:
         return self.__dic
 
 

@@ -10,8 +10,8 @@ class WebHandler(BaseHTTPRequestHandler):
         if self.path == "/update":
             send_headers(self, 'application/json')
             # noinspection PyUnresolvedReferences
-            dic: dict = self.server.wait_update()
-            self.wfile.write(json.dumps(dic).encode())
+            self.server.has_update.wait()
+            self.wfile.write(json.dumps(self.server.get_update()).encode())
         elif self.path == "/update_page.js":
             send_headers(self, 'text/javascript')
             self.wfile.write(UPDATE_CODE_B)
@@ -20,6 +20,6 @@ class WebHandler(BaseHTTPRequestHandler):
             self.wfile.write(FAVICON_B)
         else:
             send_headers(self)
-            dic: dict = self.server.nowait_update()
+            dic: dict = self.server.get_update()
             s = UPDATE_PAGE.format(header=dic["header"], description=dic["description"], content=dic["content"])
             self.wfile.write(s.encode())
