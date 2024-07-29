@@ -2,7 +2,7 @@ import json
 from functools import partial
 from http.server import HTTPServer
 from multiprocessing import Queue
-from threading import Thread
+from threading import Thread, Event
 from time import time
 
 from screen.menuclient import MenuClient
@@ -16,10 +16,11 @@ from utils.util_screen import get_default_dict, recalc_dic
 class WebScreen(MenuClient):
     def __init__(self, queue: Queue):
         MenuClient.__init__(self, queue)
+        self._update_event: Event = Event()
         self.__dic: dict = dict()
-        self._updates_b: bytes = b""
+        self._update_b: bytes = b""
         self._client_redraw(get_default_dict())
-        handler_class = partial(WebHandler, self._updates_b)
+        handler_class = partial(WebHandler, self._get_event, self._get_update)
         self._serv = HTTPServer(("", LOCAL_PORT), handler_class)
         Thread(target=self.__update, name="update", daemon=True).start()
         MY_LOG.warning(f"To control looper connect to:\nhttp://{LOCAL_IP}:{LOCAL_PORT}")
@@ -36,10 +37,16 @@ class WebScreen(MenuClient):
         self._client_redraw(self.__dic)
 
     def _client_redraw(self, dic: dict) -> None:
-        self.__dic = dic
+        self.__dic.update(dic)
         recalc_dic(self.__dic)
         self.__dic["update_tm"] = time()
-        self._updates_b = json.dumps(self.__dic).encode()
+        self._update_b = json.dumps(self.__dic).encode()
+
+    def _get_update(self) -> bytes:
+        return self._update_b
+
+    def _get_event(self) -> Event:
+        return self._update_event
 
 
 if __name__ == "__main__":
