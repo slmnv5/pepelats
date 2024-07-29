@@ -5,16 +5,24 @@ let WIN_CHARS = 10; // how many chars fit in browser window line
 
 const sleepFunc = (ms) => new Promise((r) => setTimeout(r, ms));
 
+function fetchTest(url) {
+    let data = {foo: "bar"};
+    let blob = new Blob([JSON.stringify(data, null, 2)], {type : 'application/json'});
+    let init = { "status" : 200 , "statusText" : "SuperSmashingGreat!" };
+    let theResponse = new Response(blob, init);
+    return theResponse;
+}
+
 function setStyle() {
-    const body_style = document.body.style
-    body_style['font-size'] = "35px"
-    body_style['font-weight'] = "bolder"
-    body_style['font-family'] = "monospace"
+    const body_style = document.body.style;
+    body_style['font-size'] = "35px";
+    body_style['font-weight'] = "bolder";
+    body_style['font-family'] = "monospace";
     
-    body_style.margin = "0px"
-    body_style.color = "rgb(200, 200, 200)"
-    body_style.backgroundColor = "rgb(30, 30, 30)"
-    body_style.textAlign = "center"
+    body_style.margin = "0px";
+    body_style.color = "rgb(200, 200, 200)";
+    body_style.backgroundColor = "rgb(30, 30, 30)";
+    body_style.textAlign = "center";
 }
 
 // make html showing progress line, char. X - position of max. length loop
@@ -75,40 +83,40 @@ window.onload = () => {
     recalcWidth();
 
     Promise.race([fetchData(), redrawData()])
-    .then((values) => console.log("Resolved:", values))  
-    .catch((values) => console.log("Rejected:", values))
+    .then((x) => console.log("Resolved:", x))  
+    .catch((x) => console.log("Rejected:", x))
 
-    function processData(x) {
-        if (x.update_tm <= DATA.update_tm) return;
 
-        DATA = x;
-        DESCRIPTION.textContent = DATA.description;
-        CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec);
-    }
-
-    async function fetchData() { 
+    async function fetchData() {
+        const processData = (x) => {
+            if (x.update_tm <= DATA.update_tm) return;
+            DATA = x;
+            DESCRIPTION.textContent = DATA.description;
+            CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec);
+        }
+     
         while(true) {
-            await sleepFunc(1000);
-            await fetch(URL)
+            await sleepFunc(1000)
+                .then(fetch(URL))
                 .then(x => x.json())
                 .then(processData)
                 .catch(console.error)
         };
     };
 
-    async function redrawData() {        
+    async function redrawData() {
+        const oneCycle = async () => {
+            DATA.pos = (DATA.pos + DATA.delta) % 1; // position in the song part
+            if (DATA.max_loop_delta > 0) {
+                DATA.max_loop_pos = (DATA.max_loop_pos + DATA.max_loop_delta) % 1 // position in the max loop
+            };
+            HEADER.innerHTML = getHeaderHtml(DATA.header, DATA.pos, DATA.max_loop_pos, WIN_CHARS);                
+        }
+
         while(true) {
-            try {
-                await sleepFunc(DATA.sleep_tm * 1000);
-                DATA.pos = (DATA.pos + DATA.delta) % 1; // position in the song part
-                if (DATA.max_loop_delta > 0) {
-                    DATA.max_loop_pos = (DATA.max_loop_pos + DATA.max_loop_delta) % 1 // position in the max loop
-                };
-                HEADER.innerHTML = getHeaderHtml(DATA.header, DATA.pos, DATA.max_loop_pos, WIN_CHARS);                
-            } catch(err) {
-                console.error(err)
-                await sleepFunc(5000);                
-            }
+            await sleepFunc(DATA.sleep_tm * 1000)
+            .then(oneCycle)
+            .catch(console.error);            
         };
     };
 };
