@@ -1,6 +1,4 @@
-import json
 from http.server import BaseHTTPRequestHandler
-from threading import Event
 
 from utils.util_web import send_headers, FAVICON_B, UPDATE_CODE_B, UPDATE_PAGE
 
