@@ -95,9 +95,9 @@ class MenuHost(_MenuLoader, ABC):
         menu_cmd: str = self.get(menu_key)
         for cmd in menu_cmd.split(":"):  # commands separated by ":"
             lst = cmd.split()  # method name and arguments if any
-            self.__process_list(lst)
             MY_LOG.debug(f"MenuHost sent command: {lst}")
-
+            self.__process_list(lst)
+            
         # after all commands send _redraw
         self.__queue.put([AppName.client_redraw, self.__dic])
 
