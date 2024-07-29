@@ -3,6 +3,18 @@
 const TEXT_SZ = 35; // size for all elements 
 let WIN_CHARS = 10; // how many chars fit in browser window line
 
+function setStyle() {
+    const body_style = document.body.style
+    body_style['font-size'] = "35px"
+    body_style['font-weight'] = "bolder"
+    body_style['font-family'] = "monospace"
+    
+    body_style.margin = "0px"
+    body_style.color = "rgb(200, 200, 200)"
+    body_style.backgroundColor = "rgb(30, 30, 30)"
+    body_style.textAlign = "center"
+}
+
 // make html showing progress line, char. X - position of max. length loop
 function getHeaderHtml (header, l1, l2, max_chars) {
     const BW_S = '<span style="color: black; background-color: rgb(200, 200, 200)";>';
@@ -49,6 +61,8 @@ function recalcWidth() {
 window.onresize = recalcWidth;
 
 window.onload = () => {
+
+    setStyle()
     const URL = '/update';
     let DATA = {"sleep_tm":0.5,"pos":0,"delta":0.1,"max_loop_pos":0,"max_loop_delta":0.05};
 
