@@ -105,6 +105,10 @@ window.onload = () => {
         while(true) {
             try {
                 let resp = await fetch(URL);
+                if (!resp.ok) {
+                    console.log("HTTP status: " + response.status);
+                    continue;
+                }
                 let data = await resp.json();
                 processData(data);
             } catch(err) {

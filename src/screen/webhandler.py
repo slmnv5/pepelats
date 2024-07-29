@@ -19,10 +19,13 @@ class WebHandler(BaseHTTPRequestHandler):
     # noinspection PyPep8Naming
     def do_GET(self):
         if self.path == "/update":
-            send_headers(self, 'application/json')
             if self._get_event().wait(self._WAIT_SEC):
+                send_headers(self, 'application/json')
                 self.wfile.write(self._get_update())
+                print(11111111)
             else:
+                print(99999999999999999)
+                send_headers(self, 'application/json, 400')
                 self.wfile.write(self._empty_update)
         elif self.path == "/update_page.js":
             send_headers(self, 'text/javascript')

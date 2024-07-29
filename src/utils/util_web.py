@@ -28,8 +28,8 @@ def _load_bin_file(fname: str) -> bytes:
         return f.read()
 
 
-def send_headers(handler: BaseHTTPRequestHandler, content_type: str = 'text/html') -> None:
-    handler.send_response(200)
+def send_headers(handler: BaseHTTPRequestHandler, content_type: str = 'text/html', status: int = 200) -> None:
+    handler.send_response(status)
     handler.send_header('Content-type', content_type)
     handler.end_headers()
 
