@@ -3,6 +3,8 @@
 const TEXT_SZ = 35; // size for all elements 
 let WIN_CHARS = 10; // how many chars fit in browser window line
 
+const sleepFunc = (ms) => new Promise((r) => setTimeout(r, ms));
+
 function setStyle() {
     const body_style = document.body.style
     body_style['font-size'] = "35px"
@@ -65,9 +67,7 @@ window.onload = () => {
 
     setStyle()
     const URL = '/update';
-    let DATA = {"header":"---", "contents":"---", "description":"---", 
-        "update_tm":0, "sleep_tm":0.5, "pos":0, 
-        "delta":0.1, "max_loop_pos":0, "max_loop_delta":0.05};
+    let DATA = {};
 
     const HEADER = document.getElementById('header');
     const DESCRIPTION = document.getElementById('description');
@@ -88,7 +88,7 @@ window.onload = () => {
 
     async function fetchData() { 
         while(true) {
-            await new Promise(r => setTimeout(r, 1000));
+            await sleepFunc(1000);
             await fetch(URL)
                 .then(x => x.json())
                 .then(processData)
@@ -98,8 +98,8 @@ window.onload = () => {
 
     async function redrawData() {        
         while(true) {
-            await new Promise(r => setTimeout(r, DATA.sleep_tm * 1000));
             try {
+                await sleepFunc(DATA.sleep_tm * 1000);
                 DATA.pos = (DATA.pos + DATA.delta) % 1; // position in the song part
                 if (DATA.max_loop_delta > 0) {
                     DATA.max_loop_pos = (DATA.max_loop_pos + DATA.max_loop_delta) % 1 // position in the max loop
@@ -107,6 +107,7 @@ window.onload = () => {
                 HEADER.innerHTML = getHeaderHtml(DATA.header, DATA.pos, DATA.max_loop_pos, WIN_CHARS);                
             } catch(err) {
                 console.error(err)
+                await sleepFunc(5000);                
             }
         };
     };
