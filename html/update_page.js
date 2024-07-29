@@ -64,7 +64,7 @@ window.onload = () => {
 
     setStyle()
     const URL = '/update';
-    let DATA = {"sleep_tm":0.5,"pos":0,"delta":0.1,"max_loop_pos":0,"max_loop_delta":0.05};
+    let DATA = {"update_tm":0, "sleep_tm":0.5,"pos":0,"delta":0.1,"max_loop_pos":0,"max_loop_delta":0.05};
 
     const HEADER = document.getElementById('header');
     const DESCRIPTION = document.getElementById('description');
@@ -78,17 +78,14 @@ window.onload = () => {
 
     async function fetchData() { 
         while(true) {
-            try {
-                let res = await fetch(URL);
-                let tmp = await res.json();
-                if (tmp == "") continue;
-                DATA = tmp
-                DESCRIPTION.textContent = DATA.description
-                CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec)
-                console.log(">>>Fetched: " + URL, tmp);    
-            } catch {
-                console.log("Error waiting for update")
-            };                        
+            let res = await fetch(URL);
+            let tmp = await res.json();
+            if (tmp.update_tm > DATA.update_tm) {
+                DATA = tmp;
+                DESCRIPTION.textContent = DATA.description;
+                CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec);
+            };
+            await new Promise(r => setTimeout(r, 1000));    
         };
     };
 
