@@ -20,7 +20,7 @@ class MenuClient(ABC):
             try:
                 method = getattr(self, method_name)
                 method(*params)
-                MY_LOG.debug(f"MenuClient got command: {method}")
+                MY_LOG.debug(f"MenuClient got command: {command}")
             except Exception as ex:
                 MY_LOG.exception(ex)
 
