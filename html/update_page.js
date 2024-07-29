@@ -80,12 +80,14 @@ window.onload = () => {
         while(true) {
             try {
                 let res = await fetch(URL);
-                DATA = await res.json();
+                let tmp = await res.json();
+                if (tmp == "") continue;
+                DATA = tmp
                 DESCRIPTION.textContent = DATA.description
                 CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec)
-                console.log(">>>Fetched: " + URL);    
+                console.log(">>>Fetched: " + URL, tmp);    
             } catch {
-                await new Promise(r => setTimeout(r, DATA.sleep_tm * 3000));
+                console.log("Error waiting for update")
             };                        
         };
     };
