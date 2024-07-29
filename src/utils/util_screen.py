@@ -1,4 +1,5 @@
 import os
+from time import time
 
 from utils.util_config import load_ini_section
 from utils.util_log import MY_LOG
@@ -14,11 +15,12 @@ except OSError:
 MY_LOG.info(f"Text screen size: cols={SCR_COLS} rows={SCR_ROWS}")
 
 
-def get_default_dict() -> dict:
+def get_default_dict() -> dict[str, str | float]:
     tmp: dict = dict()
     tmp[AppName.header] = ""
     tmp[AppName.description] = ""
     tmp[AppName.content] = ""
+    tmp["update_tm"] = time()
     tmp["idx"] = 0
     tmp["is_rec"] = False
     tmp["len"] = 100_000
