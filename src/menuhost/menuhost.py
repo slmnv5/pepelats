@@ -93,10 +93,11 @@ class MenuHost(_MenuLoader, ABC):
 
         menu_key: str = f"{self._midi_dict[note]}-{velo}"
         menu_cmd = self.get(menu_key)
-        lst = menu_cmd.split(":")  # if there are many commands we need the list
-        for cmd in lst:
-            lst1 = cmd.split()  # method name and arguments if any
-            self.__process_list(lst1)
+        for cmd in menu_cmd.split(":"):  # commands separated by ":"
+            lst = cmd.split()  # method name and arguments if any
+            self.__process_list(lst)
+            MY_LOG.debug(f"MenuHost sent command: {lst[0]}")
+
         # after all commands send _redraw
         self.__queue.put([AppName.client_redraw, self.__dic])
 
@@ -112,7 +113,6 @@ class MenuHost(_MenuLoader, ABC):
         elif cmd[0] == AppName.client_stop:
             self._alive = False
         else:
-            MY_LOG.debug(f"MenuHost send command: {cmd}")
             self.__queue.put(cmd)
 
 
