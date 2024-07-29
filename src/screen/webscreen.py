@@ -36,6 +36,7 @@ class WebScreen(MenuClient, HTTPServer):
         self.__dic = dic
         self.__dic["update_tm"] = time()
         self.has_update.set()
+        self.has_update.clear()
 
     def get_update(self) -> dict[str, str | float]:
         return self.__dic
