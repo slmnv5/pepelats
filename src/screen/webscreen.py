@@ -1,3 +1,4 @@
+from functools import partial
 from http.server import HTTPServer
 from multiprocessing import Queue, Event
 from time import time
@@ -12,11 +13,10 @@ from utils.util_screen import get_default_dict
 class WebScreen(MenuClient, HTTPServer):
     def __init__(self, queue: Queue):
         MenuClient.__init__(self, queue)
-        # noinspection PyTypeChecker
-        HTTPServer.__init__(self, ("", LOCAL_PORT), WebHandler)
-        # self.request_queue_size = 0  # 1 request at a time
         self.__dic: dict = dict()
-        self.has_update: Event = Event()
+        self._has_update: Event = Event()
+        handler_class = partial(WebHandler, self._has_update, self.__dic)
+        HTTPServer.__init__(self, ("", LOCAL_PORT), handler_class)
         self._client_redraw(get_default_dict())
         MY_LOG.warning(f"To control looper connect to:\nhttp://{LOCAL_IP}:{LOCAL_PORT}")
         try:
@@ -26,7 +26,8 @@ class WebScreen(MenuClient, HTTPServer):
 
     def _client_log(self, msg: str) -> None:
         self.__dic["description"] = msg
-        self.has_update.set()
+        self._has_update.set()
+        self._has_update.clear()
 
     def service_actions(self):
         if not self._alive:
@@ -35,8 +36,8 @@ class WebScreen(MenuClient, HTTPServer):
     def _client_redraw(self, dic: dict) -> None:
         self.__dic = dic
         self.__dic["update_tm"] = time()
-        self.has_update.set()
-        self.has_update.clear()
+        self._has_update.set()
+        self._has_update.clear()
 
     def get_update(self) -> dict[str, str | float]:
         return self.__dic

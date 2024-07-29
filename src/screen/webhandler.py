@@ -1,17 +1,26 @@
 import json
 from http.server import BaseHTTPRequestHandler
+from threading import Event
 
 from utils.util_web import send_headers, FAVICON_B, UPDATE_CODE_B, UPDATE_PAGE
 
 
 class WebHandler(BaseHTTPRequestHandler):
+    def __init__(self, has_update: Event, update_dic: dict[str, any], *args, **kwargs):
+        self.has_update = has_update
+        self.update_dic = update_dic
+        # BaseHTTPRequestHandler calls do_GET inside __init__
+        # So we have to call super().__init__ after setting attributes.
+        super().__init__(*args, **kwargs)
+
     # noinspection PyPep8Naming
     def do_GET(self):
         if self.path == "/update":
             send_headers(self, 'application/json')
-            # noinspection PyUnresolvedReferences
-            self.server.has_update.wait()
-            self.wfile.write(json.dumps(self.server.get_update()).encode())
+            if self.has_update.wait(timeout=3):
+                self.wfile.write(json.dumps(self.update_dic).encode())
+            else:
+                self.wfile.write(b"")
         elif self.path == "/update_page.js":
             send_headers(self, 'text/javascript')
             self.wfile.write(UPDATE_CODE_B)
@@ -20,6 +29,4 @@ class WebHandler(BaseHTTPRequestHandler):
             self.wfile.write(FAVICON_B)
         else:
             send_headers(self)
-            dic: dict = self.server.get_update()
-            s = UPDATE_PAGE.format(header=dic["header"], description=dic["description"], content=dic["content"])
-            self.wfile.write(s.encode())
+            self.wfile.write(UPDATE_PAGE.encode())
