@@ -32,7 +32,7 @@ function getHeaderHtml (header, l1, l2, max_chars) {
     let s1, s2;
     [s1, s2] = [s.slice(0, l1), s.slice(l1)];
     [s1, s2] = [decorateOneChar(s1, l2), decorateOneChar(s2, l2 - l1)];
-    return '<p>' + BW_S + s1 + END_S + WB_S + s2 + END_S + '</p>';
+    return '<p>' + BW_S + s1 + END_S + s2 + '</p>';
 };
 
 // decorate string with color based on 1st char
