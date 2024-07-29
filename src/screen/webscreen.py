@@ -14,7 +14,7 @@ class WebScreen(MenuClient, HTTPServer):
         MenuClient.__init__(self, queue)
         # noinspection PyTypeChecker
         HTTPServer.__init__(self, ("", LOCAL_PORT), WebHandler)
-        self.request_queue_size = 0  # 1 request at a time
+        # self.request_queue_size = 0  # 1 request at a time
         self.__dic: dict = dict()
         self.has_update: Event = Event()
         self._client_redraw(get_default_dict())
