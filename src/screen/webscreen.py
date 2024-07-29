@@ -17,7 +17,6 @@ class WebScreen(MenuClient):
     def __init__(self, queue: Queue):
         MenuClient.__init__(self, queue)
         self._update_event: Event = Event()
-        self.__dic: dict = dict()
         self._update_b: bytes = b""
         self._client_redraw(get_default_dict())
         handler_class = partial(WebHandler, self._get_event, self._get_update)
@@ -33,14 +32,17 @@ class WebScreen(MenuClient):
         self._serv.shutdown()
 
     def _client_log(self, msg: str) -> None:
-        self.__dic[AppName.description] = msg
-        self._client_redraw(self.__dic)
+        dic = get_default_dict()
+        dic[AppName.description] = msg
+        self._client_redraw(dic)
 
     def _client_redraw(self, dic: dict) -> None:
-        self.__dic.update(dic)
-        recalc_dic(self.__dic)
-        self.__dic["update_tm"] = time()
-        self._update_b = json.dumps(self.__dic).encode()
+        recalc_dic(dic)
+        dic["update_tm"] = time()
+        print(111111111111, dic)
+        self._update_b = json.dumps(dic).encode()
+        self._update_event.set()
+        self._update_event.clear()
 
     def _get_update(self) -> bytes:
         return self._update_b
