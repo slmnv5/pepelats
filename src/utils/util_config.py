@@ -27,6 +27,37 @@ assert len(LOCAL_IP) >= 7 and all(x.isdigit() or x == "." for x in LOCAL_IP)
 MY_LOG.info(f"Local IP is: {LOCAL_IP}")
 
 
+def ram_usage_pct() -> int:
+    if os.name != "posix":
+        return 0
+    try:
+        line = subprocess.run(["free", "-m"], stdout=subprocess.PIPE).stdout.decode()
+        line = line.split('\n')[1]
+        assert line.startswith("Mem:")
+        lst = [convert_param(x) for x in line.split()[1:4]]
+        assert len(lst) == 3
+        assert all(isinstance(x, int) for x in lst)
+        return round((1 - lst[2] / lst[0]) * 100)
+    except Exception as ex:
+        MY_LOG.warning(f"Failed calculate RAM usage: {ex}")
+        return 0
+
+
+def cpu_usage_pct() -> int:
+    if os.name != "posix":
+        return 0
+    try:
+        line = subprocess.run(["head", "-n", "1", '/proc/stat'], stdout=subprocess.PIPE).stdout.decode()
+        assert line.startswith("cpu")
+        lst = [convert_param(x) for x in line.split()[1:6]]
+        assert len(lst) == 5
+        assert all(isinstance(x, int) for x in lst)
+        return round((1 - lst[4] / sum(lst)) * 100)
+    except Exception as ex:
+        MY_LOG.warning(f"Failed calculate CPU usage: {ex}")
+        return 0
+
+
 def load_ini_section(sect: str, convert: bool = False) -> dict[str, str]:
     main = AppName.main_ini
     local = AppName.local_ini

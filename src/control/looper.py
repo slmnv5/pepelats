@@ -7,7 +7,7 @@ from drum.bufferdrum import EuclidDrum, StyleDrum
 from drum.loopdrum import LoopDrum
 from drum.mididrum import MidiDrum
 from screen.confighandler import web_config
-from utils.util_config import LOCAL_IP, BRANCH
+from utils.util_config import LOCAL_IP, BRANCH, ram_usage_pct, cpu_usage_pct
 from utils.util_config import load_ini_section, update_ini_section
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
@@ -90,7 +90,8 @@ class Looper(SongCtrl):
     @staticmethod
     def _info_show() -> str:
         scr_type: int = load_ini_section("SCREEN", True).get(AppName.screen_type, 0)
-        return f"local IP: {LOCAL_IP}\nscreen: {scr_type} (0-lcd 1-web)\nversion: {BRANCH}"
+        return (f"local IP: {LOCAL_IP}\nscreen: {scr_type} (0-lcd 1-web)\nversion: {BRANCH}"
+                f"\nRAM used %:{ram_usage_pct()}\nCPU usage %{cpu_usage_pct()}")
 
     @staticmethod
     def _screen_type_change() -> None:
