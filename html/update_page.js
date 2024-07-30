@@ -3,6 +3,8 @@
 const TEXT_SZ = 35; // size for all elements 
 let WIN_CHARS = 10; // how many chars fit in browser window line
 const UPDATE_ID = "update_id" // used in header and in request 
+let ERR_COUNT = 0
+const MAX_ERR_COUNT = 100 // stop updates when too many errors
 
 function sleepFunc(ms) {
     if (!Number.isFinite(ms) || ms < 0) ms = 1_000;
@@ -95,7 +97,7 @@ window.onload = () => {
 
     async function fetchData() {
         let id = 0 // update id on client side
-        while(true) {            
+        while(ERR_COUNT < MAX_ERR_COUNT) {
             try {
                 let resp = await fetch(URL + "?" + UPDATE_ID + "=" + id);
                 let newest_id = resp.headers.get(UPDATE_ID) // newest id from server 
@@ -108,6 +110,7 @@ window.onload = () => {
                 DESCRIPTION.textContent = DATA.description;
                 CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec);
             } catch(err) {
+                ERR_COUNT++;
                 console.error(err) // must not be
             }
         };
@@ -115,7 +118,7 @@ window.onload = () => {
 
     async function redrawData() {
         DATA.sleep_tm = 1
-        while(true) {
+        while(ERR_COUNT < MAX_ERR_COUNT) {
             try {
                 await sleepFunc(DATA.sleep_tm * 1000);
                 if (DATA.pos == null) continue;
@@ -127,6 +130,7 @@ window.onload = () => {
                 };
                 HEADER.innerHTML = getHeaderHtml(DATA.header, DATA.pos, DATA.max_loop_pos, WIN_CHARS);                        
             } catch(err) {
+                ERR_COUNT++
                 console.error(err);
             }            
         };

@@ -58,3 +58,6 @@ class WebHandler(BaseHTTPRequestHandler):
         else:
             self.send_hdr()
             self.wfile.write(UPDATE_PAGE_B)
+
+    def log_message(self, format1, *args):
+        pass

@@ -110,6 +110,9 @@ class ConfigHandler(BaseHTTPRequestHandler):
             else:
                 self.send_error(400, "Bad Request", "Could not save file")
 
+    def log_message(self, format1, *args):
+        pass
+
 
 if __name__ == "__main__":
     web_config()
