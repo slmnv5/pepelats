@@ -51,7 +51,7 @@ class WebHandler(BaseHTTPRequestHandler):
                 else:  # too long waiting, send nothing
                     self.send_hdr(400, arg_dic=hdr_dic)
                     print(99999999999999999)
-                    self.wfile.write(b"")
+                    self.wfile.write(b'""')
         elif self.path == "/update_page.js":
             self.send_hdr(arg_dic={'Content-type': 'text/javascript'})
             self.wfile.write(UPDATE_CODE_B)
