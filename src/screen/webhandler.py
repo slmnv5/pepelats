@@ -22,7 +22,7 @@ class WebHandler(BaseHTTPRequestHandler):
         super().__init__(*args, **kwargs)
 
     def send_hdr(self, status: int = 200, **kwargs) -> None:
-        dic: dict = {'Content-type': 'application/octet-stream'}
+        dic: dict = {'Content-type': 'text/html'}
         dic.update(kwargs)
         self.send_response(status)
         for k, v in dic.items():

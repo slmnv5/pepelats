@@ -9,7 +9,7 @@ RESET_PATH: str = "/reset"
 EXIT_PATH: str = "/exit"
 
 
-def send_redirect(handler: BaseHTTPRequestHandler) -> None:
+def send_redirect11111(handler: BaseHTTPRequestHandler) -> None:
     handler.send_response(303)
     handler.send_header('Content-type', 'text/html')
     handler.send_header('Location', '/')  # This will navigate to the original page

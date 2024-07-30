@@ -6,7 +6,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from utils.util_config import CONFIG_PORT, LOCAL_IP
 from utils.util_log import MY_LOG
 from utils.util_other import split_to_dict
-from utils.util_web import CONFIG_PAGE_B, RESET_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH, send_headers, send_redirect, \
+from utils.util_web import CONFIG_PAGE_B, RESET_PATH, EXIT_PATH, EDIT_PATH, SHOW_PATH, \
     FAVICON_B, load_file
 
 
@@ -21,6 +21,14 @@ def web_config():
 
 
 class ConfigHandler(BaseHTTPRequestHandler):
+
+    def send_hdr(self, status: int = 200, **kwargs) -> None:
+        dic: dict = {'Content-type': 'text/html'}
+        dic.update(kwargs)
+        self.send_response(status)
+        for k, v in dic.items():
+            self.send_header(k, v)
+        self.end_headers()
 
     def _write_to_file(self) -> bool:
         content_length = int(self.headers['Content-Length'])
@@ -55,7 +63,7 @@ class ConfigHandler(BaseHTTPRequestHandler):
         return True
 
     def _send_file(self, fname: str, read_only: bool) -> None:
-        send_headers(self)
+        self.send_hdr()
         if os.path.islink(fname):
             self.wfile.write(f"File is link: {fname}".encode())
         elif not os.path.isfile(fname):
@@ -70,10 +78,10 @@ class ConfigHandler(BaseHTTPRequestHandler):
     # noinspection PyPep8Naming
     def do_GET(self):
         if self.path == "/":
-            send_headers(self)
+            self.send_hdr()
             self.wfile.write(CONFIG_PAGE_B)
         elif self.path == RESET_PATH:
-            send_headers(self)
+            self.send_hdr()
             result = subprocess.run(['git', 'reset', '--hard'], stdout=subprocess.PIPE)
             self.wfile.write(result.stdout)
         elif self.path == EXIT_PATH:
@@ -85,18 +93,18 @@ class ConfigHandler(BaseHTTPRequestHandler):
             fname = self.path[len(SHOW_PATH):]
             self._send_file(fname, True)
         elif self.path == "/favicon.ico":
-            send_headers(self, 'application/octet-stream')
+            self.send_hdr(**{'Content-type': 'application/octet-stream'})
             self.wfile.write(FAVICON_B)
         else:
-            send_redirect(self)
+            self.send_hdr(303, **{'Location': '/'})
 
     # noinspection PyPep8Naming
     def do_POST(self):
         if self.path != "/save_file":
-            send_redirect(self)
+            self.send_hdr(303, **{'Location': '/'})
         else:
             if self._write_to_file():
-                send_redirect(self)
+                self.send_hdr(303, **{'Location': '/'})
             else:
                 self.send_error(400, "Bad Request", "Could not save file")
 
