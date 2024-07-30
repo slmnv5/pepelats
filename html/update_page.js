@@ -75,7 +75,7 @@ async function fetchTest(url) {
     let blob = new Blob([JSON.stringify(data, null, 2)], {type : 'application/json'});
     let init = { "status" : 200 , "statusText" : "OK" };
     let resp = new Response(blob, init);
-    resp.headers.append("id", "222")
+    resp.headers.append("update_id", "222")
     return resp;
 }
 

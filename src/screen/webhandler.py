@@ -33,20 +33,21 @@ class WebHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.parse_request()
         if self.path.startswith("/update"):
+            hdr_dic: dict = {'Content-type': 'application/json', 'update_id': self._state.id}
             dic = get_params(self.path)
             request_id = dic["id"]
             print(88888888888, id, self._state.bytes.decode())
             if request_id < self._state.id:
-                self.send_hdr(**{'Content-type': 'application/json'})
+                self.send_hdr(**hdr_dic)
                 self.wfile.write(self._state.bytes)
             else:
                 if self._state.ready.wait(self._MAX_WAIT_SEC):
-                    self.send_hdr(**{'Content-type': 'application/json'})
+                    self.send_hdr(**hdr_dic)
                     self.wfile.write(self._state.bytes)
                     print(11111111)
                 else:
                     print(99999999999999999)
-                    self.send_hdr(400, **{'Content-type': 'application/json'})
+                    self.send_hdr(400, **hdr_dic)
                     self.wfile.write(b"")
         elif self.path == "/update_page.js":
             self.send_hdr(**{'Content-type': 'text/javascript'})
