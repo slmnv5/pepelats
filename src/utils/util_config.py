@@ -64,5 +64,12 @@ def convert_param(param: str) -> str | int | float:
         return param
 
 
+def get_params(path: str) -> dict[str, str | int | float]:
+    k = path.index("?") + 1
+    lst: list[list[str]] = [x.split("=") for x in path[k:].split("&")]
+    lst: list[tuple[str, str]] = [(x[0], x[1]) for x in lst if len(x) == 2]
+    return dict([(k, convert_param(v)) for (k, v) in lst])
+
+
 if __name__ == "__main__":
     pass

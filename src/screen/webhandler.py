@@ -1,32 +1,45 @@
-import json
 from http.server import BaseHTTPRequestHandler
 from threading import Event
-from typing import Callable
 
+from utils.util_config import get_params
 from utils.util_web import send_headers, FAVICON_B, UPDATE_CODE_B, UPDATE_PAGE_B
 
 
+class UpdateState:
+    def __init__(self):
+        self.id: int = 0
+        self.bytes: bytes = b""
+        self.ready: Event = Event()
+        self.ready.clear()
+
+
 class WebHandler(BaseHTTPRequestHandler):
-    def __init__(self, get_event: Callable[[], Event], get_update: Callable[[], bytes], *args, **kwargs):
-        self._get_event: Callable[[], Event] = get_event
-        self._get_update: Callable[[], bytes] = get_update
-        self._WAIT_SEC = 5
-        self._empty_update: bytes = json.dumps(dict()).encode()
+    def __init__(self, state: UpdateState, *args, **kwargs):
+        self._state: UpdateState = state
+        self._MAX_WAIT_SEC = 5
         # BaseHTTPRequestHandler calls do_GET inside __init__
         # So we have to call super().__init__ after setting attributes.
         super().__init__(*args, **kwargs)
 
     # noinspection PyPep8Naming
     def do_GET(self):
-        if self.path == "/update":
-            if self._get_event().wait(self._WAIT_SEC):
+        self.parse_request()
+        if self.path.startswith("/update"):
+            dic = get_params(self.path)
+            request_id = dic["id"]
+            print(88888888888, id, self._state.bytes.decode())
+            if request_id < self._state.id:
                 send_headers(self, 'application/json')
-                self.wfile.write(self._get_update())
-                print(11111111)
+                self.wfile.write(self._state.bytes)
             else:
-                print(99999999999999999)
-                send_headers(self, 'application/json, 400')
-                self.wfile.write(self._empty_update)
+                if self._state.ready.wait(self._MAX_WAIT_SEC):
+                    send_headers(self, 'application/json')
+                    self.wfile.write(self._state.bytes)
+                    print(11111111)
+                else:
+                    print(99999999999999999)
+                    send_headers(self, 'application/json, 400')
+                    self.wfile.write(b"")
         elif self.path == "/update_page.js":
             send_headers(self, 'text/javascript')
             self.wfile.write(UPDATE_CODE_B)

@@ -101,11 +101,12 @@ window.onload = () => {
             DESCRIPTION.textContent = DATA.description;
             CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec);
         }
-     
+        let id = 0
         while(true) {
+            id++;            
             try {
-                let resp = await fetch(URL);
-                if (!resp.ok) {
+                let resp = await fetch(URL + "?id=" + id);
+                if (resp.status != 200) {
                     console.log("HTTP status: " + response.status);
                     continue;
                 }
