@@ -36,13 +36,12 @@ class WebHandler(BaseHTTPRequestHandler):
         if self.path.startswith("/update"):
             state: UpdateState = self._get_state()
             # hdr_dic: dict = {'Content-type': 'application/json', 'update_id': state.id}
-            param_dic: dict = get_params(self.path)
-            request_id = param_dic["id"]
+            request_id: int = get_params(self.path).get("update_id", 0)
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.send_header('update_id', '111')
             self.end_headers()
-            print(88888888888, id, state.bytes.decode())
+            print(88888888888, state.bytes.decode(), request_id)
             if request_id < state.id:  # client asking old version, send latest
                 self.wfile.write(state.bytes)
             else:

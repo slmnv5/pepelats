@@ -2,6 +2,7 @@
 
 const TEXT_SZ = 35; // size for all elements 
 let WIN_CHARS = 10; // how many chars fit in browser window line
+const UPDATE_ID = "update_id" // used in header and in request 
 
 function sleepFunc(ms) {
     if (!Number.isFinite(ms) || ms < 0) ms = 1_000;
@@ -75,7 +76,7 @@ async function fetchTest(url) {
     let blob = new Blob([JSON.stringify(data, null, 2)], {type : 'application/json'});
     let init = { "status" : 200 , "statusText" : "OK" };
     let resp = new Response(blob, init);
-    resp.headers.append("update_id", "222")
+    resp.headers.append(UPDATE_ID, "222")
     return resp;
 }
 
@@ -105,8 +106,8 @@ window.onload = () => {
         let id = 0
         while(true) {            
             try {
-                let resp = await fetch(URL + "?id=" + id);
-                let new_id = resp.headers.get("update_id")
+                let resp = await fetch(URL + "?" + UPDATE_ID + "=" + id);
+                let new_id = resp.headers.get(UPDATE_ID)
                 console.log(new_id)
                 if (resp.status != 200) {
                     console.log("HTTP status: " + response.status);
