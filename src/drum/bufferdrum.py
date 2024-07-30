@@ -16,7 +16,7 @@ from utils.util_screen import SCR_ROWS
 
 class BufferDrum(BaseDrum, ABC):
     # Used to skip some drum sounds
-    _DR_MODIFY_PROB: float = 0.2
+    _MODIFY_PROB: float = 0.2
 
     def __init__(self, ptrn_loader: PtrnLoader):
         BaseDrum.__init__(self)
@@ -86,13 +86,16 @@ class BufferDrum(BaseDrum, ABC):
     def _modify(self) -> None:
         """ Randomly modify drum by excluding some drums """
         m: int = len(self._play_lst)
-        self._exclude_lst = choices(range(m), k=m // 3)
+        self._exclude_lst = choices(range(m), k=(m // 3))
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
         if self._is_stopped:
             return
-        if idx % self._bar_len == 0 and random() < self._DR_MODIFY_PROB:
-            self._modify()
+        if idx % self._bar_len == 0:
+            if random() < self._MODIFY_PROB:
+                self._modify()
+            else:
+                self._exclude_lst.clear()
         for buff in [x for k, x in enumerate(self._play_lst) if k not in self._exclude_lst]:
             from_buff_to_data(buff, out_data, idx)
 
