@@ -75,7 +75,7 @@ async function fetchTest(url) {
     let blob = new Blob([JSON.stringify(data, null, 2)], {type : 'application/json'});
     let init = { "status" : 200 , "statusText" : "OK" };
     let resp = new Response(blob, init);
-    resp.headers.append("id" , 222)
+    resp.headers.append("id", "222")
     return resp;
 }
 
@@ -107,11 +107,6 @@ window.onload = () => {
             try {
                 let resp = await fetchTest(URL + "?id=" + id);
                 console.log(resp.headers.get("id"))
-                console.log(resp.headers.get("status"))
-                console.log(resp.headers.get("Content-Type"))
-                console.log(resp.headers.get("statusText"))
-                
-
                 if (resp.status != 200) {
                     console.log("HTTP status: " + response.status);
                     continue;

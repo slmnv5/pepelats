@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler
 from threading import Event
 
 from utils.util_config import get_params
-from utils.util_web import send_headers, FAVICON_B, UPDATE_CODE_B, UPDATE_PAGE_B
+from utils.util_web import FAVICON_B, UPDATE_CODE_B, UPDATE_PAGE_B
 
 
 class UpdateState:
@@ -21,6 +21,14 @@ class WebHandler(BaseHTTPRequestHandler):
         # So we have to call super().__init__ after setting attributes.
         super().__init__(*args, **kwargs)
 
+    def send_hdr(self, status: int = 200, **kwargs) -> None:
+        dic: dict = {'Content-type': 'application/octet-stream'}
+        dic.update(kwargs)
+        self.send_response(status)
+        for k, v in dic.items():
+            self.send_header(k, v)
+        self.end_headers()
+
     # noinspection PyPep8Naming
     def do_GET(self):
         self.parse_request()
@@ -29,23 +37,23 @@ class WebHandler(BaseHTTPRequestHandler):
             request_id = dic["id"]
             print(88888888888, id, self._state.bytes.decode())
             if request_id < self._state.id:
-                send_headers(self, 'application/json')
+                self.send_hdr(**{'Content-type': 'application/json'})
                 self.wfile.write(self._state.bytes)
             else:
                 if self._state.ready.wait(self._MAX_WAIT_SEC):
-                    send_headers(self, 'application/json')
+                    self.send_hdr(**{'Content-type': 'application/json'})
                     self.wfile.write(self._state.bytes)
                     print(11111111)
                 else:
                     print(99999999999999999)
-                    send_headers(self, 'application/json, 400')
+                    self.send_hdr(400, **{'Content-type': 'application/json'})
                     self.wfile.write(b"")
         elif self.path == "/update_page.js":
-            send_headers(self, 'text/javascript')
+            self.send_hdr(**{'Content-type': 'text/javascript'})
             self.wfile.write(UPDATE_CODE_B)
         elif self.path == "/favicon.ico":
-            send_headers(self, 'application/octet-stream')
+            self.send_hdr(**{'Content-type': 'application/octet-stream'})
             self.wfile.write(FAVICON_B)
         else:
-            send_headers(self)
+            self.send_hdr()
             self.wfile.write(UPDATE_PAGE_B)
