@@ -84,7 +84,7 @@ async function fetchTest(_) {
 window.onload = () => {
     setStyle()
     const URL = '/update';
-    let DATA = {}
+    let DATA = {"sleep_tm":1, "header":"-", "description": "-", "content":"-","pos":0, "delta":0.1, "max_loop_pos":0, "max_loop_delta":0.05};
     const HEADER = document.getElementById('header');
     const DESCRIPTION = document.getElementById('description');
     const CONTENT = document.getElementById('content');
