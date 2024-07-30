@@ -37,17 +37,19 @@ class WebHandler(BaseHTTPRequestHandler):
         if self.path.startswith("/update?"):
             state: UpdateState = self._get_state()
             hdr_dic: dict = {'Content-type': 'application/json', 'update_id': str(state.id)}
-            self.send_hdr(arg_dic=hdr_dic)
             request_id: int = get_params(self.path).get("update_id", 0)
 
-            print(88888888888, request_id, self.path)
+            print(88888888888, self.path, state.id)
             if request_id < state.id:  # client asking old version, send latest
+                self.send_hdr(arg_dic=hdr_dic)
                 self.wfile.write(state.bytes)
             else:
                 if state.ready.wait(timeout=self._MAX_WAIT_SEC):  # client asking new version, wait for it
+                    self.send_hdr(arg_dic=hdr_dic)
                     self.wfile.write(state.bytes)
-                    print(11111111)
+                    print(11111111, 22222, 33333)
                 else:  # too long waiting, send nothing
+                    self.send_hdr(400, arg_dic=hdr_dic)
                     print(99999999999999999)
                     self.wfile.write(b"")
         elif self.path == "/update_page.js":
