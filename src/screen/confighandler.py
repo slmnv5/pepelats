@@ -103,10 +103,10 @@ class ConfigHandler(BaseHTTPRequestHandler):
     # noinspection PyPep8Naming
     def do_POST(self):
         if self.path != "/save_file":
-            self.send_hdr(303, **{'Location': '/'})
+            self.send_hdr(303, arg_dic={'Location': '/'})
         else:
             if self._write_to_file():
-                self.send_hdr(303, **{'Location': '/'})
+                self.send_hdr(303, arg_dic={'Location': '/'})
             else:
                 self.send_error(400, "Bad Request", "Could not save file")
 
