@@ -22,12 +22,14 @@ class WebHandler(BaseHTTPRequestHandler):
         # So we have to call super().__init__ after setting attributes.
         super().__init__(*args, **kwargs)
 
-    def send_hdr(self, status: int = 200, **kwargs) -> None:
-        default_dic: dict = {'Content-type': 'text/html'}
-        default_dic.update(kwargs)
-        print(11111111111, "default_dic", default_dic)
+    def send_hdr(self, status: int = 200, arg_dic=None) -> None:
+        d: dict[str, any] = {"status": 200, 'Content-type': 'text/html'}
+        if arg_dic is not None:
+            d.update(arg_dic)
+        print(11111111111, "default_dic", d)
         self.send_response(status)
-        for k, v in default_dic.items():
+        for k, v in d.items():
+            assert isinstance(k, str) and isinstance(v, str)
             self.send_header(k, v)
         self.end_headers()
 
@@ -35,13 +37,11 @@ class WebHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path.startswith("/update"):
             state: UpdateState = self._get_state()
-            # hdr_dic: dict = {'Content-type': 'application/json', 'update_id': state.id}
+            hdr_dic: dict = {'Content-type': 'application/json', 'update_id': str(state.id)}
+            self.send_hdr(arg_dic=hdr_dic)
             request_id: int = get_params(self.path).get("update_id", 0)
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.send_header('update_id', '111')
-            self.end_headers()
-            print(88888888888, state.bytes.decode(), request_id)
+
+            print(88888888888, state.bytes.decode(), request_id, self.path)
             if request_id < state.id:  # client asking old version, send latest
                 self.wfile.write(state.bytes)
             else:
@@ -52,14 +52,11 @@ class WebHandler(BaseHTTPRequestHandler):
                     print(99999999999999999)
                     self.wfile.write(b"")
         elif self.path == "/update_page.js":
-            self.send_hdr(**{'Content-type': 'text/javascript'})
+            self.send_hdr(arg_dic={'Content-type': 'text/javascript'})
             self.wfile.write(UPDATE_CODE_B)
         elif self.path == "/favicon.ico":
-            self.send_hdr(**{'Content-type': 'application/octet-stream'})
+            self.send_hdr(arg_dic={'Content-type': 'application/octet-stream'})
             self.wfile.write(FAVICON_B)
         else:
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.send_header('update_id', '111')
-            self.end_headers()
+            self.send_hdr()
             self.wfile.write(UPDATE_PAGE_B)
