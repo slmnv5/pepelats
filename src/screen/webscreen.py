@@ -18,7 +18,7 @@ class WebScreen(MenuClient):
         MenuClient.__init__(self, queue)
         self._state: UpdateState = UpdateState()
         self._client_redraw(get_default_dict())
-        handler_class = partial(WebHandler, self._state)
+        handler_class = partial(WebHandler, self._get_state)
         self._serv = HTTPServer(("", LOCAL_PORT), handler_class)
         self._t: Thread = Thread(target=self.__update, name="update", daemon=True)
         self._t.start()
@@ -27,8 +27,10 @@ class WebScreen(MenuClient):
     def __update(self) -> None:
         self._serv.serve_forever()
 
+    def _get_state(self) -> UpdateState:
+        return self._state
+
     def _client_stop(self) -> None:
-        print(11111111111, 222222222)
         super()._client_stop()
         self._serv.shutdown()
         assert not self._t.is_alive()
