@@ -23,13 +23,13 @@ class WebHandler(BaseHTTPRequestHandler):
         super().__init__(*args, **kwargs)
 
     def send_hdr(self, status: int = 200, arg_dic=None) -> None:
-        d: dict[str, any] = {"status": 200, 'Content-type': 'text/html'}
+        d: dict[str, any] = {'Content-type': 'text/html'}
         if arg_dic is not None:
             d.update(arg_dic)
         print(11111111111, "default_dic", d)
         self.send_response(status)
         for k, v in d.items():
-            assert isinstance(k, str) and isinstance(v, str)
+            assert isinstance(k, str) and isinstance(v, str), f"must be strings: k={k}, v={v}"
             self.send_header(k, v)
         self.end_headers()
 
