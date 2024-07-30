@@ -49,10 +49,10 @@ def cpu_usage_pct() -> int:
     try:
         line = subprocess.run(["head", "-n", "1", '/proc/stat'], stdout=subprocess.PIPE).stdout.decode()
         assert line.startswith("cpu")
-        lst = [convert_param(x) for x in line.split()[1:6]]
-        assert len(lst) == 5
+        lst = [convert_param(x) for x in line.split()[1:5]]
+        assert len(lst) == 4
         assert all(isinstance(x, int) for x in lst)
-        return round((1 - lst[4] / sum(lst)) * 100)
+        return round((1 - lst[3] / sum(lst)) * 100)
     except Exception as ex:
         MY_LOG.warning(f"Failed calculate CPU usage: {ex}")
         return 0
