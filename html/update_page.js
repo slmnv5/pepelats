@@ -105,14 +105,16 @@ window.onload = () => {
         let id = 0
         while(true) {            
             try {
-                let resp = await fetchTest(URL + "?id=" + id);
-                console.log(resp.headers.get("id"))
+                let resp = await fetch(URL + "?id=" + id);
+                let new_id = resp.headers.get("update_id")
+                console.log(new_id)
                 if (resp.status != 200) {
                     console.log("HTTP status: " + response.status);
                     continue;
                 }
                 let data = await resp.json();
                 processData(data);
+                id = Number(new_id)
             } catch(err) {
                 console.error(err)
             }
