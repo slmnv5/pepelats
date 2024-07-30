@@ -68,29 +68,25 @@ function recalcWidth() {
 
 window.onresize = recalcWidth;
 
-
-async function fetchTest(url) {
+async function fetchTest(data) {
     await sleepFunc(10_000);
-    let data = {"sleep_tm":0.5, "header":"---", "description": "---", "content":"---",
-        "pos":0, "delta":0.1, "max_loop_pos":0, "max_loop_delta":0.05};
     let blob = new Blob([JSON.stringify(data, null, 2)], {type : 'application/json'});
     let init = { "status" : 200 , "statusText" : "OK" };
     let resp = new Response(blob, init);
-    resp.headers.append(UPDATE_ID, "222")
+    resp.headers.append(UPDATE_ID, "123")
     return resp;
 }
 
 window.onload = () => {
-
     setStyle()
     const URL = '/update';
-    let DATA = {};
-
+    let DATA = {"sleep_tm":1, "header":"-", "description": "-", "content":"-","pos":0, "delta":0.1, "max_loop_pos":0, "max_loop_delta":0.05};
     const HEADER = document.getElementById('header');
     const DESCRIPTION = document.getElementById('description');
     const CONTENT = document.getElementById('content');
     recalcWidth();
 
+    
     Promise.race([fetchData(), redrawData()])
     .then((x) => console.log("Resolved:", x))  
     .catch((x) => console.log("Rejected:", x))
@@ -107,17 +103,16 @@ window.onload = () => {
         while(true) {            
             try {
                 let resp = await fetch(URL + "?" + UPDATE_ID + "=" + id);
-                let new_id = resp.headers.get(UPDATE_ID)
-                console.log(new_id)
+                let newest_id = resp.headers.get(UPDATE_ID) // newest id from server 
+                id = Number(newest_id) // next time ask for this id
                 if (resp.status != 200) {
-                    console.log("HTTP status: " + response.status);
+                    console.log("status: " + response.status); // to long, no fetch
                     continue;
                 }
-                let data = await resp.json();
-                processData(data);
-                id = Number(new_id)
+                let data = await resp.json(); // got update
+                processData(data); // apply update
             } catch(err) {
-                console.error(err)
+                console.error(err) // must not be error 
             }
         };
     };
