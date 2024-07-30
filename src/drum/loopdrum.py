@@ -1,4 +1,4 @@
-from random import random, choices, randrange
+from random import random, choices
 from threading import Timer
 
 import numpy as np
@@ -11,11 +11,10 @@ from song.songpart import SongPart
 class LoopDrum(BaseDrum):
     """ Drum using song part as it's base.
     The song part will record real drum sounds and play along with other parts.
-    First few loops called "quiet" - for normal rhythm, later loops called "loud" - drum fills.
-    Loops selected randomly - more self._volume more loops play together.
+    The last loops is used only for drum fills.
+    Other loops selected randomly.
     How often loops are randomized is proportional to self._par.
     """
-    _QUIET_LOOPS = 4
 
     def __init__(self, song_part: SongPart):
         BaseDrum.__init__(self)
@@ -23,29 +22,17 @@ class LoopDrum(BaseDrum):
         self._par = 0.2  # for this drum - probability to randomize at bar start
 
     def randomize(self) -> None:
+        """ Randomly modify drum by excluding some drums """
+        m: int = self._song_part.item_count()
+        exclude_lst = choices(range(m), k=(m // 3))
         loops = self._song_part.get_list()
-        if self._volume < 0.33:
-            exclude_cnt = 3
-        elif self._volume < 0.66:
-            exclude_cnt = 2
-        else:
-            exclude_cnt = 1
-
-        exclude_lst = choices(range(self._QUIET_LOOPS), k=exclude_cnt)
-        for k in range(1, self._QUIET_LOOPS):
-            loops[k].set_silent(k in exclude_lst)
-        for x in loops[:self._QUIET_LOOPS]:
-            x.set_silent(True)
+        for k in range(m):
+            loops[k].set_silent(k in exclude_lst or k == m - 1)
+        self.start()
 
     def play_fill(self, idx: int) -> None:
         loops = self._song_part.get_list()
-        try:
-            k = randrange(self._QUIET_LOOPS, len(loops))
-            loops[k].set_silent(False)  # add one loud loop
-        except (ValueError, IndexError):
-            for x in loops:
-                x.set_silent(False)  # or play all quiet loops
-
+        loops[-1].set_silent(False)
         tmp: int = idx % self._bar_len if self._bar_len else 0
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2
