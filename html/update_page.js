@@ -31,13 +31,14 @@ function getHeaderHtml (header, l1, l2, max_chars) {
     const END_S = '</span>'
 
     function decorateOneChar(s, pos) {
-        if (pos < 0 || pos >= s.length) return s;
+        if (pos <= 0 || pos >= s.length) return s;
         return s.slice(0, pos) + WY_S + s.slice(pos, pos+1) + END_S + s.slice(pos+1);
     }
     
     [l1, l2] = [l1 * max_chars, l2 * max_chars];
-    let missing = max_chars - header.length;
-    let s = '.'.repeat(missing / 2) + header + '.'.repeat(missing / 2);
+    let missing_len = Math.max(max_chars - header.length, 0);
+    let missing_str = '.'.repeat(missing_len / 2);
+    let s = missing_str + header + missing_str;
     let s1, s2;
     [s1, s2] = [s.slice(0, l1), s.slice(l1)];
     [s1, s2] = [decorateOneChar(s1, l2), decorateOneChar(s2, l2 - l1)];
