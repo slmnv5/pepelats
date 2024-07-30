@@ -26,7 +26,6 @@ class WebHandler(BaseHTTPRequestHandler):
         d: dict[str, any] = {'Content-type': 'text/html'}
         if arg_dic is not None:
             d.update(arg_dic)
-        print(11111111111, "default_dic", d)
         self.send_response(status)
         for k, v in d.items():
             assert isinstance(k, str) and isinstance(v, str), f"must be strings: k={k}, v={v}"
@@ -35,13 +34,13 @@ class WebHandler(BaseHTTPRequestHandler):
 
     # noinspection PyPep8Naming
     def do_GET(self):
-        if self.path.startswith("/update"):
+        if self.path.startswith("/update?"):
             state: UpdateState = self._get_state()
             hdr_dic: dict = {'Content-type': 'application/json', 'update_id': str(state.id)}
             self.send_hdr(arg_dic=hdr_dic)
             request_id: int = get_params(self.path).get("update_id", 0)
 
-            print(88888888888, state.bytes.decode(), request_id, self.path)
+            print(88888888888, request_id, self.path)
             if request_id < state.id:  # client asking old version, send latest
                 self.wfile.write(state.bytes)
             else:
