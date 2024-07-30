@@ -22,11 +22,13 @@ def web_config():
 
 class ConfigHandler(BaseHTTPRequestHandler):
 
-    def send_hdr(self, status: int = 200, **kwargs) -> None:
-        dic: dict = {'Content-type': 'text/html'}
-        dic.update(kwargs)
+    def send_hdr(self, status: int = 200, arg_dic=None) -> None:
+        d: dict[str, any] = {'Content-type': 'text/html'}
+        if arg_dic is not None:
+            d.update(arg_dic)
         self.send_response(status)
-        for k, v in dic.items():
+        for k, v in d.items():
+            assert isinstance(k, str) and isinstance(v, str), f"must be strings: k={k}, v={v}"
             self.send_header(k, v)
         self.end_headers()
 
@@ -93,10 +95,10 @@ class ConfigHandler(BaseHTTPRequestHandler):
             fname = self.path[len(SHOW_PATH):]
             self._send_file(fname, True)
         elif self.path == "/favicon.ico":
-            self.send_hdr(**{'Content-type': 'application/octet-stream'})
+            self.send_hdr(arg_dic={'Content-type': 'application/octet-stream'})
             self.wfile.write(FAVICON_B)
         else:
-            self.send_hdr(303, **{'Location': '/'})
+            self.send_hdr(303, arg_dic={'Location': '/'})
 
     # noinspection PyPep8Naming
     def do_POST(self):
