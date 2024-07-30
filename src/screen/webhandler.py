@@ -33,24 +33,24 @@ class WebHandler(BaseHTTPRequestHandler):
 
     # noinspection PyPep8Naming
     def do_GET(self):
-        self.parse_request()
         if self.path.startswith("/update"):
             state: UpdateState = self._get_state()
-            hdr_dic: dict = {'Content-type': 'application/json', 'update_id': state.id}
+            # hdr_dic: dict = {'Content-type': 'application/json', 'update_id': state.id}
             param_dic: dict = get_params(self.path)
             request_id = param_dic["id"]
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.send_header('update_id', '111')
+            self.end_headers()
             print(88888888888, id, state.bytes.decode())
             if request_id < state.id:  # client asking old version, send latest
-                self.send_hdr(**hdr_dic)
                 self.wfile.write(state.bytes)
             else:
                 if state.ready.wait(timeout=self._MAX_WAIT_SEC):  # client asking new version, wait for it
-                    self.send_hdr(**hdr_dic)
                     self.wfile.write(state.bytes)
                     print(11111111)
                 else:  # too long waiting, send nothing
                     print(99999999999999999)
-                    self.send_hdr(400, **hdr_dic)
                     self.wfile.write(b"")
         elif self.path == "/update_page.js":
             self.send_hdr(**{'Content-type': 'text/javascript'})
@@ -59,5 +59,8 @@ class WebHandler(BaseHTTPRequestHandler):
             self.send_hdr(**{'Content-type': 'application/octet-stream'})
             self.wfile.write(FAVICON_B)
         else:
-            self.send_hdr()
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.send_header('update_id', '111')
+            self.end_headers()
             self.wfile.write(UPDATE_PAGE_B)
