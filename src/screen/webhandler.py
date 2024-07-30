@@ -24,6 +24,7 @@ class WebHandler(BaseHTTPRequestHandler):
     def send_hdr(self, status: int = 200, **kwargs) -> None:
         dic: dict = {'Content-type': 'text/html'}
         dic.update(kwargs)
+        print(11111111111, dic)
         self.send_response(status)
         for k, v in dic.items():
             self.send_header(k, v)
@@ -34,8 +35,8 @@ class WebHandler(BaseHTTPRequestHandler):
         self.parse_request()
         if self.path.startswith("/update"):
             hdr_dic: dict = {'Content-type': 'application/json', 'update_id': self._state.id}
-            dic = get_params(self.path)
-            request_id = dic["id"]
+            param_dic: dict = get_params(self.path)
+            request_id = param_dic["id"]
             print(88888888888, id, self._state.bytes.decode())
             if request_id < self._state.id:
                 self.send_hdr(**hdr_dic)

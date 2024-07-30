@@ -28,6 +28,7 @@ class WebScreen(MenuClient):
         self._serv.serve_forever()
 
     def _client_stop(self) -> None:
+        print(11111111111, 222222222)
         super()._client_stop()
         self._serv.shutdown()
         assert not self._t.is_alive()
