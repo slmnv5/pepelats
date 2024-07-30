@@ -20,7 +20,8 @@ class WebScreen(MenuClient):
         self._client_redraw(get_default_dict())
         handler_class = partial(WebHandler, self._state)
         self._serv = HTTPServer(("", LOCAL_PORT), handler_class)
-        Thread(target=self.__update, name="update", daemon=True).start()
+        self._t: Thread = Thread(target=self.__update, name="update", daemon=True)
+        self._t.start()
         MY_LOG.warning(f"To control looper connect to:\nhttp://{LOCAL_IP}:{LOCAL_PORT}")
 
     def __update(self) -> None:
@@ -29,6 +30,7 @@ class WebScreen(MenuClient):
     def _client_stop(self) -> None:
         super()._client_stop()
         self._serv.shutdown()
+        assert not self._t.is_alive()
 
     def _client_log(self, msg: str) -> None:
         dic = get_default_dict()
