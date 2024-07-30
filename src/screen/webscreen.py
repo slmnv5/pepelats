@@ -3,7 +3,6 @@ from functools import partial
 from http.server import HTTPServer
 from multiprocessing import Queue
 from threading import Thread
-from time import time
 
 from screen.menuclient import MenuClient
 from screen.webhandler import WebHandler, UpdateState
@@ -42,7 +41,6 @@ class WebScreen(MenuClient):
 
     def _client_redraw(self, dic: dict) -> None:
         recalc_dic(dic)
-        dic["update_tm"] = time()
         self._state.bytes = json.dumps(dic).encode()
         self._state.id += 1
         self._state.ready.set()

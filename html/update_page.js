@@ -68,8 +68,9 @@ function recalcWidth() {
 
 window.onresize = recalcWidth;
 
-async function fetchTest(data) {
+async function fetchTest(_) {
     await sleepFunc(10_000);
+    let data = {"sleep_tm":1, "header":"-", "description": "-", "content":"-","pos":0, "delta":0.1, "max_loop_pos":0, "max_loop_delta":0.05};
     let blob = new Blob([JSON.stringify(data, null, 2)], {type : 'application/json'});
     let init = { "status" : 200 , "statusText" : "OK" };
     let resp = new Response(blob, init);
@@ -80,7 +81,7 @@ async function fetchTest(data) {
 window.onload = () => {
     setStyle()
     const URL = '/update';
-    let DATA = {"sleep_tm":1, "header":"-", "description": "-", "content":"-","pos":0, "delta":0.1, "max_loop_pos":0, "max_loop_delta":0.05};
+    let DATA = {}
     const HEADER = document.getElementById('header');
     const DESCRIPTION = document.getElementById('description');
     const CONTENT = document.getElementById('content');
@@ -93,34 +94,31 @@ window.onload = () => {
 
 
     async function fetchData() {
-        function processData(x) {
-            if (x.update_tm <= DATA.update_tm) return;
-            DATA = x;
-            DESCRIPTION.textContent = DATA.description;
-            CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec);
-        }
-        let id = 0
+        let id = 0 // update id on client side
         while(true) {            
             try {
                 let resp = await fetch(URL + "?" + UPDATE_ID + "=" + id);
                 let newest_id = resp.headers.get(UPDATE_ID) // newest id from server 
                 id = Number(newest_id) // next time ask for this id
                 if (resp.status != 200) {
-                    console.log("status: " + resp.status); // to long, no fetch, no error
+                    console.log("status: " + resp.status); // too long, no fetch, no error
                     continue;
                 }
-                let data = await resp.json(); // got update
-                processData(data); // apply update
+                DATA = await resp.json(); // got update
+                DESCRIPTION.textContent = DATA.description;
+                CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec);
             } catch(err) {
-                console.error(err) // must not be error 
+                console.error(err) // must not be
             }
         };
     };
 
     async function redrawData() {
+        DATA.sleep_tm = 1
         while(true) {
             try {
                 await sleepFunc(DATA.sleep_tm * 1000);
+                if (DATA.pos == null) continue;
                 DATA.pos += DATA.delta // position in the song part
                 DATA.pos %= 1;
                 if (DATA.max_loop_delta > 0) {
