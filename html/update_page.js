@@ -106,7 +106,7 @@ window.onload = () => {
                 let newest_id = resp.headers.get(UPDATE_ID) // newest id from server 
                 id = Number(newest_id) // next time ask for this id
                 if (resp.status != 200) {
-                    console.log("status: " + response.status); // to long, no fetch
+                    console.log("status: " + resp.status); // to long, no fetch, no error
                     continue;
                 }
                 let data = await resp.json(); // got update
