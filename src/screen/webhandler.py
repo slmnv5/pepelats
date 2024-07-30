@@ -17,7 +17,7 @@ class UpdateState:
 class WebHandler(BaseHTTPRequestHandler):
     def __init__(self, get_state: Callable, *args, **kwargs):
         self._get_state: Callable = get_state
-        self._MAX_WAIT_SEC = 5
+        self._MAX_WAIT_SEC = 10
         # BaseHTTPRequestHandler calls do_GET inside __init__
         # So we have to call super().__init__ after setting attributes.
         super().__init__(*args, **kwargs)
@@ -39,7 +39,6 @@ class WebHandler(BaseHTTPRequestHandler):
             hdr_dic: dict = {'Content-type': 'application/json', 'update_id': str(state.id)}
             request_id: int = get_params(self.path).get("update_id", 0)
 
-            print(88888888888, self.path, state.id)
             if request_id < state.id:  # client asking old version, send latest
                 self.send_hdr(arg_dic=hdr_dic)
                 self.wfile.write(state.bytes)
@@ -47,10 +46,8 @@ class WebHandler(BaseHTTPRequestHandler):
                 if state.ready.wait(timeout=self._MAX_WAIT_SEC):  # client asking new version, wait for it
                     self.send_hdr(arg_dic=hdr_dic)
                     self.wfile.write(state.bytes)
-                    print(11111111, 22222, 33333)
                 else:  # too long waiting, send nothing
                     self.send_hdr(304, arg_dic=hdr_dic)
-                    print(99999999999999999)
                     self.wfile.write(b'""')
         elif self.path == "/update_page.js":
             self.send_hdr(arg_dic={'Content-type': 'text/javascript'})
