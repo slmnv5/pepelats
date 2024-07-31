@@ -41,7 +41,7 @@ class Looper(SongCtrl):
         elif drum_type == AppName.MidiDrum:
             self._drum = MidiDrum()
         elif drum_type == AppName.LoopDrum:
-            self._drum = LoopDrum(self._song.get_list()[0])
+            self._drum = LoopDrum(self._song.get_first())
         else:
             self._drum = StyleDrum()
 
@@ -127,7 +127,7 @@ class Looper(SongCtrl):
         if not is_rec:
             part.undo()
         else:
-            part.delete_selected()
+            part.delete_item()
 
     def _part_redo(self) -> None:
         self._set_is_rec(False)
@@ -147,8 +147,8 @@ class Looper(SongCtrl):
         elif action == "reverse":
             loop.flip_reverse()
         elif action == "move" and part != loop:
-            deleted = part.delete_selected()
+            deleted = part.delete_item()
             if deleted:
                 part.add_item(deleted)
         elif action == "delete" and part != loop:
-            part.delete_selected()
+            part.delete_item()

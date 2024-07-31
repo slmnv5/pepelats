@@ -61,8 +61,8 @@ class CollectionOwner(Generic[T]):
             raise RuntimeError(f'Error: CollectionOwner init with empty collection')
         self.__idx: int = 0
 
-    def get_list(self) -> list[T]:
-        return self.__items
+    def get_first(self) -> T:
+        return self.__items[0]
 
     def get_idx(self) -> int:
         return self.__idx
@@ -76,17 +76,14 @@ class CollectionOwner(Generic[T]):
     def get_item(self) -> T:
         return self.__items[self.__idx]
 
-    def select_idx(self, i: int) -> None:
+    def select_idx(self, i: int) -> T:
         self.__idx = i % len(self.__items)
-
-    def set_at_idx(self, i: int, item: T) -> None:
-        i = i % len(self.__items)
-        self.__items[i] = item
+        return self.__items[self.__idx]
 
     def item_count(self) -> int:
         return len(self.__items)
 
-    def delete_selected(self) -> T | None:
+    def delete_item(self) -> T | None:
         if self.item_count() <= 1:
             return None
         item = self.__items.pop(self.__idx)
@@ -139,9 +136,9 @@ class FileFinder(CollectionOwner[str]):
     def get_end_with(self) -> str:
         return self.__end_with
 
-    def delete_selected(self) -> T | None:
+    def delete_item(self) -> T | None:
         path = self.get_full_name()
-        deleted = super().delete_selected()
+        deleted = super().delete_item()
         if deleted and os.path.isfile(path):
             os.remove(path)
         return deleted

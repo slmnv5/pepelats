@@ -52,12 +52,14 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
         part: SongPart = self._song.get_item()
         if part.is_empty:
             return
-        for k, x in enumerate(self._song.get_list()):
-            if x.is_empty:
-                self._song.set_at_idx(k, deepcopy(part))
-                self.__next_id = k
-                self.stop_at_bound(part.get_len())
-                return
+        selected: int = self._song.get_idx()
+        for k in range(self._song.item_count()):
+            if self._song.select_idx(k).is_empty:
+                self._song.delete_item()
+                self.__next_id = self._song.add_item(deepcopy(part))
+                break
+        self._song.select_idx(selected)
+        self.stop_at_bound(part.get_len())
 
     def _part_play(self, part_id: int) -> None:
         """ Play specific part or record new loop of same length if already playing it """
@@ -117,8 +119,9 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
         selected: int = self._song.get_idx()
         if part_id == selected:
             return  # can not clear active part
-        self._song.set_at_idx(part_id, SongPart())
+        self._song.select_idx(part_id).clear()
         self.__next_id = selected
+        self._song.select_idx(selected)
         self.stop_never()
 
     def _part_redo_all(self) -> None:

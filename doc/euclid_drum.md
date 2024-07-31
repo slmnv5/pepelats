@@ -17,4 +17,4 @@ sd : 13, 8, 0, 0
 ~~~
 
 This drum type also uses WAV sound samples as described [here](./style_drum)
-Similar drum is found in IOS application 'Ruismaker' which has user manual explaining all details.
+**Euclid drum** is found in IOS application 'Ruismaker' which has user manual explaining all details.

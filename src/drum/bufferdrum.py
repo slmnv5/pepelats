@@ -75,16 +75,18 @@ class BufferDrum(BaseDrum, ABC):
             self.start()
 
     def play_fill(self, idx: int) -> None:
+        if not self._bar_len:
+            return
         self._play_lst, self._name, self._energy, self._idx = self._pm.random_loud()
         self._exclude_lst.clear()
-        tmp: int = idx % self._bar_len if self._bar_len else 0
+        tmp: int = self._bar_len - (idx % self._bar_len)  # samples to end of bar
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2
-        # return to normal level
+        # return to normal drum
         Timer(tmp / AudioInfo().SD_RATE, self.randomize).start()
 
     def _modify(self) -> None:
-        """ Randomly modify drum by excluding some drums """
+        """ Randomly modify drum by excluding some sounds """
         m: int = len(self._play_lst)
         self._exclude_lst = choices(range(m), k=(m // 3))
 

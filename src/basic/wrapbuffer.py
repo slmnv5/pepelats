@@ -6,7 +6,9 @@ from utils.util_numpy import from_buff_to_data, from_data_to_buff
 
 
 class WrapBuffer:
-    """buffer that can wrap over the end when get/play and set/record samples """
+    """buffer that can wrap over the end when get/play and set/record samples
+    if length == MAX_LEN it is empty, any other length indicate that it was recorded and trimmed / finalized.
+    """
 
     def __init__(self, sz: int = AudioInfo().MAX_LEN):
         if not (0 < sz <= AudioInfo().MAX_LEN):
@@ -41,12 +43,15 @@ class WrapBuffer:
     def is_silent(self) -> bool:
         return self.__is_silent
 
-    def max_buffer(self) -> None:
+    def max_buffer(self, preserve: bool = True) -> None:
+        """ make it max length, as if it is empty """
         shape = self.__buff.shape
         assert len(shape) == 2
         tmp = np.zeros((AudioInfo().MAX_LEN, shape[1]), self.__buff.dtype)
-        tmp[:shape[0]] = self.__buff[:shape[0]]
+        if preserve:
+            tmp[:shape[0]] = self.__buff[:shape[0]]
         self.__buff = tmp
+        self.__info_str = ""
 
     def get_len(self) -> int:
         return len(self.__buff)

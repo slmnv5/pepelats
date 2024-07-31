@@ -1,6 +1,6 @@
 ## Style drum
 
-**Style drum** is using text patterns specific for a musical style and sample WAV files to produce drum accompaniment.
+**Style drum** is using text patterns specific for musical style and sample WAV files to produce drum accompaniment.
 
 There are plenty of musical styles in directory: [config/drum/style](./../config/drum/style)
 Example: [Pop.ini](../config/drum/style/Pop.ini)
@@ -41,5 +41,4 @@ Drum names used in pattern INI file and WAV file names are the same (ex. sd.wav,
 * rs: Rim shot
 * cp: Clap
 * cb: Cowbell
-
 

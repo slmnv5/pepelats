@@ -22,9 +22,10 @@ class Song(CollectionOwner[SongPart]):
         self._ff = FileFinder(AppName.save_song, True, ".sng")
 
     def clear(self) -> None:
-        for k, x in enumerate(self.get_list()):
-            if not x.is_empty:
-                self.set_at_idx(k, SongPart())
+        for k in range(self.item_count()):
+            part = self.select_idx(k)
+            if not part.is_empty:
+                part.clear()
         self.select_idx(0)
         self._name = song_name_generate()
 
@@ -37,8 +38,9 @@ class Song(CollectionOwner[SongPart]):
         self._ff.add_item(self.get_complete_name())
         fname = self._ff.get_full_name()
         parts_lst = list()
-        for x in self.get_list():
-            parts_lst.append(None if x.is_empty else x)
+        for k in range(self.item_count()):
+            part = self.select_idx(k)
+            parts_lst.append(None if part.is_empty else part)
         bar_len = drum.get_bar_len()
         drum_info = drum.get_drum_info()
 
@@ -65,7 +67,7 @@ class Song(CollectionOwner[SongPart]):
 
         self.select_idx(0)
         while self.item_count() > len(parts_lst):
-            self.delete_selected()
+            self.delete_item()
 
         self._ctrl.drum_create_async(bar_len, drum_info)
 
@@ -73,7 +75,7 @@ class Song(CollectionOwner[SongPart]):
         return self._ff.get_str(SCR_ROWS - 5)
 
     def delete_song(self) -> None:
-        self._ff.delete_selected()
+        self._ff.delete_item()
 
     def iterate_song(self, steps: int) -> None:
         self._ff.iterate(steps=steps)

@@ -22,21 +22,23 @@ class LoopDrum(BaseDrum):
         self._par = 0.2  # for this drum - probability to randomize at bar start
 
     def randomize(self) -> None:
-        """ Randomly modify drum by excluding some drums """
-        m: int = self._song_part.item_count()
+        """ Randomly modify drum by excluding some sounds """
+        part = self._song_part
+        m: int = part.item_count()
         exclude_lst = choices(range(m), k=(m // 3))
-        loops = self._song_part.get_list()
         for k in range(m):
-            loops[k].set_silent(k in exclude_lst or k == m - 1)
+            part.select_idx(k).set_silent(k in exclude_lst or k == m - 1)
         self.start()
 
     def play_fill(self, idx: int) -> None:
-        loops = self._song_part.get_list()
-        loops[-1].set_silent(False)
-        tmp: int = idx % self._bar_len if self._bar_len else 0
+        if not self._bar_len:
+            return
+        part = self._song_part
+        part.select_idx(-1).set_silent(False)
+        tmp: int = self._bar_len - (idx % self._bar_len)  # samples to end of bar
         if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
             tmp = tmp + self._bar_len // 2
-        # return to normal level
+        # return to normal drums
         Timer(tmp / AudioInfo().SD_RATE, self.randomize).start()
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
