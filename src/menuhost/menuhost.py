@@ -16,9 +16,9 @@ class _MenuLoader:
     def __init__(self, dname: str):
         if not os.path.isdir(dname):
             raise ConfigError(f"Menu directory not found: {dname}. Check main.ini and local.ini files")
-        self.__sect_idx: int = 0
         self.__section: str = AppName.play_section
-        self.__dic = dict()
+        self.__idx: int = 0  # section id
+        self.__dic = dict()  # single dict for all files
         fname1 = f"{dname}/navigate.ini"
         for fname in ["play.ini", "song.ini", "drum.ini", "serv.ini"]:
             fname2 = f"{dname}/{fname}"
@@ -30,25 +30,26 @@ class _MenuLoader:
             self.__dic |= tmp
         MY_LOG.debug(f"Loaded menu\n: {self.__dic}")
 
-    def get(self, key: str) -> str:
-        sect_name = f"{self.__section}.{self.__sect_idx}"
-        sect_dic = self.__dic.get(sect_name, dict())
-        if key in sect_dic:
-            return sect_dic[key]
-
-        return ""
+    def get_command(self, key: str) -> str:
+        key1 = f"{self.__section}.{self.__idx}"
+        if key1 not in self.__dic:
+            return ""
+        section_dic = self.__dic[key1]
+        if key not in section_dic:
+            return ""
+        return section_dic[key]
 
     def _menu_update(self, section: str) -> None:
         assert f"{section}.0" in self.__dic
         self.__section = section
-        self.__sect_idx = 0
+        self.__idx = 0
 
     def _section_update(self, k: int) -> None:
         lst = [x for x in self.__dic.keys() if self.__section in x]
-        self.__sect_idx = (self.__sect_idx + k) % len(lst)
+        self.__idx = (self.__idx + k) % len(lst)
 
     def __str__(self):
-        return f"{self.__section}.{self.__sect_idx}"
+        return f"{self.__section}.{self.__idx}"
 
 
 class MenuHost(_MenuLoader, ABC):
@@ -79,23 +80,24 @@ class MenuHost(_MenuLoader, ABC):
 
     def _menu_update(self, fname: str) -> None:
         super()._menu_update(fname)
-        self.__dic[AppName.description] = self.get(AppName.description)
-        self.__dic[AppName.content] = self.get(AppName.content)
+        self.__dic[AppName.description] = self.get_command(AppName.description)
+        self.__dic[AppName.content] = self.get_command(AppName.content)
 
     def _section_update(self, k: int) -> None:
         super()._section_update(k)
-        self.__dic[AppName.description] = self.get(AppName.description)
-        self.__dic[AppName.content] = self.get(AppName.content)
+        self.__dic[AppName.description] = self.get_command(AppName.description)
+        self.__dic[AppName.content] = self.get_command(AppName.content)
 
     def _send_command(self, note: int, velo: int) -> None:
         if note not in self._midi_dict:
             MY_LOG.error(f"MIDI note: {note} is not expected. Check main.ini file")
-
         menu_key: str = f"{self._midi_dict[note]}-{velo}"
-        menu_item: str = self.get(menu_key)
-        for cmd in [x for x in menu_item.split(":") if x.strip()]:  # commands separated by ":"
+        menu_command: str = self.get_command(menu_key)
+        if not menu_command:
+            return
+        for cmd in [x for x in menu_command.split(":") if x.strip()]:  # commands separated by ":"
             lst = cmd.split()  # method name and arguments if any
-            MY_LOG.debug(f"MenuHost sent command: {lst}")
+            MY_LOG.debug(f"{self.__class__.__name__} sent command: {lst}")
             self.__process_list(lst)
 
         # after all commands send _redraw
