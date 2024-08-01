@@ -1,4 +1,5 @@
 import os
+import sys
 
 from basic.audioinfo import AudioInfo
 from utils.util_config import load_ini_section
@@ -14,7 +15,10 @@ except OSError:
 
 MY_LOG.info(f"Text screen size: cols={SCR_COLS} rows={SCR_ROWS}")
 
-_UPDATES_PER_LOOP: int = 16
+_UPDATES_PER_LOOP: float = 16
+
+if AppName.no_progress in sys.argv:
+    _UPDATES_PER_LOOP: float = 0.001
 
 
 def recalc_dic(dic: dict) -> None:

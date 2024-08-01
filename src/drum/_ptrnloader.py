@@ -44,8 +44,8 @@ class PtrnManager:
     _BREAK_FRACTION: float = 0.2
 
     def __init__(self, drum_loader: PtrnLoader):
-        self._loud = None  # list for breaks
-        self._quiet = None  # normal rithm
+        self.__quiet: list[tuple[list[np.ndarray], str, float]] = list()  # normal drums
+        self.__loud: list[tuple[list[np.ndarray], str, float]] = list()  # list for breaks
         self._drum_loader = drum_loader
         # dict of patterns from INI file. It has ptn dict, name, intensity. Sorted by intensity
         self.__ptn: list[tuple[dict[str, str], str, float]] = list()
@@ -93,21 +93,21 @@ class PtrnManager:
     def random_quiet(self) -> tuple[list[np.ndarray], str, float, int]:
         """ get random quiet sound, it's name, energy and index.  """
         self.__idx = randrange(len(self.__quiet))
-        ptn, snd = self.__quiet[self.__idx]
-        return snd, ptn[1], ptn[2], self.__idx
+        snd, name, energy = self.__quiet[self.__idx]
+        return snd, name, energy, self.__idx
 
     def random_loud(self) -> tuple[list[np.ndarray], str, float, int]:
         """ get random loud sound, it's name, energy and index. """
         self.__idx = randrange(len(self.__loud))
-        ptn, snd = self.__loud[self.__idx]
-        return snd, ptn[1], ptn[2], self.__idx
+        snd, name, energy = self.__loud[self.__idx]
+        return snd, name, energy, self.__idx
 
     def _separate_by_name(self) -> None:
         marker = self._drum_loader.break_marker
-        self.__quiet = [(x, self.__snd[k]) for k, x in enumerate(self.__ptn) if marker not in x[1]]
-        self.__loud = [(x, self.__snd[k]) for k, x in enumerate(self.__ptn) if marker in x[1]]
+        self.__quiet = [(self.__snd[k], x[1], x[2]) for k, x in enumerate(self.__ptn) if marker not in x[1]]
+        self.__loud = [(self.__snd[k], x[1], x[2]) for k, x in enumerate(self.__ptn) if marker in x[1]]
 
     def _separate_by_energy(self) -> None:
         split_idx = ceil((1 - self._BREAK_FRACTION) * len(self.__snd))
-        self.__quiet = self.__snd[:split_idx]
-        self.__loud = self.__snd[split_idx:]
+        self.__quiet = [(self.__snd[k], x[1], x[2]) for k, x in enumerate(self.__ptn) if k < split_idx]
+        self.__loud = [(self.__snd[k], x[1], x[2]) for k, x in enumerate(self.__ptn) if k < split_idx]

@@ -1,5 +1,9 @@
 class AppName:
     app_name: str = "pepelats"
+    # command line options
+    no_progress: str = "--no_progress"
+    info: str = "--info"
+    debug: str = "--debug"
 
     # menu INI config files related
     header: str = "header"

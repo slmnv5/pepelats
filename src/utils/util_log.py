@@ -51,9 +51,9 @@ class MyLog:
         self._logger.addHandler(h1)
         self._logger.addHandler(h2)
 
-        if "--debug" in sys.argv:
+        if AppName.debug in sys.argv:
             self.level = logging.DEBUG
-        elif "--info" in sys.argv:
+        elif AppName.info in sys.argv:
             self.level = logging.INFO
         else:
             self.level = logging.WARNING
