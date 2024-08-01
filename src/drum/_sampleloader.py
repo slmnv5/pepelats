@@ -4,7 +4,7 @@ import pickle
 import numpy as np
 
 from basic.audioinfo import correct_sound, AudioInfo
-from drum._utilalsa import read_wav_slow
+from utils.util_alsa import read_wav_slow
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
 

@@ -5,7 +5,7 @@ import sounddevice as sd
 
 from basic.audioinfo import correct_sound, AudioInfo, get_dtype_max
 # noinspection PyProtectedMember
-from drum._utilalsa import make_noise, int_to_bytes, bytes_to_int, make_sin_sound, write_wav, \
+from utils.util_alsa import make_noise, int_to_bytes, bytes_to_int, make_sin_sound, write_wav, \
     read_wav_slow
 from utils.util_name import AppName
 
