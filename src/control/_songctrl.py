@@ -71,9 +71,7 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
             else:  # we call with same pid 2nd time
                 if self.get_is_rec():
                     self._set_is_rec(False)
-                    loop = part.get_item()
-                    if loop.is_empty:
-                        loop.trim_buffer(self, part.get_max_len())
+                    part.get_item().trim_buffer(self, part.get_max_len())
                 else:
                     part.add_item(LoopSimple(part.get_len()))
                     part.clear_undo()
@@ -81,9 +79,7 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
         else:  # asked to play another part
             if self.get_is_rec():
                 self._set_is_rec(False)
-                loop = part.get_item()
-                if loop.is_empty:
-                    loop.trim_buffer(self, part.get_max_len())
+                part.get_item().trim_buffer(self, part.get_max_len())
 
             self.stop_at_bound(part.get_len())
 

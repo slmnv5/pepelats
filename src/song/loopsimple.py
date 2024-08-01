@@ -15,6 +15,8 @@ class LoopSimple(WrapBuffer):
     def trim_buffer(self, ctrl: LoopCtrl, base_len: int) -> None:
         """trims buffer length to multiple of base_len.
         base_len is length of bar = length of drum """
+        if not self.is_empty:
+            return
         self.finalize(ctrl.idx, base_len)
         if not base_len:
             ctrl.drum_create_async(ctrl.idx, dict())
@@ -36,5 +38,5 @@ class LoopSimple(WrapBuffer):
         with sd.Stream(callback=callback):
             ctrl.stop_wait()
 
-        if self.is_empty:
-            self.trim_buffer(ctrl, ctrl.get_drum().get_bar_len())
+        # if loop is empty will trim to correct size
+        self.trim_buffer(ctrl, ctrl.get_drum().get_bar_len())
