@@ -23,11 +23,12 @@ class SongPart(LoopSimple, CollectionOwner[LoopSimple]):
             z.correct_buffer()
 
     def clear(self) -> None:
+        def clear_loop(x):
+            self.select_idx(self.add_item(x))
+            x.max_buffer(preserve=False) if x == self else self.delete_item()
+
         self.__undo.clear()
-        self.select_idx(-1)
-        while self.delete_item():
-            self.select_idx(-1)
-        self.get_first().max_buffer(preserve=False)
+        self.for_each(clear_loop)
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
         self.for_each(lambda x: LoopSimple.play(x, out_data, idx))
