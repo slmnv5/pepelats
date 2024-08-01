@@ -1,4 +1,5 @@
 import os
+import subprocess
 from multiprocessing import Queue
 from time import sleep
 
@@ -90,8 +91,11 @@ class Looper(SongCtrl):
     @staticmethod
     def _info_show() -> str:
         scr_type: int = load_ini_section("SCREEN", True).get(AppName.screen_type, 0)
-        return (f"local IP: {LOCAL_IP}\nscreen: {scr_type} (0-lcd 1-web)\nversion: {BRANCH}"
-                f"\nRAM % used:{ram_usage_pct()}\nCPU % used:{cpu_usage_pct()}")
+        br_upd = subprocess.run(["git", "log", "-1", "--format=%ch"], stdout=subprocess.PIPE).stdout.decode()
+
+        return (f"local IP: {LOCAL_IP}\nscreen: {scr_type} (0-lcd 1-web)\n"
+                f"app. ver. {BRANCH}\n{br_upd}"
+                f"\nRAM use % {ram_usage_pct()} CPU use % {cpu_usage_pct()}")
 
     @staticmethod
     def _screen_type_change() -> None:
