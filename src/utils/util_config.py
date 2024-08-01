@@ -58,7 +58,7 @@ def cpu_usage_pct() -> int:
         return 0
 
 
-def load_ini_section(sect: str, convert: bool = False) -> dict[str, str]:
+def load_ini_section(sect: str, convert: bool = False) -> dict[str, str | int | float]:
     main = AppName.main_ini
     local = AppName.local_ini
     assert os.path.isfile(main)

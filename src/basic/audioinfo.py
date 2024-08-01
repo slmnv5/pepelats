@@ -54,18 +54,18 @@ class AudioInfo:
         if self.__initialized:
             return
         self.__initialized = True
-        dic: dict[str, any] = load_ini_section("AUDIO", True)
+        dic: dict[str, str | int | float] = load_ini_section("AUDIO", True)
         self.SD_NAME: str = dic.get(AppName.device_name, "").strip()
         # noinspection PyBroadException
         try:
-            self.DEV_IN: dict[str, any] = sd.query_devices(self.SD_NAME, kind='input')
-            self.DEV_OUT: dict[str, any] = sd.query_devices(self.SD_NAME, kind='output')
+            self.DEV_IN: dict = sd.query_devices(self.SD_NAME, kind='input')
+            self.DEV_OUT: dict = sd.query_devices(self.SD_NAME, kind='output')
             sd.default.device = self.SD_NAME
             MY_LOG.info(f"Found device matching main.ini name: {self.SD_NAME}")
         except Exception:
             MY_LOG.error(f"No device matching main.ini name: {self.SD_NAME}, using default device instead")
-            self.DEV_IN: dict[str, any] = sd.query_devices(None, kind='input')
-            self.DEV_OUT: dict[str, any] = sd.query_devices(None, kind='output')
+            self.DEV_IN: dict = sd.query_devices(None, kind='input')
+            self.DEV_OUT: dict = sd.query_devices(None, kind='output')
 
         MY_LOG.debug(f"Using IN/OUT devices:\n{self.DEV_IN}\n\n{self.DEV_OUT}\n\n")
 

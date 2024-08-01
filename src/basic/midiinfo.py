@@ -1,4 +1,5 @@
 import os
+from typing import Any
 
 import keyboard
 import rtmidi
@@ -34,7 +35,7 @@ class KbdMidiIn:
 
         self.__kbd_notes: dict[str, int] = dict(zip(kbd_lst, midi_lst))
         self._func = None
-        self._data: any = None
+        self._data: Any = None
         self._pressed_key = False
         keyboard.on_press(callback=self.on_press, suppress=True)
         keyboard.on_release(callback=self.on_release, suppress=True)

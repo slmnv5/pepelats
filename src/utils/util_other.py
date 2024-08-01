@@ -1,7 +1,7 @@
 import os
 import random
 import re
-from typing import TypeVar, Generic, Iterable
+from typing import TypeVar, Generic, Iterable, Callable, Any
 
 T = TypeVar('T')
 
@@ -30,7 +30,7 @@ def split_key_value(data: str, mark1: str, mark2: str, strip1: str = "", strip2:
         return "", ""
 
 
-def _stable_sub_list(idx: int, items: list[any], sub_list_size: int) -> list[tuple[int, str]]:
+def _stable_sub_list(idx: int, items: list, sub_list_size: int) -> list[tuple[int, str]]:
     """ Sub list of elements surrounding one item at position = idx.
     If item's idx changes sub list stays the same if item is still included in the sub list.
     Otherwise, new sub list including item returned """
@@ -79,6 +79,10 @@ class CollectionOwner(Generic[T]):
     def select_idx(self, i: int) -> T:
         self.__idx = i % len(self.__items)
         return self.__items[self.__idx]
+
+    def for_each(self, act: Callable[[T], Any]) -> None:
+        for x in self.__items:
+            act(x)
 
     def item_count(self) -> int:
         return len(self.__items)

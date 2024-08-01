@@ -1,9 +1,9 @@
 from abc import ABC
-from copy import deepcopy
 from multiprocessing import Queue
 from threading import Event, Thread
 
 from control.loopctrl import LoopCtrl
+from drum.loopdrum import LoopDrum
 from screen.menuclient import MenuClient
 from song.loopsimple import LoopSimple
 from song.song import Song
@@ -47,19 +47,6 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
             self.idx, self._start_with_rec = 0, False
             self._update_view()
             part.play_loop(self)
-
-    def _part_duplicate(self) -> None:
-        part: SongPart = self._song.get_item()
-        if part.is_empty:
-            return
-        selected: int = self._song.get_idx()
-        for k in range(self._song.item_count()):
-            if self._song.select_idx(k).is_empty:
-                self._song.delete_item()
-                self.__next_id = self._song.add_item(deepcopy(part))
-                break
-        self._song.select_idx(selected)
-        self.stop_at_bound(part.get_len())
 
     def _part_play(self, part_id: int) -> None:
         """ Play specific part or record new loop of same length if already playing it """
@@ -119,6 +106,8 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
         selected: int = self._song.get_idx()
         if part_id == selected:
             return  # can not clear active part
+        if isinstance(self._drum, LoopDrum) and part_id == 0:
+            return  # part used by loop drum
         self._song.select_idx(part_id).clear()
         self.__next_id = selected
         self._song.select_idx(selected)

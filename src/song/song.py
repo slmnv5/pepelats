@@ -22,10 +22,7 @@ class Song(CollectionOwner[SongPart]):
         self._ff = FileFinder(AppName.save_song, True, ".sng")
 
     def clear(self) -> None:
-        for k in range(self.item_count()):
-            part = self.select_idx(k)
-            if not part.is_empty:
-                part.clear()
+        self.for_each(lambda x: x.clear() if not x.is_empty else None)
         self.select_idx(0)
         self._name = song_name_generate()
 
@@ -38,9 +35,7 @@ class Song(CollectionOwner[SongPart]):
         self._ff.add_item(self.get_complete_name())
         fname = self._ff.get_full_name()
         parts_lst = list()
-        for k in range(self.item_count()):
-            part = self.select_idx(k)
-            parts_lst.append(None if part.is_empty else part)
+        self.for_each(lambda x: parts_lst.append(None if x.is_empty else x))
         bar_len = drum.get_bar_len()
         drum_info = drum.get_drum_info()
 

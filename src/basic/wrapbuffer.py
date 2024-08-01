@@ -7,7 +7,7 @@ from utils.util_numpy import from_buff_to_data, from_data_to_buff
 
 class WrapBuffer:
     """buffer that can wrap over the end when get/play and set/record samples
-    if length == MAX_LEN it is empty, any other length indicate that it was recorded and trimmed / finalized.
+    if length == MAX_LEN it is empty, another length indicate that it was recorded and trimmed / finalized.
     """
 
     def __init__(self, sz: int = AudioInfo().MAX_LEN):

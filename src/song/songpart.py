@@ -13,19 +13,14 @@ class SongPart(LoopSimple, CollectionOwner[LoopSimple]):
         self.__undo: list[LoopSimple] = list()
 
     def get_max_len(self, count_empty: bool = False) -> int:
-        max_len: int = 0
-        for k in range(self.item_count()):
-            loop = self.select_idx(k)
-            if count_empty or not loop.is_empty:
-                max_len = max(max_len, loop.get_len())
-        return max_len
+        lst: list[int] = [0]
+        self.for_each(lambda x: lst.append(x.get_len()) if count_empty or not x.is_empty else None)
+        return max(lst)
 
     def correct_buffer(self) -> None:
-        for x in self.__undo:
-            x.correct_buffer()
-        for k in range(self.item_count()):
-            loop = self.select_idx(k)
-            LoopSimple.correct_buffer(loop)
+        self.for_each(lambda x: LoopSimple.correct_buffer(x))
+        for z in self.__undo:
+            z.correct_buffer()
 
     def clear(self) -> None:
         self.__undo.clear()
@@ -35,11 +30,7 @@ class SongPart(LoopSimple, CollectionOwner[LoopSimple]):
         self.get_first().max_buffer(preserve=False)
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
-        selected: int = self.get_idx()
-        for k in range(self.item_count()):
-            loop = self.select_idx(k)
-            LoopSimple.play(loop, out_data, idx)
-        self.select_idx(selected)
+        self.for_each(lambda x: LoopSimple.play(x, out_data, idx))
 
     def record(self, in_data: np.ndarray, idx: int) -> None:
         loop = self.get_item()

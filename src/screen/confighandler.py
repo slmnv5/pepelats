@@ -23,7 +23,7 @@ def web_config():
 class ConfigHandler(BaseHTTPRequestHandler):
 
     def send_hdr(self, status: int = 200, arg_dic=None) -> None:
-        d: dict[str, any] = {'Content-type': 'text/html'}
+        d: dict[str, str] = {'Content-type': 'text/html'}
         if arg_dic is not None:
             d.update(arg_dic)
         self.send_response(status)
