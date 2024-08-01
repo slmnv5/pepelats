@@ -30,7 +30,7 @@ def split_key_value(data: str, mark1: str, mark2: str, strip1: str = "", strip2:
         return "", ""
 
 
-def _stable_sub_list(idx: int, items: list, sub_list_size: int) -> list[tuple[int, str]]:
+def _stable_sub_list(idx: int, items: list[Any], sub_list_size: int) -> list[tuple[int, Any]]:
     """ Sub list of elements surrounding one item at position = idx.
     If item's idx changes sub list stays the same if item is still included in the sub list.
     Otherwise, new sub list including item returned """
@@ -94,10 +94,10 @@ class CollectionOwner(Generic[T]):
         self.__idx = 0
         return item
 
-    def get_str(self, items: int, next_idx: int = None) -> str:
-        item_sub_list = _stable_sub_list(self.__idx, self.__items, items)
+    def get_str(self, rows: int, next_idx: int = None) -> str:
+        sub_list = _stable_sub_list(self.__idx, self.__items, rows)
         tmp: list[str] = list()
-        for (k, s) in item_sub_list:
+        for (k, s) in sub_list:
             if k == self.__idx:
                 tmp.append(f"*{k:02} {s}")
             elif k == next_idx:
