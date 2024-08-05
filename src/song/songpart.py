@@ -2,7 +2,6 @@ import numpy as np
 
 from drum.basedrum import BaseDrum
 from song.loopsimple import LoopSimple
-from utils.util_audio import AUDIO_INFO
 from utils.util_other import CollectionOwner
 
 
@@ -11,18 +10,17 @@ class SongPart(LoopSimple):
 
     def __init__(self):
         LoopSimple.__init__(self)
-        self.loops = CollectionOwner[LoopSimple]()
+        self.loops = CollectionOwner[LoopSimple](self)
         self.__undo: list[LoopSimple] = list()
-        self.__init_len: int = 0  # first recorded loop length
-        self.__info_str: str = "-" * 15  # info for first recoded loop
 
-    def is_empty(self) -> bool:
-        return self.__init_len == 0
+    def _record(self, in_data: np.ndarray, idx: int) -> None:
+        loop = self.loops.get_item()
+        LoopSimple._record(loop, in_data, idx)
 
     def get_base_len(self, drum: BaseDrum) -> int:
         """ max len of drum and all loops """
         lst: list[int] = [super().get_base_len(drum)]
-        self.loops.for_each(lambda x: lst.append(x.get_len()))
+        self.loops.for_each(lambda x: lst.append(LoopSimple.get_len(x)) if not x.is_empty() else None)
         return max(lst)
 
     def rec_on(self) -> None:
@@ -30,34 +28,22 @@ class SongPart(LoopSimple):
         self._state.start_idx = self._state.idx
 
     def trim_buffer(self, idx: int, base_len: int) -> None:
-        self._trim(idx, base_len, self._state.start_idx)
+        loop = self.loops.get_item()
+        loop._trim(idx, base_len, self._state.start_idx)
         self._state.start_idx = 0
-        self.append_itself()
-
-    def append_itself(self) -> None:
-        if self.loops.item_count() == 0:
-            self.__init_len = self.get_len()
-            self.__info_str = self.get_decibel() + self.get_seconds()
-        loop = LoopSimple(buff=self.get_buff())
-        self.set_buff(AUDIO_INFO.get_zero_buffer(self.__init_len))
-        self.loops.add_item(loop)
-        self.clear_undo()
 
     def correct_buffer(self) -> None:
-        self.loops.for_each(lambda x: x.correct_buffer())
+        self.loops.for_each(lambda x: LoopSimple.correct_buffer(x))
         for z in self.__undo:
             z.correct_buffer()
 
     def clear(self) -> None:
         self.max_buffer()
         self.__undo.clear()
-        self.loops = CollectionOwner[LoopSimple]()
-        self.__info_str = "-" * 15
-        self.__init_len = 0
+        self.loops = CollectionOwner[LoopSimple](self)
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
-        # LoopSimple.play(self, out_data, idx)
-        self.loops.for_each(lambda x: x.play(out_data, idx))
+        self.loops.for_each(lambda x: LoopSimple.play(x, out_data, idx))
 
     def redo(self) -> bool:
         if not self.__undo:
@@ -78,4 +64,9 @@ class SongPart(LoopSimple):
         self.__undo.clear()
 
     def __str__(self):
-        return f"{self.__info_str} {self.loops.item_count():02}/{len(self.__undo):02}"
+        if self.is_empty():
+            return "-" * 15
+        if not self._info_str:
+            self._info_str = f"{self.get_decibel()} {self.get_seconds()}"
+
+        return f"{self._info_str} {self.loops.item_count():02}/{len(self.__undo):02}"

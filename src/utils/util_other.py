@@ -50,14 +50,14 @@ class CollectionOwner(Generic[T]):
     It is used for SongPart, Song, FileFinder
     May be empty and throw exceptions """
 
-    def __init__(self, first: T | Iterable[T] = None):
+    def __init__(self, first: T | Iterable[T]):
         self.__items: list[T] = list()
-        if first is None:
-            pass
-        elif isinstance(first, Iterable):
+        if isinstance(first, Iterable):
             self.__items.extend(first)
         else:
             self.__items.append(first)
+        if self.item_count() == 0:
+            raise RuntimeError("Empty CollectionOwner class")
         self.__idx: int = 0
 
     def get_first(self) -> T:

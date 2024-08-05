@@ -85,11 +85,11 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
 
         if part.is_rec():
             part.rec_off()
-            if LoopSimple.is_empty(part):
+            loop = part.loops.get_item()
+            if loop.is_empty():
                 part.trim_buffer(part.get_index(), part.get_base_len(self._drum))
-            else:
-                part.append_itself()
         else:
+            part.loops.add_item(LoopSimple(part.get_len()))
             part.rec_on()
 
     def _part_record_ext(self) -> None:
@@ -100,7 +100,7 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
         if self._song.parts.get_idx() != self.__next_idx:
             self.__rec_start = True  # another part will start with recording
         elif not (part.is_empty() or part.is_rec()):
-            part.max_buffer()
+            part.loops.add_item(LoopSimple())
             part.rec_on()
 
     def _part_clear(self) -> None:

@@ -39,7 +39,7 @@ class WrapBuffer:
         return f"L:{(self.get_len() / AUDIO_INFO.SD_RATE): 04.1F}s"
 
     def get_state(self) -> str:
-        return f" {'S' if self.__is_silent else ' '}{'R' if self.__is_reverse else ' '}"
+        return f"{'S' if self.__is_silent else ' '}{'R' if self.__is_reverse else ' '}"
 
     def correct_buffer(self) -> None:
         self.__buff = correct_sound(self.__buff, AUDIO_INFO.SD_CH, AUDIO_INFO.SD_TYPE)

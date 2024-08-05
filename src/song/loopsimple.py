@@ -25,7 +25,7 @@ class LoopSimple(WrapBuffer):
 
     def __init__(self, size: int = None, buff: np.ndarray = None):
         WrapBuffer.__init__(self, size, buff)
-        self.__info_str: str = ""
+        self._info_str: str = ""
         self.stop_never()
 
     def get_index(self) -> int:
@@ -89,7 +89,9 @@ class LoopSimple(WrapBuffer):
             self._state.stop_len = self._state.idx + (bound_value - over)
 
     def __str__(self):
-        if not self.__info_str:
-            self.__info_str = self.get_decibel() + self.get_seconds()
+        if self.is_empty():
+            return "-" * 15
+        if not self._info_str:
+            self._info_str = f"{self.get_decibel()} {self.get_seconds()}"
 
-        return self.__info_str + self.get_state()
+        return f"{self._info_str} {self.get_state()}"
