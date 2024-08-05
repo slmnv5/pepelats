@@ -24,12 +24,13 @@ function setStyle() {
     body_style.textAlign = "center";
 }
 
-// make html showing progress line, char. X - position of max. length loop
+// make html showing progress line - position in 1-st loop and position in max. length loop
 function getHeaderHtml (header, l1, l2, max_chars) {
-    const BW_S = '<span style="color: black; background-color: rgb(200, 200, 200)";>';
-    const WY_S = '<span style="background-color: yellow";>';
+    const BW_S = '<span style="color: black; background-color: rgb(200, 200, 200)";>'; // 1st loop position
+    const WY_S = '<span style="background-color: yellow";>';  // max. length loop position
     const END_S = '</span>'
 
+   
     function decorateOneChar(s, pos) {
         if (pos <= 0 || pos >= s.length) return s;
         return s.slice(0, pos) + WY_S + s.slice(pos, pos+1) + END_S + s.slice(pos+1);
@@ -45,7 +46,9 @@ function getHeaderHtml (header, l1, l2, max_chars) {
     return '<p>' + BW_S + s1 + END_S + s2 + '</p>';
 };
 
-// decorate string with color based on 1st char
+// decorate string with color based on 1st char. 
+// Shows part that plays in green, next part in yellow,
+// recorded part in red
 function getContentHtml(content, is_rec) {
     const RED_P = '<p style="color: rgb(250, 30, 30);">';
     const GREEN_P = '<p style="color: rgb(30, 250, 30);">';
@@ -112,13 +115,12 @@ window.onload = () => {
                 CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec);
             } catch(err) {
                 ERR_COUNT++;
-                console.error(err) // must not be
+                console.error(err)
             }
         };
     };
 
     async function redrawData() {
-        DATA.sleep_tm = 1
         while(ERR_COUNT < MAX_ERR_COUNT) {
             try {
                 await sleepFunc(DATA.sleep_tm * 1000);

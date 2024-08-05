@@ -3,7 +3,7 @@ from random import random
 import numpy as np
 import rtmidi
 
-from basic.midiinfo import FakeMidiOut, get_out_port
+from utils.util_midi import FakeMidiOut, get_out_port
 from drum.basedrum import BaseDrum
 from utils.util_alsa import int_to_bytes
 
@@ -16,7 +16,7 @@ class MidiDrum(BaseDrum):
 
     def __init__(self):
         BaseDrum.__init__(self)
-        self._par = 0.2  # for MIDI drum it is probability to change program at bar start
+        self._param = 0.2  # for MIDI drum it is probability to change program at bar start
         self.port: rtmidi.MidiOut | FakeMidiOut = get_out_port()
 
     def set_volume(self, volume: float) -> None:
@@ -41,13 +41,13 @@ class MidiDrum(BaseDrum):
         self.port.send_message([0xF0, 0x5C, 0xF7])
         self.start()
 
-    def play_fill(self, idx: int) -> None:
+    def play_fill(self) -> None:
         self.port.send_message([0xF0, 0x5D, 0xF7])
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
         if self._is_stopped:
             return
         if idx % self._bar_len == 0:
-            if random() < self._par:
+            if random() < self._param:
                 self.randomize()
             self.port.send_message([0xF0, 0x5B, 0xF7])

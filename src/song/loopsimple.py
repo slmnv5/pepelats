@@ -1,42 +1,95 @@
+from threading import Event
+
+import numpy as np
 import sounddevice as sd
 
-from basic.audioinfo import AudioInfo
-from basic.wrapbuffer import WrapBuffer
-from control.loopctrl import LoopCtrl
+from drum.basedrum import BaseDrum
+from song.wrapbuffer import WrapBuffer
+from utils.util_audio import AUDIO_INFO
+from utils.util_other import HUGE_INT
+
+
+class LoopState:
+    def __init__(self):
+        self.rec: bool = False
+        self.stop_len: int = 0
+        self.stop_event: Event = Event()
+        self.idx: int = 0  # idx for audio buffer
+        self.start_idx: int = 0  # start of recording, used in sub class
 
 
 class LoopSimple(WrapBuffer):
     """Loop truncates itself to be multiple of bar length. Bar length is stored in a drum.
-    Loop creates drum with proper bar length if drum is empty"""
+    Drum is part of control object.  """
+    _state: LoopState = LoopState()
 
-    def __init__(self, sz: int = AudioInfo().MAX_LEN):
-        WrapBuffer.__init__(self, sz)
+    def __init__(self, size: int = None, buff: np.ndarray = None):
+        WrapBuffer.__init__(self, size, buff)
+        self.__info_str: str = ""
+        self.stop_never()
 
-    def trim_buffer(self, ctrl: LoopCtrl, base_len: int) -> None:
+    def get_index(self) -> int:
+        return self._state.idx
+
+    def rec_on(self) -> None:
+        self._state.rec = True
+
+    def rec_off(self) -> None:
+        self._state.rec = False
+
+    def is_rec(self) -> bool:
+        return self._state.rec
+
+    def get_base_len(self, drum: BaseDrum) -> int:
+        return drum.get_bar_len()
+
+    def trim_buffer(self, idx: int, base_len: int) -> None:
         """trims buffer length to multiple of base_len.
-        base_len is length of bar = length of drum """
-        if not self.is_empty:
-            return
-        self.finalize(ctrl.idx, base_len)
-        if not base_len:
-            ctrl.drum_create_async(ctrl.idx, dict())
+        base_len is length of bar """
+        self._trim(idx, base_len)
 
-    def play_loop(self, ctrl: LoopCtrl):
+    def play_loop(self, drum: BaseDrum):
+        self._state.idx, self._state.start_idx = 0, 0
+        self.stop_never()
+        if self.is_empty():
+            self._state.rec = True
+
         # noinspection PyUnusedLocal
         def callback(in_data, out_data, frame_count, time_info, status):
             out_data[:] = 0
-            ctrl.get_drum().play(out_data, ctrl.idx)
-            self.play(out_data, ctrl.idx)
+            drum.play(out_data, self._state.idx)
+            self.play(out_data, self._state.idx)
 
-            if ctrl.get_is_rec():
-                self.record(in_data, ctrl.idx)
+            if self._state.rec:
+                self._record(in_data, self._state.idx)
 
-            ctrl.idx += frame_count
-            if ctrl.idx >= ctrl.get_stop_len():
-                ctrl.stop_at_bound(0)
+            self._state.idx += frame_count
+            if self._state.idx >= self._state.stop_len:
+                self._state.stop_event.set()
 
         with sd.Stream(callback=callback):
-            ctrl.stop_wait()
+            self._state.stop_event.wait()
 
         # if loop is empty will trim to correct size
-        self.trim_buffer(ctrl, ctrl.get_drum().get_bar_len())
+        if self.is_empty():
+            self.trim_buffer(self._state.idx, self.get_base_len(drum))
+
+        self._state.rec = False
+
+    def stop_never(self) -> None:
+        self._state.stop_len = HUGE_INT
+        self._state.stop_event.clear()
+
+    def stop_at_bound(self, bound_value: int) -> None:
+        over: int = self._state.idx % bound_value if bound_value else 0
+        if over < AUDIO_INFO.LATE_SAMPLES:
+            self._state.stop_len = 0
+            self._state.stop_event.set()
+        else:
+            self._state.stop_len = self._state.idx + (bound_value - over)
+
+    def __str__(self):
+        if not self.__info_str:
+            self.__info_str = self.get_decibel() + self.get_seconds()
+
+        return self.__info_str + self.get_state()

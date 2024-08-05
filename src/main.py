@@ -1,3 +1,4 @@
+import sys
 from multiprocessing import Process
 from multiprocessing import Queue
 from time import sleep
@@ -5,10 +6,9 @@ from time import sleep
 from control.looper import Looper
 from menuhost.countmidicontrol import CountMidiControl
 from menuhost.menuhost import MenuHost
-from screen.confighandler import web_config
 from screen.textscreen import TextScreen
 from screen.webscreen import WebScreen
-from utils.util_config import load_ini_section, LOCAL_IP, CONFIG_PORT
+from utils.util_config import load_ini_section, LOCAL_IP
 from utils.util_log import MY_LOG, NoMidiInputFound, ConfigError
 from utils.util_name import AppName
 
@@ -41,30 +41,33 @@ def do_start(midi_ctrl: MenuHost, q_screen: Queue, q_looper: Queue, choice: int)
     midi_ctrl.host_start()
     q_screen.put([AppName.client_stop])
 
-    for k in range(12):
+    for k in range(3):
         if p1.is_alive() or p2.is_alive():
-            MY_LOG.warning(f"Still running {k}\nscreen: {p1.is_alive()}\nlooper: {p2.is_alive()}\n")
-            sleep(7)
+            MY_LOG.warning(f"Still running {k}:\tscreen: {p1.is_alive()}\tlooper: {p2.is_alive()}")
+            sleep(10)
+
+
+def go() -> None:
+    try:
+        midi_control = CountMidiControl(q_lpr)
+        choice: int = load_ini_section("SCREEN", True).get(AppName.screen_type, 0)
+        if choice and not LOCAL_IP:
+            MY_LOG.error(f"Can not set screen type={choice} without WiFi connection")
+            choice = 0
+        do_start(midi_control, q_scr, q_lpr, choice)
+        sys.exit(0)
+    except NoMidiInputFound as ex:
+        MY_LOG.warning(f"Missing computer keyboard, missing MIDI: {ex}")
+        sys.exit(1)
+    except ConfigError as ex:
+        MY_LOG.error(f"Edit local.ini file to correct error: {ex}")
+        sys.exit(2)
+    except Exception as ex:
+        MY_LOG.exception(ex)
+        sys.exit(3)
+    finally:
+        pass
 
 
 if __name__ == "__main__":
-    try:
-        midi_control = CountMidiControl(q_lpr)
-        ch: int = load_ini_section("SCREEN", True).get(AppName.screen_type, 0)
-        if ch and not LOCAL_IP:
-            MY_LOG.error(f"Can not set screen type={ch} without WiFi connection")
-            ch = 0
-        do_start(midi_control, q_scr, q_lpr, ch)
-    except ConfigError as ex:
-        MY_LOG.warning(f"HTTP server starting at: {LOCAL_IP}:{CONFIG_PORT}")
-        MY_LOG.warning(f"Edit local.ini file to correct: {ex}")
-        web_config()
-    except NoMidiInputFound as ex:
-        MY_LOG.warning(ex)
-        pname = load_ini_section("MIDI").get("midi_in", "")
-        MY_LOG.error(f"Connect MIDI IN controller {pname} or connect computer keyboard")
-        sleep(10)
-    except Exception as ex:
-        MY_LOG.exception(ex)
-    finally:
-        pass
+    go()

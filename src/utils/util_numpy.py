@@ -15,12 +15,12 @@ def _calc_slices_lst(buff_len: int, data_len: int, buff_idx: int) -> list[slice]
         return [slice(idx1, buff_len), slice(0, idx2), slice(0, to_buff_end), slice(to_buff_end, to_buff_end + idx2)]
 
 
-def from_data_to_buff(buff: np.ndarray, data: np.ndarray, buff_idx: int, clear_buff: bool = False) -> None:
+def from_data_to_buff(buff: np.ndarray, data: np.ndarray, buff_idx: int, clear: bool = False) -> None:
     """ insert from data into buff starting with idx """
     buff_len = len(buff)
     data_len = len(data)
     slice_lst = _calc_slices_lst(buff_len, data_len, buff_idx)
-    if clear_buff:
+    if clear:
         if len(slice_lst) == 2:
             buff[slice_lst[0]] = data[slice_lst[1]]
         else:
@@ -34,16 +34,23 @@ def from_data_to_buff(buff: np.ndarray, data: np.ndarray, buff_idx: int, clear_b
             buff[slice_lst[1]] += data[slice_lst[3]]
 
 
-def from_buff_to_data(buff: np.ndarray, data: np.ndarray, buff_idx: int) -> None:
+def from_buff_to_data(buff: np.ndarray, data: np.ndarray, buff_idx: int, clear: bool = False) -> None:
     """ insert from buff into data starting with idx """
     buff_len = len(buff)
     data_len = len(data)
     slice_lst = _calc_slices_lst(buff_len, data_len, buff_idx)
-    if len(slice_lst) == 2:
-        data[slice_lst[1]] += buff[slice_lst[0]]
+    if clear:
+        if len(slice_lst) == 2:
+            data[slice_lst[1]] = buff[slice_lst[0]]
+        else:
+            data[slice_lst[2]] = buff[slice_lst[0]]
+            data[slice_lst[3]] = buff[slice_lst[1]]
     else:
-        data[slice_lst[2]] += buff[slice_lst[0]]
-        data[slice_lst[3]] += buff[slice_lst[1]]
+        if len(slice_lst) == 2:
+            data[slice_lst[1]] += buff[slice_lst[0]]
+        else:
+            data[slice_lst[2]] += buff[slice_lst[0]]
+            data[slice_lst[3]] += buff[slice_lst[1]]
 
 
 def trim_buffer(buff: np.ndarray, new_len: int, buff_idx: int) -> np.ndarray:

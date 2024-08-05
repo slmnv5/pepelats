@@ -16,11 +16,11 @@ class MenuClient(ABC):
         while self._alive:
             command = self.__queue.get()
             method_name, *params = command
+            MY_LOG.debug(f"{self.__class__.__name__} got command: {method_name}")
             # noinspection PyBroadException
             try:
                 method = getattr(self, method_name)
                 method(*params)
-                MY_LOG.debug(f"{self.__class__.__name__} got command: {command}")
             except Exception as ex:
                 MY_LOG.exception(ex)
 

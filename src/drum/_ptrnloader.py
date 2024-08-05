@@ -83,7 +83,7 @@ class PtrnManager:
         # INI patterns are already sorted by intensity
         for ptn_dic, name, energy in self.__ptn:
             self.__snd.append(self._drum_loader.fn_convert(bar_len, par, ptn_dic))
-            MY_LOG.debug(f"Converted pattern name: {name}, intensity: {energy}")
+            # MY_LOG.debug(f"Converted pattern name: {name}, intensity: {energy}")
 
         if self._drum_loader.break_marker:
             self._separate_by_name()

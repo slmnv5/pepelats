@@ -20,10 +20,10 @@
 
 
 ### Drum machine
-- Drum machine with four drum types: MIDI, Pattern, Euclidean and Loop
-- Drums have volume control, automatic random variations and can play breaks/fills
+- Drum machine with four drum types: MIDI, Style, Euclidean and Loop
+- Drums have volume control, random variations and can play breaks/fills
 - MIDI drum may sync and control external MIDI device via SysEx messages, good for IOS drums.
-- Pattern drum and Euclidean drum have adjustable swing parameter
+- Pattern based Style and Euclidean drums have adjustable swing parameter
 - Loop drum uses recorded audio loop, good for beat boxing
 
 ### [Read more ... ](./doc/contents.md)

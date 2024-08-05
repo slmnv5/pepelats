@@ -2,13 +2,13 @@ import random
 
 import numpy as np
 
-from basic.audioinfo import AudioInfo
+from utils.util_audio import AUDIO_INFO
 from utils.util_numpy import from_buff_to_data, from_data_to_buff, trim_buffer
 
 
 def _record(buff_len, data_len, idx):
-    buff = np.zeros((buff_len, AudioInfo().SD_CH), AudioInfo().SD_TYPE)
-    data = np.zeros((data_len, AudioInfo().SD_CH), AudioInfo().SD_TYPE)
+    buff = np.zeros((buff_len, AUDIO_INFO.SD_CH), AUDIO_INFO.SD_TYPE)
+    data = np.zeros((data_len, AUDIO_INFO.SD_CH), AUDIO_INFO.SD_TYPE)
     buff[:] = 1
     data[:] = 2
     original = data.copy()
@@ -26,8 +26,8 @@ def _record(buff_len, data_len, idx):
 
 
 def _play(buff_len, data_len, idx):
-    buff = np.zeros((buff_len, AudioInfo().SD_CH), AudioInfo().SD_TYPE)
-    data = np.zeros((data_len, AudioInfo().SD_CH), AudioInfo().SD_TYPE)
+    buff = np.zeros((buff_len, AUDIO_INFO.SD_CH), AUDIO_INFO.SD_TYPE)
+    data = np.zeros((data_len, AUDIO_INFO.SD_CH), AUDIO_INFO.SD_TYPE)
     buff[:] = 1
     data[:] = 2
     original = buff.copy()

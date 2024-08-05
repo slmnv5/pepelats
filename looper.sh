@@ -42,7 +42,7 @@ while true; do
   test_keyboard
   PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./src/main.py $*"
   echo "$PYTHON_CMD"
-  sleep 5
+  sleep 60
   $PYTHON_CMD
 done
 

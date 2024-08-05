@@ -2,20 +2,18 @@ from abc import abstractmethod
 
 import numpy as np
 
-from basic.audioinfo import AudioInfo
+from utils.util_audio import AUDIO_INFO
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
 
 
 class BaseDrum:
-    # when playing drum fill it may not be too short and is extended
-    SMALLEST_FILL_FRACTION: float = 0.1
 
     def __init__(self):
         self._is_stopped: bool = True
         self._bar_len: int = 0
         self._bpm: float = 0
-        self._par: float = 0.5  # from 0 to 1,  swing, used by some drum types
+        self._param: float = 0.5  # from 0 to 1,  swing, used by some drum types
         self._volume: float = 0.5  # from 0 to 1
 
     def set_volume(self, volume: float) -> None:
@@ -26,23 +24,24 @@ class BaseDrum:
     def get_volume(self) -> float:
         return self._volume
 
-    def set_par(self, par: float) -> None:
+    def set_param(self, par: float) -> None:
         par = min(1.0, par)
         par = max(0.0, par)
-        self._par = par
+        self._param = par
 
-    def get_par(self) -> float:
-        return self._par
+    def get_param(self) -> float:
+        return self._param
 
     def get_class_name(self) -> str:
-        return f"{type(self).__name__}"
+        return f"{self.__class__.__name__}"
 
     def get_drum_info(self) -> dict[str, str | float]:
         drum_info: dict[str, str | float] = dict()
         drum_info[AppName.drum_type] = self.get_class_name()
         drum_info[AppName.drum_config_file] = self.get_config()
-        drum_info[AppName.drum_volume] = self.get_volume()
-        drum_info[AppName.drum_par] = self.get_par()
+        drum_info[AppName.drum_volume] = self._volume
+        drum_info[AppName.drum_param] = self._param
+        drum_info[AppName.drum_len] = self._bar_len
         return drum_info
 
     def get_bpm(self) -> float:
@@ -55,7 +54,7 @@ class BaseDrum:
         if bar_len <= 0 or self._bar_len != 0:
             raise RuntimeError("Method set_bar_len must be called only once with positive bar_len")
         self._bar_len = bar_len
-        self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / AudioInfo().SD_RATE)
+        self._bpm = 0 if not bar_len else 60 * 4 / (bar_len / AUDIO_INFO.SD_RATE)
         MY_LOG.info(f"Set bar len {self._bar_len} for drum: {self}")
 
     def stop(self) -> None:
@@ -66,7 +65,7 @@ class BaseDrum:
             self._is_stopped = False
 
     def show_param(self) -> str:
-        return f"vol:{self._volume:.2F} par:{self._par:.2F}"
+        return f"vol:{self._volume:.2F} par:{self._param:.2F}"
 
     def get_config(self, include_all: bool = False) -> str:
         return ""
@@ -85,7 +84,7 @@ class BaseDrum:
         pass
 
     @abstractmethod
-    def play_fill(self, idx: int) -> None:
+    def play_fill(self) -> None:
         pass
 
     @abstractmethod

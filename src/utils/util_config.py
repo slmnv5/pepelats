@@ -1,27 +1,56 @@
 import os
 import subprocess
 from configparser import ConfigParser
+from time import sleep
 
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
 from utils.util_other import split_to_dict
 
-s: str = subprocess.run(["git", "branch"], stdout=subprocess.PIPE).stdout.decode()
-s = s[s.find("* ") + 2:]
-BRANCH = s[:s.find("\n")].strip()
+
+def _get_branch_lst() -> list[str]:
+    br_str: str = subprocess.run(["git", "branch"], stdout=subprocess.PIPE).stdout.decode()
+    return [x for x in br_str.splitlines()]
+
+
+def get_branch_update():
+    return subprocess.run(["git", "log", "-1", "--format=%ch"], stdout=subprocess.PIPE).stdout.decode()
+
+
+def get_selected_branch() -> str:
+    lst = [x for x in _get_branch_lst() if x.startswith("* ")]
+    return lst[0] if lst else ""
+
+
+def select_next_branch() -> None:
+    lst: list[str] = _get_branch_lst()
+    lst_k: list[int] = [k for k, x in enumerate(lst) if x.startswith("* ")]
+    if not lst_k or len(lst) == 1:
+        return
+    k: int = lst_k[0]
+    k = (k + 1) % len(lst)
+    br_name: str = lst[k]
+    cmd = f"git reset --hard; git fetch --all; git switch {br_name}; git pull"
+    os.system(cmd)
+    sleep(5)
+
 
 LOCAL_PORT: int = 8000
-CONFIG_PORT: int = 9000
-LOCAL_IP: str = ""
+CONFIG_PORT: int = 8001
 
-if os.name == "posix":
-    s = subprocess.run(["ip", "route"], stdout=subprocess.PIPE).stdout.decode()
-    LOCAL_IP = split_to_dict(s, "metric ", "dhcp ", " ", " ", " ").get("src", "")
-elif os.name == "nt":
-    s = subprocess.run(["ipconfig"], stdout=subprocess.PIPE).stdout.decode()
-    LOCAL_IP = split_to_dict(s, "\n", "IPv4", ": ", " .", " \r\n\t").get("Address", "")
-else:
-    pass
+
+def get_local_ip() -> str:
+    if os.name == "posix":
+        s = subprocess.run(["ip", "route"], stdout=subprocess.PIPE).stdout.decode()
+        return split_to_dict(s, "metric ", "dhcp ", " ", " ", " ").get("src", "")
+    elif os.name == "nt":
+        s = subprocess.run(["ipconfig"], stdout=subprocess.PIPE).stdout.decode()
+        return split_to_dict(s, "\n", "IPv4", ": ", " .", " \r\n\t").get("Address", "")
+    else:
+        return ""
+
+
+LOCAL_IP: str = get_local_ip()
 
 assert len(LOCAL_IP) >= 7 and all(x.isdigit() or x == "." for x in LOCAL_IP)
 MY_LOG.info(f"Local IP is: {LOCAL_IP}")
@@ -32,7 +61,7 @@ def ram_usage_pct() -> int:
         return 0
     try:
         line = subprocess.run(["free", "-m"], stdout=subprocess.PIPE).stdout.decode()
-        line = line.split('\n')[1]
+        line = line.splitlines()[1]
         assert line.startswith("Mem:")
         lst = [convert_param(x) for x in line.split()[1:4]]
         assert len(lst) == 3
@@ -105,4 +134,6 @@ def get_params(path: str) -> dict[str, str | int | float]:
 
 
 if __name__ == "__main__":
-    pass
+    print(cpu_usage_pct())
+    print(ram_usage_pct())
+    print(get_selected_branch())

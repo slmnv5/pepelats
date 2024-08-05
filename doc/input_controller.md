@@ -29,7 +29,7 @@ files.
 
 ## MIDI input controller configurations
 
-Foot controller is coupled with menu configuration files e.g. [play.ini](./../config/menu/6x4/play.ini) which
+Foot controller is coupled with menu configuration files e.g. [play.ini](../config/menu/6-4-menu/play.ini) which
 translate notes to looper commands (see also [menu_config.md](menu_config.md))
 Each line looks like:
 
@@ -44,10 +44,10 @@ _command1, _command2 : are commands of the looper. Multiple commands are separat
 p1, p2, ... : optional parameters of commands. Each one may be a number or text
 
 ```
-C-100 : _part_play 2
-D-100 : _part_play 3
-A-2 : _part_record 0
-B-2 : _part_record 1
+C-100 : _part_change 2
+D-100 : _part_change 3
+A-2 : _part_record_ext
+B-2 : _part_record_ext
 ```
 
 ## Control change messages
@@ -61,8 +61,8 @@ momentarily switches into these inputs will send CC messages converted into note
 
 There are 2 predefined configurations:
 
-- using 4 buttons [4x2](./../config/menu/4x2)
-- using 6 buttons [6x4](./../config/menu/6x4).  
+- using 4 buttons [4x2](./../config/menu/4-2-menu)
+- using 6 buttons [6x4](./../config/menu/6-4-menu).  
   (see also [menu_config.md](menu_config.md))
 
 

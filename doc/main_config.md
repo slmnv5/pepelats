@@ -14,8 +14,6 @@ device_type -- data type to process and store audio information, int16 or float3
 drum_volume -- multiplier for WAV samples volume if Style or Euclid drums volume need to change
 sample_rate -- sample rate, 48000 or 44100, depends on audio device used
 ; midi options
-keyboard_keys  -- 6 keys on computer keyboard if MIDI controller is missing
-keyboard_notes -- 6 notes of MIDI foot controller pedal. Note velocity must be > 10
 midi_in  -- name (or part of name) for MIDI input control, optional
 midi_out --  name (or part of name) for MIDI drum output, optional
 ; menu options

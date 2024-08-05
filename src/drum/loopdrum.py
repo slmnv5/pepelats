@@ -3,9 +3,10 @@ from threading import Timer
 
 import numpy as np
 
-from basic.audioinfo import AudioInfo
 from drum.basedrum import BaseDrum
 from song.songpart import SongPart
+from song.wrapbuffer import WrapBuffer
+from utils.util_audio import AUDIO_INFO
 
 
 class LoopDrum(BaseDrum):
@@ -13,37 +14,42 @@ class LoopDrum(BaseDrum):
     The song part will record real drum sounds and play along with other parts.
     The last loops is used only for drum fills.
     Other loops selected randomly.
-    How often loops are randomized is proportional to self._par.
+    How often loops are randomized is proportional to self._param
     """
 
     def __init__(self, song_part: SongPart):
         BaseDrum.__init__(self)
         self._song_part: SongPart = song_part
-        self._par = 0.2  # for this drum - probability to randomize at bar start
+        self._param = 0.2  # for this drum - probability to randomize at bar start
 
     def randomize(self) -> None:
         """ Randomly modify drum by excluding some sounds """
-        part = self._song_part
-        m: int = part.item_count()
-        exclude_lst = choices(range(m), k=(m // 3))
-        for k in range(m):
-            part.select_idx(k).set_silent(k in exclude_lst or k == m - 1)
+        loops = self._song_part.loops
+        count: int = loops.item_count()
+        exclude_lst = choices(range(count), k=(count // 3))
+        loops.for_each(lambda x: x.set_silent(loops.add_item(x) in exclude_lst))
+        loops.select_idx(-1).set_silent(True)
         self.start()
 
-    def play_fill(self, idx: int) -> None:
+    def play_fill(self) -> None:
         if not self._bar_len:
             return
-        part = self._song_part
-        part.select_idx(-1).set_silent(False)
-        tmp: int = self._bar_len - (idx % self._bar_len)  # samples to end of bar
-        if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
-            tmp = tmp + self._bar_len // 2
+        loops = self._song_part.loops
+        loops.select_idx(-1).set_silent(False)
         # return to normal drums
-        Timer(tmp / AudioInfo().SD_RATE, self.randomize).start()
+        Timer(self._bar_len / AUDIO_INFO.SD_RATE, self.randomize).start()
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
         if self._is_stopped:
             return
-        if idx % self._bar_len == 0 and random() < self._par:
+        if idx % self._bar_len == 0 and random() < self._param:
             self.randomize()
         self._song_part.play(out_data, idx)
+
+    def set_volume(self, volume: float) -> None:
+        def chg_vol(x: WrapBuffer) -> None:
+            np.multiply(x, volume / 0.5, out=x, casting="unsafe")
+
+        super().set_volume(volume)
+        loops = self._song_part.loops
+        loops.for_each(lambda x: chg_vol(x))

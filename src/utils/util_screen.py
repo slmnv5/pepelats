@@ -1,7 +1,7 @@
 import os
 import sys
 
-from basic.audioinfo import AudioInfo
+from utils.util_audio import AUDIO_INFO
 from utils.util_config import load_ini_section
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
@@ -22,7 +22,7 @@ if AppName.no_progress in sys.argv:
 
 
 def recalc_dic(dic: dict) -> None:
-    dic["sleep_tm"] = dic["len"] / AudioInfo().SD_RATE / _UPDATES_PER_LOOP
+    dic["sleep_tm"] = dic["len"] / AUDIO_INFO.SD_RATE / _UPDATES_PER_LOOP
     dic["pos"] = (dic["idx"] % dic["len"]) / dic["len"]
     dic["delta"] = 1 / _UPDATES_PER_LOOP
     if dic["max_loop_len"] > dic["len"]:

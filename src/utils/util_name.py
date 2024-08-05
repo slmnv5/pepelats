@@ -1,3 +1,6 @@
+import random
+
+
 class AppName:
     app_name: str = "pepelats"
     # command line options
@@ -36,7 +39,9 @@ class AppName:
     drum_type: str = "drum_type"
     drum_config_file: str = "drum_config_file"
     drum_volume: str = "drum_volume"
-    drum_par: str = "drum_par"
+    drum_param: str = "drum_param"
+    drum_len: str = "drum_len"
+    song_part: str = "song_part"
 
     # drum types
     EuclidDrum: str = "EuclidDrum"
@@ -53,3 +58,22 @@ class AppName:
     main_ini: str = "main.ini"
     local_ini: str = "local.ini"
     save_song: str = "save_song"
+
+
+def song_name_generate() -> str:
+    words1 = ["brave", "slim", "wise", "smart", "good", "new", "first", "last", "long", "great", "little", "my",
+              "another", "old", "right", "big", "high", "his", "small", "large", "next", "early", "young", "fast",
+              "her", "fit", "same", "able", "happy", "nice", "deep", "black", "blue", "green"]
+
+    words2 = ["year", "people", "way", "day", "man", "thing", "woman", "life", "child", "world", "school",
+              "state", "family", "student", "group", "country", "chair", "hand", "part", "place", "case",
+              "week", "company", "system", "program", "question", "work", "wife", "number", "night",
+              "point", "home", "water", "room", "mother", "area", "money", "story", "fact", "month", "lot",
+              "right", "study", "book", "eye", "job", "word", "line", "issue", "side", "kind", "head",
+              "house", "service", "friend", "father", "power", "hour", "game", "line", "end", "member", "law",
+              "car", "city", "link", "name", "president", "team", "minute", "idea", "kid", "body",
+              "case", "back", "parent", "face", "others", "level", "office", "door", "health", "person",
+              "art", "war", "history", "party", "result", "change", "morning", "reason", "smile", "girl",
+              "guy", "moment", "air", "teacher", "force", "run", "smile", "moon", "pen", "ring", "square"]
+
+    return f"{random.choice(words1)}_{random.choice(words2)}"

@@ -5,11 +5,11 @@ from threading import Timer
 
 import numpy as np
 
-from basic.audioinfo import AudioInfo
 from drum._euclidptrnloader import EuclidPtrnLoader
 from drum._ptrnloader import PtrnManager, PtrnLoader
 from drum._styleptrnloader import StylePtrnLoader
 from drum.basedrum import BaseDrum
+from utils.util_audio import AUDIO_INFO
 from utils.util_numpy import from_buff_to_data
 from utils.util_screen import SCR_ROWS
 
@@ -27,7 +27,7 @@ class BufferDrum(BaseDrum, ABC):
         self._name: str = ""  # pattern name
         self._energy: float = 0  # pattern energy
         self._idx: float = 0  # pattern index
-        self._par = 0.5  # for this drum it controls swing
+        self._param = 0.5  # for this drum it controls swing
 
         self.set_config()
 
@@ -57,8 +57,8 @@ class BufferDrum(BaseDrum, ABC):
         super().set_volume(volume)
         self._regenerate()
 
-    def set_par(self, par: float) -> None:
-        super().set_par(par)
+    def set_param(self, par: float) -> None:
+        super().set_param(par)
         self._regenerate()
 
     def randomize(self) -> None:
@@ -69,21 +69,18 @@ class BufferDrum(BaseDrum, ABC):
         """ re-generate patterns after smth changed - volume, par, etc"""
         is_stopped = self._is_stopped
         self.stop()
-        self._pm.prepare_patterns(self._bar_len, self._volume, self._par)
+        self._pm.prepare_patterns(self._bar_len, self._volume, self._param)
         self._play_lst, self._name, self._energy, self._idx = self._pm.random_quiet()
         if not is_stopped:
             self.start()
 
-    def play_fill(self, idx: int) -> None:
+    def play_fill(self) -> None:
         if not self._bar_len:
             return
         self._play_lst, self._name, self._energy, self._idx = self._pm.random_loud()
         self._exclude_lst.clear()
-        tmp: int = self._bar_len - (idx % self._bar_len)  # samples to end of bar
-        if tmp < self.SMALLEST_FILL_FRACTION * self._bar_len:
-            tmp = tmp + self._bar_len // 2
         # return to normal drum
-        Timer(tmp / AudioInfo().SD_RATE, self.randomize).start()
+        Timer(self._bar_len / AUDIO_INFO.SD_RATE, self.randomize).start()
 
     def _modify(self) -> None:
         """ Randomly modify drum by excluding some sounds """

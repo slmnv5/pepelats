@@ -1,70 +1,24 @@
-import os
 from abc import ABC, abstractmethod
-from configparser import ConfigParser
 from multiprocessing import Queue
 from time import sleep
 
-from basic.midiinfo import MidiInfo
-from utils.util_config import load_ini_section, convert_param
-from utils.util_log import MY_LOG, ConfigError
+# noinspection PyUnresolvedReferences
+from menuhost.menuloader import MenuLoader
+from utils.util_config import convert_param
+from utils.util_log import MY_LOG
+from utils.util_menu import NOTE_LETTER
 from utils.util_name import AppName
 
 
-class _MenuLoader:
-    """ class loading menu mapping from INI files in a directory """
-
-    def __init__(self, dname: str):
-        if not os.path.isdir(dname):
-            raise ConfigError(f"Menu directory not found: {dname}. Check main.ini and local.ini files")
-        self.__section: str = AppName.play_section
-        self.__idx: int = 0  # section id
-        self.__dic = dict()  # single dict for all files
-        fname1 = f"{dname}/navigate.ini"
-        for fname in ["play.ini", "song.ini", "drum.ini", "serv.ini"]:
-            fname2 = f"{dname}/{fname}"
-            cfg = ConfigParser()
-            read_lst = cfg.read([fname1, fname2])
-            if len(read_lst) != 2:
-                raise RuntimeError(f"Not all INI menu files loaded: {fname1}, {fname2}")
-            tmp = {s: dict(cfg.items(s)) for s in cfg.sections()}
-            self.__dic |= tmp
-        MY_LOG.debug(f"Loaded menu\n: {self.__dic}")
-
-    def get_command(self, key: str) -> str:
-        key1 = f"{self.__section}.{self.__idx}"
-        if key1 not in self.__dic:
-            return ""
-        section_dic = self.__dic[key1]
-        if key not in section_dic:
-            return ""
-        return section_dic[key]
-
-    def _menu_update(self, section: str) -> None:
-        assert f"{section}.0" in self.__dic
-        self.__section = section
-        self.__idx = 0
-
-    def _section_update(self, k: int) -> None:
-        lst = [x for x in self.__dic.keys() if self.__section in x]
-        self.__idx = (self.__idx + k) % len(lst)
-
-    def __str__(self):
-        return f"{self.__section}.{self.__idx}"
-
-
-class MenuHost(_MenuLoader, ABC):
+class MenuHost(MenuLoader, ABC):
     """Translate notes to menu command and put into queue """
 
     def __init__(self, queue: Queue):
+        MenuLoader.__init__(self)
         self.__dic: dict = dict()
-        dic = load_ini_section("MENU")
-        dname = dic.get(AppName.menu_choice, "")
-        dname = f"{AppName.menu_config_dir}/{dname}"
-        _MenuLoader.__init__(self, dname)
         self.__queue: Queue = queue
         self._menu_update(AppName.play_section)
         self.__queue.put([AppName.client_redraw, self.__dic])
-        self._midi_dict = MidiInfo().MIDI_DICT
         self._alive: bool = True
 
     @abstractmethod
@@ -89,9 +43,9 @@ class MenuHost(_MenuLoader, ABC):
         self.__dic[AppName.content] = self.get_command(AppName.content)
 
     def _send_command(self, note: int, velo: int) -> None:
-        if note not in self._midi_dict:
+        if note not in NOTE_LETTER:
             MY_LOG.error(f"MIDI note: {note} is not expected. Check main.ini file")
-        menu_key: str = f"{self._midi_dict[note]}-{velo}"
+        menu_key: str = f"{NOTE_LETTER[note]}-{velo}"
         menu_command: str = self.get_command(menu_key)
         if not menu_command:
             return

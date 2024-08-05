@@ -3,8 +3,9 @@ from asyncio import Queue
 from rtmidi import MidiIn
 from rtmidi.midiconstants import CONTROL_CHANGE, NOTE_OFF, NOTE_ON
 
-from basic.midiinfo import KbdMidiIn, get_in_port, MidiInfo
 from menuhost.menuhost import MenuHost
+from utils.util_menu import MIDI_MIN_VELO, MIDI_STD_VELO
+from utils.util_midi import KbdMidiIn, get_in_port
 
 
 class _MidiCcToNote:
@@ -35,8 +36,6 @@ class _MidiCcToNote:
 
 
 class MidiAdapter:
-    _MIN_VELO = MidiInfo().MIDI_MIN_VELO
-    _STD_VELO = MidiInfo().MIDI_STD_VELO
 
     def __init__(self):
         self._midi_in: MidiIn | KbdMidiIn = get_in_port()
@@ -60,10 +59,10 @@ class MidiAdapter:
 
         note, velo = msg[1], msg[2]
         if msg_type == NOTE_ON:
-            if velo < self._MIN_VELO:
+            if velo < MIDI_MIN_VELO:
                 return
             else:
-                velo = self._STD_VELO
+                velo = MIDI_STD_VELO
         self._send_note(msg_type, note, velo)
 
     def _send_note(self, msg_type: int, note: int, velo: int) -> None:

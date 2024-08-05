@@ -9,7 +9,7 @@ from utils.util_name import AppName
 
 
 def make_buffer(sz: int) -> np.ndarray:
-    return np.zeros((sz, AudioInfo().SD_CH), AudioInfo().SD_TYPE)
+    return np.zeros((sz, AUDIO_INFO.SD_CH), AUDIO_INFO.SD_TYPE)
 
 
 def correct_sound(x: np.ndarray, channels: int, data_type: str) -> np.ndarray:
@@ -19,13 +19,13 @@ def correct_sound(x: np.ndarray, channels: int, data_type: str) -> np.ndarray:
     if x.ndim == 1:
         MY_LOG.error(f"Re-shaping one dimensional array, shape: {x.shape}")
         x = x.reshape(-1, 1)
-    if x.dtype != AudioInfo().SD_TYPE:
-        MY_LOG.warning(f"Correcting array type: {x.dtype} to {AudioInfo().SD_TYPE}")
+    if x.dtype != AUDIO_INFO.SD_TYPE:
+        MY_LOG.warning(f"Correcting array type: {x.dtype} to {AUDIO_INFO.SD_TYPE}")
         factor = get_dtype_max(data_type) / get_dtype_max(x.dtype)
         x = (x * factor).astype(data_type)
 
-    if x.shape[1] != AudioInfo().SD_CH:
-        MY_LOG.warning(f"Correcting audio channels: {x.shape[1]} to {AudioInfo().SD_CH}")
+    if x.shape[1] != AUDIO_INFO.SD_CH:
+        MY_LOG.warning(f"Correcting audio channels: {x.shape[1]} to {AUDIO_INFO.SD_CH}")
         if x.shape[1] < channels:
             x = np.column_stack((x, x))
         elif x.shape[1] > channels:
@@ -92,9 +92,20 @@ class AudioInfo:
         self.MAX_LEN = dic.get(AppName.max_len_seconds, 60)
         self.MAX_LEN *= self.SD_RATE
 
+        # 5k ~ 0.1 second. May be late by this time without waiting for next bar start.
+        self.LATE_SAMPLES: int = 5000
+
         sd.check_output_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
         sd.check_input_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
 
     def vol_db(self, arr: np.ndarray) -> int:
         ratio = max(0.0001, np.max(arr, initial=0) / self.MAX_SD_TYPE)
         return round(20 * log10(ratio))
+
+    def get_zero_buffer(self, sz: int) -> np.ndarray:
+        if not (0 < sz <= AUDIO_INFO.MAX_LEN):
+            raise ValueError(f"AudioInfo: size is incorrect: {sz}")
+        return np.zeros((sz, self.SD_CH), self.SD_TYPE)
+
+
+AUDIO_INFO = AudioInfo()

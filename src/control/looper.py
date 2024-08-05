@@ -1,15 +1,12 @@
 import os
-import subprocess
 from multiprocessing import Queue
 from time import sleep
 
 from control._songctrl import SongCtrl
-from drum.bufferdrum import EuclidDrum, StyleDrum
-from drum.loopdrum import LoopDrum
-from drum.mididrum import MidiDrum
 from screen.confighandler import web_config
-from utils.util_config import LOCAL_IP, BRANCH, ram_usage_pct, cpu_usage_pct
-from utils.util_config import load_ini_section, update_ini_section
+from utils.util_config import LOCAL_IP, ram_usage_pct, cpu_usage_pct, get_selected_branch, get_branch_update, \
+    select_next_branch, load_ini_section, update_ini_section
+from utils.util_drum import drum_create
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
 
@@ -33,30 +30,9 @@ class Looper(SongCtrl):
         self._client_enqueue(['_drum_create', bar_len, drum_info])
 
     def _drum_create(self, bar_len: int, drum_info: dict) -> None:
-        drum_type: str = drum_info.get(AppName.drum_type, self._drum.get_class_name())
-
-        if drum_type == AppName.EuclidDrum:
-            self._drum = EuclidDrum()
-        elif drum_type == AppName.StyleDrum:
-            self._drum = StyleDrum()
-        elif drum_type == AppName.MidiDrum:
-            self._drum = MidiDrum()
-        elif drum_type == AppName.LoopDrum:
-            self._drum = LoopDrum(self._song.get_first())
-        else:
-            self._drum = StyleDrum()
-
-        config: str = drum_info.get(AppName.drum_config_file)
-        self._drum.set_config(config)
-        volume = drum_info.get(AppName.drum_volume)
-        if volume:
-            self._drum.set_volume(volume)
-        par = drum_info.get(AppName.drum_par)
-        if par:
-            self._drum.set_par(par)
-        if bar_len:
-            self._drum.set_bar_len(bar_len)
-
+        self._drum = drum_create(bar_len, drum_info)
+        self._drum.start()
+      
     def _update_view(self) -> None:
         self._client_enqueue([AppName.client_redraw, dict()])
 
@@ -79,38 +55,43 @@ class Looper(SongCtrl):
             dic[AppName.content] = ""
             MY_LOG.exception(ex)
 
-        part = self._song.get_item()
+        part = self._song.parts.get_item()
         dic["len"] = part.get_len()
-        dic["max_loop_len"] = part.get_max_len(True)
-        dic["idx"] = self.idx
-        dic["is_rec"] = self.get_is_rec()
+        dic["max_loop_len"] = part.get_base_len(self._drum)
+        dic["idx"] = part.get_index()
+        dic["is_rec"] = part.is_rec()
         self.__queue.put([AppName.client_redraw, dic])
 
     # other methods
 
     @staticmethod
-    def _info_show() -> str:
-        scr_type: int = load_ini_section("SCREEN", True).get(AppName.screen_type, 0)
-        br_upd = subprocess.run(["git", "log", "-1", "--format=%ch"], stdout=subprocess.PIPE).stdout.decode()
+    def _info_show_0() -> str:
+        return (f"app. ver. {get_selected_branch()}\n{get_branch_update()}\n"
+                f"use of RAM% {ram_usage_pct()} CPU% {cpu_usage_pct()}")
 
-        return (f"local IP: {LOCAL_IP}\nscreen: {scr_type} (0-lcd 1-web)\n"
-                f"app. ver. {BRANCH}\n{br_upd}"
-                f"\nRAM use % {ram_usage_pct()} CPU use % {cpu_usage_pct()}")
+    def _info_show_1(self) -> str:
+        scr_type: int = load_ini_section("SCREEN", True).get(AppName.screen_type, 0)
+        dr_type: str = self._drum.get_class_name()
+        return f"drum: {dr_type}\nscreen: {scr_type} (0-lcd 1-web)\nlocal IP: {LOCAL_IP}"
+
+    @staticmethod
+    def _branch_change() -> None:
+        select_next_branch()
 
     @staticmethod
     def _screen_type_change() -> None:
+        if not LOCAL_IP:
+            MY_LOG.error(f"Can not change screen type without WiFi connection")
+            return
         dic = load_ini_section("SCREEN", True)
         scr_type: int = dic.get(AppName.screen_type, 0)
         scr_type = (scr_type + 1) % 2
-        if scr_type and not LOCAL_IP:
-            MY_LOG.error(f"Can not set screen type={scr_type} without WiFi connection")
-            return
         dic[AppName.screen_type] = str(scr_type)
         update_ini_section("SCREEN", dic)
 
     @staticmethod
     def _looper_update() -> None:
-        os.system("git reset --hard; clear; git pull")
+        os.system("git reset --hard; git pull")
         sleep(5)
 
     def _web_config(self) -> None:
@@ -121,38 +102,36 @@ class Looper(SongCtrl):
     #  parts methods
 
     def _part_undo(self) -> None:
-        part = self._song.get_item()
-        if part.item_count() <= 1:
-            return
-
-        is_rec = self.get_is_rec()
-        self._set_is_rec(False)
-
+        part = self._song.parts.get_item()
+        is_rec = part.is_rec()
+        part.rec_off()
         if not is_rec:
             part.undo()
-        else:
-            part.delete_item()
 
     def _part_redo(self) -> None:
-        self._set_is_rec(False)
-        part = self._song.get_item()
+        part = self._song.parts.get_item()
+        part.rec_off()
         part.redo()
 
     # one part methods
 
     def _loop_iterate(self, steps: int) -> None:
-        self._song.get_item().iterate(steps)
+        self._song.parts.get_item().loops.iterate(steps)
 
     def _loop_edit(self, action: str) -> None:
-        part = self._song.get_item()
-        loop = part.get_item()
+        part = self._song.parts.get_item()
+        loop = part.loops.get_item()
         if action == "silent":
             loop.set_silent(not loop.is_silent())
         elif action == "reverse":
             loop.flip_reverse()
         elif action == "move" and part != loop:
-            deleted = part.delete_item()
+            deleted = part.loops.delete_item()
             if deleted:
-                part.add_item(deleted)
+                part.loops.add_item(deleted)
         elif action == "delete" and part != loop:
-            part.delete_item()
+            part.loops.delete_item()
+
+
+if __name__ == "__main__":
+    select_next_branch()

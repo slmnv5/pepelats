@@ -1,5 +1,4 @@
 import os
-import random
 import re
 from typing import TypeVar, Generic, Iterable, Callable, Any
 
@@ -10,8 +9,8 @@ HUGE_INT = 2 ** 32 - 1
 
 def split_to_dict(data: str, bound: str, mark1: str, mark2: str,
                   strip1: str = "", strip2: str = "") -> dict[str, str]:
-    """ split data into dictionary:
-    bound mark1 <k> mark2 <v> bound mark1 <k> mark2 <v> bound ..... """
+    """ split string with bounds and markers into dictionary:
+    bound mark1 <k1> mark2 <v1> bound mark1 <k2> mark2 <v2> bound mark1 ..... """
     result = dict()
     split_data = [x for x in data.split(bound) if mark1 in x and mark2 in x]
     for x in split_data:
@@ -48,17 +47,17 @@ def _stable_sub_list(idx: int, items: list[Any], sub_list_size: int) -> list[tup
 
 class CollectionOwner(Generic[T]):
     """Class for list of items with index.
-    It is a parent for SongPart, FileFinder
-    It always has at least one element - never empty. """
+    It is used for SongPart, Song, FileFinder
+    May be empty and throw exceptions """
 
-    def __init__(self, first: T | Iterable[T]):
+    def __init__(self, first: T | Iterable[T] = None):
         self.__items: list[T] = list()
-        if isinstance(first, Iterable):
+        if first is None:
+            pass
+        elif isinstance(first, Iterable):
             self.__items.extend(first)
         else:
             self.__items.append(first)
-        if not self.__items:
-            raise RuntimeError(f'Error: CollectionOwner init with empty collection')
         self.__idx: int = 0
 
     def get_first(self) -> T:
@@ -81,13 +80,13 @@ class CollectionOwner(Generic[T]):
         return self.__items[self.__idx]
 
     def for_each(self, act: Callable[[T], Any]) -> None:
-        for x in self.__items:
+        for x in [x for x in self.__items]:
             act(x)
 
     def item_count(self) -> int:
         return len(self.__items)
 
-    def delete_item(self) -> T | None:
+    def delete_item(self) -> T:
         if self.item_count() <= 1:
             return None
         item = self.__items.pop(self.__idx)
@@ -106,9 +105,10 @@ class CollectionOwner(Generic[T]):
                 tmp.append(f"-{k:02} {s}")
         return '\n'.join(tmp)
 
-    def iterate(self, steps: int) -> None:
+    def iterate(self, steps: int) -> T:
         self.__idx += steps
         self.__idx %= self.item_count()
+        return self.__items[self.__idx]
 
 
 class FileFinder(CollectionOwner[str]):
@@ -140,7 +140,7 @@ class FileFinder(CollectionOwner[str]):
     def get_end_with(self) -> str:
         return self.__end_with
 
-    def delete_item(self) -> T | None:
+    def delete_item(self) -> T:
         path = self.get_full_name()
         deleted = super().delete_item()
         if deleted and os.path.isfile(path):
@@ -191,26 +191,6 @@ class EuclidSlicer:
 
     def __str__(self):
         return f"{self._steps},{self._beats},{self._shift}: {self.get_ptrn_str()}"
-
-
-def song_name_generate() -> str:
-    words1 = ["brave", "slim", "wise", "smart", "good", "new", "first", "last", "long", "great", "little", "my",
-              "another",
-              "old", "right", "big", "high", "his", "small", "large", "next", "early", "young", "fast", "her",
-              "fit", "same", "able", "happy", "nice", "deep", "black", "blue", "green"]
-
-    words2 = ["year", "people", "way", "day", "man", "thing", "woman", "life", "child", "world", "school",
-              "state", "family", "student", "group", "country", "chair", "hand", "part", "place", "case",
-              "week", "company", "system", "program", "question", "work", "wife", "number", "night",
-              "point", "home", "water", "room", "mother", "area", "money", "story", "fact", "month", "lot",
-              "right", "study", "book", "eye", "job", "word", "line", "issue", "side", "kind", "head",
-              "house", "service", "friend", "father", "power", "hour", "game", "line", "end", "member", "law",
-              "car", "city", "link", "name", "president", "team", "minute", "idea", "kid", "body",
-              "case", "back", "parent", "face", "others", "level", "office", "door", "health", "person",
-              "art", "war", "history", "party", "result", "change", "morning", "reason", "smile", "girl",
-              "guy", "moment", "air", "teacher", "force", "run", "smile", "moon", "pen", "ring", "square"]
-
-    return f"{random.choice(words1)}_{random.choice(words2)}"
 
 
 if __name__ == "__main__":
