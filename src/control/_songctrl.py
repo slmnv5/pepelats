@@ -32,6 +32,7 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
             self.__play_event.wait()
             part = self._song.parts.select_idx(self.__next_idx)
             if self.__rec_start:
+                part.clear_undo()
                 part.rec_on()
             self.__rec_start = False
             self._update_view()
@@ -89,6 +90,7 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
             if loop.is_empty():
                 part.trim_buffer(part.get_index(), part.get_base_len(self._drum))
         else:
+            part.clear_undo()  # when new loop recorded old undone loops always deleted
             part.loops.add_item(LoopSimple(part.get_len()))
             part.rec_on()
 
@@ -100,6 +102,7 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
         if self._song.parts.get_idx() != self.__next_idx:
             self.__rec_start = True  # another part will start with recording
         elif not (part.is_empty() or part.is_rec()):
+            part.clear_undo()
             part.loops.add_item(LoopSimple())
             part.rec_on()
 
@@ -111,9 +114,8 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
         if isinstance(self._drum, LoopDrum) and self.__next_idx == 0:
             return  # part zero used by loop drum
         self._song.parts.select_idx(self.__next_idx).clear()
-        self.__next_idx = selected
-        part = self._song.parts.select_idx(selected)
-        part.stop_never()
+        self.__next_idx, self.__prev_idx = selected, -1
+        self._song.parts.select_idx(selected).stop_never()
 
     def _part_redo_all(self) -> None:
         part = self._song.parts.get_item()

@@ -5,8 +5,8 @@ from time import sleep
 
 from screen.menuclient import MenuClient
 from utils.util_name import AppName
+from utils.util_screen import DEFAULT_DIC
 from utils.util_screen import SCR_COLS, recalc_dic
-from utils.util_screen import get_default_dict
 
 _CLEAN_TO_END = '\x1b[0J'  # clean from cursor to end of screen
 _CURSOR_MOVE = "\x1b[1;1H"  # move cursor to line=1 and pos=1
@@ -32,7 +32,7 @@ class TextScreen(MenuClient):
 
     def __init__(self, queue: Queue):
         MenuClient.__init__(self, queue)
-        self.__dic: dict = get_default_dict()
+        self.__dic: dict = DEFAULT_DIC
         recalc_dic(self.__dic)
         Thread(target=self.__update, name="update", daemon=True).start()
 

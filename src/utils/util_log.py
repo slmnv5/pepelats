@@ -62,9 +62,9 @@ class MyLog:
         self._logger.log(logging.INFO, f"============= Start log at {datetime.now()},"
                                        f" level: {logging.getLevelName(self.level)}")
 
-    def _write_to_screen(self, msg: str) -> None:
+    def _write_to_screen(self, msg) -> None:
         if self.__queue:
-            self.__queue.put([AppName.client_log, msg])
+            self.__queue.put([AppName.client_log, str(msg)])
 
     def debug(self, msg):
         self._logger.debug(msg)

@@ -3,7 +3,7 @@ from multiprocessing import Queue
 from time import sleep
 
 from control._songctrl import SongCtrl
-from screen.confighandler import web_config
+from screen.confighandler import run_web_config_server
 from utils.util_config import LOCAL_IP, ram_usage_pct, cpu_usage_pct, get_selected_branch, get_branch_update, \
     select_next_branch, load_ini_section, update_ini_section
 from utils.util_drum import drum_create
@@ -32,7 +32,7 @@ class Looper(SongCtrl):
     def _drum_create(self, bar_len: int, drum_info: dict) -> None:
         self._drum = drum_create(bar_len, drum_info)
         self._drum.start()
-      
+
     def _update_view(self) -> None:
         self._client_enqueue([AppName.client_redraw, dict()])
 
@@ -96,7 +96,7 @@ class Looper(SongCtrl):
 
     def _web_config(self) -> None:
         self._song_stop()
-        web_config()
+        run_web_config_server()
         self._client_clear_queue()
 
     #  parts methods

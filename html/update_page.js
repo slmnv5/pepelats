@@ -12,18 +12,6 @@ function sleepFunc(ms) {
 }
 
 
-function setStyle() {
-    const body_style = document.body.style;
-    body_style['font-size'] = "35px";
-    body_style['font-weight'] = "bolder";
-    body_style['font-family'] = "monospace";
-    
-    body_style.margin = "0px";
-    body_style.color = "rgb(200, 200, 200)";
-    body_style.backgroundColor = "rgb(30, 30, 30)";
-    body_style.textAlign = "center";
-}
-
 // make html showing progress line - position in 1-st loop and position in max. length loop
 function getHeaderHtml (header, l1, l2, max_chars) {
     const BW_S = '<span style="color: black; background-color: rgb(200, 200, 200)";>'; // 1st loop position
@@ -78,14 +66,13 @@ async function fetchTest(_) {
     await sleepFunc(10_000);
     let data = {"sleep_tm":1, "header":"-", "description": "-", "content":"-","pos":0, "delta":0.1, "max_loop_pos":0, "max_loop_delta":0.05};
     let blob = new Blob([JSON.stringify(data, null, 2)], {type : 'application/json'});
-    let init = { "status" : 200 , "statusText" : "OK" };
+    let init = { "status" : 200, "statusText" : "OK" };
     let resp = new Response(blob, init);
     resp.headers.append(UPDATE_ID, "123")
     return resp;
 }
 
 window.onload = () => {
-    setStyle()
     const URL = '/update';
     let DATA = {"sleep_tm":1, "header":"-", "description": "-", "content":"-","pos":0, "delta":0.1, "max_loop_pos":0, "max_loop_delta":0.05};
     const HEADER = document.getElementById('header');

@@ -32,13 +32,8 @@ def recalc_dic(dic: dict) -> None:
         dic["max_loop_pos"], dic["max_loop_delta"] = 0, 0
 
 
-def get_default_dict() -> dict[str, str | float]:
-    tmp: dict = dict()
-    tmp[AppName.header] = ""
-    tmp[AppName.description] = ""
-    tmp[AppName.content] = ""
-    tmp["idx"] = 0
-    tmp["is_rec"] = False
-    tmp["len"] = 100_000
-    tmp["max_loop_len"] = 100_000
-    return tmp
+DEFAULT_DIC = {
+    AppName.header: "", AppName.description: "", AppName.content: "",
+    "idx": 0, "is_rec": False, "len": 100_000,
+    "max_loop_len": 100_000
+}

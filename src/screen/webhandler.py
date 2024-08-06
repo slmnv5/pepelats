@@ -1,9 +1,8 @@
-from http.server import BaseHTTPRequestHandler
 from threading import Event
 from typing import Callable
 
-from utils.util_config import get_params
-from utils.util_web import FAVICON_B, UPDATE_CODE_B, UPDATE_PAGE_B
+from screen.confighandler import ConfigHandler
+from utils.util_web import UPDATE_PATH
 
 
 class UpdateState:
@@ -14,7 +13,7 @@ class UpdateState:
         self.ready.clear()
 
 
-class WebHandler(BaseHTTPRequestHandler):
+class WebHandler(ConfigHandler):
     def __init__(self, get_state: Callable, *args, **kwargs):
         self._get_state: Callable = get_state
         self._MAX_WAIT_SEC = 10
@@ -22,23 +21,11 @@ class WebHandler(BaseHTTPRequestHandler):
         # So we have to call super().__init__ after setting attributes.
         super().__init__(*args, **kwargs)
 
-    def send_hdr(self, status: int = 200, arg_dic=None) -> None:
-        d: dict[str, str] = {'Content-type': 'text/html'}
-        if arg_dic is not None:
-            d.update(arg_dic)
-        self.send_response(status)
-        for k, v in d.items():
-            assert isinstance(k, str) and isinstance(v, str), f"must be strings: k={k}, v={v}"
-            self.send_header(k, v)
-        self.end_headers()
-
-    # noinspection PyPep8Naming
-    def do_GET(self):
-        if self.path.startswith("/update?"):
+    def _process_get(self) -> str | None:
+        if self.path.startswith(UPDATE_PATH):
             state: UpdateState = self._get_state()
             hdr_dic: dict = {'Content-type': 'application/json', 'update_id': str(state.id)}
-            request_id: int = get_params(self.path).get("update_id", 0)
-
+            request_id: int = int(self.path[len(UPDATE_PATH):])
             if request_id < state.id:  # client asking old version, send latest
                 self.send_hdr(arg_dic=hdr_dic)
                 self.wfile.write(state.bytes)
@@ -49,15 +36,13 @@ class WebHandler(BaseHTTPRequestHandler):
                 else:  # too long waiting, send nothing
                     self.send_hdr(304, arg_dic=hdr_dic)
                     self.wfile.write(b'""')
-        elif self.path == "/update_page.js":
-            self.send_hdr(arg_dic={'Content-type': 'text/javascript'})
-            self.wfile.write(UPDATE_CODE_B)
-        elif self.path == "/favicon.ico":
-            self.send_hdr(arg_dic={'Content-type': 'application/octet-stream'})
-            self.wfile.write(FAVICON_B)
         else:
-            self.send_hdr()
-            self.wfile.write(UPDATE_PAGE_B)
+            pass
+        return None
 
-    def log_message(self, format1, *args):
-        pass
+    # noinspection PyPep8Naming
+    def do_GET(self):
+        unknown_path: str = super()._process_get()
+        if unknown_path:
+            unknown_path = self._process_get()
+        assert not unknown_path

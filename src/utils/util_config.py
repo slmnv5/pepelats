@@ -36,7 +36,6 @@ def select_next_branch() -> None:
 
 
 LOCAL_PORT: int = 8000
-CONFIG_PORT: int = 8001
 
 
 def get_local_ip() -> str:
@@ -122,15 +121,6 @@ def convert_param(param: str) -> str | int | float:
         return float(tmp)
     else:
         return param
-
-
-def get_params(path: str) -> dict[str, str | int | float]:
-    if "?" not in path:
-        return dict()
-    k = path.index("?") + 1
-    lst: list[list[str]] = [x.split("=") for x in path[k:].split("&")]
-    lst: list[tuple[str, str]] = [(x[0], x[1]) for x in lst if len(x) == 2]
-    return dict([(k, convert_param(v)) for (k, v) in lst])
 
 
 if __name__ == "__main__":

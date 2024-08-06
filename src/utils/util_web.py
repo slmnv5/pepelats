@@ -3,9 +3,8 @@ import os
 from utils.util_name import AppName
 
 EDIT_PATH: str = "/edit?file="
-SHOW_PATH: str = "/show?file="
-RESET_PATH: str = "/reset"
-EXIT_PATH: str = "/exit"
+CONFIG_PATH: str = "/config"
+UPDATE_PATH: str = "/update?update_id="
 
 
 def load_file(fname: str) -> str:
@@ -14,7 +13,7 @@ def load_file(fname: str) -> str:
         return f.read()
 
 
-def _load_bin_file(fname: str) -> bytes:
+def load_bin_file(fname: str) -> bytes:
     assert os.path.isfile(fname)
     with open(fname, 'rb') as f:
         return f.read()
@@ -37,19 +36,11 @@ def _all_links(dname: str, end_with: str, prefix: str) -> str:
 
 
 _FORMAT_DICT: dict[str, str] = dict()
-_FORMAT_DICT["l_exit"] = EXIT_PATH
-_FORMAT_DICT["l_reset"] = RESET_PATH
 
-_FORMAT_DICT["l_std_cfg"] = _one_link(AppName.main_ini, SHOW_PATH)
-_FORMAT_DICT["l_custom_cfg"] = _one_link(AppName.local_ini, EDIT_PATH)
-
-_FORMAT_DICT["l_curr_log"] = _one_link('log.txt', SHOW_PATH)
-_FORMAT_DICT["l_old_log"] = _one_link('log.bak', SHOW_PATH)
+_FORMAT_DICT["l_main_config"] = _one_link(AppName.main_ini, EDIT_PATH)
+_FORMAT_DICT["l_local_config"] = _one_link(AppName.local_ini, EDIT_PATH)
 
 _FORMAT_DICT["l_drum"] = _all_links(f"{AppName.drum_config_dir}", ".ini", EDIT_PATH)
 _FORMAT_DICT["l_menu"] = _all_links(f"./{AppName.menu_config_dir}", ".ini", EDIT_PATH)
 
 CONFIG_PAGE_B: bytes = load_file("html/config_page.html").format(**_FORMAT_DICT).encode()
-UPDATE_PAGE_B: bytes = load_file("html/update_page.html").encode()
-UPDATE_CODE_B: bytes = _load_bin_file("html/update_page.js")
-FAVICON_B: bytes = _load_bin_file("favicon.ico")
