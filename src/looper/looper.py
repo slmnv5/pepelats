@@ -2,8 +2,8 @@ import os
 from multiprocessing import Queue
 from time import sleep
 
+from looper.songlooper import SongLooper
 from screen.confighandler import run_web_server
-from songlooper import SongLooper
 from utils.util_config import LOCAL_IP, ram_usage_pct, cpu_usage_pct, get_selected_branch, get_branch_update, \
     load_ini_section
 from utils.util_log import MY_LOG
