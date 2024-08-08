@@ -4,7 +4,7 @@ from drum.basedrum import BaseDrum
 from utils.util_drum import drum_create
 
 
-class LoopCtrl(ABC):
+class BaseLooper(ABC):
     """class to control one loop playback, has drum"""
 
     def __init__(self):

@@ -4,7 +4,7 @@ from threading import Thread
 from time import sleep
 
 from screen.basescreen import BaseScreen
-from screen.menuclient import MenuClient
+from pubsub.menuclient import MenuClient
 from utils.util_config import SCR_COLS
 from utils.util_name import AppName
 

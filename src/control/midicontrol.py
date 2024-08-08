@@ -3,7 +3,7 @@ from asyncio import Queue
 from rtmidi import MidiIn
 from rtmidi.midiconstants import CONTROL_CHANGE, NOTE_OFF, NOTE_ON
 
-from menuhost.menuhost import MenuHost
+from pubsub.menuhost import MenuHost
 from utils.util_menu import MIDI_MIN_VELO, MIDI_STD_VELO
 from utils.util_midi import KbdMidiIn, get_in_port
 

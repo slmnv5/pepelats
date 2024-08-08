@@ -3,8 +3,8 @@ from threading import Timer
 
 from rtmidi.midiconstants import NOTE_ON
 
-from menuhost.menuhost import MenuHost
-from menuhost.midicontrol import MidiAdapter
+from control.midicontrol import MidiAdapter
+from pubsub.menuhost import MenuHost
 from utils.util_log import MY_LOG
 
 

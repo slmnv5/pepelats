@@ -20,11 +20,11 @@ class Pub(ABC):
         self.__alive = False
 
     def pub_start(self) -> None:
-        MY_LOG.info(f"Publisher start working")
+        MY_LOG.info(f"Publisher starts")
         while self.__alive and not self.is_broken():
             sleep(5)
         self.__queue.put([AppName.full_stop])
-        MY_LOG.info(f"Publisher stop working")
+        MY_LOG.info(f"Publisher stops")
 
     def _send_msg(self, msg: list[str | float]) -> None:
         if not msg:

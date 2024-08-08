@@ -3,8 +3,8 @@ from multiprocessing import Process
 from multiprocessing import Queue
 from time import sleep
 
-from control.looper import Looper
-from menuhost.countmidicontrol import CountMidiControl
+from looper.looper import Looper
+from control.countmidicontrol import CountMidiControl
 from screen.textscreen import TextScreen
 from screen.webscreen import WebScreen
 from utils.util_config import LOCAL_IP, load_ini_section

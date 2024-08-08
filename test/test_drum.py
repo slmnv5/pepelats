@@ -2,7 +2,7 @@ from multiprocessing import Queue
 from threading import Timer, Thread
 from time import sleep
 
-from control.looper import Looper
+from looper.looper import Looper
 from song.loopsimple import LoopSimple
 from song.songpart import SongPart
 from utils.util_drum import drum_create

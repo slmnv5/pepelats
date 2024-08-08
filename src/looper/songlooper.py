@@ -2,9 +2,8 @@ from abc import ABC
 from multiprocessing import Queue
 from threading import Event, Thread
 
-from control.loopctrl import LoopCtrl
-from drum.loopdrum import LoopDrum
-from screen.menuclient import MenuClient
+from looper.baselooper import BaseLooper
+from pubsub.menuclient import MenuClient
 from song.loopsimple import LoopSimple
 from song.song import Song
 from song.songpart import SongPart
@@ -12,13 +11,13 @@ from utils.util_config import SCR_ROWS
 from utils.util_name import AppName
 
 
-class SongCtrl(MenuClient, LoopCtrl, ABC):
-    """added playback thread and Song.
-     Song is collection of song parts with related methods"""
+class SongLooper(MenuClient, BaseLooper, ABC):
+    """ Adds playback thread and Song.
+     Song is collection of song parts with related methods """
 
     def __init__(self, queue: Queue):
         MenuClient.__init__(self, queue)
-        LoopCtrl.__init__(self)
+        BaseLooper.__init__(self)
         self._song: Song = Song()
         self.__next_idx: int = 0
         self.__prev_idx: int = -1
@@ -109,7 +108,7 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
         selected: int = self._song.parts.get_idx()
         if self.__next_idx == selected:
             return  # can not clear active part
-        if isinstance(self._drum, LoopDrum) and self.__next_idx == 0:
+        if isinstance(self._drum, BaseLooper) and self.__next_idx == 0:
             return  # part zero used by loop drum
         self._song.parts.select_idx(self.__next_idx).clear()
         self.__next_idx, self.__prev_idx = selected, -1

@@ -1,8 +1,7 @@
 from abc import ABC
 from multiprocessing import Queue
 
-# noinspection PyUnresolvedReferences
-from menuhost.menuloader import MenuLoader
+from pubsub.menuloader import MenuLoader
 from pubsub.pub import Pub
 from utils.util_config import convert_param
 from utils.util_log import MY_LOG
