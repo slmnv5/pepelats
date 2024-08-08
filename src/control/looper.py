@@ -22,14 +22,11 @@ class Looper(SongCtrl):
 
     def _client_stop(self) -> None:
         self._song_stop()
-        self.__queue.put([AppName.client_stop])
+        self.__queue.put([AppName.full_stop])
         self._alive = False
 
     def _client_log(self, msg: str) -> None:
         pass
-
-    def _update_view(self) -> None:
-        self._client_enqueue([AppName.client_redraw, dict()])
 
     def _client_redraw(self, dic: dict) -> None:
         dic[AppName.header] = f"{self._drum}"

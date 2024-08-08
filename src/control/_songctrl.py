@@ -36,7 +36,7 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
                 part.loops.add_item(LoopSimple(part.get_len()))
                 part.rec_on()
             self.__rec_start = False
-            self._update_view()
+            self._add_to_queue([AppName.client_redraw, dict()])
             part.play_loop(self._drum)
 
     # song part methods

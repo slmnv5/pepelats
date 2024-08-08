@@ -48,4 +48,4 @@ class WebScreen(BaseScreen, MenuClient):
 
 if __name__ == "__main__":
     scr = WebScreen(Queue())
-    scr.client_start()
+    scr.sub_start()

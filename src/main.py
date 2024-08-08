@@ -25,7 +25,7 @@ else:
 
 def _do_looper(q_looper: Queue, q_screen: Queue) -> None:
     looper = Looper(q_looper, q_screen)
-    looper.client_start()
+    looper.sub_start()
 
 
 def _do_screen(q_screen: Queue) -> None:
@@ -33,7 +33,7 @@ def _do_screen(q_screen: Queue) -> None:
         scr = WebScreen(q_screen)
     else:
         scr = TextScreen(q_screen)
-    scr.client_start()
+    scr.sub_start()
 
 
 def go() -> None:
@@ -45,7 +45,7 @@ def go() -> None:
         p2 = Process(target=_do_looper, args=[q_lpr, q_scr], name="looper", daemon=True)
         p2.start()
 
-        midi_ctrl.host_start()
+        midi_ctrl.pub_start()
 
         for k in range(5):
             if p1.is_alive() or p2.is_alive():

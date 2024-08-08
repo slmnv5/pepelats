@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 
 from drum.basedrum import BaseDrum
 from utils.util_drum import drum_create
@@ -9,12 +9,6 @@ class LoopCtrl(ABC):
 
     def __init__(self):
         self._drum: BaseDrum = BaseDrum()
-
-    # noinspection PyMethodMayBeStatic
-
-    @abstractmethod
-    def _update_view(self) -> None:
-        pass
 
     # drum methods
 

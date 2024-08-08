@@ -1,33 +1,17 @@
 from abc import abstractmethod, ABC
 from multiprocessing import Queue
 
+from pubsub.sub import Sub
 from utils.util_log import MY_LOG
 
 
-class MenuClient(ABC):
+class MenuClient(Sub, ABC):
     def __init__(self, queue: Queue):
-        self.__queue: Queue = queue
-        self._alive: bool = True
-
-    def client_start(self):
-        while self._alive:
-            command = self.__queue.get()
-            method_name, *params = command
-            MY_LOG.debug(f"{self.__class__.__name__} got command: {method_name}")
-            # noinspection PyBroadException
-            try:
-                method = getattr(self, method_name)
-                method(*params)
-            except Exception as ex:
-                MY_LOG.exception(ex)
+        Sub.__init__(self, queue)
 
     @abstractmethod
     def _client_redraw(self, dic: dict) -> None:
         pass
-
-    @abstractmethod
-    def _client_stop(self) -> None:
-        self._alive = False
 
     @abstractmethod
     def _client_log(self, msg: str) -> None:
