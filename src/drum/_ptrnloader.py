@@ -18,7 +18,6 @@ class PtrnLoader(ABC):
 
     def __init__(self):
         self.break_marker: str = ""
-        self.ff: FileFinder | None = None
 
     @abstractmethod
     def fn_load(self, ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
@@ -34,6 +33,10 @@ class PtrnLoader(ABC):
     def fn_intensity(self, ptn_dic: dict[str, str]) -> float:
         """ Calculate pattern intensity """
         return 0.0
+
+    @abstractmethod
+    def get_file_finder(self) -> FileFinder:
+        pass
 
 
 class PtrnManager:

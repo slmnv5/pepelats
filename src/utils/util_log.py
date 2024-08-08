@@ -38,22 +38,21 @@ class MyLog:
             return
         self.__initialized = True
         self.level = logging.WARNING
-        self.__queue: Queue | None = None
+        self.__queue: Queue | None = None  # to send message to MVC view
         self._logger = logging.getLogger()
         for h in self._logger.handlers:
             self._logger.removeHandler(h)
 
         self._formatter = logging.Formatter(fmt=self.__fmt_str, datefmt="%Y-%m-%d %H:%M:%S")
-        h1 = logging.FileHandler(self.__fname, mode='a')
-        h2 = logging.StreamHandler(sys.stderr)
-        h1.setFormatter(self._formatter)
-        h2.setFormatter(self._formatter)
-        self._logger.addHandler(h1)
-        self._logger.addHandler(h2)
+        h = logging.FileHandler(self.__fname, mode='a')
+        h.setFormatter(self._formatter)
+        self._logger.addHandler(h)
+        h = logging.StreamHandler(sys.stdout)
+        self._logger.addHandler(h)
 
-        if AppName.debug in sys.argv:
+        if AppName.dash_debug in sys.argv:
             self.level = logging.DEBUG
-        elif AppName.info in sys.argv:
+        elif AppName.dash_info in sys.argv:
             self.level = logging.INFO
         else:
             self.level = logging.WARNING
@@ -67,13 +66,19 @@ class MyLog:
             self.__queue.put([AppName.client_log, str(msg)])
 
     def debug(self, msg):
-        self._logger.debug(msg)
+        if self.level <= logging.DEBUG:
+            self._logger.debug(msg)
+            self._write_to_screen(msg)
 
     def info(self, msg):
-        self._logger.info(msg)
+        if self.level <= logging.INFO:
+            self._logger.info(msg)
+            self._write_to_screen(msg)
 
     def warning(self, msg):
-        self._logger.warning(msg)
+        if self.level <= logging.WARNING:
+            self._logger.warning(msg)
+            self._write_to_screen(msg)
 
     def error(self, msg):
         self._logger.error(msg)

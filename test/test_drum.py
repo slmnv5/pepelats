@@ -41,7 +41,7 @@ def test_3():
     Thread(target=looper.client_start, name="process queue", args=[]).start()
     assert looper._drum.get_bar_len() == 0
 
-    looper.drum_create_async(100_000, {"drum_type": "MidiDrum"})
+    looper._drum_create(100_000, {"drum_type": "MidiDrum"})
     while not looper._drum.get_bar_len():
         sleep(1)  # wait for another thread to create drum
 

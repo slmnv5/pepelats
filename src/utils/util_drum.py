@@ -15,7 +15,7 @@ def drum_create(bar_len: int, drum_info: dict) -> BaseDrum:
     elif drum_type == AppName.MidiDrum:
         drum = MidiDrum()
     elif drum_type == AppName.LoopDrum:
-        drum = LoopDrum(drum_info.get(AppName.song_part))
+        drum = LoopDrum(drum_info[AppName.song_part])
     else:
         raise RuntimeError(f"Drum type is incorrect: {drum_type}")
 

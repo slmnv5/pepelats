@@ -10,8 +10,8 @@ from drum._ptrnloader import PtrnManager, PtrnLoader
 from drum._styleptrnloader import StylePtrnLoader
 from drum.basedrum import BaseDrum
 from utils.util_audio import AUDIO_INFO
+from utils.util_config import SCR_ROWS
 from utils.util_numpy import from_buff_to_data
-from utils.util_screen import SCR_ROWS
 
 
 class BufferDrum(BaseDrum, ABC):
@@ -21,7 +21,7 @@ class BufferDrum(BaseDrum, ABC):
     def __init__(self, ptrn_loader: PtrnLoader):
         BaseDrum.__init__(self)
         self._pm = PtrnManager(ptrn_loader)
-        self._ff = ptrn_loader.ff
+        self._ff = ptrn_loader.get_file_finder()
         self._play_lst: list[np.ndarray] = list()  # list to play sounds, changed by randomize
         self._exclude_lst: list[int] = list()  # drums to exclude, changed randomly
         self._name: str = ""  # pattern name
@@ -50,8 +50,11 @@ class BufferDrum(BaseDrum, ABC):
         super().set_bar_len(bar_len)
         self._regenerate()
 
-    def iterate_config(self, steps: int) -> None:
-        self._ff.iterate(steps)
+    def get_next_config(self) -> str:
+        return self._ff.get_next()
+
+    def get_prev_config(self) -> str:
+        return self._ff.get_prev()
 
     def set_volume(self, volume: float) -> None:
         super().set_volume(volume)

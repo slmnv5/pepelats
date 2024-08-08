@@ -3,10 +3,9 @@ from multiprocessing import Queue
 from time import sleep
 
 from control._songctrl import SongCtrl
-from screen.confighandler import run_web_config_server
+from screen.confighandler import run_web_server
 from utils.util_config import LOCAL_IP, ram_usage_pct, cpu_usage_pct, get_selected_branch, get_branch_update, \
-    select_next_branch, load_ini_section, update_ini_section
-from utils.util_drum import drum_create
+    load_ini_section
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
 
@@ -22,16 +21,12 @@ class Looper(SongCtrl):
         self._drum_create(0, dict())
 
     def _client_stop(self) -> None:
-        self._client_enqueue([AppName.client_stop])
-        super()._client_stop()
         self._song_stop()
+        self.__queue.put([AppName.client_stop])
+        self._alive = False
 
-    def drum_create_async(self, bar_len: int, drum_info: dict) -> None:
-        self._client_enqueue(['_drum_create', bar_len, drum_info])
-
-    def _drum_create(self, bar_len: int, drum_info: dict) -> None:
-        self._drum = drum_create(bar_len, drum_info)
-        self._drum.start()
+    def _client_log(self, msg: str) -> None:
+        pass
 
     def _update_view(self) -> None:
         self._client_enqueue([AppName.client_redraw, dict()])
@@ -75,29 +70,13 @@ class Looper(SongCtrl):
         return f"drum: {dr_type}\nscreen: {scr_type} (0-lcd 1-web)\nlocal IP: {LOCAL_IP}"
 
     @staticmethod
-    def _branch_change() -> None:
-        select_next_branch()
-
-    @staticmethod
-    def _screen_type_change() -> None:
-        if not LOCAL_IP:
-            MY_LOG.error(f"Can not change screen type without WiFi connection")
-            return
-        dic = load_ini_section("SCREEN", True)
-        scr_type: int = dic.get(AppName.screen_type, 0)
-        scr_type = (scr_type + 1) % 2
-        dic[AppName.screen_type] = str(scr_type)
-        update_ini_section("SCREEN", dic)
-
-    @staticmethod
     def _looper_update() -> None:
         os.system("git reset --hard; git pull")
         sleep(5)
 
-    def _web_config(self) -> None:
+    def _looper_config(self) -> None:
         self._song_stop()
-        run_web_config_server()
-        self._client_clear_queue()
+        run_web_server()
 
     #  parts methods
 
@@ -115,8 +94,11 @@ class Looper(SongCtrl):
 
     # one part methods
 
-    def _loop_iterate(self, steps: int) -> None:
-        self._song.parts.get_item().loops.iterate(steps)
+    def _loop_prev(self) -> None:
+        self._song.parts.get_item().loops.get_prev()
+
+    def _loop_next(self) -> None:
+        self._song.parts.get_item().loops.get_next()
 
     def _loop_edit(self, action: str) -> None:
         part = self._song.parts.get_item()
@@ -134,4 +116,4 @@ class Looper(SongCtrl):
 
 
 if __name__ == "__main__":
-    select_next_branch()
+    pass

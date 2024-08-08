@@ -9,9 +9,6 @@ class MenuClient(ABC):
         self.__queue: Queue = queue
         self._alive: bool = True
 
-    def _client_stop(self) -> None:
-        self._alive = False
-
     def client_start(self):
         while self._alive:
             command = self.__queue.get()
@@ -26,7 +23,15 @@ class MenuClient(ABC):
 
     @abstractmethod
     def _client_redraw(self, dic: dict) -> None:
-        raise RuntimeError("This method should NOT be called()")
+        pass
+
+    @abstractmethod
+    def _client_stop(self) -> None:
+        self._alive = False
+
+    @abstractmethod
+    def _client_log(self, msg: str) -> None:
+        pass
 
     def _client_enqueue(self, command: list) -> None:
         self.__queue.put(command)

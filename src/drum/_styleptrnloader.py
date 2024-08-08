@@ -17,11 +17,14 @@ class StylePtrnLoader(PtrnLoader):
         PtrnLoader.__init__(self)
         self.break_marker = load_ini_section("DRUM").get(AppName.style_break, "")
         dname = f"{AppName.drum_config_dir}/style"
-        self.ff = FileFinder(dname, True, ".ini")
-        if not self.ff.get_item():
+        self._ff = FileFinder(dname, True, ".ini")
+        if not self._ff.get_item():
             raise RuntimeError(f"No INI files in: {dname}")
         # name of accent pattern
         self.__ACCENT: str = "ac"
+
+    def get_file_finder(self) -> FileFinder:
+        return self._ff
 
     def fn_load(self, ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
         """One Drum pattern put into dictionary"""

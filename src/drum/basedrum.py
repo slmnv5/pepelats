@@ -3,6 +3,7 @@ from abc import abstractmethod
 import numpy as np
 
 from utils.util_audio import AUDIO_INFO
+from utils.util_config import load_ini_section
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
 
@@ -13,12 +14,12 @@ class BaseDrum:
         self._is_stopped: bool = True
         self._bar_len: int = 0
         self._bpm: float = 0
-        self._param: float = 0.5  # from 0 to 1,  swing, used by some drum types
-        self._volume: float = 0.5  # from 0 to 1
+        self._param: float = load_ini_section("DRUM", True).get(AppName.drum_param, 0.5)
+        self._volume: float = load_ini_section("DRUM", True).get(AppName.drum_volume, 0.5)
 
     def set_volume(self, volume: float) -> None:
         volume = min(1., volume)
-        volume = max(0.05, volume)
+        volume = max(0.001, volume)
         self._volume = volume
 
     def get_volume(self) -> float:
@@ -73,7 +74,10 @@ class BaseDrum:
     def set_config(self, config: str = None) -> None:
         pass
 
-    def iterate_config(self, steps: int) -> None:
+    def get_next_config(self) -> str:
+        pass
+
+    def get_prev_config(self) -> str:
         pass
 
     def __str__(self) -> str:

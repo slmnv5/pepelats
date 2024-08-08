@@ -1,6 +1,6 @@
 #!/bin/sh
 
-test_keyboard() {
+test_all() {
   # sudo required for keyboard
   SUDO=""
   HAS_KBD=""
@@ -22,7 +22,7 @@ chmod a+rw log.txt log.bak
 cat log.txt >> log.bak
 tail -n 1000 log.bak > log.txt
 mv log.txt log.bak
-echo "============= $(date) ==================" > log.txt
+echo "============= $(date) =========== HAS_KBD = $HAS_KBD =======" > log.txt
 
 # disable assert
 CODE_OPTIMIZE="-O"
@@ -39,10 +39,10 @@ stty -echo
 
 while true; do
   killall -9 -qw python > /dev/null
-  test_keyboard
+  test_all
   PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./src/main.py $*"
   echo "$PYTHON_CMD"
-  sleep 60
+  sleep 20
   $PYTHON_CMD
 done
 

@@ -6,10 +6,10 @@ from control.loopctrl import LoopCtrl
 from drum.loopdrum import LoopDrum
 from screen.menuclient import MenuClient
 from song.loopsimple import LoopSimple
-from song.song import Song, load_song_drum, save_song_drum
+from song.song import Song
 from song.songpart import SongPart
+from utils.util_config import SCR_ROWS
 from utils.util_name import AppName
-from utils.util_screen import SCR_ROWS
 
 
 class SongCtrl(MenuClient, LoopCtrl, ABC):
@@ -33,13 +33,11 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
             part = self._song.parts.select_idx(self.__next_idx)
             if self.__rec_start:
                 part.clear_undo()
+                part.loops.add_item(LoopSimple(part.get_len()))
                 part.rec_on()
             self.__rec_start = False
             self._update_view()
             part.play_loop(self._drum)
-            if not self._drum.get_bar_len():
-                dic = {AppName.song_part: self._song.parts.get_first()}
-                self.drum_create_async(part.get_len(), dic)
 
     # song part methods
 
@@ -131,11 +129,11 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
 
     def _song_load(self) -> None:
         self._song_stop()
-        self._song, self._drum = load_song_drum()
+        self._song, self._drum = Song.load_song_drum()
 
     def _song_save(self) -> None:
         self._song_stop()
-        save_song_drum(self._song, self._drum)
+        Song.save_song_drum(self._song, self._drum)
 
     def _song_show_name(self) -> str:
         return self._song.get_complete_name(self._drum)
@@ -143,21 +141,26 @@ class SongCtrl(MenuClient, LoopCtrl, ABC):
     def _song_show_list(self) -> str:
         return self._song.show_list()
 
-    def _song_iterate(self, steps: int) -> None:
-        self._song.iterate_song(steps)
+    def _song_next(self) -> None:
+        self._song.get_next()
+
+    def _song_prev(self) -> None:
+        self._song.get_prev()
 
     def _song_init(self) -> None:
         self._song_stop()
         self._song.clear()
         drum_info = self._drum.get_drum_info()
-        self.drum_create_async(0, drum_info)
+        self._drum_create(0, drum_info)
 
     def _drum_type_change(self, drum_type: str) -> None:
         self._song_stop()
         if drum_type != self._drum.get_class_name():
             bar_len = self._drum.get_bar_len()
-            drum_info = {AppName.drum_type: drum_type}
-            self.drum_create_async(bar_len, drum_info)
+            drum_info = dict()
+            drum_info[AppName.drum_type] = drum_type
+            drum_info[AppName.song_part] = self._song.parts.get_first()
+            self._drum_create(bar_len, drum_info)
 
     def _song_stop(self, wait: int = 0) -> None:
         self._drum.stop()

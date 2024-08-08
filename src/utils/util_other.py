@@ -50,15 +50,18 @@ class CollectionOwner(Generic[T]):
     It is used for SongPart, Song, FileFinder
     May be empty and throw exceptions """
 
-    def __init__(self, first: T | Iterable[T]):
+    def __init__(self, t: T | Iterable[T]):
         self.__items: list[T] = list()
-        if isinstance(first, Iterable):
-            self.__items.extend(first)
+        if isinstance(t, Iterable):
+            self.__items.extend(t)
         else:
-            self.__items.append(first)
-        if self.item_count() == 0:
+            self.__items.append(t)
+        if self.item_count() == 0 or None in self.__items:
             raise RuntimeError("Empty CollectionOwner class")
         self.__idx: int = 0
+
+    def is_right_type(self, x: Any):
+        return isinstance(x, self.__orig_class__.__args__[0])  # type: ignore
 
     def get_first(self) -> T:
         return self.__items[0]
@@ -67,6 +70,7 @@ class CollectionOwner(Generic[T]):
         return self.__idx
 
     def add_item(self, item: T) -> int:
+        assert self.is_right_type(item), f"{type(item)} type is not correct"
         if item not in self.__items:
             self.__items.append(item)
         self.__idx = self.__items.index(item)
@@ -105,8 +109,13 @@ class CollectionOwner(Generic[T]):
                 tmp.append(f"-{k:02} {s}")
         return '\n'.join(tmp)
 
-    def iterate(self, steps: int) -> T:
-        self.__idx += steps
+    def get_next(self) -> T:
+        self.__idx += 1
+        self.__idx %= self.item_count()
+        return self.__items[self.__idx]
+
+    def get_prev(self) -> T:
+        self.__idx += -1
         self.__idx %= self.item_count()
         return self.__items[self.__idx]
 

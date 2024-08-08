@@ -1,15 +1,17 @@
-from threading import Event
+from threading import Event, Timer
 
 import numpy as np
 import sounddevice as sd
 
 from drum.basedrum import BaseDrum
 from song.wrapbuffer import WrapBuffer
-from utils.util_audio import AUDIO_INFO
 from utils.util_other import HUGE_INT
 
 
 class LoopState:
+    # 5k ~ 0.1 second. May be late by this time without waiting for next bar start.
+    LATE_SAMPLES: int = 5000
+
     def __init__(self):
         self.rec: bool = False
         self.stop_len: int = 0
@@ -72,7 +74,10 @@ class LoopSimple(WrapBuffer):
 
         # if loop is empty will trim to correct size
         if self.is_empty():
-            self.trim_buffer(self._state.idx, self.get_base_len(drum))
+            base_len: int = self.get_base_len(drum)
+            self.trim_buffer(self._state.idx, base_len)
+            if not base_len:
+                Timer(1.0, drum.set_bar_len, [self._state.idx]).start()
 
         self._state.rec = False
 
@@ -82,7 +87,7 @@ class LoopSimple(WrapBuffer):
 
     def stop_at_bound(self, bound_value: int) -> None:
         over: int = self._state.idx % bound_value if bound_value else 0
-        if over < AUDIO_INFO.LATE_SAMPLES:
+        if over < LoopState.LATE_SAMPLES:
             self._state.stop_len = 0
             self._state.stop_event.set()
         else:

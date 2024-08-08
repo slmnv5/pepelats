@@ -2,6 +2,7 @@ import numpy as np
 
 from drum.basedrum import BaseDrum
 from song.loopsimple import LoopSimple
+from song.wrapbuffer import WrapBuffer
 from utils.util_other import CollectionOwner
 
 
@@ -19,8 +20,8 @@ class SongPart(LoopSimple):
 
     def get_base_len(self, drum: BaseDrum) -> int:
         """ max len of drum and all loops """
-        lst: list[int] = [super().get_base_len(drum)]
-        self.loops.for_each(lambda x: lst.append(LoopSimple.get_len(x)) if not x.is_empty() else None)
+        lst: list[int] = [drum.get_bar_len()]
+        self.loops.for_each(lambda x: lst.append(x.get_len()) if not x.is_empty() else None)
         return max(lst)
 
     def rec_on(self) -> None:
@@ -43,7 +44,7 @@ class SongPart(LoopSimple):
         self.loops = CollectionOwner[LoopSimple](self)
 
     def play(self, out_data: np.ndarray, idx: int) -> None:
-        self.loops.for_each(lambda x: LoopSimple.play(x, out_data, idx))
+        self.loops.for_each(lambda x: WrapBuffer.play(x, out_data, idx))
 
     def redo(self) -> bool:
         if not self.__undo:

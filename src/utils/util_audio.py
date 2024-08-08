@@ -85,15 +85,10 @@ class AudioInfo:
         sd.default.dtype = self.SD_TYPE
         sd.default.latency = ('low', 'low')
 
-        self.DRUM_VOLUME = dic.get(AppName.drum_volume, 1.0)
-
         self.MAX_SD_TYPE = get_dtype_max(self.SD_TYPE)
 
         self.MAX_LEN = dic.get(AppName.max_len_seconds, 60)
         self.MAX_LEN *= self.SD_RATE
-
-        # 5k ~ 0.1 second. May be late by this time without waiting for next bar start.
-        self.LATE_SAMPLES: int = 5000
 
         sd.check_output_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)
         sd.check_input_settings(channels=self.SD_CH, dtype=self.SD_TYPE, samplerate=self.SD_RATE)

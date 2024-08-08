@@ -21,6 +21,13 @@ class WebHandler(ConfigHandler):
         # So we have to call super().__init__ after setting attributes.
         super().__init__(*args, **kwargs)
 
+    # noinspection PyPep8Naming
+    def do_GET(self):
+        unknown_path: str = super()._process_get()
+        if unknown_path:
+            unknown_path = self._process_get()
+        assert not unknown_path
+
     def _process_get(self) -> str | None:
         if self.path.startswith(UPDATE_PATH):
             state: UpdateState = self._get_state()
@@ -40,9 +47,6 @@ class WebHandler(ConfigHandler):
             pass
         return None
 
-    # noinspection PyPep8Naming
-    def do_GET(self):
-        unknown_path: str = super()._process_get()
-        if unknown_path:
-            unknown_path = self._process_get()
-        assert not unknown_path
+
+if __name__ == "__main__":
+    pass

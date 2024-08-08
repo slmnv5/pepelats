@@ -4,15 +4,15 @@ import random
 class AppName:
     app_name: str = "pepelats"
     # command line options
-    no_progress: str = "--no_progress"
-    info: str = "--info"
-    debug: str = "--debug"
+    dash_no_progress: str = "--no_progress"  # do not update loop position
+    dash_info: str = "--info"
+    dash_debug: str = "--debug"
 
     # menu INI config files related
-    header: str = "header"
-    content: str = "content"
-    description: str = "description"
-    play_section: str = "play"
+    header: str = "header"  # header line on screen whre progress is shown
+    content: str = "content"  # method name to calculate content
+    description: str = "description"  # static description text
+    play_section: str = "play"  # INI file section to select at start
 
     # method names
     client_log: str = "_client_log"

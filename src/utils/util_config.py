@@ -1,7 +1,6 @@
 import os
 import subprocess
 from configparser import ConfigParser
-from time import sleep
 
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
@@ -22,37 +21,26 @@ def get_selected_branch() -> str:
     return lst[0] if lst else ""
 
 
-def select_next_branch() -> None:
-    lst: list[str] = _get_branch_lst()
-    lst_k: list[int] = [k for k, x in enumerate(lst) if x.startswith("* ")]
-    if not lst_k or len(lst) == 1:
-        return
-    k: int = lst_k[0]
-    k = (k + 1) % len(lst)
-    br_name: str = lst[k]
-    cmd = f"git reset --hard; git fetch --all; git switch {br_name}; git pull"
-    os.system(cmd)
-    sleep(5)
-
-
 LOCAL_PORT: int = 8000
 
 
 def get_local_ip() -> str:
     if os.name == "posix":
         s = subprocess.run(["ip", "route"], stdout=subprocess.PIPE).stdout.decode()
-        return split_to_dict(s, "metric ", "dhcp ", " ", " ", " ").get("src", "")
+        s = split_to_dict(s, "metric ", "dhcp ", " ", " ", " ").get("src", "")
     elif os.name == "nt":
         s = subprocess.run(["ipconfig"], stdout=subprocess.PIPE).stdout.decode()
-        return split_to_dict(s, "\n", "IPv4", ": ", " .", " \r\n\t").get("Address", "")
+        s = split_to_dict(s, "\n", "IPv4", ": ", " .", " \r\n\t").get("Address", "")
     else:
+        s = "Implemented only on Windows and Linux"
+    if not (7 <= len(s) <= 15 and s.replace(".", "").isdigit()):
+        MY_LOG.error(f"Faled to get LOCAL_IP: {s}")
         return ""
+    MY_LOG.info(f"LOCAL_IP: {s}")
+    return s
 
 
 LOCAL_IP: str = get_local_ip()
-
-assert len(LOCAL_IP) >= 7 and all(x.isdigit() or x == "." for x in LOCAL_IP)
-MY_LOG.info(f"Local IP is: {LOCAL_IP}")
 
 
 def ram_usage_pct() -> int:
@@ -123,7 +111,12 @@ def convert_param(param: str) -> str | int | float:
         return param
 
 
+try:
+    SCR_COLS, SCR_ROWS = os.get_terminal_size()
+except OSError:
+    SCR_COLS, SCR_ROWS = 30, 10  # if running inside python IDE
+
+MY_LOG.info(f"Text screen size: cols={SCR_COLS} rows={SCR_ROWS}")
+
 if __name__ == "__main__":
-    print(cpu_usage_pct())
-    print(ram_usage_pct())
-    print(get_selected_branch())
+    pass

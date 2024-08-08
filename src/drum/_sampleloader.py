@@ -3,15 +3,15 @@ import pickle
 
 import numpy as np
 
-from utils.util_audio import correct_sound, AUDIO_INFO
 from utils.util_alsa import read_wav_slow
+from utils.util_audio import correct_sound, AUDIO_INFO
 from utils.util_log import MY_LOG
 from utils.util_name import AppName
 
 
 class SampleLoader:
     __instance = None
-    _ACCENT_VOL = 1.2  # how much accent amplitude is bigger than non accent
+    _ACCENT = 1.2  # how much accent amplitude is bigger than non accent
 
     def __new__(cls):
         """ creates a singleton object """
@@ -26,45 +26,33 @@ class SampleLoader:
         self.__initialized = True
         # sound names and loaded sound samples
         self._sounds: dict[str, np.ndarray] = dict()
-        fname = AppName.pickled_drum_samples
-        if os.path.isfile(fname):
-            with open(fname, 'rb') as f:
-                try:
-                    self._sounds = pickle.load(f)
-                    sound = self._sounds['bd']
-                    if sound.dtype != AUDIO_INFO.SD_TYPE:
-                        raise RuntimeError(f"Pickled drum samples have wrong dtype: {sound.dtype}")
-                    if sound.shape[1] != AUDIO_INFO.SD_CH:
-                        raise RuntimeError(f"Pickled drum samples have wrong channels: {sound.shape[1]}")
-                except Exception as ex:
-                    self._sounds = dict()
-                    MY_LOG.error(ex)
+        try:
+            with open(AppName.pickled_drum_samples, 'rb') as f:
+                self._sounds = pickle.load(f)
+                sound = list(self._sounds.values())[0]
+                if sound.dtype != AUDIO_INFO.SD_TYPE:
+                    raise RuntimeError(f"Pickled drum samples have wrong dtype: {sound.dtype}")
+                if sound.shape[1] != AUDIO_INFO.SD_CH:
+                    raise RuntimeError(f"Pickled drum samples have wrong channels: {sound.shape[1]}")
 
-        if self._sounds:
             MY_LOG.info("Loaded drum samples from pickle file")
-        else:
+        except Exception as ex:
+            MY_LOG.error(ex)
             self._sounds = self._load_audio_samples(AppName.drum_samples_dir)
-            try:
-                with open(fname, 'wb') as f:
-                    pickle.dump(self._sounds, f)
-            except pickle.PicklingError as ex:
-                MY_LOG.error(ex)
-            MY_LOG.info("Loaded drum samples from WAV file")
-        
-        m_amp = AUDIO_INFO.MAX_SD_TYPE
-        m_amp2 = m_amp * m_amp / 1000
-        # maximum: dict[str, float] = {k: round(v.max() / m_amp, 2) for k, v in self._sounds.items()}
-        variance: dict[str, float] = {k: round(v.var() / m_amp2, 2) for k, v in self._sounds.items()}
-        duration: dict[str, float] = {k: round(len(v) / AUDIO_INFO.SD_RATE, 2) for k, v in self._sounds.items()}
+            pickle.dump(self._sounds, f)
+            MY_LOG.info("Loaded drum samples from WAV files")
 
-        # _adjusted has normal and accented sound, used to change volume up/down, _sounds do not change
+        m_amp = AUDIO_INFO.MAX_SD_TYPE
+        m_amp2, mln = m_amp * m_amp, 1_000_000
+        max_lst = {v.max() * self._ACCENT / m_amp for v in self._sounds.values()}
+        self._inner_vol = max(max_lst)  # (1 / self._inner_vol) max. increase without clipping
+        variance = {k: round(v.var() / m_amp2 / mln, 2) for k, v in self._sounds.items()}
+        duration = {k: round(len(v) / AUDIO_INFO.SD_RATE, 2) for k, v in self._sounds.items()}
+
+        # _adjusted stores sounds (normal, accent) after volume change, original _sounds do not change
         self._adjusted: dict[str, tuple[np.ndarray, np.ndarray]] = dict()
-        # MY_LOG.debug(f"Loaded sounds:\nvariance:{variance}")
-        # MY_LOG.debug(f"Loaded sounds:\nduration:{duration}")
-        # MY_LOG.debug(f"Loaded sounds:\nmaximum:{maximum}")
-        # _energy has energy of each drum sound = variance * duration
+        # _energy has energy of each drum sound
         self._energy = {k: variance[k] * duration[k] for k in self._sounds}
-        self.set_volume(1.0)
 
     @staticmethod
     def _load_audio_samples(dname: str) -> dict[str, np.ndarray]:
@@ -82,10 +70,10 @@ class SampleLoader:
         return result
 
     def set_volume(self, vol: float) -> None:
-        """ Set SampleLoader._adjusted volumes - normal and accented. SampleLoader._sounds stay unchanged """
-        vol1 = vol * AUDIO_INFO.DRUM_VOLUME
-        vol2 = vol1 * self._ACCENT_VOL
-        self._adjusted = {k: ((v * vol1).astype(AUDIO_INFO.SD_TYPE), (v * vol2).astype(AUDIO_INFO.SD_TYPE))
+        """ Change _adjusted. _sounds stay unchanged """
+        vol = 1 / self._inner_vol * vol  # vol = 1 on the verge of clipping
+        self._adjusted = {k: ((v * vol).astype(AUDIO_INFO.SD_TYPE),
+                              (v * vol * self._ACCENT).astype(AUDIO_INFO.SD_TYPE))
                           for k, v in self._sounds.items()}
 
     def get_sound(self, sname: str, is_accent: bool) -> np.ndarray:
@@ -96,7 +84,7 @@ class SampleLoader:
                 return self._adjusted[sname][0]
 
     def get_energy(self, sname: str, is_accent: bool) -> float:
-        factor = self._ACCENT_VOL ** 2 if is_accent else 1
+        factor = self._ACCENT ** 2 if is_accent else 1
         return self._energy[sname] * factor
 
     def get_sound_names(self) -> list[str]:

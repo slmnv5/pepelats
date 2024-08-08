@@ -3,13 +3,25 @@ import subprocess
 from configparser import ConfigParser
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from utils.util_config import LOCAL_IP, LOCAL_PORT
+from utils.util_config import LOCAL_PORT, LOCAL_IP
 from utils.util_log import MY_LOG
 from utils.util_other import split_to_dict
 from utils.util_web import EDIT_PATH, load_file, CONFIG_PATH, CONFIG_PAGE_B, load_bin_file
 
 
 class ConfigHandler(BaseHTTPRequestHandler):
+
+    # noinspection PyPep8Naming
+    def do_POST(self):
+        if self.path == "/save_file":
+            self._write_to_file()
+        elif self.path == "/run_command":
+            self._run_command()
+        else:
+            return self.path  # not known path, keep it for subclass
+
+    def do_GET(self):
+        self._process_get()
 
     def _send_any_file(self, fname: str, content_type: str, is_binary: bool = False) -> None:
         fname = "html" + fname.strip()
@@ -43,15 +55,6 @@ class ConfigHandler(BaseHTTPRequestHandler):
             self._send_any_file(self.path, "text/javascript")
         else:
             return self.path  # not my path
-
-    # noinspection PyPep8Naming
-    def do_POST(self):
-        if self.path == "/save_file":
-            self._write_to_file()
-        elif self.path == "/run_command":
-            self._run_command()
-        else:
-            return self.path  # not known path, keep it for subclass
 
     def send_hdr(self, status: int = 200, arg_dic=None) -> None:
         d: dict[str, str] = {'Content-type': 'text/html'}
@@ -124,10 +127,10 @@ class ConfigHandler(BaseHTTPRequestHandler):
             self.wfile.write(html.encode())
 
 
-def run_web_config_server():
+def run_web_server():
     # noinspection PyTypeChecker
     server = HTTPServer(("", LOCAL_PORT), ConfigHandler)
-    MY_LOG.warning(f"HTTP server starting at: {LOCAL_IP}:")
+    MY_LOG.warning(f"HTTP server starting at: {LOCAL_IP}:{LOCAL_PORT}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
@@ -135,4 +138,4 @@ def run_web_config_server():
 
 
 if __name__ == "__main__":
-    run_web_config_server()
+    pass

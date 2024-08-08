@@ -3,10 +3,10 @@ from textwrap import wrap
 from threading import Thread
 from time import sleep
 
+from screen.basescreen import BaseScreen
 from screen.menuclient import MenuClient
+from utils.util_config import SCR_COLS
 from utils.util_name import AppName
-from utils.util_screen import DEFAULT_DIC
-from utils.util_screen import SCR_COLS, recalc_dic
 
 _CLEAN_TO_END = '\x1b[0J'  # clean from cursor to end of screen
 _CURSOR_MOVE = "\x1b[1;1H"  # move cursor to line=1 and pos=1
@@ -28,12 +28,11 @@ _GRN_CLR: str = f"\x1b[1;{_GREEN}m"
 _BLU_CLR: str = f"\x1b[1;{_BLUE}m"
 
 
-class TextScreen(MenuClient):
+class TextScreen(BaseScreen, MenuClient):
 
     def __init__(self, queue: Queue):
+        BaseScreen.__init__(self)
         MenuClient.__init__(self, queue)
-        self.__dic: dict = DEFAULT_DIC
-        recalc_dic(self.__dic)
         Thread(target=self.__update, name="update", daemon=True).start()
 
     @staticmethod
@@ -53,6 +52,9 @@ class TextScreen(MenuClient):
     def _client_log(self, msg: str) -> None:
         print(f"{_CURSOR_MOVE}\n{msg}")
 
+    def _client_stop(self) -> None:
+        self._alive = False
+
     def _client_redraw(self, dic: dict) -> None:
         dic[AppName.header] = dic[AppName.header][:SCR_COLS].center(SCR_COLS)
         dic[AppName.description] = '\n'.join([x.center(SCR_COLS) for x in wrap(dic[AppName.description], SCR_COLS)])
@@ -62,23 +64,23 @@ class TextScreen(MenuClient):
         print(dic[AppName.description])
         print(dic[AppName.content], flush=True)
 
-        self.__dic = dic
-        recalc_dic(self.__dic)
+        super()._recalc_dic(dic)
 
     def __update(self):
         while self._alive:
-            sleep(self.__dic["sleep_tm"])
-            line = self.__dic[AppName.header]
-            delta = self.__dic["max_loop_delta"]
+            dic = self._get_dic()
+            sleep(dic["sleep_tm"])
+            line = dic[AppName.header]
+            delta = dic["max_loop_delta"]
             if delta > 0:
-                pos = (self.__dic["max_loop_pos"] + delta) % 1
-                self.__dic["max_loop_pos"] = pos
+                pos = (dic["max_loop_pos"] + delta) % 1
+                dic["max_loop_pos"] = pos
                 pos = round(pos * SCR_COLS)
                 line = line[:pos] + '▒' + line[pos + 1:]
 
-            delta = self.__dic["delta"]
-            pos = (self.__dic["pos"] + delta) % 1
-            self.__dic["pos"] = pos
+            delta = dic["delta"]
+            pos = (dic["pos"] + delta) % 1
+            dic["pos"] = pos
             pos = round(pos * SCR_COLS)  # shown by inverse color
             line = _REV_CLR + line[:pos] + _END_ALL + line[pos:]
             print(f"{_CURSOR_MOVE}{line}", end="", flush=True)
