@@ -5,7 +5,7 @@ from multiprocessing import Queue
 from threading import Thread
 
 from screen.basescreen import BaseScreen
-from pubsub.menuclient import MenuClient
+from menu.menuclient import MenuClient
 from screen.webhandler import WebHandler, UpdateState
 from utils.util_config import LOCAL_IP, LOCAL_PORT
 from utils.util_log import MY_LOG

@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from multiprocessing import Queue
 
-from pubsub.host import Host
-from pubsub.menuloader import MenuLoader
+from menu.host import Host
+from menu.menuloader import MenuLoader
 from utils.util_config import convert_param
 from utils.util_log import MY_LOG
 from utils.util_menu import NOTE_LETTER

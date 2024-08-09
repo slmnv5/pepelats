@@ -3,7 +3,7 @@ from multiprocessing import Queue
 from threading import Event, Thread
 
 from looper.baselooper import BaseLooper
-from pubsub.menuclient import MenuClient
+from menu.menuclient import MenuClient
 from song.loopsimple import LoopSimple
 from song.song import Song
 from song.songpart import SongPart

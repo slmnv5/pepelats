@@ -4,7 +4,7 @@ from threading import Timer
 from rtmidi.midiconstants import NOTE_ON
 
 from control.midicontrol import MidiAdapter
-from pubsub.menuhost import MenuHost
+from menu.menuhost import MenuHost
 from utils.util_log import MY_LOG
 
 

@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABC
 from multiprocessing import Queue
 
-from pubsub.client import Client
+from menu.client import Client
 
 
 class MenuClient(Client, ABC):
