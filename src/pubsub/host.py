@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from multiprocessing import Queue
 from time import sleep
 
@@ -6,7 +6,7 @@ from utils.util_log import MY_LOG
 from utils.util_name import AppName
 
 
-class Pub(ABC):
+class Host:
 
     def __init__(self, queue: Queue):
         self.__queue: Queue = queue
@@ -14,17 +14,17 @@ class Pub(ABC):
 
     @abstractmethod
     def is_broken(self) -> bool:
-        pass
+        return False
 
-    def _full_stop(self):
+    def _full_stop(self) -> None:
         self.__alive = False
 
     def pub_start(self) -> None:
-        MY_LOG.info(f"Publisher starts")
+        MY_LOG.info(f"Host starts")
         while self.__alive and not self.is_broken():
             sleep(5)
         self.__queue.put([AppName.full_stop])
-        MY_LOG.info(f"Publisher stops")
+        MY_LOG.info(f"Host stops")
 
     def _send_msg(self, msg: list[str | float]) -> None:
         if not msg:

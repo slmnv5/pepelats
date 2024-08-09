@@ -43,9 +43,6 @@ class MidiAdapter:
         self._midi_in.set_callback(self.__process_msg)
         self._cc_converter = _MidiCcToNote()
 
-    def is_broken(self) -> bool:
-        return self._midi_in.get_port_count() < self._p_count
-
     def __process_msg(self, event, _=None) -> None:
         msg, _ = event
         if msg[0] & 0xF0 == CONTROL_CHANGE:
@@ -79,4 +76,4 @@ class MidiControl(MidiAdapter, MenuHost):
         self._send_command(note, velo)
 
     def is_broken(self) -> bool:
-        return MidiAdapter.is_broken(self)
+        return self._midi_in.get_port_count() < self._p_count

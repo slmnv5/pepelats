@@ -1,23 +1,27 @@
-from abc import ABC
+from abc import abstractmethod
 from multiprocessing import Queue
 
+from pubsub.host import Host
 from pubsub.menuloader import MenuLoader
-from pubsub.pub import Pub
 from utils.util_config import convert_param
 from utils.util_log import MY_LOG
 from utils.util_menu import NOTE_LETTER
 from utils.util_name import AppName
 
 
-class MenuHost(Pub, MenuLoader, ABC):
+class MenuHost(Host, MenuLoader):
     """Translate notes to menu command and put into queue """
 
     def __init__(self, queue: Queue):
-        Pub.__init__(self, queue)
+        Host.__init__(self, queue)
         MenuLoader.__init__(self)
         self.__dic: dict = dict()
         self._menu_update(AppName.play_section)
         self._send_msg([AppName.client_redraw, self.__dic])
+
+    @abstractmethod
+    def is_broken(self) -> bool:
+        return False
 
     def _menu_update(self, fname: str) -> None:
         super()._menu_update(fname)

@@ -1,12 +1,12 @@
 from abc import abstractmethod, ABC
 from multiprocessing import Queue
 
-from pubsub.sub import Sub
+from pubsub.client import Client
 
 
-class MenuClient(Sub, ABC):
+class MenuClient(Client, ABC):
     def __init__(self, queue: Queue):
-        Sub.__init__(self, queue)
+        Client.__init__(self, queue)
 
     @abstractmethod
     def _client_redraw(self, dic: dict) -> None:

@@ -1,10 +1,9 @@
-from abc import ABC
 from multiprocessing import Queue
 
 from utils.util_log import MY_LOG
 
 
-class Sub(ABC):
+class Client:
 
     def __init__(self, queue: Queue):
         self.__queue: Queue = queue
@@ -14,7 +13,7 @@ class Sub(ABC):
         self._alive = False
 
     def sub_start(self):
-        MY_LOG.info(f"Subscriber starts")
+        MY_LOG.info(f"Client starts")
         while self._alive:
             msg: list[str | float] = self.__queue.get()
             # noinspection PyBroadException
@@ -24,7 +23,7 @@ class Sub(ABC):
                 method(*msg[1:])
             except Exception as ex:
                 MY_LOG.exception(ex)
-        MY_LOG.info(f"Subscriber stops")
+        MY_LOG.info(f"Client stops")
 
     def _add_to_queue(self, msg: list[str | float]) -> None:
         self.__queue.put(msg)
