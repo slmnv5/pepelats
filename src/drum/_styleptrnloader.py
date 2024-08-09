@@ -7,24 +7,16 @@ from utils.util_audio import make_buffer
 from utils.util_config import load_ini_section
 from utils.util_name import AppName
 from utils.util_numpy import from_data_to_buff
-from utils.util_other import FileFinder
 
 
 class StylePtrnLoader(PtrnLoader):
     """Pattern based drum"""
 
-    def __init__(self):
-        PtrnLoader.__init__(self)
+    def __init__(self, dname: str):
+        PtrnLoader.__init__(self, dname)
         self.break_marker = load_ini_section("DRUM").get(AppName.style_break, "")
-        dname = f"{AppName.drum_config_dir}/style"
-        self._ff = FileFinder(dname, True, ".ini")
-        if not self._ff.get_item():
-            raise RuntimeError(f"No INI files in: {dname}")
         # name of accent pattern
         self.__ACCENT: str = "ac"
-
-    def get_file_finder(self) -> FileFinder:
-        return self._ff
 
     def fn_load(self, ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
         """One Drum pattern put into dictionary"""
@@ -57,8 +49,7 @@ class StylePtrnLoader(PtrnLoader):
                 from_data_to_buff(buff, sound_arr, idx)
         return result
 
-    def fn_intensity(self, ptn_dic: dict[str, str]) -> float:
-        """ Calculate pattern intensity """
+    def fn_energy(self, ptn_dic: dict[str, str]) -> float:
         result: float = 0.0
         accents = ptn_dic[self.__ACCENT]
         for sname, notes in [(k, v) for (k, v) in ptn_dic.items() if k != self.__ACCENT]:

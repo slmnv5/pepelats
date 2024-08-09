@@ -36,10 +36,17 @@ class MenuHost(Pub, MenuLoader, ABC):
         command: str = self.get_command(menu_key)
         if not command:
             return
-        for cmd in [x.strip() for x in command.split(":") if x.strip()]:  # commands separated by ":"
+        for cmd in [x for x in command.split(":")]:  # commands separated by ":"
             msg = [convert_param(x) for x in cmd.split()]  # method name and arguments if any
-            self._send_msg(msg)
+            if msg[0] == AppName.menu_update:
+                self._menu_update(*msg[1:])
+            elif msg[0] == AppName.section_update:
+                self._section_update(*msg[1:])
+            else:
+                self._send_msg(msg)
 
+            if msg[0] == AppName.full_stop:
+                self._full_stop()
         # after all commands send _redraw
         self._send_msg([AppName.client_redraw, self.__dic])
 
