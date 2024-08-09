@@ -3,8 +3,8 @@ from threading import Timer
 
 from rtmidi.midiconstants import NOTE_ON
 
-from menuhost.menuhost import MenuHost
-from menuhost.midicontrol import MidiAdapter
+from control.midicontrol import MidiAdapter
+from menu.menuhost import MenuHost
 from utils.util_log import MY_LOG
 
 
@@ -55,3 +55,6 @@ class CountMidiControl(MidiAdapter, MenuHost):
         self.__on_count, self.__off_count, self.__past_note = 0, 0, -1
         MY_LOG.debug(f"Sending counted MIDI note: {note}, {new_velo}")
         self._send_command(note, new_velo)
+
+    def is_broken(self) -> bool:
+        return self._midi_in.get_port_count() < self._p_count

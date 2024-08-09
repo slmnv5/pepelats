@@ -22,7 +22,7 @@ class LoopState:
 
 class LoopSimple(WrapBuffer):
     """Loop truncates itself to be multiple of bar length. Bar length is stored in a drum.
-    Drum is part of control object.  """
+    Drum is passed as parameter to play_loop()  """
     _state: LoopState = LoopState()
 
     def __init__(self, size: int = None, buff: np.ndarray = None):

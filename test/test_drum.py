@@ -2,7 +2,7 @@ from multiprocessing import Queue
 from threading import Timer, Thread
 from time import sleep
 
-from control.looper import Looper
+from looper.looper import Looper
 from song.loopsimple import LoopSimple
 from song.songpart import SongPart
 from utils.util_drum import drum_create
@@ -38,7 +38,7 @@ def test_2():
 def test_3():
     queue1, queue2 = Queue(), Queue()
     looper = Looper(queue1, queue2)
-    Thread(target=looper.client_start, name="process queue", args=[]).start()
+    Thread(target=looper.sub_start(), name="process queue", args=[]).start()
     assert looper._drum.get_bar_len() == 0
 
     looper._drum_create(100_000, {"drum_type": "MidiDrum"})

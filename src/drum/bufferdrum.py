@@ -11,6 +11,7 @@ from drum._styleptrnloader import StylePtrnLoader
 from drum.basedrum import BaseDrum
 from utils.util_audio import AUDIO_INFO
 from utils.util_config import SCR_ROWS
+from utils.util_name import AppName
 from utils.util_numpy import from_buff_to_data
 
 
@@ -104,7 +105,7 @@ class BufferDrum(BaseDrum, ABC):
 
 class EuclidDrum(BufferDrum):
     def __init__(self):
-        BufferDrum.__init__(self, EuclidPtrnLoader())
+        BufferDrum.__init__(self, EuclidPtrnLoader(f"{AppName.drum_config_dir}/euclid"))
 
     def __str__(self) -> str:
         return f"E:{self._name}:{self._bpm:.2F}"
@@ -112,7 +113,7 @@ class EuclidDrum(BufferDrum):
 
 class StyleDrum(BufferDrum):
     def __init__(self):
-        BufferDrum.__init__(self, StylePtrnLoader())
+        BufferDrum.__init__(self, StylePtrnLoader(f"{AppName.drum_config_dir}/style"))
 
     def __str__(self) -> str:
         return f"S:{self._name}:{self._bpm:.2F}"

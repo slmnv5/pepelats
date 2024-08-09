@@ -17,7 +17,7 @@ class AppName:
     # method names
     client_log: str = "_client_log"
     client_redraw: str = "_client_redraw"
-    client_stop: str = "_client_stop"
+    full_stop: str = "_full_stop"
     menu_update: str = "_menu_update"
     section_update: str = "_section_update"
 

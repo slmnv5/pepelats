@@ -5,7 +5,7 @@ from multiprocessing import Queue
 from threading import Thread
 
 from screen.basescreen import BaseScreen
-from screen.menuclient import MenuClient
+from menu.menuclient import MenuClient
 from screen.webhandler import WebHandler, UpdateState
 from utils.util_config import LOCAL_IP, LOCAL_PORT
 from utils.util_log import MY_LOG
@@ -48,4 +48,4 @@ class WebScreen(BaseScreen, MenuClient):
 
 if __name__ == "__main__":
     scr = WebScreen(Queue())
-    scr.client_start()
+    scr.sub_start()

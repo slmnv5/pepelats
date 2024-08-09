@@ -3,7 +3,7 @@ from asyncio import Queue
 from rtmidi import MidiIn
 from rtmidi.midiconstants import CONTROL_CHANGE, NOTE_OFF, NOTE_ON
 
-from menuhost.menuhost import MenuHost
+from menu.menuhost import MenuHost
 from utils.util_menu import MIDI_MIN_VELO, MIDI_STD_VELO
 from utils.util_midi import KbdMidiIn, get_in_port
 
@@ -43,9 +43,6 @@ class MidiAdapter:
         self._midi_in.set_callback(self.__process_msg)
         self._cc_converter = _MidiCcToNote()
 
-    def is_broken(self) -> bool:
-        return self._midi_in.get_port_count() < self._p_count
-
     def __process_msg(self, event, _=None) -> None:
         msg, _ = event
         if msg[0] & 0xF0 == CONTROL_CHANGE:
@@ -79,4 +76,4 @@ class MidiControl(MidiAdapter, MenuHost):
         self._send_command(note, velo)
 
     def is_broken(self) -> bool:
-        return MidiAdapter.is_broken(self)
+        return self._midi_in.get_port_count() < self._p_count

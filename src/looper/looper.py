@@ -2,7 +2,7 @@ import os
 from multiprocessing import Queue
 from time import sleep
 
-from control._songctrl import SongCtrl
+from looper.songlooper import SongLooper
 from screen.confighandler import run_web_server
 from utils.util_config import LOCAL_IP, ram_usage_pct, cpu_usage_pct, get_selected_branch, get_branch_update, \
     load_ini_section
@@ -10,11 +10,11 @@ from utils.util_log import MY_LOG
 from utils.util_name import AppName
 
 
-class Looper(SongCtrl):
-    """Adds screen connection, Mixer, looper commands"""
+class Looper(SongLooper):
+    """Adds screen connection, more looper commands"""
 
     def __init__(self, recv_q: Queue, send_q: Queue):
-        SongCtrl.__init__(self, recv_q)
+        SongLooper.__init__(self, recv_q)
         self.__queue = send_q
         self._description: str = ""
         self._content: str = ""
@@ -22,14 +22,11 @@ class Looper(SongCtrl):
 
     def _client_stop(self) -> None:
         self._song_stop()
-        self.__queue.put([AppName.client_stop])
+        self.__queue.put([AppName.full_stop])
         self._alive = False
 
     def _client_log(self, msg: str) -> None:
         pass
-
-    def _update_view(self) -> None:
-        self._client_enqueue([AppName.client_redraw, dict()])
 
     def _client_redraw(self, dic: dict) -> None:
         dic[AppName.header] = f"{self._drum}"

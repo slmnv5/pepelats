@@ -1,5 +1,5 @@
 import os.path
-from abc import abstractmethod, ABC
+from abc import abstractmethod
 from configparser import ConfigParser
 from math import ceil
 from random import randrange
@@ -12,12 +12,17 @@ from utils.util_other import FileFinder
 
 
 # noinspection PyUnusedLocal
-class PtrnLoader(ABC):
-    """ Load drum pattern from INI patterns and create playable lists numpy arrays """
+class PtrnLoader:
+    """ Load drum pattern from INI patterns and create playable lists of numpy arrays
+    Has logic to load, convert text pattern into numpy array, calculate energy.
+    """
     sample_loader: SampleLoader = SampleLoader()
 
-    def __init__(self):
+    def __init__(self, dname: str):
         self.break_marker: str = ""
+        self._ff: FileFinder = FileFinder(dname, True, ".ini")
+        if not self._ff.get_item():
+            raise RuntimeError(f"No INI files in: {dname}")
 
     @abstractmethod
     def fn_load(self, ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
@@ -30,18 +35,20 @@ class PtrnLoader(ABC):
         return list()
 
     @abstractmethod
-    def fn_intensity(self, ptn_dic: dict[str, str]) -> float:
-        """ Calculate pattern intensity """
+    def fn_energy(self, ptn_dic: dict[str, str]) -> float:
+        """ Calculate pattern energy = K * mean squared amplitude """
         return 0.0
 
-    @abstractmethod
     def get_file_finder(self) -> FileFinder:
-        pass
+        return self._ff
 
 
 class PtrnManager:
-    """Load patterns from INI file. Logic to load, convert and calculate intensity is passed as 3 methods.
-    Loaded patterns are converted to playable patterns - ready to play sound """
+    """Load patterns from INI file.  Takes PtrnLoader with 3 methods for init().
+    Loaded text patterns are converted to playable numpy arrays.
+    Returns randomly selected patterns via random_loud(), random_quiet().
+    Loud / quiet are separated either by name or by calculated energy.
+    """
 
     # patterns sorted by energy. Low energy patterns used for rhythm, high energy for drum fills/breaks
     _BREAK_FRACTION: float = 0.2
@@ -50,9 +57,9 @@ class PtrnManager:
         self.__quiet: list[tuple[list[np.ndarray], str, float]] = list()  # normal drums
         self.__loud: list[tuple[list[np.ndarray], str, float]] = list()  # list for breaks
         self._drum_loader = drum_loader
-        # dict of patterns from INI file. It has ptn dict, name, intensity. Sorted by intensity
+        # dict of patterns from INI file. It has ptn dict, name, energy. Sorted by energy
         self.__ptn: list[tuple[dict[str, str], str, float]] = list()
-        # list of patterns converted to sounds, sorted by intensity
+        # list of patterns converted to sounds, sorted by energy
         self.__snd: list[list[np.ndarray]] = list()
         self.__idx: int = 0
 
@@ -72,10 +79,10 @@ class PtrnManager:
             assert ptn_dic, f"Empty pattern name: {ptn_name} in file: {fname}"
             l1.append(ptn_dic)
             l2.append(ptn_name)
-            l3.append(self._drum_loader.fn_intensity(ptn_dic))  # pattern energy
+            l3.append(self._drum_loader.fn_energy(ptn_dic))  # pattern energy
         if not l1:
             raise RuntimeError(f"No patterns found in file: {fname}")
-        # sort patterns by intensity
+        # sort patterns by energy
         self.__ptn = sorted(zip(l1, l2, l3), key=lambda x: x[2])
         MY_LOG.debug(f"Done loading from: {fname}\n{self.__ptn}")
 
@@ -83,10 +90,10 @@ class PtrnManager:
         self.__snd.clear()
         self._drum_loader.sample_loader.set_volume(volume)
         assert self.__ptn, "Empty patterns!"
-        # INI patterns are already sorted by intensity
+        # INI patterns are already sorted by energy
         for ptn_dic, name, energy in self.__ptn:
             self.__snd.append(self._drum_loader.fn_convert(bar_len, par, ptn_dic))
-            # MY_LOG.debug(f"Converted pattern name: {name}, intensity: {energy}")
+            # MY_LOG.debug(f"Converted pattern name: {name}, energy: {energy}")
 
         if self._drum_loader.break_marker:
             self._separate_by_name()

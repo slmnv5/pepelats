@@ -5,22 +5,15 @@ from utils.util_audio import make_buffer
 from utils.util_config import load_ini_section
 from utils.util_name import AppName
 from utils.util_numpy import from_data_to_buff
-from utils.util_other import EuclidSlicer, FileFinder
+from utils.util_other import EuclidSlicer
 
 
 class EuclidPtrnLoader(PtrnLoader):
     _BAR_STEPS: int = 16  # each bar has so many steps
 
-    def __init__(self):
-        PtrnLoader.__init__(self)
+    def __init__(self, dname: str):
+        PtrnLoader.__init__(self, dname)
         self.break_marker = load_ini_section("DRUM").get(AppName.euclid_break, "")
-        dname = f"{AppName.drum_config_dir}/euclid"
-        self._ff = FileFinder(dname, True, ".ini")
-        if not self._ff.get_item():
-            raise RuntimeError(f"No INI files in: {dname}")
-
-    def get_file_finder(self) -> FileFinder:
-        return self._ff
 
     def fn_load(self, ptn_name: str, sect_dic: dict[str, str], ptn_dic: dict[str, str]) -> None:
         """One Drum pattern put into dictionary"""
@@ -49,8 +42,7 @@ class EuclidPtrnLoader(PtrnLoader):
 
         return result
 
-    def fn_intensity(self, ptn_dic: dict[str, str]) -> float:
-        """ Calculate pattern intensity """
+    def fn_energy(self, ptn_dic: dict[str, str]) -> float:
         result: float = 0.0
         for sname, notes in ptn_dic.items():
             for s in notes:
