@@ -48,23 +48,21 @@ def _stable_sub_list(idx: int, items: list[Any], sub_list_size: int) -> list[tup
 class CollectionOwner(Generic[T]):
     """Class for list of items with index.
     It is used for SongPart, Song, FileFinder
-    May be empty and throw exceptions """
+    It is always non empty """
 
-    def __init__(self, t: T | Iterable[T]):
+    def __init__(self, t: T | Iterable[T], t_type: type = None):
         self.__items: list[T] = list()
         if isinstance(t, Iterable):
             self.__items.extend(t)
         else:
             self.__items.append(t)
-        if self.item_count() == 0 or None in self.__items:
+        if self.item_count() == 0:
             raise RuntimeError("Empty CollectionOwner class")
+        self._generic_type = t_type if t_type else type(self.__items[0])
+        if not all(isinstance(x, self._generic_type) for x in self.__items):
+            raise RuntimeError("Inconsistent types in CollectionOwner class")
+
         self.__idx: int = 0
-
-    def get_generic_type(self) -> type:
-        return self.__orig_class__.__args__[0]  # type: ignore
-
-    def is_type_ok(self, x: Any) -> bool:
-        return isinstance(x, self.get_generic_type())
 
     def get_first(self) -> T:
         return self.__items[0]
@@ -73,7 +71,7 @@ class CollectionOwner(Generic[T]):
         return self.__idx
 
     def add_item(self, item: T) -> int:
-        assert self.is_type_ok(item), f"{type(item)} type is not correct"
+        assert isinstance(item, self._generic_type), f"{type(item)} type is not correct"
         if item not in self.__items:
             self.__items.append(item)
         self.__idx = self.__items.index(item)
@@ -123,7 +121,7 @@ class CollectionOwner(Generic[T]):
         return self.__items[self.__idx]
 
 
-class FileFinder:
+class FileFinder(CollectionOwner[str]):
     def __init__(self, dname: str, is_file: bool, end_with: str):
         assert os.path.isdir(dname)
         self.__end_with: str = end_with
@@ -132,11 +130,9 @@ class FileFinder:
 
         lst: list[str] = [x for x in os.listdir(self.__dir) if self.__match(x)]
         lst.sort()
-
         if not lst:
             lst.append("")
-
-        self._co = CollectionOwner[str](lst)
+        super().__init__(lst)
 
     def __match(self, f: str) -> bool:
         match1 = self.__is_file == os.path.isfile(self.__dir + os.sep + f)
@@ -147,35 +143,17 @@ class FileFinder:
         return self.__dir
 
     def get_full_name(self) -> str:
-        return os.path.join(self.__dir, self._co.get_item())
+        return os.path.join(self.__dir, self.get_item())
 
     def get_end_with(self) -> str:
         return self.__end_with
 
     def delete_item(self) -> T:
         path = self.get_full_name()
-        deleted = self._co.delete_item()
+        deleted = super().delete_item()
         if deleted and os.path.isfile(path):
             os.remove(path)
         return deleted
-
-    def get_item(self) -> str:
-        return self._co.get_item()
-
-    def get_str(self, param) -> str:
-        return self._co.get_str(param)
-
-    def add_item(self, param) -> int:
-        return self._co.add_item(param)
-
-    def item_count(self) -> int:
-        return self._co.item_count()
-
-    def get_prev(self) -> str:
-        return self._co.get_prev()
-
-    def get_next(self) -> str:
-        return self._co.get_next()
 
 
 class EuclidSlicer:

@@ -11,7 +11,7 @@ class SongPart(LoopSimple):
 
     def __init__(self):
         LoopSimple.__init__(self)
-        self.loops = CollectionOwner[LoopSimple](self)
+        self.loops = CollectionOwner[LoopSimple](self, LoopSimple)
         self.__undo: list[LoopSimple] = list()
 
     def _record(self, in_data: np.ndarray, idx: int) -> None:
