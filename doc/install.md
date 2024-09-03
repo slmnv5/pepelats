@@ -3,7 +3,7 @@
 *1) Install latest Raspberry Pi OS Lite (bookworm as of today).
 
 *2) Install dependencies and LCD screen driver running script  
-[install_dependencies.sh](etc/scripts/install_dependencies.sh)
+[install_dependencies.sh](./../config/etc/scripts/install_lcd.sh)
 
 *3) Clone this repository:
 

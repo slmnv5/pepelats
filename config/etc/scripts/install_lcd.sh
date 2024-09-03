@@ -2,14 +2,6 @@
 
 cd ~ || exit
 
-# non debian python packages
-sudo apt -y install python3-pip
-pip install sounddevice keyboard  --break-system-packages
-# debian python packages
-sudo apt -y install python3-rtmidi python3-alsaaudio python3-numpy
-sudo apt -y install libportaudio2
-
-sudo apt -y install git
 # clone this repository
 git clone https://github.com/slmnv5/pepelats.git
 
