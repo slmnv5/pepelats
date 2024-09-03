@@ -1,0 +1,28 @@
+<!--suppress HtmlUnknownAttribute -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+
+<form action="save_file" method="post" enctype='multipart/form-data'>
+    <p>
+        File name:
+        <input type="text" name="file_name" value="{file_name}"
+               readonly/>
+        <input type="submit" value="Save file"/>
+    </p>
+
+    <div style="display: block; width:100%">
+        <label>File content:</label>
+        <textarea autocapitalize="off" style="width:100%; height: 30em;"
+                  name="file_data" spellcheck="false">
+    {file_data}
+    </textarea>
+    </div>
+</form>
+
+</body>
+</html>

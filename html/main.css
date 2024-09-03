@@ -1,0 +1,35 @@
+
+body    {   margin: 1%;
+            font-size: x-large;
+            font-weight: bolder;
+            font-family: monospace;
+            color: lightblue;
+            background-color:  black;
+            text-align: center;
+        }
+
+h1   {color: yellowgreen; font-size: 1.5rem}
+
+p    {margin-top: 1rem;}
+
+
+table {
+    width:100%;
+    border: 1%;
+    border-style: groove;
+    border-color: grey;
+}
+th, td {
+    padding: 2%;
+    border: 1%;
+    border-style: groove;
+}
+
+th {
+    font-size: 1.5rem;
+    font-weight: bolder;
+    width:50%;
+}
+
+
+input {font-size: 20px;font-weight: bold;}
