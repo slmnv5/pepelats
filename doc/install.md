@@ -2,23 +2,21 @@
 
 *1) Install latest Raspberry Pi OS Lite (bookworm as of today).
 
-*2) Install dependencies and LCD screen driver running script  
-[install_dependencies.sh](./../config/etc/scripts/install_lcd.sh)
+*2) Clone this repository and install LCD screen driver running script:  
+[install_lcd.sh](./../config/etc/scripts/install_lcd.sh)
 
-*3) Clone this repository:
-
-```
-cd ~/; git clone https://github.com/slmnv5/pepelats
-```
-
-*4) To enable auto start edit ~/.bashrc file, append this line:
+*3) To enable auto start edit ~/.bashrc file, append this line:
 
 ```
 $HOME/pepelats/looper.sh
 ```
 
-*5) Connect MIDI controller and make sure it's name (or part of name) is listed in main.ini [MIDI] section and the
-notes it sends are listed there as well.
+*4) Connect MIDI controller and make sure it's name (or part of name) is listed in local.ini [MIDI] section.
+For an example look at main.ini file. If MIDI controller is missing computer keyboard will be used.
+
+*5) To check MIDI notes (keyboard keys) the looper is using look at menu configuration
+in [config.ini](./../config/menu/6-4-menu/config.ini)  
+The MIDI notes (keyboard keys) are listed in [MIDI] section.
 
 If MIDI controller is not found and computer keyboard is connected it will be used for control. Keys are configured in
 main.ini file.
