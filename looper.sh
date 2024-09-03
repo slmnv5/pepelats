@@ -33,14 +33,6 @@ tail -n 1000 log.bak > log.txt
 mv log.txt log.bak
 echo "== $(date) ==" > log.txt
 
-# disable assert
-CODE_OPTIMIZE="-O"
-for var in "$@"; do
-  if [ "$var" = "--debug" ] || [ "$var" = "--info" ]; then
-    CODE_OPTIMIZE=""
-  fi
-done
-
 # disable under voltage error on screen, set huge font size, disable typing echo
 sudo dmesg -D
 sudo setfont Uni1-VGA32x16
@@ -58,7 +50,7 @@ while true; do
   echo "$msg"
   killall -9 -qw python > /dev/null
 
-  PYTHON_CMD="$SUDO ./src/looper $CODE_OPTIMIZE $*"
+  PYTHON_CMD="$SUDO ./src/main $*"
   echo "$PYTHON_CMD"
   $PYTHON_CMD
   sleep 5
