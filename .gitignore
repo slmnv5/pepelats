@@ -1,10 +1,5 @@
 __pycache__
 .pytest_cache
-#pyinstaller files
-dist
-build
-*.spec
-*.pyc
 
 #PyCharm
 .idea
@@ -14,7 +9,6 @@ build
 #looper
 save_song/*
 !save_song/readme.txt
-midiconverter
 log.bak
 log.txt
 local.ini
