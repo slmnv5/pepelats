@@ -2,7 +2,7 @@
 
 **MIDI drum** sends MIDI sysEx messages to external drum machine to synchronize it with the looper, change drum volume,
 program, etc. Processing of these custom MIDI messages need to be done with IOS application.   
-As example here is script file for MidiFire [midi_fire_scene.txt](etc/txt/midi_fire_scene.txt) that controls drum
+As example here is script file for MidiFire [midi_fire_scene.txt](../config/etc/txt/midi_fire_scene.txt) that controls drum
 machine on IOS.
 
 ### MIDI messages sent are:
