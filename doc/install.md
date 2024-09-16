@@ -1,8 +1,8 @@
 ## Installation
 
-*1) Install latest Raspberry Pi OS Lite (bookworm as of today).
+*1) Install latest **_Raspberry Pi OS Lite_** (bookworm as of today).
 
-*2) Install dependencies and LCD screen driver running script in:  
+*2) Install LCD screen driver running script in:  
 [install_lcd.sh](../etc/scripts/install_lcd.sh)
 
 *3) Clone this repository:
@@ -20,9 +20,8 @@ $HOME/pepelats/looper.sh
 *5) Connect MIDI controller and make sure it's name (or part of name) is listed in main.ini [MIDI] section and the
 notes it sends are listed there as well.
 
-If MIDI controller is not found and computer keyboard is connected it will be used for control. Keys are configured in
-main.ini file.
-On Windows keys are fixed: '1,2,3,4,q,w'.
+If MIDI controller is not found and computer keyboard is connected it will be used for control.   
+Keys are configured in main.ini file. Default keys are: '1,2,3,4,q,w'.
 
 ### Command line parameters
 

@@ -64,7 +64,7 @@ window.onresize = recalcWidth;
 
 async function fetchTest(_) {
     await sleepFunc(10_000);
-    let data = {"sleep_tm":1, "header":"-", "description": "-", "content":"-","base_loop_pos":0, "base_loop_delta":0.1, "max_loop_pos":0, "max_loop_delta":0.05};
+    let data = {"sleep_tm":1, "header":"-", "description": "-", "content":"-","base_pos":0, "base_delta":0.1, "max_pos":0, "max_delta":0.05};
     let blob = new Blob([JSON.stringify(data, null, 2)], {type : 'application/json'});
     let init = { "status" : 200, "statusText" : "OK" };
     let resp = new Response(blob, init);
@@ -74,7 +74,7 @@ async function fetchTest(_) {
 
 window.onload = () => {
     const URL = '/update';
-    let DATA = {"sleep_tm":1, "header":"-", "description": "-", "content":"-", "base_loop_pos":0, "base_loop_delta":0.1, "max_loop_pos":0, "max_loop_delta":0.05};
+    let DATA = {"sleep_tm":1, "header":"-", "description": "-", "content":"-", "base_pos":0, "base_delta":0.1, "max_pos":0, "max_delta":0.05};
     const HEADER = document.getElementById('header');
     const DESCRIPTION = document.getElementById('description');
     const CONTENT = document.getElementById('content');
@@ -111,13 +111,13 @@ window.onload = () => {
         while(ERR_COUNT < MAX_ERR_COUNT) {
             try {
                 await sleepFunc(DATA.sleep_tm * 1000);
-                DATA.base_loop_pos += DATA.base_loop_delta // position in the song part
-                DATA.base_loop_pos %= 1;
-                if (DATA.max_loop_delta > 0) {
-                    DATA.max_loop_pos += DATA.max_loop_delta // position in the max loop
-                    DATA.max_loop_pos %= 1;
+                DATA.base_pos += DATA.base_delta // position in the song part
+                DATA.base_pos %= 1;
+                if (DATA.max_delta > 0) {
+                    DATA.max_pos += DATA.max_delta // position in the max loop
+                    DATA.max_pos %= 1;
                 };
-                HEADER.innerHTML = getHeaderHtml(DATA.header, DATA.base_loop_pos, DATA.max_loop_pos, WIN_CHARS);                        
+                HEADER.innerHTML = getHeaderHtml(DATA.header, DATA.base_pos, DATA.max_pos, WIN_CHARS);
             } catch(err) {
                 ERR_COUNT++
                 console.error(err);

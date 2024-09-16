@@ -7,32 +7,25 @@ Directory name for layout have to start with two digits (ex. 6-4-...). These dig
 notes) used by MIDI controller and number of song parts  
 As an example there is alternative layout using fewer buttons in directory : [4-2-menu](../config/menu/4-2-menu)
 
-In every layout directory there is configuration INI file:
+In the **main.ini** configuration file there is [MIDI] section:
 
-* [config.ini](../config/menu/6-4-menu/config.ini) -- defines MIDI notes and keyboard keys
+* [main.ini](../main.ini) -- defines MIDI notes and keyboard keys used by controller
 
-There is navigation INI file, these commands work in all views.
+In the menu directory there are 5 INI files:
 
-* [navigate.ini](../config/menu/6-4-menu/navigate.ini) -- control navigation between views
-
-There are 4 view INI files, commands are active only when the view is selected.
-
-* [play.ini](../config/menu/6-4-menu/play.ini) -- playing and recording of song parts and loops
-* [song.ini](../config/menu/6-4-menu/song.ini) -- saving and loading of songs
-* [drum.ini](../config/menu/6-4-menu/drum.ini) -- drum configuration and parameters
-* [serv.ini](../config/menu/6-4-menu/serv.ini) -- restart and other service functions
+* [navigation.ini](../config/menu/6-4-menu/navigation.ini) -- control navigation between 4 views
+* [play.ini](../config/menu/6-4-menu/play.ini) -- view for playing and recording of song parts and loops
+* [song.ini](../config/menu/6-4-menu/song.ini) -- view for saving and loading of songs
+* [drum.ini](../config/menu/6-4-menu/drum.ini) -- view for drum configuration and parameters
+* [serv.ini](../config/menu/6-4-menu/serv.ini) -- view for restart and other service functions
 
 Each view may have several sections that provide different options. As an example play view has section [play.0]
 to work with song parts and [play.1] to work with loops inside one part
 
 ### Controller configuration
 
-In config.ini file there are 2 options in MIDI section:
-
-[MIDI]
-
+In main.ini file there are 2 options in MIDI section:  
 keyboard_keys -- N keys on computer keyboard, used only if MIDI controller is missing
-
 keyboard_notes -- N notes of MIDI foot controller pedal. Note velocity must be > 10
 
 ### Menu hints
