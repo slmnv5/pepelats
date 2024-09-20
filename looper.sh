@@ -50,7 +50,7 @@ while true; do
   echo "$msg"
   killall -9 -qw python > /dev/null
 
-  PYTHON_CMD="$SUDO ./main.nuitka/main.bin $*"
+  PYTHON_CMD="$SUDO ./main.dist/main.bin $*"
   echo "$PYTHON_CMD"
   $PYTHON_CMD
   sleep 5
