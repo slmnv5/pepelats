@@ -2,10 +2,10 @@
 
 MIDI controller is coupled with **menu layout** to translates notes into looper commands.
 
-Default layout is in directory: [6-4-menu](../config/menu/6-4-menu)
+Default layout is in directory: [6-4-menu](../config/menu/6-3-menu)
 Directory name for layout have to start with two digits (ex. 6-4-...). These digits define number of buttons (MIDI
 notes) used by MIDI controller and number of song parts  
-As an example there is alternative layout using fewer buttons in directory : [4-2-menu](../config/menu/4-2-menu)
+As an example there is alternative layout using fewer buttons in directory : [6-3-menu](../config/menu/6-4-menu)
 
 In the **main.ini** configuration file there is [MIDI] section:
 
@@ -13,11 +13,11 @@ In the **main.ini** configuration file there is [MIDI] section:
 
 In the menu directory there are 5 INI files:
 
-* [navigation.ini](../config/menu/6-4-menu/navigation.ini) -- control navigation between 4 views
-* [play.ini](../config/menu/6-4-menu/play.ini) -- view for playing and recording of song parts and loops
-* [song.ini](../config/menu/6-4-menu/song.ini) -- view for saving and loading of songs
-* [drum.ini](../config/menu/6-4-menu/drum.ini) -- view for drum configuration and parameters
-* [serv.ini](../config/menu/6-4-menu/serv.ini) -- view for restart and other service functions
+* [navigation.ini](../config/menu/6-3-menu/navigation.ini) -- control navigation between 4 views
+* [play.ini](../config/menu/6-3-menu/play.ini) -- view for playing and recording of song parts and loops
+* [song.ini](../config/menu/6-3-menu/song.ini) -- view for saving and loading of songs
+* [drum.ini](../config/menu/6-3-menu/drum.ini) -- view for drum configuration and parameters
+* [serv.ini](../config/menu/6-3-menu/serv.ini) -- view for restart and other service functions
 
 Each view may have several sections that provide different options. As an example play view has section [play.0]
 to work with song parts and [play.1] to work with loops inside one part

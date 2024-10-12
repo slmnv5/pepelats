@@ -60,7 +60,7 @@ window.onresize = recalcWidth;
 
 async function fetchTest(_) {
     await sleepFunc(10_000);
-    let data = {"sleep_tm":1, "header":"-", "description": "-", "content":"-","base_pos":0, "base_delta":0.1, "max_pos":0, "max_delta":0.05};
+    let data = {"sleep_tm":1, "header":"-", "description": "-", "content":"-","base_pos":0, "base_delta":0.1, "long_pos":0, "long_delta":0.05};
     let blob = new Blob([JSON.stringify(data, null, 2)], {type : 'application/json'});
     let init = { "status" : 200, "statusText" : "OK" };
     let resp = new Response(blob, init);
@@ -70,7 +70,7 @@ async function fetchTest(_) {
 
 window.onload = () => {
     const URL = '/update';
-    let DATA = {"sleep_tm":1, "header":"-", "description": "-", "content":"-", "base_pos":0, "base_delta":0.1, "max_pos":0, "max_delta":0.05};
+    let DATA = {"sleep_tm":1, "header":"-", "description": "-", "content":"-", "base_pos":0, "base_delta":0.1, "long_pos":0, "long_delta":0.05};
     const HEADER = document.getElementById('header');
     const DESCRIPTION = document.getElementById('description');
     const CONTENT = document.getElementById('content');
@@ -110,11 +110,11 @@ window.onload = () => {
                 await sleepFunc(DATA.sleep_tm * 1000);
                 DATA.base_pos += DATA.base_delta // position in the song part
                 DATA.base_pos %= 1;
-                if (DATA.max_delta > 0) {
-                    DATA.max_pos += DATA.max_delta // position in the max loop
-                    DATA.max_pos %= 1;
+                if (DATA.long_delta > 0) {
+                    DATA.long_pos += DATA.long_delta // position in the max loop
+                    DATA.long_pos %= 1;
                 };
-                [l1, l2] = [DATA.base_pos * WIN_CHARS, DATA.max_pos * WIN_CHARS];
+                [l1, l2] = [DATA.base_pos * WIN_CHARS, DATA.long_pos * WIN_CHARS];
                 header = DATA.header
                 missing_len = Math.max(WIN_CHARS - header.length, 0);
                 header = '.'.repeat(missing_len / 2) + header + '.'.repeat(missing_len / 2);

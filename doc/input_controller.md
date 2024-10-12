@@ -3,8 +3,8 @@
 ### Multi tapping
 
 There are only few buttons on foot controllers and number of looper commands is much bigger. To deal with it multi
-tapping is used.
-If delay between taps is less than 0.6 seconds they belong to one series and produce MIDI note as explained below.
+tapping is used. If delay between taps is less than 0.5 seconds they belong to one series and produce MIDI note as
+explained below.
 
 Assume button A sends note 60, velocity = 100. Multiple tapping will send one additional note 60 with changed
 velocity. Changed velocity = number of taps + 5 if the last tap was a long hold. For this example:
@@ -44,8 +44,9 @@ _command1, _command2 : are commands of the looper. Multiple commands are separat
 p1, p2, ... : optional parameters of commands. Each one may be a number or text
 
 ```
-C-100 : _part_play_record 2
-D-100 : _part_play_record 3
+A-100 : _part_select 0
+B-100 : _part_select 1
+...
 A-2 : _part_overdub
 B-2 : _part_overdub
 ```
@@ -57,12 +58,14 @@ CC 12 will be converted to Note 12 ON/OFF.
 As an example in **iRig BlueBoard MIDI foot controller** there are two expression pedal inputs. Plugging ON/OFF
 momentarily switches into these inputs will send CC messages converted into note messages.
 
-## Changing configurations
+## Changing menu configurations
 
+To change this edit **local.ini**
 There are 2 predefined configurations:
 
-- using 4 buttons [4x2](./../config/menu/4-2-menu)
-- using 6 buttons [6x4](./../config/menu/6-4-menu).  
+- 6 buttons, 3 parts [6-3](./../config/menu/6-3-menu) with dedicated record button, easy to change to 5-2
+- 6 buttons, 4 parts [6-4](./../config/menu/6-4-menu) without dedicated record button, easy to change to 4-2 and 5-3  
   (see also [menu_config.md](menu_layout))
+
 
 
