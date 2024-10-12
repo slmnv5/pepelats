@@ -13,7 +13,7 @@ function sleepFunc(ms) {
 
 
 // make html showing progress line - position in 1-st loop and position in max. length loop
-function getHeaderHtml (header, l1, l2, max_chars) {
+function getHeaderHtml (s, l1, l2) {
     const BW_S = '<span style="color: black; background-color: rgb(200, 200, 200)";>'; // 1st loop position
     const WY_S = '<span style="background-color: yellow";>';  // max. length loop position
     const END_S = '</span>'
@@ -24,10 +24,6 @@ function getHeaderHtml (header, l1, l2, max_chars) {
         return s.slice(0, pos) + WY_S + s.slice(pos, pos+1) + END_S + s.slice(pos+1);
     }
     
-    [l1, l2] = [l1 * max_chars, l2 * max_chars];
-    let missing_len = Math.max(max_chars - header.length, 0);
-    let missing_str = '.'.repeat(missing_len / 2);
-    let s = missing_str + header + missing_str;
     let s1, s2;
     [s1, s2] = [s.slice(0, l1), s.slice(l1)];
     [s1, s2] = [decorateOneChar(s1, l2), decorateOneChar(s2, l2 - l1)];
@@ -108,6 +104,7 @@ window.onload = () => {
     };
 
     async function redrawData() {
+        let l1, l2, header, missing_len;
         while(ERR_COUNT < MAX_ERR_COUNT) {
             try {
                 await sleepFunc(DATA.sleep_tm * 1000);
@@ -117,7 +114,11 @@ window.onload = () => {
                     DATA.max_pos += DATA.max_delta // position in the max loop
                     DATA.max_pos %= 1;
                 };
-                HEADER.innerHTML = getHeaderHtml(DATA.header, DATA.base_pos, DATA.max_pos, WIN_CHARS);
+                [l1, l2] = [DATA.base_pos * WIN_CHARS, DATA.max_pos * WIN_CHARS];
+                header = DATA.header
+                missing_len = Math.max(WIN_CHARS - header.length, 0);
+                header = '.'.repeat(missing_len / 2) + header + '.'.repeat(missing_len / 2);
+                HEADER.innerHTML = getHeaderHtml(header, l1, l2);
             } catch(err) {
                 ERR_COUNT++
                 console.error(err);
