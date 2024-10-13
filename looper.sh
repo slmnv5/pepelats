@@ -37,9 +37,9 @@ while true; do
   killall -9 -qw python > /dev/null
 
   PYTHON_CMD="$SUDO ./main.dist/main.bin $*"
-  echo "$PYTHON_CMD"
+  clear
   $PYTHON_CMD
-  sleep 5
+  if [ "$?" -ne "0" ]; then sleep 30; fi
 done
 
 sudo dmesg -E
