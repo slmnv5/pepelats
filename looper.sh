@@ -31,8 +31,10 @@ echo "== $(date) ==" > log.txt
 sudo dmesg -D
 sudo setfont Uni1-VGA32x16
 stty -echo
-
+count=0
 while true; do
+  count=$((count+1))
+  if [ "$count" -gt "30" ]; then ./nuitka.sh; exit; fi
   test_all
   killall -9 -qw python > /dev/null
 
