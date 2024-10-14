@@ -22,8 +22,8 @@ external slave device. Here **BPM_LIST** is 6 bytes long. Examples:
 ### MIDI out port for MIDI drum
 
 **main.ini** configuration has section "MIDI" and option "midi_out". This is MIDI port name (or part of the name)
-that is used to send MIDI drum messages. If port is not available (device is not connected) so called "FakeMidiOut" port
-is used which only logs few MIDI messages.
+that is used to send MIDI drum messages. If port is not available (device is not connected) a "fake" MIDI out port
+is used which only logs first 20 MIDI messages.
 
 
 
