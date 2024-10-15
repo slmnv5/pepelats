@@ -1,29 +1,46 @@
 ## MIDI drum
 
-**MIDI drum** sends MIDI sysEx messages to external drum machine to synchronize it with the looper, change drum volume,
-program, etc. Processing of these custom MIDI messages need to be done with IOS application.   
+**MIDI drum** sends MIDI messages to external drum machine to synchronize it with the looper, change drum volume,
+program number, etc. External drum machine must implement these messages.
+Alternatively more processing of custom MIDI messages may be done with IOS application (e.g. MidiFire) to convert them
+to usable form.   
 As example here is script file for MidiFire [midi_fire_scene.txt](../etc/txt/midi_fire_scene.txt) that controls drum
 machine on IOS.
 
-### MIDI messages sent are:
+Each set of MIDI messages along with the OUT port name saved in configuration file. There are two predefined
+configurations:
+[ValetonGP-100.ini](../config/drum/midi/ValetonGP-100.ini)
+[MidiFire.ini](../config/drum/midi/MidiFire.ini)
 
-*1) [0xF0, 0x5A, BPM_LIST, 0xF7] - sysEx message sent after 1-st loop recorded and BPM calculated. Use it to set BPM on
-external slave device. Here **BPM_LIST** is 6 bytes long. Examples:
+### MIDI messages:
 
-* bpm=0070.05, BPM_LIST=[0, 0, 7, 0, 0, 5]
-* bpm=1201.33, BPM_LIST=[1, 2, 0, 1, 3, 3]
+Six messages to control MIDI device, each may contain variables:
 
-*2) [0xF0, 0x5B, 0xF7] - sysEx message sent at start of each bar. Use it to synchronize external slave device.
-*3) [0xB0, 8, VOL] - sent when drum volume changes, VOL has value from 0 to 127.
-*4) [0xFC] - sent when drum stops. There is no start message, instead 2) must be used.
-*5) [0xF0, 0x5C, 0xF7] - sysEx sent when drum is randomized. Implement it in slave device.
-*6) [0xF0, 0x5D, 0xF7] - sysEx for drum fill or break. Implement it in slave device.
+* bpm_msg -- sent once when BMP is defined (when loading song, recording 1st loop)
+* bar_msg -- sent at start of each bar, there is no start message, **bar_msg** is used
+* stop_msg -- stop external drum
+* volume_msg -- volume (ex. CC #7 from 0 to 127)
+* prog_list -- list of program external device is using, =[0] if it is missing
+* prog_msg -- select a program from **prog_list**
+
+### MIDI messages:
+
+Six variables used in messages (all upper case names):
+
+* BPM -- beats per minute, ex. 123.56
+* BPM_LIST = [0, 1, 2, 3, 5, 6] if BPM = 0123.56
+* DUR_LIST = [2, 3, 7, 8] if bar duration = 2378 milliseconds (2.378 seconds)
+* PROG -- program number in the prog_list, value is: 0 =< PROG < length of prog_list
+* VOLUME -- volume from 0.0 to 1.0
+* COUNT -- count of bars since the latest start
 
 ### MIDI out port for MIDI drum
 
-**main.ini** configuration has section "MIDI" and option "midi_out". This is MIDI port name (or part of the name)
-that is used to send MIDI drum messages. If port is not available (device is not connected) a "fake" MIDI out port
-is used which only logs first 20 MIDI messages.
+Each drum configuration file has section "MIDI" and option "midi_out". This is MIDI port name (or part of the
+name) used to send MIDI drum messages. If port is not available (device is not connected) a "fake" MIDI out port
+is used which only logs first 20 MIDI messages  
+After MIDI drum is connected you need to reload song or set drum configuration file so that looper will connect to
+this port 
 
 
 
