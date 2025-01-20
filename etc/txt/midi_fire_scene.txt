@@ -1,0 +1,84 @@
+
+If load
+  Def specialMsg1 F0 5A
+  Def specialMsg2 F0 5B
+
+  Def barPeriod $96
+
+  Alias G0 stopped
+  Alias G1 clocks
+  Alias IB barCount
+
+  Sub stopClock
+    Ass stopped = 1
+    Ass barCount = 0
+  End
+
+  stopClock
+  send FA
+End
+
+# start stop for FunkBox
+If M0 == FA
+  Block
+End
+
+If M0 == FC
+  stopClock
+  Block
+End
+
+If M0 == C0
+  # stopClock
+  # DrumJam Randomize Loop Variations
+  send B0 $70 $127
+End
+
+# sysex for initial BPM
+if M0 == specialMsg1
+  stopClock
+  # convert from 9 byte to 6 byte equivalent
+  calc I0 = M2 * 10
+  calc I0 = I0 + M3
+  calc I1 = M4 * 10
+  calc I1 = I1 + M5
+  calc I2 = M6 * 10
+  calc I2 = I2 + M7
+  send F0 5A I0 I1 I2 F7 +F
+
+  Block
+end
+
+# sysex correct MIDI clock
+if M0 == specialMsg2
+  Mat barCount = barCount + 1
+  If barCount == 2
+    Ass stopped = 0
+    Snd FA
+  End
+  Mat IC = clocks % barPeriod
+  Log IC IC
+  Block
+End
+
+
+
+If load
+
+  Alias G0 stopped
+  Alias G1 clocks
+
+End
+
+
+If M0 == F8
+  If stopped > 0
+    Snd FC
+    Ass clocks = 0
+    Block
+  Else
+    Mat clocks = 1 + clocks
+  End
+End
+
+

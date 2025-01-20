@@ -1,0 +1,24 @@
+# Set USB Audio as Default Audio Device
+
+Disable onboard audio by editing "config.txt" and setting
+dtparam=audio=off
+
+The USB sound device most likely is loaded as "card 1", check this by using command
+aplay -l
+
+This can be made the default audio device:
+
+nano ~/.asoundrc
+
+Add the following text:
+
+pcm.!default {
+ type hw
+ card 1
+}
+
+ctl.!default {
+ type hw
+ card 1
+}
+

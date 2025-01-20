@@ -1,0 +1,23 @@
+__pycache__
+.pytest_cache
+#binary files
+main.build/
+
+#PyCharm
+.idea
+.run
+*.iml
+
+#looper
+log.bak
+log.txt
+local.ini
+pickled_drum_samples.pkl
+
+#unused
+rules.txt
+kbdmap.txt
+
+
+
+
