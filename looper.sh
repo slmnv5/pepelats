@@ -4,6 +4,10 @@
 SUDO=""
 export HAS_KBD=""
 
+change_boot() {
+  sed -i 's|looper.sh|nuitka.sh|g' ~/.bashrc
+  sudo reboot
+}
 
 test_all() {
   # sudo required for keyboard
