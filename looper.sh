@@ -1,3 +1,4 @@
+
 #!/bin/sh
 
   # sudo required for keyboard
@@ -30,16 +31,20 @@ echo "== $(date) ==" > log.txt
 # disable under voltage error on screen, set huge font size, disable typing echo
 sudo dmesg -D
 sudo setfont Uni1-VGA32x16
-stty -echo
+#stty -echo
+count=0
 while true; do
+  count=$((count+1))
+  count=$((count%10))
+  echo "run # $count"
+  if [ "$count" -eq "0" ]; then ~/musiloop/nuitka.sh; fi
   test_all
   killall -9 -qw python > /dev/null
   PYTHON_CMD="$SUDO ./main.dist/main.bin $*"
-  clear
   $PYTHON_CMD
-  if [ "$?" -ne "0" ]; then sleep 30; fi
+  if [ "$?" -ne "0" ]; then sleep 10; fi
 done
 
 sudo dmesg -E
 sudo setfont Uni1-VGA16
-stty echo
+#stty echo
