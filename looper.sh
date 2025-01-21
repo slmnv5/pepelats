@@ -4,6 +4,7 @@
 SUDO=""
 export HAS_KBD=""
 
+
 test_all() {
   # sudo required for keyboard
   SUDO=""
@@ -20,9 +21,8 @@ if pidof -o %PPID -x "looper.sh">/dev/null; then
 fi
 
 mkdir ~/save_song
-sudo chmod a+rw ./save_song/*
 touch local.ini log.txt
-chmod a+rw log.txt log.bak
+chmod a+rw log.txt log.bak ./save_song/*
 cat log.txt >> log.bak
 tail -n 1000 log.bak > log.txt
 mv log.txt log.bak
@@ -32,12 +32,8 @@ echo "== $(date) ==" > log.txt
 sudo dmesg -D
 sudo setfont Uni1-VGA32x16
 #stty -echo
-count=0
-while true; do
-  count=$((count+1))
-  count=$((count%10))
+for count in 1 2 3 4 5 6 7 8 9; do
   echo "run # $count"
-  if [ "$count" -eq "0" ]; then ~/musiloop/nuitka.sh; fi
   test_all
   killall -9 -qw python > /dev/null
   PYTHON_CMD="$SUDO ./main.dist/main.bin $*"
@@ -45,6 +41,8 @@ while true; do
   if [ "$?" -ne "0" ]; then sleep 10; fi
 done
 
-sudo dmesg -E
+#sudo dmesg -E
 sudo setfont Uni1-VGA16
 #stty echo
+change_boot
+

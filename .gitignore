@@ -2,6 +2,8 @@ __pycache__
 .pytest_cache
 #binary files
 main.build/
+nohup.out
+nuitka.sh
 
 #PyCharm
 .idea
