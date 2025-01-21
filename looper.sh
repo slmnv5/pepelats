@@ -1,9 +1,8 @@
-
 #!/bin/sh
 
-  # sudo required for keyboard
-  SUDO=""
-  export HAS_KBD=""
+# sudo required for keyboard
+SUDO=""
+export HAS_KBD=""
 
 test_all() {
   # sudo required for keyboard
@@ -20,6 +19,7 @@ if pidof -o %PPID -x "looper.sh">/dev/null; then
     exit 1
 fi
 
+mkdir ~/save_song
 sudo chmod a+rw ./save_song/*
 touch local.ini log.txt
 chmod a+rw log.txt log.bak
