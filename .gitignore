@@ -3,7 +3,6 @@ __pycache__
 #binary files
 main.build/
 nohup.out
-nuitka.sh
 
 #PyCharm
 .idea
