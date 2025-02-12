@@ -41,6 +41,7 @@ if [ ! -f "$EXE" ]; then exit 1; fi
 rsync  -avh --delete ./doc/ "$D2/doc/"
 rsync  -avh --delete ./config/ "$D2/config/"
 rsync  -avh --delete ./html/ "$D2/html/"
+rsync  -avh --delete ./lib/ "$D2/lib/"
 cp  -pv ./*.ini "$D2/"
 
 
