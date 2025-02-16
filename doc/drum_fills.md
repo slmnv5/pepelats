@@ -1,10 +1,8 @@
 ### Drum fills
 
-There are two drum intensity levels for Pattern and Euclidean drums. At the start all patterns are sorted by
-intensity (or energy) of drum accompaniment. Pattern energy depends on number of drum hits, specific sounds used energy
-and accents.
-
-After sorting patterns by energy they are split into 2 groups - quiet and loud. Loud patterns used to play drum fills.
+There are two drum intensity levels for Style and Euclidean drums - normal and break.
+Patterns are split into 2 groups based on name -- if pattern name contans string "brk" it is a break pattern and used
+only to play drum breaks.
 
 ### Drum variations
 

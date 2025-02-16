@@ -26,7 +26,7 @@ fi
 
 mkdir ~/save_song
 touch local.ini log.txt
-chmod a+rw log.txt log.bak ./save_song/*
+chmod a+rw log.txt log.bak ~/save_song/*
 cat log.txt >> log.bak
 tail -n 1000 log.bak > log.txt
 mv log.txt log.bak
