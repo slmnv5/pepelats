@@ -38,5 +38,4 @@ done
 #sudo dmesg -E
 sudo setfont Uni1-VGA16
 #stty echo
-change_boot
 
