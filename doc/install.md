@@ -2,7 +2,7 @@
 
 *1) Install latest **_Raspberry Pi OS Lite_** (bookworm as of today).
 
-*2) Install LCD screen driver running script in:  
+*2) Optional. Install LCD screen driver running script in:  
 [install_lcd.sh](../etc/scripts/install_lcd.sh)
 
 *3) Clone this repository:
@@ -29,6 +29,12 @@ Below parameters are used for troubleshooting
 
 - --info -- verbose logging
 - --debug -- more verbose logging
+- --kbd -- use keyboard instead of MIDI controller
 
+## Important files
 log.txt -- is the log file for the latest session.
-log.bak -- keeps about 1000 lines from the past.
+log.bak -- keeps about 1000 lines from the past sessions.
+main.ini -- default configuration of the looper
+local.ini -- user's customized configuration of looper
+config -- directory where configurations for drums, and menus are stored
+~/save_song -- director where song files are saved
