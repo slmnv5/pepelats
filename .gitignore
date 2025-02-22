@@ -13,11 +13,7 @@ nohup.out
 log.bak
 log.txt
 local.ini
-pickled_drum_samples.pkl
 
-#unused
-rules.txt
-kbdmap.txt
 
 
 
