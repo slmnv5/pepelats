@@ -1,6 +1,11 @@
-# Pepelats - Audio looper with drums on Raspberry Pi
+# Pepelats - Audio looper and drum machine on Raspberry Pi
 
 ## Features
+
+Binary distribution, installation, configuration are simplified compared to previous Python disrtribution.  
+Display loops on Raspbery Pi tiny LCD screen, attached monitor or in the web browser on any device (e.g. iPad)  
+Memory use reduced a lot copared to previous python version, no use of numpy library.
+Non-registered version limits play time to 10 minutes and disable saving songs
 
 ### Looper
 
@@ -16,20 +21,20 @@
 
 - Display looper state in attached terminal or via web server
 - Control of looper via MIDI or computer keyboard emulating MIDI
-- Configurable menu files. Pre-made configurations are 6x4 and 4x2. (default is 6 buttons x 4 parts)
+- User configurable menu files. Default pre-made configuration is 6x4 -- 6 buttons x 4 parts
 - Scrollable lists to select options using MIDI control
 
 ### Drum machine
 
 - Drum machine with four drum types: MIDI, Style, Euclidean and Loop
+- Drums patterns and midi commands are plain text files easy to edit
 - Drums have volume control, random variations and can play breaks/fills
 - MIDI drum may sync and control external MIDI device via SysEx messages, good for IOS drums.
 - Pattern based Style and Euclidean drums have adjustable swing parameter
-- Loop drum uses recorded audio loop, good for beat boxing
+- Loop drum uses one the first loop for drums, good for beatboxing
 
-### Simple install and configuration
+### Installation and configuration
 
-- Pepelats looper is an executable file, making it easy to install.
-- There is web server and page to edit configurations in a browser
+- The looper is installed by cloning from web repository, and running install command
 
 ### [Read more ... ](./doc/contents.md)
