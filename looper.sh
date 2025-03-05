@@ -28,8 +28,9 @@ done
 sudo dmesg -D
 sudo setfont Uni1-VGA32x16
 #stty -echo
-for count in 1 2 3 4 5 6 7 8 9; do
-  echo "run # $count"
+while true; do
+  cls
+  echo "===== new run ====="
   killall -9 -qw python > /dev/null
   PYTHON_CMD="$SUDO ./main.dist/main.bin $*"
   $PYTHON_CMD
