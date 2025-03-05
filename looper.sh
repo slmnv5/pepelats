@@ -10,6 +10,7 @@ fi
 cd "$(dirname "$0")" || exit 1
 
 mkdir ~/save_song 2>/dev/null
+rm -v ~/save_song/*.bad 2>/dev/null
 touch local.ini log.txt log.bak
 chmod a+rw log.txt log.bak ~/save_song/* 2>/dev/null
 cat log.txt >> log.bak
