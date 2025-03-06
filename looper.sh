@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# sudo required for keyboard
-SUDO=""
-
  if pidof -o %PPID -x "$(basename "$0")">/dev/null; then
     echo "Process already running"
     exit 1
@@ -18,8 +15,10 @@ tail -n 1000 log.bak > log.txt
 mv log.txt log.bak
 echo "== $(date) ==" > log.txt
 
+# sudo required for keyboard
+SUDO=""
 for var in "$@"; do
-  if [ "$var" = "--kbd" ] || [ "$var" = "--keyboard" ]; then
+  if [ "$var" = "--kbd" ]; then
     SUDO="sudo -E"
   fi
 done
