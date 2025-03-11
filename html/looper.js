@@ -1,7 +1,7 @@
 "use strict";
 
-let WIN_CHARS = 10; // how many chars fit in browser window line
-const TEXT_SZ = 35; // size for all elements
+let WIN_CHARS = 30; // how many chars fit in browser window line
+// const TEXT_SZ = 35; // size for all elements
 const BW_S = '<span style="color: black; background-color: rgb(200, 200, 200)";>'; // 1-st loop position
 const WY_S = '<span style="background-color: yellow";>';  // max. length loop position
 const END_S = '</span>'
@@ -18,11 +18,13 @@ function sleepFunc(ms) {
 
 // make html showing progress line - position in 1-st loop and position in max. length loop
 function getHeaderHtml (s, base_pos, long_pos) {
+    let missing_len = Math.max(WIN_CHARS - s.length, 0);
+    s = '.'.repeat(missing_len / 2) + s + '.'.repeat(missing_len / 2);
+
     function decorateOneChar(s, pos) {
         if (pos < 0 || pos >= s.length) return s;
         return s.slice(0, pos) + WY_S + s.slice(pos, pos+1) + END_S + s.slice(pos+1);
     }
-    
     let s1, s2, l1, l2;
     [l1, l2] = [s.length * base_pos, s.length * long_pos];
     [s1, s2] = [s.slice(0, l1), s.slice(l1)];
@@ -49,7 +51,7 @@ function getContentHtml(content, is_rec) {
 
 
 function recalcWidth() {
-    WIN_CHARS = Math.floor(window.innerWidth / (TEXT_SZ * 0.63));
+    //WIN_CHARS = Math.floor(window.innerWidth / (TEXT_SZ * 0.63));
 };
 
 window.onresize = recalcWidth;
@@ -76,13 +78,11 @@ window.onload = () => {
         while(RUN) {
             try {
                 let resp = await fetch(URL);
-                if (resp.status != 200) {
-                    console.log("status: " + resp.status);
-                    continue;
+                if (resp.status == 200) {
+                    DATA = await resp.json();
+                    DESCRIPTION.textContent = DATA.description;
+                    CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec);
                 }
-                DATA = await resp.json(); // got update
-                DESCRIPTION.textContent = DATA.description;
-                CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec);
             } catch(err) {
                 console.error(err);
                 RUN = false;
@@ -92,29 +92,19 @@ window.onload = () => {
     };
 
     async function redrawData() {
-        let header="", sleep_tm=1, base_pos=1, long_pos=1, base_delta=1/16, long_delta=1/16;
         while(RUN) {
             try {
-                await sleepFunc(sleep_tm * 1000);
-                if (DATA.sleep_tm) {
-                    sleep_tm = DATA.sleep_tm;
-                    base_pos = DATA.base_pos;
-                    long_pos = DATA.long_pos;
-                    base_delta = DATA.base_delta;
-                    long_delta = DATA.long_delta;
-                    let missing_len = Math.max(WIN_CHARS - DATA.header.length, 0);
-                    header = '.'.repeat(missing_len / 2) + DATA.header + '.'.repeat(missing_len / 2);
-                }
-                base_pos += base_delta // position in the 1-st loop
-                base_pos %= 1;
-                long_pos += long_delta // position in the max. length loop
-                long_pos %= 1;
-                HEADER.innerHTML = getHeaderHtml(header, base_pos, long_pos);
+                await sleepFunc(DATA.sleep_tm * 1000);
+                DATA.base_pos += DATA.base_delta // position in the 1-st loop
+                DATA.base_pos %= 1;
+                DATA.long_pos += DATA.long_delta // position in the max. length loop
+                DATA.long_pos %= 1;
+                HEADER.innerHTML = getHeaderHtml(DATA.header, DATA.base_pos, DATA.long_pos);
             } catch(err) {
                 console.error(err);
                 RUN = false;
                 return;
-            }            
+            }
         };
     };
 };
