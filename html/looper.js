@@ -23,7 +23,7 @@ function getHeaderHtml (s, base_pos, long_pos) {
 
     function decorateOneChar(s, pos) {
         if (pos < 0 || pos >= s.length) return s;
-        return s.slice(0, pos) + WY_S + s.slice(pos, pos+1) + END_S + s.slice(pos+1);
+        return s.slice(0, pos) + "*" + s.slice(pos+1);
     }
     let s1, s2, l1, l2;
     [l1, l2] = [s.length * base_pos, s.length * long_pos];
@@ -50,23 +50,16 @@ function getContentHtml(content, is_rec) {
 };
 
 
-function recalcWidth() {
-    //WIN_CHARS = Math.floor(window.innerWidth / (TEXT_SZ * 0.63));
-};
-
-window.onresize = recalcWidth;
-
-
 
 window.onload = () => {
-    const URL = '/update';
     let DATA = {"sleep_tm":1, "header":"-", "description": "-", "content":"-", "is_rec":0,
             "base_pos":0, "long_pos":0, "base_delta":0.0625, "long_delta":0.0625};
-    let RUN = true;
+    let KEEP_RUNNING = true;
+
+    const URL = '/update';
     const HEADER = document.getElementById('header');
     const DESCRIPTION = document.getElementById('description');
     const CONTENT = document.getElementById('content');
-    recalcWidth();
 
     
     Promise.race([fetchData(), redrawData()])
@@ -75,24 +68,25 @@ window.onload = () => {
 
 
     async function fetchData() {
-        while(RUN) {
+        while(KEEP_RUNNING) {
             try {
                 let resp = await fetch(URL);
                 if (resp.status == 200) {
                     DATA = await resp.json();
                     DESCRIPTION.textContent = DATA.description;
                     CONTENT.innerHTML = getContentHtml(DATA.content, DATA.is_rec);
+                } else if (resp.status >= 300) {
+                    throw "Server error: " + resp.status;
                 }
             } catch(err) {
-                console.error(err);
-                RUN = false;
-                return;
+                DESCRIPTION.textContent = err.message;
+                KEEP_RUNNING = false;
             }
         };
     };
 
     async function redrawData() {
-        while(RUN) {
+        while(KEEP_RUNNING) {
             try {
                 await sleepFunc(DATA.sleep_tm * 1000);
                 DATA.base_pos += DATA.base_delta // position in the 1-st loop
@@ -101,9 +95,8 @@ window.onload = () => {
                 DATA.long_pos %= 1;
                 HEADER.innerHTML = getHeaderHtml(DATA.header, DATA.base_pos, DATA.long_pos);
             } catch(err) {
-                console.error(err);
-                RUN = false;
-                return;
+                DESCRIPTION.textContent = err.message;
+                KEEP_RUNNING = false;
             }
         };
     };

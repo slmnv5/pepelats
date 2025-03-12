@@ -1,6 +1,7 @@
 
 body    {   margin: 1%;
-            font-size: xx-large;
+            font-size: 3.5vw;
+            line-height: 50%;
             font-weight: bolder;
             font-family: monospace;
             background-color:  black;
