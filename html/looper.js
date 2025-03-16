@@ -18,7 +18,7 @@ function getHeaderStr (s) {
 // make html showing progress line - position in 1-st loop and position in max. length loop
 function getHeaderHtml (s, base_pos, long_pos) {
     function decorateOneChar(s, pos) {
-        return s.slice(0, pos) + "*" + s.slice(pos+1);
+        return s.slice(0, pos) + "▒" + s.slice(pos+1);
     }
     const l = s.length;
     s = decorateOneChar(s, l * long_pos);
