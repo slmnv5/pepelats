@@ -2,9 +2,10 @@
 
 ## New Features
 
-Binary distribution. Installation and configuration is more simple than befre.  
-Display loops on attached monitor or in a web browser on iPad, SmartPhone, etc.  
-Memory use reduced, no use of numpy and Python HTTP server.
+Binary distribution, installation, configuration is simple now.      
+Display loops on attached monitor or in a web browser (iPad, SmartPhone, ...)  
+Memory use reduced, speed increased after big Python libraries (numpy, ...) replaced by C code.
+Well tesetd on Pi-3B and Pi-Zero2W.
 Non-registered version limits play time to 10 minutes and disable saving songs.
 
 ### Looper
@@ -32,7 +33,7 @@ Non-registered version limits play time to 10 minutes and disable saving songs.
 - Drums have volume control, random variations and can play breaks/fills
 - MIDI drum may sync and control external MIDI device, good for IOS drums.
 - Pattern based Style and Euclidean drums have adjustable swing parameter
-- Loop drum uses the first song part as a drums, good for beatboxing
+- Loop drum uses the first song part as drums, good for beatboxing
 
 ### Installation and configuration
 
