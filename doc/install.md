@@ -17,7 +17,7 @@ cd ~/; git clone https://github.com/slmnv5/pepelats
 $HOME/pepelats/looper.sh
 ```
 
-*5) Connect MIDI controller and make sure it's name (or part of name) is listed in main.ini [MIDI] section and the
+*5) Connect MIDI controller and make sure it's name (or part of name) is listed in [main.ini](./../main.ini) [MIDI] section and the
 notes it sends are listed there as well.
 
 If MIDI controller is not found and computer keyboard is connected it will be used for control.   

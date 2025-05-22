@@ -4,14 +4,14 @@
 
 Binary distribution, installation, configuration is simple now.      
 Display loops on attached monitor or in a web browser (iPad, SmartPhone, ...)  
-Memory use reduced, speed increased after big Python libraries (numpy, ...) replaced by C code.
+Memory use reduced, speed increased after Python libraries (numpy, ...) replaced by C code.
 Well tesetd on Pi-3B and Pi-Zero2W.
 Non-registered version limits play time to 10 minutes and disable saving songs.
 
 ### Looper
 
 - Multiple song parts (intro/verse/chorus/bridge). Each part consists of any number of parallel loops
-- Parallel loops of variable length: 1/8, 1/4, 1/2, 1, 2, 3 ... of the 1-st loop in a part
+- Parallel loops of variable length: 1, 2, 3 ... of the 1-st loop in a part
 - Quantization - time of changing parts, recording, stopping is adjusted
 - Delay allowance - being late in switching loops by 0.1s or less is acceptable
 - Full history of "undo/redo" for each part, not only the latest change
