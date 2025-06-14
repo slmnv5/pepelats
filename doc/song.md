@@ -4,7 +4,7 @@ Song is collection of recorded song parts along with specific drum type and conf
 actions and loop modifications (muting, reversing) they are saved, as well as drum parameters.
 
 Song names are generated automatically using random word selections. Also, song name has suffix indication drum type (
-S-Style drum, E-Euclid drum, L-Loop drum, M-Midi drum) and file extension ".sng"
+S-Style drum, L-Loop drum, M-Midi drum) and file extension ".sng"
 
 Examples of song names: "last_pen.S.sng", "big_family.L.sng". Saved songs are found in user's home, in subdirectory
 ~/save_song.
