@@ -6,15 +6,17 @@ if pidof -o %PPID -x "$(basename "$0")">/dev/null; then
 fi
 cd "$(dirname "$0")" || exit 1
 
-cd "$(dirname "$0")" || exit 1
+SAVE_SONG=./../save_song
+LOG=./../loop.log
+BAK=./../loop.bak
 
-mkdir ~/save_song 2>/dev/null
-touch ~/loop.log
-cat ~/loop.log >> loop.bak
-chmod a+rw ~/loop.log ~/loop.bak ~/save_song/* 2>/dev/null
-tail -n 1000 ~/loop.bak > ~/loop.log
-mv ~/loop.log ~/loop.bak
-echo "== $(date) ==" > ~/loop.log
+mkdir "$SAVE_SONG" 2>/dev/null
+touch "$LOG"
+cat "$LOG" >> "$BAK"
+chmod a+rw "$LOG $BAK $SAVE_SONG/*" 2>/dev/null
+tail -n 1000 "$LOG" > "$BAK"
+mv "$LOG" "$BAK"
+echo "== $(date) ==" > "$LOG"
 
 # sudo required for keyboard
 SUDO=""
