@@ -5,18 +5,16 @@ if pidof -o %PPID -x "$(basename "$0")">/dev/null; then
     exit 1
 fi
 cd "$(dirname "$0")" || exit 1
-if [ "$(hostnamectl)" != "loop" ]; then
-  sudo hostnamectl set-hostname loop
-fi
+
+cd "$(dirname "$0")" || exit 1
 
 mkdir ~/save_song 2>/dev/null
-rm -v ~/save_song/*.bad 2>/dev/null
-touch local.ini log.txt log.bak
-chmod a+rw log.txt log.bak ~/save_song/* 2>/dev/null
-cat log.txt >> log.bak
-tail -n 1000 log.bak > log.txt
-mv log.txt log.bak
-echo "== $(date) ==" > log.txt
+touch ~/loop.log
+cat ~/loop.log >> loop.bak
+chmod a+rw ~/loop.log ~/loop.bak ~/save_song/* 2>/dev/null
+tail -n 1000 ~/loop.bak > ~/loop.log
+mv ~/loop.log ~/loop.bak
+echo "== $(date) ==" > ~/loop.log
 
 # sudo required for keyboard
 SUDO=""

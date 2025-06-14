@@ -10,8 +10,6 @@ nohup.out
 *.iml
 
 #looper
-log.bak
-log.txt
 local.ini
 
 
