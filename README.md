@@ -2,11 +2,11 @@
 
 ## New Features
 
-Binary distribution, installation, configuration is simple now.      
-Display loops on attached monitor or in a web browser (iPad, SmartPhone, ...)  
-Memory use reduced, speed increased after Python libraries (numpy, ...) replaced by C code.
-Well tesetd on Pi-3B and Pi-Zero2W.
-Non-registered version limits play time to 10 minutes and disable saving songs.
+- Binary distribution, installation, configuration is simple now.      
+- See oops in attached monitor or web browser (http://loop.local:8000)  
+- Big Python libraries (numpy et al.) replaced by C code.
+- Tesetd on Pi-3B and Pi-Zero2W.
+- Non-registered version limits play time to 10 minutes and disable saving songs.
 
 ### Looper
 
