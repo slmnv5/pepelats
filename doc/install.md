@@ -11,16 +11,22 @@
 cd ~/; git clone https://github.com/slmnv5/pepelats
 ```
 
-*4) To enable auto start edit ~/.bashrc file, append this line:
+*4) To enable auto start edit ~/.bashrc file, append this line at the end:
 
 ```
 $HOME/pepelats/loop.sh
 ```
 
-*5) Connect MIDI controller and make sure it's name (or part of name) is listed in file **local.ini**
+*5) To use a web browser assign host name 'loop'. Then URL to connect is: http://loop.local:8000
+
+```
+sudo hostnamectl set-hostname loop
+```
+
+*6) Connect MIDI controller and make sure it's name (or part of name) is listed in file **local.ini**
 in [MIDI] section.
 
-*6) Make sure that MIDI controller notes are listed in file **local.ini** in [MIDI] section.
+Also make sure that MIDI controller notes are listed in file **local.ini** in [MIDI] section.
 
 If MIDI controller is missing you may use "--kbd" parameter as explained in next section.
 
