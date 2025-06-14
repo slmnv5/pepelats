@@ -2,10 +2,11 @@
 
 ## New Features
 
-- Binary distribution, installation, configuration is simple now.      
-- See oops in attached monitor or web browser (http://loop.local:8000)  
-- Big Python libraries (numpy et al.) replaced by C code.
-- Tesetd on Pi-3B and Pi-Zero2W.
+- Binary distribution. Installation and configuration simplified.
+- Default looper monitor now is web browser (http://loop.local:8000), not attached monitor
+- Improved memory use as big Python libraries (numpy et al.) replaced by C code.
+- Tested on Pi-3B and Pi-Zero2W.
+- Eucleadean drum type removed
 - Non-registered version limits play time to 10 minutes and disable saving songs.
 
 ### Looper
@@ -17,26 +18,26 @@
 - Full history of "undo/redo" for each part, not only the latest change
 - Parts and their loops may be deleted/cleared on the run
 - Silencing and re-arranging of loops in song parts
-- Songs saved to / loaded from SD card
+- Songs may be saved and loaded
 
 ### Looper control and display
 
-- Display looper state in attached terminal or in a web browser
-- Control of looper via MIDI or computer keyboard emulating MIDI
+- Display looper state in attached terminal (e.g. 3.5" LCD screen) or in a web browser
+- Control of looper via MIDI or computer keyboard
 - User configurable menu files. Default pre-made configuration is 6x4 -- 6 buttons x 4 parts
 - Scrollable lists to select options using MIDI control
 
 ### Drum machine
 
-- Drum machine with four drum types: MIDI, Style, Euclidean and Loop
+- Drum machine with tree drum types: MIDI, Style and Loop
 - Drums patterns and midi commands are plain text files easy to edit
 - Drums have volume control, random variations and can play breaks/fills
 - MIDI drum may sync and control external MIDI device, good for IOS drums.
-- Pattern based Style and Euclidean drums have adjustable swing parameter
+- Style drum is pattern based, have adjustable swing parameter
 - Loop drum uses the first song part as drums, good for beatboxing
 
 ### Installation and configuration
 
-- The looper is installed by cloning from web repository, LCD touch screen driver installed separately
+- The looper is installed by cloning repository. Optinal LCD touch screen installed by script
 
 ### [Read more ... ](./doc/contents.md)
