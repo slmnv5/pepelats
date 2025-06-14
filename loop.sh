@@ -14,7 +14,7 @@ mkdir "$SAVE_SONG" 2>/dev/null
 touch "$LOG"
 cat "$LOG" >> "$BAK"
 chmod a+rw "$LOG $BAK $SAVE_SONG/*" 2>/dev/null
-tail -n 1000 "$LOG" > "$BAK"
+tail -n 1000 "$BAK" > "$LOG"
 mv "$LOG" "$BAK"
 echo "== $(date) ==" > "$LOG"
 
