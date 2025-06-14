@@ -5,7 +5,7 @@ if pidof -o %PPID -x "$(basename "$0")">/dev/null; then
     exit 1
 fi
 cd "$(dirname "$0")" || exit 1
-sudo hostname loop
+sudo hostnamectl set-hostname new_hostnameloop
 
 mkdir ~/save_song 2>/dev/null
 rm -v ~/save_song/*.bad 2>/dev/null
