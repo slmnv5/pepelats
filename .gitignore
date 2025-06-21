@@ -9,6 +9,10 @@ nohup.out
 .run
 *.iml
 
+#log and config
+loop.ini
+loop.txt
+loop.bak
 
 
 
