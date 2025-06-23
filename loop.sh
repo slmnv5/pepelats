@@ -1,10 +1,10 @@
 #!/bin/bash
 
-FNAME="$(basename $0)"
-if pidof -o %PPID -x "$FNAME">/dev/null; then
+if pidof -o %PPID -x loop.sh > /dev/null; then
     echo "Process already running"
     exit 1
 fi
+
 cd "$(dirname "$0")" || exit 1
 
 prepare_files () {
@@ -39,7 +39,7 @@ prepare_command() {
   if [ -f ./main.dist/main.bin ]; then
     PYTHON_CMD="$SUDO ./main.dist/main.bin $*"
   else
-    PYTHON_CMD="$SUDO python3 $CODE_OPTIMIZE ./src/main.py $*"
+    PYTHON_CMD="$SUDO python $CODE_OPTIMIZE ./src/main.py $*"
   fi
 }
 
@@ -52,7 +52,7 @@ sudo setfont Uni1-VGA32x16
 stty -echo
 while true; do
   echo "===== new run ====="
-  sudo pkill -9 python3
+  sudo pkill -9 python
   $PYTHON_CMD
   if [ "$?" -ne "0" ]; then sleep 50; fi
 done
