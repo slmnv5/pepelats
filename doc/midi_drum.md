@@ -3,9 +3,7 @@
 **MIDI drum** sends MIDI messages to external drum machine to synchronize it with the looper, change drum volume,
 program number, etc. External drum machine must implement these messages.
 Alternatively more processing of custom MIDI messages may be done with IOS application (e.g. MidiFire) to convert them
-to usable form.   
-As example here is script file for MidiFire [midi_fire_scene.txt](../etc/txt/midi_fire_scene.txt) that controls drum
-machine on IOS.
+to usable form.
 
 Each set of MIDI messages along with the MIDI OUT port name saved in configuration file. There are two predefined
 configurations:

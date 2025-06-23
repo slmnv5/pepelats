@@ -36,8 +36,5 @@
 - Style drum is pattern based, have adjustable swing parameter
 - Loop drum uses the first song part as drums, good for beatboxing
 
-### Installation and configuration
-
-- The looper is installed by cloning repository. Optinal LCD touch screen installed by script
 
 ### [Read more ... ](./doc/contents.md)

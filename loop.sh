@@ -1,6 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
-if pidof -o %PPID -x "$(basename "$0")">/dev/null; then
+FNAME="$(basename $0)"
+if pidof -o %PPID -x "$FNAME">/dev/null; then
     echo "Process already running"
     exit 1
 fi

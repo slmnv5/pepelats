@@ -1,0 +1,18 @@
+avoid_warnings=1
+dtparam=audio=off
+
+# disable HDMI (saves power)
+dtoverlay=vc4-kms-v3d,nohdmi
+max_framebuffers=1
+disable_fw_kms_setup=1
+disable_overscan=1
+
+hdmi_ignore_hotplug=1
+dtparam=spi=on
+dtoverlay=mhs35:rotate=90
+
+#More options for LCD 3.5 for touch input
+#rotate=270,swap_xy=1,swapxy=1,pmax=100
+
+
+

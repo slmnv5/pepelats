@@ -2,7 +2,7 @@
 
 *1) Install latest **_Raspberry Pi OS Lite_** (e.g. bookworm).
 
-*2) Optional. Install LCD screen driver running script in: [install_lcd.sh](../etc/scripts/install_lcd.sh)
+*2) Optional. Install LCD screen driver running script in: [install_lcd.sh](../config/script/install_lcd.sh)
 
 *3) Clone this repository:
 
@@ -21,6 +21,11 @@ $HOME/pepelats/loop.sh
 ```
 sudo hostnamectl set-hostname loop
 ```
+
+### Optional LCD screen
+
+- The looper is installed by cloning repository. Optinal LCD touch screen installed by script [install_lcd.sh](
+  ./../config/script/install_lcd.sh)
 
 *6) Connect MIDI controller and make sure it's name (or part of name) is listed in file **local.ini**
 in [MIDI] section.
