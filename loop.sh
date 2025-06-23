@@ -48,7 +48,6 @@ prepare_command
 
 # disable under voltage error on screen, set huge font size, disable typing echo
 sudo dmesg -D
-sudo setfont Uni1-VGA32x16
 stty -echo
 while true; do
   echo "===== new run ====="
@@ -57,6 +56,5 @@ while true; do
   if [ "$?" -ne "0" ]; then sleep 50; fi
 done
 sudo dmesg -E
-sudo setfont Uni1-VGA16
 stty echo
 

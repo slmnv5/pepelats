@@ -14,6 +14,8 @@ cd ~/; git clone https://github.com/slmnv5/pepelats
 
 ```
 $HOME/pepelats/loop.sh
+# return font to normal size
+sudo setfont Uni1-VGA16
 ```
 
 *5) To use a web browser assign host name 'loop'. Then URL to connect is: http://loop.local:8000
