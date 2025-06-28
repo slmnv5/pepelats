@@ -52,8 +52,8 @@ stty -echo
 while true; do
   echo "===== new run ====="
   sudo pkill -9 python
+  sleep 5
   $PYTHON_CMD
-  if [ "$?" -ne "0" ]; then sleep 50; fi
 done
 sudo dmesg -E
 stty echo
