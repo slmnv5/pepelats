@@ -1,7 +1,10 @@
 ## Main configuration
 
-INI file [**main.ini**](../main.ini) has few sections that define configuration of the looper. This file is not
-supposed to change, instead edit **local.ini** file that will override any configuration in **main.ini**. File main.ini
-may be updated when pulling latest version from git while local.ini will be preserved.
-This file have comments that explain each option in each section. 
+INI file **[local.ini](../local.ini)** has several sections that define configuration of the looper. Edit this file
+to change default configurations. Thus you may change names of MIDI or audio devices or switch between using
+LCD screen and web to output lopper's state.
+
+If you ever lose this file or loose some settings in this file look at
+[main.ini](../main.ini) that contains all defaul configurations.  
+There are comments that explain each option in each section. 
 

@@ -3,11 +3,11 @@
 ## New Features
 
 - Binary distribution. Installation and configuration simplified.
-- Default looper monitor now is web browser (http://loop.local:8000), not attached monitor
+- Default looper monitor is web: http://loop.local:8000. May be changed in menu. 
 - Improved memory use as big Python libraries (numpy et al.) replaced by C code.
-- Tested on Pi-3B and Pi-Zero2W.
+- Tested on Pi-3B and Pi-Zero2W with/without attached 3.5" LCD.
 - Eucleadean drum type removed
-- Non-registered version limits play time to 10 minutes and disable saving songs.
+- Non-registered version limits play time.
 
 ### Looper
 
@@ -22,7 +22,7 @@
 
 ### Looper control and display
 
-- Display looper state in attached terminal (e.g. 3.5" LCD screen) or in a web browser
+- Display looper state in attached terminal (ex. 3.5" LCD screen) or in a web browser
 - Control of looper via MIDI or computer keyboard
 - User configurable menu files. Default pre-made configuration is 6x4 -- 6 buttons x 4 parts
 - Scrollable lists to select options using MIDI control
@@ -35,6 +35,5 @@
 - MIDI drum may sync and control external MIDI device, good for IOS drums.
 - Style drum is pattern based, have adjustable swing parameter
 - Loop drum uses the first song part as drums, good for beatboxing
-
 
 ### [Read more ... ](./doc/contents.md)

@@ -16,13 +16,13 @@ function getHeaderStr (s) {
 };
 
 // make html showing progress line - position in 1-st loop and position in max. length loop
-function getHeaderHtml (s, base_pos, long_pos) {
+function getHeaderHtml (s, first_pos, long_pos) {
     function decorateOneChar(s, pos) {
         return s.slice(0, pos) + "▒" + s.slice(pos+1);
     }
     const l = s.length;
     s = decorateOneChar(s, l * long_pos);
-    return '<p>' + BW_S + s.slice(0, l * base_pos) + END_S + s.slice(l * base_pos) + '</p>';
+    return '<p>' + BW_S + s.slice(0, l * first_pos) + END_S + s.slice(l * first_pos) + '</p>';
 };
 
 // decorate string with color based on 1st char. 
@@ -74,11 +74,11 @@ window.onload = () => {
     };
 
     function redrawData(data) {
-        data.base_pos += data.base_delta // position in the 1-st loop
-        data.base_pos %= 1;
+        data.first_pos += data.base_delta // position in the 1-st loop
+        data.first_pos %= 1;
         data.long_pos += data.long_delta // position in the max. length loop
         data.long_pos %= 1;
-        HEADER.innerHTML = getHeaderHtml(data.header, data.base_pos, data.long_pos);
+        HEADER.innerHTML = getHeaderHtml(data.header, data.first_pos, data.long_pos);
         TIMEOUT = setTimeout(()=>{redrawData(data)}, data.sleep_tm * 1000);
     };
 

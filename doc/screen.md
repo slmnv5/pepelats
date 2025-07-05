@@ -1,10 +1,8 @@
 ## Screen
 
-Looper outputs its state on text terminal or on a web page.
-This depends on option **use_web** in **[LOOPER]** section of [**main.ini**](./../main.ini)
+Looper outputs its state on: 1) text screen or 2) web page.
+This can be changed in menu.
 
-If use_web = 0 the output goes to stdout stream.
-
-If use_web = 1 the output goes to URL: http://loop.local:8000
+If using web the output goes to URL: http://loop.local:8000
 
 Here 'loop' is host name set in [install.md](install.md) and HTTP port is always 8000.

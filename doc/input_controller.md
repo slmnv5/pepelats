@@ -37,15 +37,15 @@ Each line looks like:
 Note-Velocity : _command1 [p1, p2, ...] [:_command2 [p1, p2, ...]] ....
 ```
 
-Notes are: A, B, C, D, E, F and they correspond to integer values in **keyboard_notes** option in the main.ini  
+Notes are: A, B, C, D, E, F and they correspond to integer values in **keyboard_notes** option in the local.ini  
 Velocity=100 : is the standard velocity assigned to all original MIDI notes from controller  
 Velocity=1, 2, 3, ... 10: is velocity of counted note as explained above  
 _command1, _command2 : are commands of the looper. Multiple commands are separated by colon  
 p1, p2, ... : optional parameters of commands. Each one may be a number or text
 
 ```
-A-100 : _menu_part_select 0
-B-100 : _menu_part_select 1
+A-100 : _menu_part_play 0
+B-100 : _menu_part_play 1
 ...
 A-2 : _menu_part overdub
 B-2 : _menu_part overdub
@@ -63,7 +63,7 @@ momentarily switches into these inputs will send CC messages converted into note
 To change this edit **local.ini**
 There are 2 predefined configurations:
 
-- 6 buttons, 3 parts [6-3](./../config/menu/6-3-menu) with dedicated record button, easy to change to 5-2
+- 6 buttons, 3 parts [6-3](./../config/menu/5-3-menu) with dedicated record button, easy to change to 5-2
 - 6 buttons, 4 parts [6-4](./../config/menu/6-4-menu) without dedicated record button, easy to change to 4-2 and 5-3  
   (see also [menu_config.md](menu_layout))
 
