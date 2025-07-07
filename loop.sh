@@ -56,6 +56,7 @@ while true; do
   sleep 3
   echo "===== $RUN_CMD ====="
   $RUN_CMD
+  if [ "$?" != "0" ]; then sleep 50; fi
 done
 sudo dmesg -E
 stty echo

@@ -63,7 +63,7 @@ momentarily switches into these inputs will send CC messages converted into note
 To change this edit **local.ini**
 There are 2 predefined configurations:
 
-- 6 buttons, 3 parts [6-3](./../config/menu/5-3-menu) with dedicated record button, easy to change to 5-2
+- 6 buttons, 3 parts [6-3](./../config/menu/6-4-menu) with dedicated record button, easy to change to 5-2
 - 6 buttons, 4 parts [6-4](./../config/menu/6-4-menu) without dedicated record button, easy to change to 4-2 and 5-3  
   (see also [menu_config.md](menu_layout))
 
