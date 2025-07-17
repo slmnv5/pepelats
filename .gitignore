@@ -1,18 +1,26 @@
 __pycache__
 .pytest_cache
-#binary files
-main.build/
+.venv
+
+# other
 nohup.out
+
+#binary files
+main.build
 
 #PyCharm
 .idea
 .run
 *.iml
 
-#log and config
-loop.ini
-loop.txt
-loop.bak
+#looper
+local.ini
+log.txt
+log.bak
+menu_dir
+
+
+
 
 
 

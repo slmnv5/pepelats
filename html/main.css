@@ -19,16 +19,14 @@ table {
     border-color: grey;
     text-align: center;
 }
-th, td {
+tr, td {
     padding: 2%;
     border: 1%;
     border-style: groove;
 }
 
-th {
-    font-size: 1.5rem;
-    font-weight: bolder;
-    width:50%;
+td {
+    width: 50%;
 }
 
 a:link {

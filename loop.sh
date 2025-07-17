@@ -22,9 +22,8 @@ mv "$LOG" "$BAK"
 echo "== $(date) ==" > "$LOG"
 
 if [ ! -f "./local.ini" ]; then
-  copy -pnv main.ini local.ini
+  cp -pnv main.ini local.ini
 fi
-
 
 # sudo required for keyboard input
 SUDO=""
@@ -45,6 +44,9 @@ if [ ! -f ./main.dist/main.bin ]; then
   KILL_CMD="$SUDO pkill -9 python"
   RUN_CMD="$SUDO python $OPTIMIZE ./src/main.py $*"
 fi
+
+export HAS_FB=""
+if [ -e /dev/fb[0-5] ]; then HAS_FB="1"; fi
 
 
 # disable under voltage error on screen, disable typing echo
