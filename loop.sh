@@ -27,13 +27,9 @@ fi
 
 # sudo required for keyboard input
 SUDO=""
-OPTIMIZE="-O"
 for var in "$@"; do
   if [ "$var" == "--kbd" ]; then
     SUDO="sudo -E"
-  fi
-  if [ "$var" == "--info" ] || [ "$var" == "--debug" ]; then
-    OPTIMIZE=""
   fi
 done
 
@@ -42,7 +38,7 @@ KILL_CMD="$SUDO pkill -9 main.bin"
 RUN_CMD="$SUDO ./main.dist/main.bin $*"
 if [ ! -f ./main.dist/main.bin ]; then
   KILL_CMD="$SUDO pkill -9 python"
-  RUN_CMD="$SUDO python $OPTIMIZE ./src/main.py $*"
+  RUN_CMD="$SUDO python ./src/main.py $*"
 fi
 
 export HAS_FB=""
