@@ -13,11 +13,11 @@ As an example there is alternative layout in directory : [4-4-menu](../config/me
 
 Inside menu directory there is [menu.ini](../config/menu/6-4-menu/menu.ini) configuration file that defines
 MIDI port name, number of buttons, MIDI notes (or CC) these buttons send and typing
-kerbod keys that may be used when MIDI controller is missing.
+keyboard keys that may be used when MIDI controller is missing.
 
 In the menu directory there are 5 INI files:
 
-* [menu.ini](../config/menu/6-4-menu/menu.ini) -- decribe MIDI details
+* [menu.ini](../config/menu/6-4-menu/menu.ini) -- describe MIDI details
 * [nav.ini](../config/menu/6-4-menu/navi.ini) -- default view navigations
 * [play.ini](../config/menu/6-4-menu/play.ini) -- view for playing and recording of song parts and loops
 * [song.ini](../config/menu/6-4-menu/song.ini) -- view for stopping, saving and loading of songs

@@ -58,7 +58,7 @@ window.onload = () => {
 
     UPD_REQUEST.onloadend = () => {
         if (UPD_REQUEST.status == 204) {
-            fetchData(); // no update, repeat again;
+            fetchData(); // no update, repeat;
         } else if (UPD_REQUEST.status == 200) {
             const data = JSON.parse(UPD_REQUEST.responseText);
             DESCRIPTION.textContent = data.description;
@@ -66,7 +66,7 @@ window.onload = () => {
             data.header = getHeaderStr(data.header);
             clearTimeout(TIMEOUT);
             redrawData(data);
-            fetchData(data); // has updated, repeat again;
+            fetchData(data); // has updated, repeat;
         } else {
             DESCRIPTION.textContent = "Incorrect server response: " + UPD_REQUEST.status;
             clearTimeout(TIMEOUT);

@@ -11,7 +11,8 @@ SAVE_SONG=~/save_song
 LOG=log.txt
 BAK=log.bak
 
-mv -v loop.ini local.ini
+# delete later
+mv -v loop.ini local.ini 2>/dev/null
 
 mkdir "$SAVE_SONG" 2>/dev/null
 touch "$LOG"

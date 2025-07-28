@@ -1,8 +1,8 @@
 ## Installation
 
-*1) Install latest **Raspberry Pi OS Lite 64 bit** (e.g. bookworm). I recommend **Raspbery Pi Imager** for that, it can
-enable SSH connection and configure WiFi password. For all configuration and management I recommend using SSH.
-Also I recommend to assign simple host name (ex. **'loop'**) for esy connection later.
+*1) Install latest **Raspberry Pi OS Lite 64 bit** (e.g. bookworm). I recommend **Raspberry Pi Imager** for that, it can
+enable SSH connection and configure Wi-Fi password. For all configuration and management I recommend using SSH.
+Also, I recommend to assign simple host name (ex. **'loop'**) for esy connection later.
 
 Install git:
 
@@ -32,7 +32,7 @@ $HOME/pepelats/loop.sh
 
 ### Optional LCD screen
 
-- Optinal LCD screen may be installed by script [install_lcd.sh](
+- Optional LCD screen may be installed by script [install_lcd.sh](
   ./../config/script/install_lcd.sh)
 
 *6) Connect MIDI controller and make sure it's name (or part of name) is listed in file **local.ini**

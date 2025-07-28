@@ -6,7 +6,7 @@
 - Default looper monitor is web: http://loop.local:8000. May be changed in menu. 
 - Improved memory use as big Python libraries (numpy et al.) replaced by C code.
 - Tested on Pi-3B and Pi-Zero2W with/without attached 3.5" LCD.
-- Eucleadean drum type removed
+- Euclidean drum type removed
 - Non-registered version limits play time.
 
 ### Looper

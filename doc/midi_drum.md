@@ -36,7 +36,7 @@ Six variables used in messages (all upper case names):
 ### MIDI out port for MIDI drum
 
 Each drum configuration file has section "MIDI" and option "midi_out". This is MIDI port name (or part of the
-name) used to send MIDI drum messages. If port is not available (device is not connected) the drum sill be loaded but
+name) used to send MIDI drum messages. If port is not available (device is not connected) the drum still be loaded but
 messages not sent. Drum configuration view will show port drum name as "None".
 
 After MIDI drum is connected you need to reload song or set drum configuration file so that looper will connect to
