@@ -37,27 +37,38 @@
     <p></p>
     <p></p>
 
-    <form>
+    <form id="editFileForm">
         <label for="dropList">File to edit:</label>
-        <select id="dropList" name="dropList" style="font-size:0.5em" onchange="loadFile()">
+        <select id="dropList" name="dropList" style="font-size:0.5em" onchange="loadFile()" value="">
+            <option value="">Select file...</option>
             <option value="local.ini">User config</option>
             <option value="license.ini">User license</option>
             <option value="start.txt">Start options</option>
         </select>
         <button id="saveButton" type="button" onclick="saveFile()" style="font-size:0.5em">Save File</button>
         <p></p>
-        <textarea id="fileContentInput" style="width:100%; height:16vw; font-size:0.5em"></textarea>
+        <textarea id="fileContent" name="fileContent" style="width:100%; height:16vw; font-size:0.5em"></textarea>
     </form>
+
+
+
     <script>
+
+
         function loadFile() {
-            var fileToEdit = document.getElementById("dropList").value;
+            const editForm = document.getElementById('editFileForm');
+            var fileToEdit = editForm.dropList.value;
+            if (fileToEdit == "") {
+                editForm.reset();
+                return;
+            }
             fetch(fileToEdit).then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not OK for file: ' + fileToEdit);
                 }
                 return response.text();
-            }).then(fileContent => {
-                document.getElementById('fileContentInput').value = fileContent;
+            }).then(response => {
+                editForm.fileContent.value = response;
             }).catch(error => {
                 console.error('Error loading file: ', error);
             });
@@ -65,21 +76,27 @@
 
 
         function saveFile() {
-            var fileToEdit = document.getElementById("dropList").value;
-            var fileContent = document.getElementById('fileContentInput').value;
+            const editForm = document.getElementById('editFileForm');
+            var fileToEdit = editForm.dropList.value;
+            if (fileToEdit == "") {
+                editForm.reset();
+                return;
+            }
+            var fileContent = editForm.fileContent.value;
             fetch(fileToEdit, {
                 method: "POST",
                 headers: { "Content-Type": "text/plain; charset=UTF-8" },
                 //headers: { "Content-Type": "application/json; charset=UTF-8" },                
-                body: fileContent                
+                body: fileContent
             }).then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not OK for file: ' + fileToEdit);
                 }
                 return response.text();
             }).catch(error => {
-                console.error('Error loading file: ', error);
+                console.error('Error saving file: ', error);
             });
+            editForm.reset();
         }
     </script>
 
