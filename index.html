@@ -1,43 +1,88 @@
-<!--suppress HtmlWrongAttributeValue, HtmlDeprecatedAttribute, HtmlUnknownTarget -->
+<!--suppress HtmlWrongAttributeValue, HtmlDeprecatedAttribute, HtmlUnknownTarget, HtmlFormInputWithoutLabel -->
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="expires" content="0"/>
-    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="pragma" content="no-cache" />
     <link rel="stylesheet" type="text/css" href="html/main.css">
     <title>Pepelats Looper</title>
 </head>
+
 <body>
-<table width="100%">
-    <tr>
-        <td>
-            <a href="html/looper.html">Looper</a>
-        </td>
-    </tr>
-</table>
-<table width="100%">
-    <tr>
-        <td><a href="log.bak">Past sessions log</a></td>
-        <td><a href="log.txt">Current session log</a></td>
-    </tr>
-    <tr>
-        <td><a href="main.ini">Standard Config</a></td>
-        <td><a href="local.ini">User's Config</a></td>
-    </tr>
-</table>
-<table width="100%">
-    <tr>
-        <td>
-            <a href="menu_dir/menu.ini">Menu config</a><br>
-            <a href="menu_dir/nav.ini">Navigation menu</a><br>
-            <a href="menu_dir/menu.ini">Play menu</a>
-        </td>
-        <td>
-            <a href="menu_dir/menu.ini">Song menu</a><br>
-            <a href="menu_dir/menu.ini">Drum menu</a><br>
-            <a href="menu_dir/menu.ini">Service Menu</a>
-        </td>
-    </tr>
-</table>
+    <table width="100%">
+        <tr>
+            <td width="100%">
+                <a href="html/looper.html">Looper</a><br>
+            </td>
+        </tr>
+    </table>
+
+    <table width="100%">
+        <tr>
+            <td width="50%">
+                <a href="old.txt">Past logs</a><br>
+                <a href="log.txt">Current log</a><br>
+                <a href="main.ini">Factory configuration</a><br>
+            </td>
+            <td width="50%">
+                <a href="config/menu/play.ini">Play menu</a><br>
+                <a href="config/menu/song.ini">Song menu</a><br>
+                <a href="config/menu/serv.ini">Service menu</a><br>
+            </td>
+        </tr>
+    </table>
+
+    <p></p>
+    <p></p>
+
+    <form>
+        <label for="dropList">File to edit:</label>
+        <select id="dropList" name="dropList" style="font-size:0.5em" onchange="loadFile()">
+            <option value="local.ini">User config</option>
+            <option value="license.ini">User license</option>
+            <option value="start.txt">Start options</option>
+        </select>
+        <button id="saveButton" type="button" onclick="saveFile()" style="font-size:0.5em">Save File</button>
+        <p></p>
+        <textarea id="fileContentInput" style="width:100%; height:16vw; font-size:0.5em"></textarea>
+    </form>
+    <script>
+        function loadFile() {
+            var fileToEdit = document.getElementById("dropList").value;
+            fetch(fileToEdit).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not OK for file: ' + fileToEdit);
+                }
+                return response.text();
+            }).then(fileContent => {
+                document.getElementById('fileContentInput').value = fileContent;
+            }).catch(error => {
+                console.error('Error loading file: ', error);
+            });
+        }
+
+
+        function saveFile() {
+            var fileToEdit = document.getElementById("dropList").value;
+            var fileContent = document.getElementById('fileContentInput').value;
+            fetch(fileToEdit, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain; charset=UTF-8" },
+                //headers: { "Content-Type": "application/json; charset=UTF-8" },                
+                body: fileContent                
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not OK for file: ' + fileToEdit);
+                }
+                return response.text();
+            }).catch(error => {
+                console.error('Error loading file: ', error);
+            });
+        }
+    </script>
+
 </body>
+
 </html>

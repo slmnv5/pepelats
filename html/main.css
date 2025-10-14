@@ -17,16 +17,12 @@ table {
     border: 1%;
     border-style: groove;
     border-color: grey;
-    text-align: center;
 }
-tr, td {
+td {
+    text-align: center;
     padding: 2%;
     border: 1%;
     border-style: groove;
-}
-
-td {
-    width: 50%;
 }
 
 a:link {
@@ -36,4 +32,5 @@ a:link {
 a:visited {
   color: yellow;
 }
+
 

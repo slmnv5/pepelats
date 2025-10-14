@@ -33,7 +33,7 @@ function getContentHtml(content, is_rec) {
     for (s of content.split("\n")) {
         if (s[0] === '*') {
             result += (is_rec > 0 ? RED_P : GREEN_P) + s + '</p>';
-        } else if (s[0] === '~') {
+        } else if (s[0] === '>') {
             result += YELLOW_P + s + '</p>';
         } else {
             result += '<p>' + s + '</p>';
@@ -57,7 +57,7 @@ window.onload = () => {
     };
 
     UPD_REQUEST.onloadend = () => {
-        if (UPD_REQUEST.status == 204) {
+        if (UPD_REQUEST.status != 200) {
             fetchData(); // no update, repeat;
         } else if (UPD_REQUEST.status == 200) {
             const data = JSON.parse(UPD_REQUEST.responseText);

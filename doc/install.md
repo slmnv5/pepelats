@@ -56,8 +56,8 @@ Below parameters may be used:
 
 ## Important files and directories
 
-- ~/log.txt -- is the log file for the current session.
-- ~/log.bak -- keeps about 1000 lines from past sessions.
+- ~/log.log -- is the log file for the current session.
+- ~/old.log -- keeps about 1000 lines from past sessions.
 - ~/local.ini -- user's configuration [main_config](main_config.md)
 - ~/save_song -- directory where song files are saved
 - config -- directory where configurations for drums, and menus are stored

@@ -14,10 +14,11 @@ main.build
 *.iml
 
 #looper
+license.ini
 local.ini
 log.txt
-log.bak
-menu_dir
+old.txt
+start.txt
 
 
 

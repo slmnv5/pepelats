@@ -3,19 +3,14 @@
 Song is collection of recorded song parts along with specific drum type and configuration. If there are undo/redo
 actions and loop modifications (muting, reversing) they are saved, as well as drum parameters.
 
-Song names are generated automatically using random word selections. Also, song name has suffix indication drum type (
-S-Style drum, L-Loop drum, M-Midi drum) and file extension ".sng"
+Saved songs are found in user's home, in subdirectory ~/save_song. Song names look like "02.Disco", "08.Blues". Names
+include unique number from 00 to 99 and suffix showing drum configuration name.
 
-Examples of song names: "last_pen.S.sng", "big_family.L.sng". Saved songs are found in user's home, in subdirectory
-~/save_song.
+In service_1 view songs may be saved, loaded, deleted, initialized and assigned drum configuration (Disco, Blues, ...).
 
-Song may be saved, loaded, deleted, initialized, updated with another drum type.
-
-Number of parts in song depends on menu configuration. Default configuration 6x4 has 4 parts. To change it select
-another menu configuration
 
 ## Stopping song
 
-[Song view](../config/menu/6-4-menu/song.ini) also has commands for stopping song instantly or at the end of the longest
+[Service_1 view](../config/menu/song.ini) also has commands for stopping song instantly or at the end of the longest
 loop in the currently playing song part  
 
