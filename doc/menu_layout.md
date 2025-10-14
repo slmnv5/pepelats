@@ -11,8 +11,8 @@ keyboard keys that may be used when MIDI controller is missing.
 The menu layout is found in directory: [menu](../config/menu), there are 3 INI files:
 
 * [play.ini](../config/menu/play.ini) -- view for playing and recording of song parts and loops
-* [serv1.ini](../config/menu/song.ini) -- view for managing songs and drums
-* [serv2.ini](../config/menu/serv.ini) -- view for restart and other service functions
+* [song.ini](../config/menu/song.ini) -- view for managing songs and drums
+* [serv.ini](../config/menu/serv.ini) -- view for restart and other service functions
 
 Each view may have several sections that provide different options and MIDI commands. As an example play view has
 section [play.0] to work with song parts and [play.1] to work with loops inside one part

@@ -9,7 +9,7 @@ Each view has INI file that configures available MIDI messages and respective co
 * [serv1_view](../config/menu/song.ini) -- Delete, save, initialize or load song. Scroll list of saved songs.
   Select drum configuration.
 
-* [serv2 view](../config/menu/serv.ini) -- Restart looper, check for updates. Select drum type
+* [serv view](../config/menu/serv.ini) -- Restart looper, check for updates. Select drum type
   for loaded song, adjust drum volume and parameters.
 
 More about this is in [menu_config](./menu_layout)
