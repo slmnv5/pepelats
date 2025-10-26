@@ -2,7 +2,7 @@
 
 Menu layout translates MIDI notes into looper commands.
 
-The layout used is defined in local configuration file [local.ini](../local.ini).
+The layout used is defined in local configuration file [user.ini](../user.ini).
 If this file is missing menu layout it is taken from standard configuration file
 [main.ini](../main.ini).
 These files define input MIDI port name(s), number of buttons, MIDI notes (or CC) these buttons send and typing
@@ -19,7 +19,7 @@ section [play.0] to work with song parts and [play.1] to work with loops inside 
 
 ### Controller configuration
 
-In local.ini file there are 2 options in MIDI section:  
+In user.ini file there are 2 options in MIDI section:  
 keyboard_keys -- N keys on computer keyboard, used only if MIDI controller is missing
 keyboard_notes -- N notes of MIDI foot controller pedal. Note velocity must be > 10
 

@@ -15,7 +15,7 @@ main.build
 
 #looper
 license.ini
-local.ini
+user.ini
 log.txt
 old.txt
 start.txt

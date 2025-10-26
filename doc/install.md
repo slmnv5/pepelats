@@ -35,14 +35,14 @@ $HOME/pepelats/loop.sh
 - Optional LCD screen may be installed by script [install_lcd.sh](
   ./../config/script/install_lcd.sh)
 
-*6) Connect MIDI controller and make sure it's name (or part of name) is listed in file **local.ini**
+*6) Connect MIDI controller and make sure it's name (or part of name) is listed in file **user.ini**
 in [MIDI] section.
 
-Also make sure that MIDI controller notes are listed in file **local.ini** in [MIDI] section.
+Also make sure that MIDI controller notes are listed in file **user.ini** in [MIDI] section.
 
 If MIDI controller is missing you may use "--kbd" parameter as explained in next section.
 
-*7) If you have terminal (LCD screen) connected, you need to change ~/local.ini file to use it as described
+*7) If you have terminal (LCD screen) connected, you need to change ~/user.ini file to use it as described
 in [screen.md](screen.md). By default, web page is used to show looper state.
 
 ### Loop.sh script parameters
@@ -51,13 +51,13 @@ Below parameters may be used:
 
 - --info -- verbose logging
 - --debug -- more verbose logging
-- --kbd -- use computer keyboard as MIDI controller. Keys are configured in local.ini file.
+- --kbd -- use computer keyboard as MIDI controller. Keys are configured in user.ini file.
   Default six keys are: '1,2,3,4,q,w'.
 
 ## Important files and directories
 
 - ~/log.log -- is the log file for the current session.
 - ~/old.log -- keeps about 1000 lines from past sessions.
-- ~/local.ini -- user's configuration [main_config](main_config.md)
+- ~/user.ini -- user's configuration [main_config](main_config.md)
 - ~/save_song -- directory where song files are saved
 - config -- directory where configurations for drums, and menus are stored

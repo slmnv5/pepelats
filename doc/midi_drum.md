@@ -8,7 +8,7 @@ to usable form.
 Each set of MIDI messages along with the MIDI OUT port name saved in configuration file. There are two predefined
 configurations:
 
-- [ValetonGP-100.ini](../config/drum/midi/ValetonGP-100.ini)
+- [ValetonGP-100.ini](../config/drum/midi/ValGP100.ini)
 - [MidiFire.ini](../config/drum/midi/MidiFire.ini)
 - [FunkBox.ini](../config/drum/midi/FunkBox.ini)
 

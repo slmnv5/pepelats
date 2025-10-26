@@ -37,7 +37,7 @@ Each line looks like:
 Note-Velocity : _command1 [p1, p2, ...] [:_command2 [p1, p2, ...]] ....
 ```
 
-Notes are: A, B, C, D, E, F and they correspond to integer values in **keyboard_notes** option in the local.ini  
+Notes are: A, B, C, D, E, F and they correspond to integer values in **keyboard_notes** option in the user.ini  
 Velocity=100 : is the standard velocity assigned to all original MIDI notes from controller  
 Velocity=1, 2, 3, ... 10: is velocity of counted note as explained above  
 _command1, _command2 : are commands of the looper. Multiple commands are separated by colon  
@@ -60,7 +60,7 @@ momentarily switches into these inputs will send CC messages converted into note
 
 ## Changing menu configurations
 
-To change this edit **local.ini**
+To change this edit **user.ini**
 
 
 

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# shellcheck disable=SC2129
+
 if pidof -o %PPID -x loop.sh > /dev/null; then
     echo Process already running
     exit 1
@@ -10,23 +12,23 @@ cd "$(dirname "$0")" || exit 1
 SAVE_SONG=~/save_song
 LOG=./log.txt
 OLD=./old.txt
-START=./start.txt
-INI=./local.ini
+SRT=./start.txt
+USR=./user.ini
+LIC=./license.ini
 
 mkdir "$SAVE_SONG" 2>/dev/null
 chmod a+rw "$SAVE_SONG/*" 2>/dev/null
 
-touch license.ini
-touch "$LOG" "$INI"
+if [ ! -f "$LIC" ]; then
+  echo "[LOOPER]" > "$LIC"
+fi
+
+touch "$LOG" "$USR"
 cat "$LOG" >> "$OLD"
 tail -n 1000 "$OLD" > "$LOG"
 mv "$LOG" "$OLD"
-echo "===== $(date)" > "$LOG"
+echo "" > "$LOG"
 
-tmp=$(stat -c %s "$INI")
-if [ "$tmp" -le "5" ]; then
-  cp -pv main.ini local.ini
-fi
 
 # order of 2 IFs is important
 LOOP_SUDO=""
@@ -42,14 +44,18 @@ else
   export LOOP_RUN_CMD="$LOOP_SUDO ./main.dist/main.bin"
 fi
 
-echo "" > $START
+echo "" > $SRT
 
 if [[ "$*" == *"--web"* ]]; then
-  echo "export LOOP_USE_WEB=1" >> $START
+  echo "export LOOP_USE_WEB=1" >> $SRT
+fi
+
+if [[ "$*" == *"--lcd"* ]]; then
+  echo "export LOOP_USE_LCD=1" >> $SRT
 fi
 
 if [ -e /dev/fb0 ] || [ -e /dev/fb1 ] || [ -e /dev/fb2 ]; then
-  echo "export LOOP_HAS_FB=1" >> $START
+  echo "export LOOP_HAS_FB=1" >> $SRT
 fi
 
 # disable under voltage error on screen, disable typing echo
@@ -57,11 +63,12 @@ sudo dmesg -D
 stty -echo
 sudo setfont Uni1-VGA32x16
 while true; do
-  # shellcheck disable=SC1090
-  source $START
+  source ./start.txt
   echo "===== $LOOP_RUN_CMD" >> $LOG
+  echo "===== $(date)" >> $LOG
+  clear
   $LOOP_RUN_CMD 2>>$LOG
-  sleep 10
+  sleep 5
   $LOOP_KILL_CMD 2>/dev/null
 done
 sudo dmesg -E
