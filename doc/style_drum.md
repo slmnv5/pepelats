@@ -22,7 +22,7 @@ bd: !.......!.....!.
 ~~~
 
 * ac -- shows accents for each step
-* bd, sd -- are drum names
+* bd, sd -- are drum names (see below)
 * "." -- silence on a step
 * "!" -- drum hit on a step
 

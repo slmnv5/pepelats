@@ -1,4 +1,4 @@
-## Menu layout
+# Menu layout
 
 Menu layout translates MIDI notes into looper commands.
 
