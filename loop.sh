@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# shellcheck disable=SC2129
-
 if pidof -o %PPID -x loop.sh > /dev/null; then
     echo Process already running
     exit 1
@@ -20,7 +18,7 @@ mkdir "$SAVE_SONG" 2>/dev/null
 chmod a+rw "$SAVE_SONG/*" 2>/dev/null
 
 if [ ! -f "$LIC" ]; then
-  echo "[LOOPER]" > "$LIC"
+  printf "\n\nowner: myname@mail.com\n\nlicense: 9c-9b-f1-20-39-45-de-40\n\n" > "$LIC"
 fi
 
 touch "$LOG" "$USR"
