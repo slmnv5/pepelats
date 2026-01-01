@@ -44,8 +44,8 @@ _command1, _command2 : are commands of the looper. Multiple commands are separat
 p1, p2, ... : optional parameters of commands. Each one may be a number or text
 
 ```
-A-100 : _menu_part_play 0
-B-100 : _menu_part_play 1
+A-100 : _menu_part_select 0
+B-100 : _menu_part_select 1
 ...
 A-2 : _menu_part overdub
 B-2 : _menu_part overdub

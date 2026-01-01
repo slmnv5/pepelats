@@ -1,4 +1,5 @@
 # Pepelats - Audio looper and drum machine on Raspberry Pi
+# latest release r1.1.1
 
 ### Looper
 
@@ -10,7 +11,7 @@
 - Full history of "undo/redo" for each part, not only the latest change
 - Parts and their loops may be deleted/cleared on the run
 - Silencing and re-arranging of loops in song parts
-- Loading saving of songs
+- Loading and saving of songs
 - Delay tolerance - late switching of loops by 0.1 sec. or less is acceptable
 - Binary distribution. Installation and configuration simplified
 
