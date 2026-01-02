@@ -8,11 +8,6 @@ nohup.out
 #binary files
 main.build
 
-#PyCharm
-.idea
-.run
-*.iml
-
 #looper
 license.ini
 user.ini
