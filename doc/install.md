@@ -10,7 +10,7 @@ latest
 version name on the project website.
 
 ```
-
+sudo apt install libportaudio2
 wget https://github.com/slmnv5/pepelats/archive/refs/tags/r1.1.1.zip
 unzip r1.1.1.zip -d ~/pepelats
 sudo hostnamectl set-hostname loop
@@ -23,13 +23,10 @@ not needed if you will use web interface.
 To enable auto start edit ~/.bashrc file, append this line at the end.
 
 ```
-# if only using web interface
-$HOME/pepelats/loop.sh --web
+# if using computer keyboard instead of MIDI input
+$HOME/pepelats/loop.sh --kbd
 
-# if only using LCD screen
-$HOME/pepelats/loop.sh --lcd
-
-# application will check and select interface
+# if using MIDI input
 $HOME/pepelats/loop.sh
 
 ```
@@ -51,12 +48,8 @@ If MIDI controller is missing you may use "--kbd" parameter in looper start up c
 
 Below parameters may be used:
 
-- --lcd -- use screen for looper state
-- --web -- use web page for looper state
 - --kbd -- use computer keyboard as MIDI controller. Keys are configured in user.ini file. Default six keys are:
   1,2,3,4,q,w
-- --info -- verbose logging
-- --debug -- more verbose logging
 
 ## Important files and directories
 
