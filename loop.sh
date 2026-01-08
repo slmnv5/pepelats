@@ -8,40 +8,35 @@ fi
 cd "$(dirname "$0")" || exit 1
 
 SAVE_SONG=~/save_song
-LOG=./log.txt
-OLD=./old.txt
-USR=./user.ini
-LIC=./license.ini
 
 mkdir "$SAVE_SONG" 2>/dev/null
 chmod a+rw "$SAVE_SONG/*" 2>/dev/null
 
-if [ ! -f "$LIC" ]; then
-  echo -e "\n\n owner: myname@mail.com\n\n license: 9c-9b-f1-20-39-45-de-40\n\n" > "$LIC"
+if [ ! -f ./license.ini ]; then
+  echo -e "\n\n owner: myname@mail.com\n\n license: 9c-9b-f1-20-39-45-de-40\n\n" > ./license.ini
 fi
 
-touch "$LOG" "$USR" "$LIC"
+if [ ! -f ./user.ini ]; then
+  cp -v ./main.ini ./user.ini
+fi
+
+LOG=./log.txt
+OLD=./old.txt
+touch "$LOG"
 cat "$LOG" >> "$OLD"
 tail -n 1000 "$OLD" > "$LOG"
 mv "$LOG" "$OLD"
 echo "" > "$LOG"
-SCRIPT_ARGS="$*"
 
-function get_args {
-  FILE_ARGS=$(tr '\n\r\t' ' ' < ./start.txt)
-  ARGS="$FILE_ARGS $SCRIPT_ARGS"
-  USE_SUDO=""
-  if [[ "$ARGS" == *"--kbd"* ]]; then
-    USE_SUDO="sudo -E"
-  fi
-  if [ ! -f ./main.dist/main.bin ]; then
-    export KILL_CMD="$USE_SUDO pkill -9 python"
-    export RUN_CMD="$USE_SUDO python ./src/main.py $ARGS"
-  else
-    export KILL_CMD="$USE_SUDO pkill -9 main.bin"
-    export RUN_CMD="$USE_SUDO ./main.dist/main.bin $ARGS"
-  fi
-}
+if [ ! -f ./main.dist/main.bin ]; then
+  export KILL_CMD="sudo -E pkill -9 python"
+  export RUN_CMD="sudo -E python ./src/main.py"
+else
+  export KILL_CMD="sudo -E pkill -9 main.bin"
+  export RUN_CMD="sudo -E ./main.dist/main.bin"
+fi
+
+
 function kill_conn {
   while true; do
     conn=$(sudo fuser -n tcp -v 8000)
@@ -57,7 +52,6 @@ sudo dmesg -D
 stty -echo
 sudo setfont Uni1-VGA32x16
 while true; do
-  get_args
   echo "===== $RUN_CMD" >> $LOG
   echo "===== $(date)" >> $LOG
   clear
