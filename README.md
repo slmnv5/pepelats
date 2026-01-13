@@ -3,30 +3,29 @@
 
 ### Looper
 
-- Multiple song parts (intro/verse/chorus/bridge). Each part consists of any number of parallel loops
-- Parallel loops of variable length: 1, 2, 3 ... of the 1-st loop in a part
-- Quantization - loop's length, start/stop time is adjusted to a bar or main loop
-- Full history of "undo/redo" for each part, not only the latest change
-- Parts and their loops may be deleted or cleared on the run
-- Silencing and re-arranging of loops in song parts
-- Loading and saving of songs
-- Delay tolerance - late switching of loops by 0.1 sec. or less is acceptable
-- Binary distribution, installation and configuration are simple
+- Multiple song parts (intro/verse/chorus/...). Parts have any number of parallel loops
+- Parallel loops of variable length
+- Quantization - loop's length, start/stop time is adjusted
+- Full history of "undo/redo" for each part
+- Parts may be cleared, loops may be deleted on the run
+- Silencing and re-arranging of loops in a part
+- Loading, saving of songs
+- Delay tolerance - allows switching late up to 0.1s
+- Binary distribution, installation is simple
 
 ### Looper control and display
 
 - Display looper state in attached screen (ex. 3.5" LCD screen) or in a web browser
 - Control of looper via MIDI or computer keyboard
-- User configurable menu files. Number of song parts and MIDI controller buttons may be changed
-- Scrollable lists to select options using MIDI control
+- User configurable menu files: number of song parts, MIDI commands, etc
 
 ### Drum machine
 
 - Drum machine with tree drum types: Style, MIDI and Loop
-- MIDI drum may sync and control external MIDI device, good for IOS drums.
-- Style drum is pattern based, have adjustable swing parameter
-- Loop drum uses the first song part as drums, good for beatboxing
+- MIDI drum may sync and control external MIDI client, e.g. IOS app
+- Style drum is pattern based
+- Loop drum uses one song part as drums
 - Style patterns and MIDI commands are plain text files easy to edit
-- Drums have volume control, random variations and can play breaks/fills
+- Drums have volume control, swing parameter, variations and breaks/fills
 
 ### [Read more ... ](./doc/contents.md)

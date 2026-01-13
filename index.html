@@ -4,100 +4,109 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="expires" content="0" />
-    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="expires" content="0"/>
+    <meta http-equiv="pragma" content="no-cache"/>
     <link rel="stylesheet" type="text/css" href="html/main.css">
     <title>Pepelats Looper</title>
 </head>
 
 <body>
-    <table width="100%">
-        <tr>
-            <td width="100%">
-                <a href="html/looper.html">Looper</a><br>
-            </td>
-        </tr>
-    </table>
-    <table width="100%">
-        <tr>
-            <td width="50%">
-                <a href="old.txt">Past logs</a><br>
-                <a href="log.txt">Current log</a><br>
-                <a href="main.ini">Factory configuration</a><br>
-            </td>
-            <td width="50%">
-                <a href="config/menu/play.ini">Play menu</a><br>
-                <a href="config/menu/song.ini">Song menu</a><br>
-                <a href="config/menu/serv.ini">Service menu</a><br>
-            </td>
-        </tr>
-    </table>
+<table width="100%">
+    <tr>
+        <td width="100%">
+            <a href="html/looper.html">Looper</a><br>
+        </td>
+    </tr>
+</table>
+<table width="100%">
+    <tr>
+        <td width="33%">
+            <a href="old.txt">Past logs</a><br>
+            <a href="log.txt">Current log</a><br>
+            <a href="main.ini">Sample config</a><br>
+            <a href="user.ini">User config</a><br>
+            <a href="license.ini">License</a><br>
+        </td>
+        <td width="34%">
+            Menu<br>
+            <a href="config/menu/play.ini">Play menu</a><br>
+            <a href="config/menu/song.ini">Song menu</a><br>
+            <a href="config/menu/serv.ini">Service menu</a><br>
+        </td>
+        <td width="33%">
+            Drum samples<br>
+            <a href="config/drum/loop/loop_2l.ini">Loop</a><br>
+            <a href="config/drum/midi/ValGP100.ini">MIDI</a><br>
+            <a href="config/drum/style/Ballad.ini">Style</a><br>
+        </td>
 
+    </tr>
+</table>
+
+
+<p></p>
+<p></p>
+
+<form id="editFileForm">
+    <label for="dropList">File to edit:</label>
+    <select id="dropList" name="dropList" style="font-size:0.5em" onchange="loadFile()">
+        <option value="">Select file...</option>
+        <option value="user.ini">User config</option>
+        <option value="license.ini">User license</option>
+    </select>
+    <button id="saveButton" type="button" onclick="saveFile()" style="font-size:0.5em">Save File</button>
     <p></p>
-    <p></p>
-
-    <form id="editFileForm">
-        <label for="dropList">File to edit:</label>
-        <select id="dropList" name="dropList" style="font-size:0.5em" onchange="loadFile()">
-            <option value="">Select file...</option>
-            <option value="user.ini">User config</option>
-            <option value="license.ini">User license</option>
-            <option value="start.txt">Start options</option>
-        </select>
-        <button id="saveButton" type="button" onclick="saveFile()" style="font-size:0.5em">Save File</button>
-        <p></p>
-        <textarea id="fileContent" name="fileContent" style="width:100%; height:16vw; font-size:0.5em"></textarea>
-    </form>
+    <textarea id="fileContent" name="fileContent" style="width:100%; height:16vw; font-size:0.5em"></textarea>
+</form>
 
 
-
-    <script>
-
-
-        function loadFile() {
-            const editForm = document.getElementById('editFileForm');
-            var fileToEdit = editForm.dropList.value;
-            if (fileToEdit == "") {
-                editForm.reset();
-                return;
-            }
-            fetch(fileToEdit).then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not OK for file: ' + fileToEdit);
-                }
-                return response.text();
-            }).then(response => {
-                editForm.fileContent.value = response;
-            }).catch(error => {
-                console.error('Error loading file: ', error);
-            });
-        }
+<script>
 
 
-        function saveFile() {
-            const editForm = document.getElementById('editFileForm');
-            var fileToEdit = editForm.dropList.value;
-            if (fileToEdit == "") {
-                editForm.reset();
-                return;
-            }
-            var fileContent = editForm.fileContent.value;
-            fetch(fileToEdit, {
-                method: "POST",
-                headers: { "Content-Type": "text/plain; charset=UTF-8" },
-                //headers: { "Content-Type": "application/json; charset=UTF-8" },                
-                body: fileContent
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not OK for file: ' + fileToEdit);
-                }
-                return response.text();
-            }).catch(error => {
-                console.error('Error saving file: ', error);
-            });
+    function loadFile() {
+        const editForm = document.getElementById('editFileForm');
+        var fileToEdit = editForm.dropList.value;
+        if (fileToEdit == "") {
             editForm.reset();
+            return;
         }
-    </script>
+        fetch(fileToEdit).then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not OK for file: ' + fileToEdit);
+            }
+            return response.text();
+        }).then(response => {
+            editForm.fileContent.value = response;
+        }).catch(error => {
+            console.error('Error loading file: ', error);
+        });
+    }
+
+
+    function saveFile() {
+        const editForm = document.getElementById('editFileForm');
+        var fileToEdit = editForm.dropList.value;
+        if (fileToEdit == "") {
+            editForm.reset();
+            return;
+        }
+        var fileContent = editForm.fileContent.value;
+        fetch(fileToEdit, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain; charset=UTF-8" },
+            //headers: { "Content-Type": "application/json; charset=UTF-8" },
+            body: fileContent
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not OK for file: ' + fileToEdit);
+            }
+            return response.text();
+        }).catch(error => {
+            console.error('Error saving file: ', error);
+        });
+        editForm.reset();
+    }
+</script>
 
 </body>
 

@@ -5,12 +5,10 @@ if pidof -o %PPID -x loop.sh > /dev/null; then
     exit 1
 fi
 
+mkdir ~/save_song
+sudo chmod a+rw ~/save_song/*
+
 cd "$(dirname "$0")" || exit 1
-
-SAVE_SONG=~/save_song
-
-mkdir "$SAVE_SONG" 2>/dev/null
-chmod a+rw "$SAVE_SONG/*" 2>/dev/null
 
 if [ ! -f ./license.ini ]; then
   echo -e "\n\n owner: myname@mail.com\n\n license: 9c-9b-f1-20-39-45-de-40\n\n" > ./license.ini
@@ -21,19 +19,24 @@ if [ ! -f ./user.ini ]; then
 fi
 
 LOG=./log.txt
-OLD=./old.txt
-touch "$LOG"
-cat "$LOG" >> "$OLD"
-tail -n 1000 "$OLD" > "$LOG"
-mv "$LOG" "$OLD"
-echo "" > "$LOG"
+
+cat "$LOG" >> ./old.txt
+tail -n 1000 ./old.txt > ./tmp.txt
+mv ./tmp.txt ./old.txt
+echo "======= $(date) =======" > $LOG
+
+# sudo required for keyboard input
+SUDO=""
+if [[ "$*" == *"--kbd"* ]]; then
+  SUDO="sudo -E"
+fi
 
 if [ ! -f ./main.dist/main.bin ]; then
-  export KILL_CMD="sudo -E pkill -9 python"
-  export RUN_CMD="sudo -E python ./src/main.py"
+  export KILL_CMD="$SUDO pkill -9 python"
+  export RUN_CMD="$SUDO python ./src/main.py"
 else
-  export KILL_CMD="sudo -E pkill -9 main.bin"
-  export RUN_CMD="sudo -E ./main.dist/main.bin"
+  export KILL_CMD="$SUDO pkill -9 main.bin"
+  export RUN_CMD="$SUDO ./main.dist/main.bin"
 fi
 
 
@@ -52,8 +55,7 @@ sudo dmesg -D
 stty -echo
 sudo setfont Uni1-VGA32x16
 while true; do
-  echo "===== $RUN_CMD" >> $LOG
-  echo "===== $(date)" >> $LOG
+  echo "=== $RUN_CMD" >> $LOG
   clear
   $RUN_CMD 2>>$LOG
   #kill_conn

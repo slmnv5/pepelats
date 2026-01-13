@@ -5,7 +5,7 @@
 There are plenty of musical styles in directory: [config/drum/style](./../config/drum/style)
 Example: [Pop.ini](../config/drum/style/Pop.ini)
 
-WAV sound samples are stored in [config/drum/samples](./../config/drum/wav)
+WAV sound samples are stored in [config/drum/samples](../etc/wav)
 
 ### Drum patterns
 
