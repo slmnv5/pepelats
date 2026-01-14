@@ -1,89 +1,89 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-	<title>Table of Contents</title>
-	<link rel="stylesheet" href="doc.css">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Table of Contents</title>
+    <link rel="stylesheet" href="doc.css">
 </head>
-<body lang="en-US" dir="ltr"><h1># Pepelats – audio looper with
-drums on Raspberry Pi</h1>
+<body lang="en-US" dir="ltr"><h1>Pepelats – audio looper with
+    drums on Raspberry Pi</h1>
 <ol>
-	<li><p>[<a href="installation.html">Installation</a>]</p></li>
-	<li><p>[<a href="configuration.html">Main configuration</a>] 
-	</p></li>
-	<li><p>[<a href="midi_controller.html">MIDI controller</a>] 
-	</p></li>
-	<li><p>[<a href="views.html">Views</a>]</p></li>
-	<li><p>[<a href="menu_layout.html">Menu configuration</a>] 
-	</p></li>
-	<li><p>[<a href="drums.html">Drums</a>] 
-	</p></li>
-	<li><p>[<a href="song.html">Song</a>]</p></li>
-	<li><p>[<a href="screen.html">Screen</a>] 
-	</p></li>
+    <li><p>[<a href="installation.html">Installation</a>]</p></li>
+    <li><p>[<a href="configuration.html">Main configuration</a>]
+    </p></li>
+    <li><p>[<a href="midi_controller.html">MIDI controller</a>]
+    </p></li>
+    <li><p>[<a href="views.html">Views</a>]</p></li>
+    <li><p>[<a href="menu_layout.html">Menu configuration</a>]
+    </p></li>
+    <li><p>[<a href="drums.html">Drums</a>]
+    </p></li>
+    <li><p>[<a href="song.html">Song</a>]</p></li>
+    <li><p>[<a href="screen.html">Screen</a>]
+    </p></li>
 </ol>
 <p>
-<br/>
+    <br/>
 </p>
 <p>Features of the looper are listed below and explained more details
-in specific documents.</p>
+    in specific documents.</p>
 <h3>Looper features</h3>
 <ul>
-	<li><p>Multiple song parts (intro/verse/chorus/...). Parts have any
-	number of parallel loops</p></li>
-	<li><p>Parallel loops of variable length. Loops play together inside
-	song part unless some of the loops are muted</p></li>
-	<li><p>Quantization, loop's length, start/stop time is adjusted.
-	Example: If a new loop is not exactly 2 bars log it will be
-	truncated or extended with silence.</p></li>
-	<li><p>Full history of undo/redo for each part. When adding new loop
-	all saved undone loops, if any, are deleted – this is the only way
-	to keep it simple. 
-	</p></li>
-	<li><p>Parts may be cleared, loops may be deleted on the run. There
-	are two different views for parts and loops.</p></li>
-	<li><p>Silencing, deleting and re-arranging of loops in a part. A
-	loop from the middle may be moved to the end to become the first
-	loop to undo.</p></li>
-	<li><p>Loading, saving of songs. Songs saved along with their drums.</p></li>
-	<li><p>Delay tolerance – allows switching late up to 0.1s</p></li>
-	<li><p>Binary distribution, installation is simple. License is
-	required for full functionality.</p></li>
+    <li><p>Multiple song parts (intro/verse/chorus/...). Parts have any
+        number of parallel loops</p></li>
+    <li><p>Parallel loops of variable length. Loops play together inside
+        song part unless some of the loops are muted</p></li>
+    <li><p>Quantization, loop's length, start/stop time is adjusted.
+        Example: If a new loop is not exactly 2 bars log it will be
+        truncated or extended with silence.</p></li>
+    <li><p>Full history of undo/redo for each part. When adding new loop
+        all saved undone loops, if any, are deleted – this is the only way
+        to keep it simple.
+    </p></li>
+    <li><p>Parts may be cleared, loops may be deleted on the run. There
+        are two different views for parts and loops.</p></li>
+    <li><p>Silencing, deleting and re-arranging of loops in a part. A
+        loop from the middle may be moved to the end to become the first
+        loop to undo.</p></li>
+    <li><p>Loading, saving of songs. Songs saved along with their drums.</p></li>
+    <li><p>Delay tolerance – allows switching late up to 0.1s</p></li>
+    <li><p>Binary distribution, installation is simple. License is
+        required for full functionality.</p></li>
 </ul>
 <h3>Looper control and display</h3>
 <ul>
-	<li><p>Display looper state in attached screen (ex. 3.5&quot; LCD
-	screen) or in a web browser. Web browser is preferable as you can
-	edit configuration. Screen is more convenient if you have small
-	screen attached to looper and do never change configuration. 
-	</p></li>
-	<li><p>Control of looper via MIDI or computer keyboard.</p></li>
-	<li><p>User configurable menu files: number of song parts, MIDI
-	commands, etc. Menu is just a text file – you can look to
-	understand what buttons do.</p></li>
+    <li><p>Display looper state in attached screen (ex. 3.5&quot; LCD
+        screen) or in a web browser. Web browser is preferable as you can
+        edit configuration. Screen is more convenient if you have small
+        screen attached to looper and do never change configuration.
+    </p></li>
+    <li><p>Control of looper via MIDI or computer keyboard.</p></li>
+    <li><p>User configurable menu files: number of song parts, MIDI
+        commands, etc. Menu is just a text file – you can look to
+        understand what buttons do.</p></li>
 </ul>
 <h3>Drum machine</h3>
 <ul>
-	<li><p>Drum machine with tree drum types: Style, MIDI and Loop</p></li>
-	<li><p>MIDI drum may sync and control external MIDI client, e.g. IOS
-	app. Midi clock is not supported, it may use start/stop, song
-	position, and sys-ex messages to synchronize.</p></li>
-	<li><p>Style patterns and MIDI commands are plain text files easy to
-	edit. Style pattern looks like step sequencer in a text file. 
-	</p></li>
-	<li><p>Loop drum uses one song part as drums. It plays along with
-	other parts unless is stopped.</p></li>
-	<li><p>All drums have volume control, random variations and
-	breaks/fills</p></li>
+    <li><p>Drum machine with tree drum types: Style, MIDI and Loop</p></li>
+    <li><p>MIDI drum may sync and control external MIDI client, e.g. IOS
+        app. Midi clock is not supported, it may use start/stop, song
+        position, and sys-ex messages to synchronize.</p></li>
+    <li><p>Style patterns and MIDI commands are plain text files easy to
+        edit. Style pattern looks like step sequencer in a text file.
+    </p></li>
+    <li><p>Loop drum uses one song part as drums. It plays along with
+        other parts unless is stopped.</p></li>
+    <li><p>All drums have volume control, random variations and
+        breaks/fills</p></li>
 </ul>
 <p>
-<br/>
+    <br/>
 </p>
 <p>
-<br/>
+    <br/>
 </p>
 <p>
-<br/>
+    <br/>
 </p>
 </body>
 </html>
