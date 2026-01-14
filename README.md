@@ -30,4 +30,4 @@
 
 ### [Read more ... ](docs/contents.md)
 
-### [Web documentation](./html/docs/contents.html)
+### [Web documentation](./docs/contents.html)
