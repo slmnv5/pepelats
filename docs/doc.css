@@ -1,17 +1,24 @@
 body {
-  background-color: lightblue;
-  font-family: Arial, sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 1.125rem; /* ~18px for better readability */
+  line-height: 1.6;
+  color: #333;
+  max-width: 100ch;
+  margin: 0 auto; /* Centers the text block */
+  padding: 2rem;
 }
 
-h1 {
-  color: navy;
-  text-align: center;
+h1, h2, h3 {
+  text-wrap: balance; /* Prevents uneven title lines */
+  line-height: 1.2;
+  margin-top: 2em;
 }
 
 p {
-  font-size: 18px;
-  color: darkslategray;
+  text-wrap: pretty; /* Prevents orphans in paragraphs */
+  margin-bottom: 1.5em;
 }
+
 
 .bash_code {
     color: white;

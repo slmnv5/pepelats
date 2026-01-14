@@ -2,21 +2,14 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-
-    <meta name="generator" content="LibreOffice 25.2.7.2 (Windows)"/>
-    <meta name="created" content="00:00:00"/>
-    <meta name="changed" content="2026-01-14T02:48:06.054405600"/>
-    <meta name="created" content="00:00:00">
     <title>MIDI controller</title>
     <link rel="stylesheet" href="doc.css">
 </head>
 <body lang="en-CA" dir="ltr"><h1>MIDI controller</h1>
-<p><br/>
+<p>
     <br/>
-
 </p>
-<h3>### Multi tapping
-</h3>
+<h3>### Multi tapping</h3>
 <p>There are only few buttons on foot controllers and number of
     looper commands is much bigger. To deal with it multi tapping is
     used. If delay between taps is less than 0.5 seconds they belong to
@@ -43,23 +36,19 @@
     commands – start playing or recording. But for other commands like
     changing volume it is useful.
 </p>
-<p><br/>
+<p>
     <br/>
-
 </p>
-<h3><b>### MIDI input controller restrictions</b>
-</h3>
+<h3>### MIDI input controller restrictions</h3>
 <p>Midi input controller must send notes ON/OFF with velocity &gt;10
     because lower velocity values are used in multi tapping. All notes
     with velocity &gt;10 are converted to velocity of 100 and this value
     is used in the menu configuration files.
 </p>
-<p><br/>
+<p>
     <br/>
-
 </p>
-<h3>### MIDI input controller configurations
-</h3>
+<h3>### MIDI input controller configurations</h3>
 <p>Foot controller is coupled with three menu configuration files
     which translate MIDI notes and multiple taps into looper command, see
     [<a href="menu_layout.html">Menu configuration</a>]</p>
@@ -73,16 +62,14 @@
         pedal.
     </p></li>
 </ul>
-<p><br/>
+<p>
     <br/>
-
 </p>
 <p>Velocity 100 is the standard velocity assigned to all original
     MIDI notes from controller. Velocity 1, 2, 3, ... 10 is velocity of
     counted note as explained above.
 </p>
-<h3>### Control change messages
-</h3>
+<h3>### Control change messages</h3>
 <p>If foot controller sends control change (CC) messages from
     expression pedal the looper can convert them into notes. As example
     CC 12 will be converted to note 12 ON/OFF.
@@ -92,18 +79,15 @@
     ON/OFF momentarily switches into these inputs will send CC messages
     converted into note messages.
 </p>
-<p><br/>
+<p>
     <br/>
-
 </p>
-<p><br/>
+<p>
     <br/>
-
 </p>
-<h3>### [<a href="contents.html">Table of Contents</a>]</h3>
-<p><br/>
+<h3>### [<a href="index.html">Table of Contents</a>]</h3>
+<p>
     <br/>
-
 </p>
 </body>
 </html>
