@@ -28,6 +28,5 @@
 - Style patterns and MIDI commands are plain text files easy to edit
 - Drums have volume control, swing parameter, variations and breaks/fills
 
-### [Read more ... ](docs/contents.md)
 
-### [Web documentation](./docs/contents.html)
+### [Web documentation](https://slmnv5.github.io/pepelats/main.html)
