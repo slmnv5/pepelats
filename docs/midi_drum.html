@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+
+    <meta name="generator" content="LibreOffice 25.2.7.2 (Windows)"/>
+    <meta name="created" content="00:00:00"/>
+    <meta name="changed" content="2026-01-14T02:26:48.300540000"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>MIDI drum</title>
+    <link rel="stylesheet" href="doc.css">
+</head>
+<body lang="en-CA" dir="ltr"><h1>MIDI drum</h1>
+<p><b>MIDI drum</b> sends MIDI messages to external drum machine to
+    synchronize it with the looper, change drum volume, program number,
+    etc. External drum machine must implement these messages.
+</p>
+<p>Alternatively more processing of custom MIDI messages may be done
+    with IOS application (e.g. MidiFire) to convert them to usable form.
+</p>
+<p>Each set of MIDI messages along with the MIDI OUT port name saved
+    in configuration file.
+</p>
+<p>There are few predefined configurations, details explained below.</p>
+<p>[<a href="../config/drum/midi/ValGP100.ini">ValGP-100.ini</a>]
+    - Valeton GP100 guitar pedal with drums
+</p>
+<p>[<a href="../config/drum/midi/MidiFire.ini">MidiFire.ini</a>]
+    – MidiFire IOS application that sets dynamic MIDI clock and can
+    synchronize other applications
+</p>
+<p>[<a href="../config/drum/midi/FunkBox.ini">FunkBox.ini</a>] –
+    Funk Box IOS drum application</p>
+<p><br/>
+    <br/>
+
+</p>
+<h3>### MIDI messages</h3>
+<p> There are six messages to control MIDI device, each may contain
+    variables:
+</p>
+<ul>
+    <li><p>bpm_msg – sent once when the BMP is defined (when loading
+        song, recording 1st loop)</p></li>
+    <li><p>bar_msg – sent at start of each bar, there is no start
+        message, <b>bar_msg</b> is used instead</p></li>
+    <li><p>stop_msg – stop external drum
+    </p></li>
+    <li><p>volume_msg – volume (ex. CC #7 from 0 to 127)
+    </p></li>
+    <li><p>prog_list – list of programs on external device, =[0] if it
+        is missing
+    </p></li>
+    <li><p>prog_msg – select a program from <b>prog_list</b></p>
+        <p></p></li>
+</ul>
+<h3> ### MIDI variables</h3>
+<p>Six variables used in messages (all upper case names):
+</p>
+<p>BPM – beats per minute, ex. 123.56
+</p>
+<p>BPM_LIST - [0, 1, 2, 3, 5, 6] - is byte list of BPM = 0123.56.
+    List length = 6</p>
+<p>PROG – program number in the <b>prog_list</b>, value is: 0 =&lt;
+    <b>PROG</b> &lt; length of <b>prog_list</b>
+</p>
+<p>VOLUME – volume from 0.0 to 1.0
+</p>
+<p>COUNT – count of bars since the latest start
+</p>
+<p><b>### MIDI out port for MIDI drum</b></p>
+<p> Each drum configuration file has option &quot;<b>midi_out</b>&quot;.
+    This is MIDI port name (or part of the name) used to send MIDI drum
+    messages. If port is not available (device is not connected) the drum
+    still be loaded but messages not sent. Drum configuration view will
+    show port drum name as &quot;None&quot;. After MIDI drum is connected
+    you need to reload song or set drum configuration file so that looper
+    will connect to the port.
+</p>
+<p><br/>
+    <br/>
+
+</p>
+<h3>### [<a href="contents.html">Table of Contents</a>]</h3>
+</body>
+</html>

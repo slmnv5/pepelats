@@ -1,5 +1,5 @@
 # Pepelats - Audio looper and drum machine on Raspberry Pi
-# latest release r1.1.5
+ 
 
 ### Looper
 
@@ -28,4 +28,6 @@
 - Style patterns and MIDI commands are plain text files easy to edit
 - Drums have volume control, swing parameter, variations and breaks/fills
 
-### [Read more ... ](./doc/contents.md)
+### [Read more ... ](docs/contents.md)
+
+### [Web documentation](./html/doc/contents.html)

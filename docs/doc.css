@@ -1,0 +1,26 @@
+body {
+  background-color: lightblue;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: navy;
+  text-align: center;
+}
+
+p {
+  font-size: 18px;
+  color: darkslategray;
+}
+
+.bash_code {
+    color: white;
+    font-family: 'Arial', sans-serif;
+    font-size: 1.2rem;         /* Slightly larger text */
+    line-height: 1.6;          /* Improved readability */
+    background-color: black; /* Light grey background */
+    padding: 15px;             /* Space inside the border */
+    border-left: 5px solid #3498db; /* Blue accent border */
+    border-radius: 4px;
+    margin: 20px 0;            /* Space above and below */
+}

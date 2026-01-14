@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+
+    <meta name="generator" content="LibreOffice 25.2.7.2 (Windows)"/>
+    <meta name="created" content="00:00:00"/>
+    <meta name="changed" content="2026-01-14T02:47:21.543988800"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Menu layout</title>
+    <link rel="stylesheet" href="doc.css">
+</head>
+<body lang="en-CA" dir="ltr"><h1>Menu layout</h1>
+<p><br/>
+    <br/>
+
+</p>
+<p>Menu layout translates MIDI notes into looper commands. The layout
+    used is defined in local configuration file [<a href="../user.ini">user.ini</a>].
+</p>
+<p>If this file is missing menu layout it is taken from standard
+    configuration file [<a href="../main.ini">main.ini</a>].
+</p>
+<p>These two files define input MIDI port name(s), number of buttons,
+    MIDI notes (or CC) these buttons send and typing keyboard keys that
+    may be used when MIDI controller is missing.
+</p>
+<p>The menu layout is found in directory: [menu](../config/menu),
+    there are 3 INI files:
+</p>
+<ul>
+    <li><p>[<a href="../config/menu/play.ini">play.ini</a>] -- view
+        for playing and recording of song parts and loops
+    </p></li>
+    <li><p>[<a href="../config/menu/song.ini">song.ini</a>] -- view
+        for managing songs and drums
+    </p></li>
+    <li><p>[<a href="../config/menu/serv.ini">serv.ini</a>] -- view
+        for restart and other service functions
+    </p></li>
+</ul>
+<p>Each view may have several sections that provide different options
+    and MIDI commands.
+</p>
+<p>As an example play view has section [play.0] to work with song
+    parts and [play.1] to work with loops inside one part. Also note that
+    there may be multiple commands separated by colon (:) assigned to a
+    button.</p>
+<p>To know how looper commands are assigned to MIDI notes look at
+    [<a href="input_controller.html">MIDI controller</a>]</p>
+<h3>### Menu hints</h3>
+<p>In each view top row shows drum type and beats per minute. Just
+    below it there are hints for available commands.
+</p>
+<p><br/>
+    <br/>
+
+</p>
+<p><br/>
+    <br/>
+
+</p>
+<h3>### [<a href="contents.html">Table of Contents</a>]</h3>
+</body>
+</html>
