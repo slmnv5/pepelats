@@ -1,12 +1,13 @@
-__pycache__
-.pytest_cache
-.venv
 
 # other
 nohup.out
 
 #binary files
-main.build
+main.build/
+main.dist/
+
+#so library
+lib/
 
 #looper
 license.ini
