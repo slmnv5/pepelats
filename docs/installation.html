@@ -24,15 +24,16 @@
     unzip r1.1.5.zip –d ~/pepelats<br/>
 </p>
 <ul>
-    <li><p>To enable auto start edit start-up
-        configuration and append command below (add --kbd if you use computer keyboard for
-        MIDI input).
+    <li><p>To enable auto start, add at the very end one line.
     </p></li>
 </ul>
 <p class="bash_code">
+    # command to edit file<br/>
     nano ~/.bashrc<br/>
+    # one line to add at the end<br/>
     ~/pepelats/loop.sh<br/>
-    #~/pepelats/loop.sh --kbd<br/>
+    # if using computer keyboard for MIDI input use line below<br/>
+    # ~/pepelats/loop.sh --kbd<br/>
 </p>
 <ul>
     <li><p>The looper shows status on the web page:

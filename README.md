@@ -1,8 +1,9 @@
 # Pepelats - Audio looper and drum machine on Raspberry Pi
  
+### Hardware required
+Raspberry Pi versions: Zero-2W, 3B+, 4, 5
 
 ### Looper
-
 - Multiple song parts (intro/verse/chorus/...). Parts have any number of parallel loops
 - Parallel loops of variable length
 - Quantization - loop's length, start/stop time is adjusted
@@ -14,13 +15,11 @@
 - Binary distribution, installation is simple
 
 ### Looper control and display
-
 - Display looper state in attached screen (ex. 3.5" LCD screen) or in a web browser
 - Control of looper via MIDI or computer keyboard
 - User configurable menu files: number of song parts, MIDI commands, etc
 
 ### Drum machine
-
 - Drum machine with tree drum types: Style, MIDI and Loop
 - MIDI drum may sync and control external MIDI client, e.g. IOS app
 - Style drum is pattern based
