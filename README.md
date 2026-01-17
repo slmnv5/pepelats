@@ -29,4 +29,4 @@
 - Drums have volume control, swing parameter, variations and breaks/fills
 
 
-### [Web documentation](https://slmnv5.github.io/pepelats/index.html)
+### [Web documentation](https://slmnv5.github.io/pepelats/docs/index.html)
