@@ -1,6 +1,7 @@
 
 # other
 nohup.out
+etc/
 
 #binary files
 main.build/
