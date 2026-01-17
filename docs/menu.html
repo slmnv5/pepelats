@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Menu layout</title>
+    <link rel="stylesheet" href="doc.css">
+
+</head>
+<body lang="en-CA" dir="ltr"><h1>Menu</h1>
+<p>
+</p>
+<p>Menu configuration is a simple INI file that does two things:
+    1) translates MIDI notes into looper commands and 2) shows looper state.
+</p>
+<p>
+    To do this it contains MIDI messages and respective commands.
+    Besides that each menu has view description and command to display looper state.
+    There are 3 menu configurations tah you may look at to understand more.
+</p>
+<ul>
+    <li><p>[<a href="../config/menu/play.ini">play.ini</a>] -- play /
+        record / overdub / clear song parts and switching between them. Show
+        loops for song parts. Silence, delete, re-arrange loops. Stop
+        playing</p></li>
+    <li><p>[<a href="../config/menu/song.ini">song.ini</a>] - delete,
+        save, initialize or load song. Select drum configuration.</p></li>
+    <li><p>[<a href="../config/menu/serv.ini">serv.ini</a>] -- Restart
+        looper on web or on screen. Select drum type (Style, MIDI, Loop),
+        adjust drum volume and parameters. Check hardware ID and license
+        information</p></li>
+</ul>
+<p>Each view may have several sections that provide different options
+    and MIDI commands.
+</p>
+<p>As an example play view has section [play.0] to work with song
+    parts and [play.1] to work with loops inside one part. Also note that
+    there may be multiple commands separated by colon (:) assigned to one
+    button.</p>
+<p>To know how buttons are making MIDI commands look at
+    [<a href="midi_controller.html">MIDI controller</a>]</p>
+<h3>Menu view on screen</h3>
+<p>In each view top row shows drum type and beats per minute for current song. Just
+    below it there is description that shows available commands in specific view.
+    Below description there is content - the real information that shows looper state.
+</p>
+<h3>[<a href="index.html">Table of Contents</a>]</h3>
+</body>
+</html>
