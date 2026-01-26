@@ -7,13 +7,13 @@
 </head>
 <body lang="en-CA" dir="ltr"><h1>Installation</h1>
 <ul>
-    <li><p>Install latest <b>Raspberry Pi OS Lite 64 bit</b>. I
+    <li>Install latest <b>Raspberry Pi OS Lite 64 bit</b>. I
         recommend <b>rpi imager</b> that allows to configure Wi–Fi
         (network ID and password) and SSH (enable ssh and set
-        username/password). Also assign host name <b>loop</b>.</p></li>
-    <li><p>Connect via ssh to rpi box and run commands shown below. Here
+        username/password). Also assign host name <b>loop</b>.</li>
+    <li>Connect via ssh to rpi box and run commands shown below. Here
         r1.1.5.zip – is the version to install. Find out the latest
-        version name on the project website.</p></li>
+        version name on the project website.</li>
 </ul>
 <p class="bash_code">
     ssh pi@loop.local<br/>
@@ -24,8 +24,8 @@
     unzip ~/pepelats.zip –d ~/pepelats<br/>
 </p>
 <ul>
-    <li><p>To enable auto start edit one file as shown below.
-    </p></li>
+    <li>To enable auto start edit one file as shown below.
+    </li>
 </ul>
 <p class="bash_code">
     # command to edit file<br/>
@@ -36,31 +36,31 @@
     # ~/pepelats/loop.sh --kbd<br/>
 </p>
 <ul>
-    <li><p>The looper shows status on the web page:
+    <li>The looper shows status on the web page:
         http://loop.local:8000 This page allows you to edit configuration
         files of the looper and see messages in log files. Sample
         configuration is accessible in starting page, use it as example to
-        modify your personal configuration.</p></li>
-    <li><p>Connect MIDI controller and make sure it's name (or part of
+        modify your personal configuration.</li>
+    <li>Connect MIDI controller and make sure it's name (or part of
         name) is listed in file user configuration. Check log file for any
         errors related to MIDI connection or audio device connection. Also
         make sure that MIDI controller notes are listed in file <b>user.ini</b>
         in [LOOPER] section.
-    </p></li>
+    </li>
 </ul>
 <h3>Important files and directories
 </h3>
 <ul>
-    <li><p>log.txt – is the log file for the current session.</p></li>
-    <li><p>old.txt – keeps about 1000 lines from past sessions.</p></li>
-    <li><p>license.ini – user's email and license number</p></li>
-    <li><p>user.ini – user specific configuration [<a href="configuration.html">configuration</a>]</p></li>
-    <li><p>main.ini – sample configuration, not editable</p></li>
-    <li><p>~/save_song – directory where song files are saved
-    </p></li>
-    <li><p>./config – directory where configurations for drums and
+    <li>log.txt – is the log file for the current session.</li>
+    <li>old.txt – keeps about 1000 lines from past sessions.</li>
+    <li>license.ini – user's email and license number</li>
+    <li>user.ini – user specific configuration [<a href="configuration.html">configuration</a>]</li>
+    <li>main.ini – sample configuration, not editable</li>
+    <li>~/save_song – directory where song files are saved
+    </li>
+    <li>./config – directory where configurations for drums and
         menus are stored
-    </p></li>
+    </li>
 </ul>
 <p>
 

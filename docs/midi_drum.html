@@ -17,51 +17,62 @@
     in configuration file.
 </p>
 <p>There are few predefined configurations, details explained below.</p>
-<p>[<a href="../config/drum/midi/ValGP100.ini">ValGP-100.ini</a>]
-    - Valeton GP100 guitar pedal with drums
-</p>
-<p>[<a href="../config/drum/midi/MidiFire.ini">MidiFire.ini</a>]
-    – MidiFire IOS application that sets dynamic MIDI clock and can
-    synchronize other applications
-</p>
-<p>[<a href="../config/drum/midi/FunkBox.ini">FunkBox.ini</a>] –
-    Funk Box IOS drum application</p>
-<p>
+<ul>
 
-</p>
+    <li>[<a href="../config/drum/midi/ValGP100.ini">ValGP-100.ini</a>]
+        - Valeton GP100 guitar pedal with drums
+    </li>
+    <li>[<a href="../config/drum/midi/MidiFire.ini">MidiFire.ini</a>]
+        – MidiFire IOS application that sets dynamic MIDI clock and can
+        synchronize other applications
+    </li>
+    <li>[<a href="../config/drum/midi/FunkBox.ini">FunkBox.ini</a>] –
+        Funk Box IOS drum application
+    </li>
+
+
+</ul>
+
 <h3>MIDI messages</h3>
 <p> There are six messages to control MIDI device, each may contain
     variables:
 </p>
 <ul>
-    <li><p>bpm_msg – sent once when the BMP is defined (when loading
-        song, recording 1st loop)</p></li>
-    <li><p>bar_msg – sent at start of each bar, there is no start
-        message, <b>bar_msg</b> is used instead</p></li>
-    <li><p>stop_msg – stop external drum
-    </p></li>
-    <li><p>volume_msg – volume (ex. CC #7 from 0 to 127)
-    </p></li>
-    <li><p>prog_list – list of programs on external device, =[0] if it
+    <li>bpm_msg – sent once when the BMP is defined (when loading
+        song, recording 1st loop)
+    </li>
+    <li>bar_msg – sent at start of each bar, there is no start
+        message, <b>bar_msg</b> is used instead
+    </li>
+    <li>stop_msg – stop external drum
+    </li>
+    <li>volume_msg – volume (ex. CC #7 from 0 to 127)
+    </li>
+    <li>prog_list – list of programs on external device, =[0] if it
         is missing
-    </p></li>
-    <li><p>prog_msg – select a program from <b>prog_list</b></p>
-        <p></p></li>
+    </li>
+    <li>prog_msg – select a program from <b>prog_list</b></li>
 </ul>
 <h3> MIDI variables</h3>
 <p>Six variables used in messages (all upper case names):
 </p>
-<p>BPM – beats per minute, ex. 123.56
-</p>
-<p>BPM_LIST - [0, 1, 2, 3, 5, 6] - is byte list of BPM = 0123.56.
-    List length = 6</p>
-<p>PROG – program number in the <b>prog_list</b>, value is: 0 =&lt;
-    <b>PROG</b> &lt; length of <b>prog_list</b>
-</p>
-<p>VOLUME – volume from 0.0 to 1.0
-</p>
-<p>COUNT – count of bars since the latest start
-</p>
+<ul>
+
+    <li>BPM – beats per minute, ex. 123.56
+    </li>
+    <li>BPM_LIST - [0, 1, 2, 3, 5, 6] - is byte list of BPM = 0123.56.
+        List length = 6
+    </li>
+    <li>PROG – program number in the <b>prog_list</b>, value is: 0 =&lt;
+        <b>PROG</b> &lt; length of <b>prog_list</b>
+    </li>
+    <li>VOLUME – volume from 0.0 to 1.0
+    </li>
+    <li>COUNT – count of bars since the latest start
+    </li>
+</ul>
+
+
 <h3>MIDI out port for MIDI drum</h3>
 <p> Each drum configuration file has option &quot;<b>midi_out</b>&quot;.
     This is MIDI port name (or part of the name) used to send MIDI drum
