@@ -10,8 +10,8 @@
 <h1>Configuration</h1>
 <p>All configurations except of user license are saved in two files:
 <ul>
-    <li><b>[<a href="../user.ini">user.ini</a>]</b> - user configuration </li>
-    <li><b>[<a href="../main.ini">main.ini</a>]</b> - default configuration </li>
+    <li><b>[<a href="../user.ini">user.ini</a>]</b> - user configuration</li>
+    <li><b>[<a href="../main.ini">main.ini</a>]</b> - default configuration</li>
 </ul>
 <p>If file <b>user.ini</b> does not have specific configuration it is taken from file <b>main.ini</b>.
     Both files have two INI sections: [looper] and [audio] that define configuration of the looper and audio
@@ -27,20 +27,22 @@
 </p>
 
 <h3>MIDI configuration</h3>
-<p>MIDI configuration is saved in [<a href="../user.ini">user.ini</a>] /
-    [<a href="../main.ini">main.ini</a>] has three things:</p>
+<p>MIDI configuration in [<a href="../user.ini">user.ini</a>] /
+    [<a href="../main.ini">main.ini</a>] has only three option:</p>
 <p style="line-height: 100%; orphans: 0; margin-bottom: 0cm"><br/>
 
 </p>
 <ul>
     <li>input MIDI port names separated by comma, part of name may be
         used instead of full name and names are case-sensitive, first
-        matching port is used for MIDI input</li>
+        matching port is used for MIDI input
+    </li>
     <li>Six MIDI notes (or CC numbers) device may send. This is list
-        of integers from 0 to 127. Default values are: 60, 62, 64, 65, 12,
-        13</li>
-    <li>Six typing keyboard keys that may be used when MIDI
-        controller is missing. Default values are: 1, 2, 3, 4, q, w</li>
+        of integers from 0 to 127. Defaults are: 60, 62, 64, 65, 12, 13
+    </li>
+    <li>Six computer keyboard keys to use for MIDI messages. Defaults are: 1, 2, 3, 4, q, w
+        (see [<a href="installation.html">Installation</a>] to use computer keyboard)
+    </li>
 </ul>
 <p>
     <br/>
