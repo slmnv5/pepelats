@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <title>Table of Contents</title>
     <link rel="stylesheet" href="doc.css">
 </head>
-<body lang="en-US" dir="ltr"><h1>Pepelats – audio looper with
+<body dir="ltr"><h1>Pepelats – audio looper with
     drums on Raspberry Pi</h1>
 <ol>
     <li>[<a href="installation.html">Installation</a>]</li>
@@ -17,59 +17,81 @@
     <li>[<a href="screen.html">Screen</a>]</li>
 </ol>
 <p></p>
-<h3>Hardware required</h3>
-Raspberry Pi versions: Zero-2W, 3B+, 4, 5
-
+<h3>Compatible Raspberry Pi</h3>
+<ul>
+    <li>Preferred models: 3B+, Zero-2W</li>
+    <li>Excessive power models: 4, 5</li>
+</ul>
+<h3>MIDI controller, two options</h3>
+<ul>
+    <li>USB computer keyboard</li>
+    <li>MIDI controller with 4 or more buttons sending notes. Connection by BlueTooth or USB</li>
+</ul>
+<h3>Looper status monitor, two options</h3>
+<ul>
+    <li>Web browser on any device connected to the same Wi-Fi as Looper</li>
+    <li>LCD screen connected via HDMI or SPI</li>
+</ul>
 <p></p>
 
 <h3>Looper features</h3>
 <ul>
     <li>Multiple song parts (intro/verse/chorus/...). Parts have any
-        number of parallel loops</li>
+        number of parallel loops
+    </li>
     <li>Parallel loops of variable length. Loops play together inside
-        song part unless some of the loops are muted</li>
+        song part unless some of the loops are muted
+    </li>
     <li>Quantization, loop's length, start/stop time is adjusted.
         Example: If a new loop is not exactly 2 bars log it will be
-        truncated or extended with silence.</li>
+        truncated or extended with silence.
+    </li>
     <li>Full history of undo/redo for each part. When adding new loop
         all saved undone loops, if any, are deleted – this is the only way
         to keep it simple.
     </li>
     <li>Parts may be cleared, loops may be deleted on the run. There
-        are two different views for parts and loops.</li>
+        are two different views for parts and loops.
+    </li>
     <li>Silencing, deleting and re-arranging of loops in a part. A
         loop from the middle may be moved to the end to become the first
-        loop to undo.</li>
+        loop to undo.
+    </li>
     <li>Loading, saving of songs. Songs saved along with their drums.</li>
     <li>Delay tolerance – allows switching late up to 0.1s</li>
     <li>Binary distribution, installation is simple. License is
-        required for full functionality.</li>
+        required for full functionality.
+    </li>
 </ul>
 <h3>Looper control and display</h3>
 <ul>
     <li>Display looper state in attached screen (ex. 3.5&quot; LCD
-        screen) or in a web browser. Web browser is preferable as you can
-        edit configuration. Screen is more convenient if you have small
+        screen) or in a Web browser. Web is preferable as it allows
+        editing configuration. Screen is more convenient if you have small
         screen attached to looper and do never change configuration.
     </li>
     <li>Control of looper via MIDI or computer keyboard.</li>
     <li>User configurable menu files: number of song parts, MIDI
         commands, etc. Menu is just a text file – you can look to
-        understand what buttons do.</li>
+        understand what buttons do.
+    </li>
 </ul>
 <h3>Drum machine</h3>
 <ul>
     <li>Drum machine with tree drum types: Style, MIDI and Loop</li>
     <li>MIDI drum may sync and control external MIDI client, e.g. IOS
         app. Midi clock is not supported, it may use start/stop, song
-        position, and sys-ex messages to synchronize.</li>
+        position, and sys-ex messages to synchronize.
+    </li>
     <li>Style patterns and MIDI commands are plain text files easy to
         edit. Style pattern looks like step sequencer in a text file.
     </li>
     <li>Loop drum uses one song part as drums. It plays along with
-        other parts unless is stopped.</li>
+        other parts unless is stopped.
+    </li>
     <li>All drums have volume control, random variations and
-        breaks/fills</li>
+        breaks/fills
+    </li>
 </ul>
 <p></p>
 </body>

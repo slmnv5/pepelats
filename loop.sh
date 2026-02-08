@@ -11,7 +11,7 @@ sudo chmod a+rw ~/save_song/*
 cd "$(dirname "$0")" || exit 1
 
 if [ ! -f ./license.ini ]; then
-  echo -e "\n\n owner: myname@mail.com\n\n license: 9c-9b-f1-20-39-45-de-40\n\n" > ./license.ini
+  echo -e "\n\n owner: myname@mail.com\n\n license: 9c-9b-f1-21-22-23-ab-cd\n\n" > ./license.ini
 fi
 
 if [ ! -f ./user.ini ]; then
@@ -26,10 +26,7 @@ mv ./tmp.txt ./old.txt
 echo "======= $(date) =======" > $LOG
 
 # sudo required for keyboard input
-SUDO=""
-if [[ "$*" == *"--kbd"* ]]; then
-  SUDO="sudo -E"
-fi
+SUDO="sudo -E"
 
 if [ ! -f ./main.dist/main.bin ]; then
   export KILL_CMD="$SUDO pkill -9 python"
@@ -40,16 +37,6 @@ else
 fi
 
 
-function kill_conn {
-  while true; do
-    conn=$(sudo fuser -n tcp -v 8000)
-    echo "$conn ======> " >> "$LOG"
-    sudo netstat -pnat | grep 8000 >> "$LOG"
-    if [ -z "$conn" ]; then return; fi
-    sudo fuser -k  8000/tcp
-    sleep 2
-  done
-}
 # disable under voltage error on screen, disable typing echo
 sudo dmesg -D
 stty -echo
@@ -58,8 +45,6 @@ while true; do
   echo "=== $RUN_CMD" >> $LOG
   clear
   $RUN_CMD 2>>$LOG
-  #kill_conn
-
   sleep 5
   $KILL_CMD 2>/dev/null
 done

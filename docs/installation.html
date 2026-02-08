@@ -1,19 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <title>Installation</title>
     <link rel="stylesheet" href="doc.css">
 </head>
-<body lang="en-CA" dir="ltr"><h1>Installation</h1>
+<body dir="ltr"><h1>Installation</h1>
 <ul>
     <li>Install latest <b>Raspberry Pi OS Lite 64 bit</b>. I
         recommend <b>rpi imager</b> that allows to configure Wi–Fi
         (network ID and password) and SSH (enable ssh and set
-        username/password). Also assign host name <b>loop</b>.</li>
+        username/password). Also assign host name <b>loop</b>.
+    </li>
     <li>Connect via ssh to rpi box and run commands shown below. Here
         r1.1.5.zip – is the version to install. Find out the latest
-        version name on the project website.</li>
+        version name on the project website.
+    </li>
 </ul>
 <p class="bash_code">
     ssh pi@loop.local<br/>
@@ -32,22 +34,22 @@
     nano ~/.bashrc<br/>
     # one line to add at the end<br/>
     ~/pepelats/loop.sh<br/>
-    # if using computer keyboard for MIDI input use line below<br/>
-    # ~/pepelats/loop.sh --kbd<br/>
 </p>
-<ul>
-    <li>The looper shows status on the web page:
-        http://loop.local:8000 This page allows you to edit configuration
-        files of the looper and see messages in log files. Sample
-        configuration is accessible in starting page, use it as example to
-        modify your personal configuration.</li>
-    <li>Connect MIDI controller and make sure it's name (or part of
-        name) is listed in file user configuration. Check log file for any
-        errors related to MIDI connection or audio device connection. Also
-        make sure that MIDI controller notes are listed in file <b>user.ini</b>
-        in [LOOPER] section.
-    </li>
-</ul>
+
+<p>The looper shows status on the web page:
+    http://loop.local:8000 This page allows you to edit configuration
+    files of the looper and see messages in log files. Sample
+    configuration is accessible in starting page, use it as example to
+    modify your personal configuration.
+</p>
+<p>Connect MIDI controller and make sure it's name (or part of
+    name) is listed in file user configuration. Check log file for any
+    errors related to MIDI connection or audio device connection. Also
+    make sure that MIDI controller notes are listed in file <b>user.ini</b><br/>
+    If computer keyboard is connected it will be used for MIDI input as described in
+    [<a href="midi_controller.html">MIDI controller</a>]
+</p>
+
 <h3>Important files and directories
 </h3>
 <ul>
