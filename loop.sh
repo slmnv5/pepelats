@@ -1,11 +1,5 @@
 #!/bin/bash
 
-
-if [ -n "$SSH_CONNECTION" ]; then
-  echo Not starting for SSH connetion
-  exit 1
-fi
-
 if pidof -o %PPID -x loop.sh > /dev/null; then
   echo Process already running
   exit 1
