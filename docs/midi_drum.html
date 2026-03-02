@@ -48,10 +48,7 @@
     </li>
     <li>volume_msg – volume (ex. CC #7 from 0 to 127)
     </li>
-    <li>prog_list – list of programs on external device, =[0] if it
-        is missing
-    </li>
-    <li>prog_msg – select a program from <b>prog_list</b></li>
+    <li>prog_msg – select drum program / pattern</li>
 </ul>
 <h3> MIDI variables</h3>
 <p>Six variables used in messages (all upper case names):
@@ -63,8 +60,7 @@
     <li>BPM_LIST - [0, 1, 2, 3, 5, 6] - is byte list of BPM = 0123.56.
         List length = 6
     </li>
-    <li>PROG – program number in the <b>prog_list</b>, value is: 0 =&lt;
-        <b>PROG</b> &lt; length of <b>prog_list</b>
+    <li>PROG – program number, from zero to 127
     </li>
     <li>VOLUME – volume from 0.0 to 1.0
     </li>

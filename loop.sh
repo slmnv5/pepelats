@@ -23,14 +23,14 @@ LOG=./log.txt
 cat "$LOG" >> ./old.txt
 tail -n 1000 ./old.txt > ./tmp.txt
 mv ./tmp.txt ./old.txt
-echo "======= $(date) =======" > $LOG
+echo "=== Starting log file" > $LOG
 
 # sudo required for keyboard input
 SUDO="sudo -E"
 
 if [ ! -f ./main.dist/main.bin ]; then
   export KILL_CMD="$SUDO pkill -9 python"
-  export RUN_CMD="$SUDO python ./src/main.py"
+  export RUN_CMD="$SUDO python ./src/main.py $*"
 else
   export KILL_CMD="$SUDO pkill -9 main.bin"
   export RUN_CMD="$SUDO ./main.dist/main.bin"
@@ -42,6 +42,7 @@ sudo dmesg -D
 stty -echo
 sudo setfont Uni1-VGA32x16
 while true; do
+  echo "=== $(date)" >> $LOG
   echo "=== $RUN_CMD" >> $LOG
   clear
   $RUN_CMD 2>>$LOG
