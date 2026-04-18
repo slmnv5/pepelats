@@ -14,10 +14,6 @@ if [ ! -f ./license.ini ]; then
   echo -e "\n\n owner: myname@mail.com\n\n license: 9c-9b-f1-21-22-23-ab-cd\n\n" > ./license.ini
 fi
 
-if [ ! -f ./user.ini ]; then
-  cp -v ./main.ini ./user.ini
-fi
-
 LOG=./log.txt
 
 cat "$LOG" >> ./old.txt

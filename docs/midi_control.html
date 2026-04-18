@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>MIDI control</title>
+    <link rel="stylesheet" href="doc.css">
+
+</head>
+<body dir="ltr"><h1>MIDI control</h1>
+<p>
+    <br/>
+
+</p>
+<h3>MIDI input control selection</h3>
+<p>If computer keyboard is connected it is used to send MIDI commands. Otherwise, looper searches for MIDI input with
+    specific names provided in configuration file. If nothing is found looper starts anyway but may not be controlled.
+    Look at log file via looper's web page to check if MIDI input is found and connected.
+</p>
+
+<h3>MIDI input controller configurations</h3>
+<p class="bash_code">
+    ;midi_in_names -- names (or part of names) for MIDI input controls, case-sensitive
+
+    <br/>
+    midi_in_names : BlueBoard, FootCtrlPlus
+
+    <br/>
+    <br/>
+    ;keyboard_keys -- keys on computer keyboard if using keyboard as MIDI IN
+
+    <br/>
+    keyboard_keys : 1, 2, 3, 4, q, w
+
+    <br/>
+    <br/>
+
+    ;keyboard_notes -- MIDI notes (or CC) sent by each button, integers from 0 to 127
+
+    <br/>
+    keyboard_notes : 60, 62, 64, 65, 12, 13
+</p>
+<p>Notes are labelled: A, B, C, D, E, F, G, H... and they correspond to
+    integer values in <b>keyboard_notes</b> option in the <b>[<a href="../main.ini">main.ini</a>]</b></p>
+
+<p>
+    <br/>
+
+</p>
+
+<p>
+    <br/>
+
+</p>
+<h3>[<a href="index.html">Table of Contents</a>]</h3>
+<p>
+    <br/>
+
+</p>
+</body>
+</html>
