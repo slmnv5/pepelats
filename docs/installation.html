@@ -18,11 +18,15 @@
     </li>
 </ul>
 <p class="bash_code">
+    # connect to rpi box
     ssh pi@loop.local<br/>
+    # install one missing library for linux
     sudo apt install libportaudio2<br/>
+    # get specific released version of the looper
     wget -O ~/pepelats.zip https://github.com/slmnv5/pepelats/archive/refs/tags/r1.1.5.zip<br/>
     # to get the latest not released version use line below<br/>
     # wget -O ~/pepelats.zip https://github.com/slmnv5/pepelats/raw/refs/heads/main/pepelats.zip<br/>
+    # unzip to looper's directory
     unzip ~/pepelats.zip -d ~/pepelats<br/>
 </p>
 <ul>
@@ -30,9 +34,9 @@
     </li>
 </ul>
 <p class="bash_code">
-    # command to edit file<br/>
+    # command to edit start up file<br/>
     nano ~/.bashrc<br/>
-    # one line to add at the end<br/>
+    # one line to add at the very end<br/>
     ~/pepelats/loop.sh<br/>
 </p>
 
