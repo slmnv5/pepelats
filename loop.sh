@@ -5,13 +5,22 @@ if pidof -o %PPID -x loop.sh > /dev/null; then
   exit 1
 fi
 
-mkdir ~/save_song
+mkdir -p ~/save_song
+mkdir -p ~/config/drum/style
+mkdir -p ~/config/drum/midi
+
 sudo chmod a+rw ~/save_song/*
+sudo chmod a+rw ~/config/drum/style/*
+sudo chmod a+rw ~/config/drum/midi/*
 
 cd "$(dirname "$0")" || exit 1
 
 if [ ! -f ./license.ini ]; then
-  echo -e "\n\n owner: myname@mail.com\n\n license: 9c-9b-f1-21-22-23-ab-cd\n\n" > ./license.ini
+  echo -e "\n\n owner: myname@mail.com\n\n license: 01-23-45-67-89-ab-cd-ef\n\n" > ./license.ini
+fi
+
+if [ ! -f ./user.ini ]; then
+  echo -e "" > ./user.ini
 fi
 
 LOG=./log.txt
