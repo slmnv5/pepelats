@@ -1,0 +1,36 @@
+
+body {
+    margin: 1%;
+    font-size: 3.5vw;
+    font-weight: bolder;
+    font-family: monospace;
+    background-color:  black;
+    color: white;
+}
+p {
+    margin-top: 1rem;
+    margin-bottom: 0;
+ }
+
+table {
+    width:100%;
+    border: 1%;
+    border-style: groove;
+    border-color: grey;
+}
+td {
+    text-align: center;
+    padding: 2%;
+    border: 1%;
+    border-style: groove;
+}
+
+a:link {
+  color: yellow;
+}
+
+a:visited {
+  color: yellow;
+}
+
+

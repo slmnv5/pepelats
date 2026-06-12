@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>MIDI commands</title>
+    <link rel="stylesheet" href="doc.css">
+
+</head>
+<body dir="ltr"><h1>MIDI commands</h1>
+<p>
+    <br/>
+
+</p>
+<h3>Multi-tapping</h3>
+<p>There are only few buttons on foot controllers and number of
+    looper commands is much bigger. To deal with it multi-tapping is
+    used. If delay between taps is less than 0.5 seconds they belong to
+    one series and produce MIDI note as explained below.
+</p>
+<p>Assume button A sends note ON message for note 60. Multiple tapping
+    will send one additional note ON for note 60 with changed velocity.
+    Original note velocity we assign to be 100.
+    Additional note velocity = number of taps + 5 for a hold in the end.
+</p>
+<p>For this example:
+</p>
+<ul>
+    <li>one tap sends note 60 velocity = 100 + note 60 velocity = 1</li>
+    <li>double tap sends note 60 velocity = 100 + note 60 velocity = 2</li>
+    <li>triple tap sends note 60 velocity = 100 + note 60 velocity = 3</li>
+    <li>one tap and hold sends note 60 velocity = 100 + note 60 velocity = 1 + 5 = 6</li>
+    <li>double tap and hold sends note 60 velocity = 100 + note 60 velocity = 2 + 5 = 7</li>
+</ul>
+<p>Using multi-taps one button sends different MIDI
+    messages. Multiple taps use 0.5 seconds delay to decide if there will
+    be next tap. Because of this it should not be used for time critical
+    commands – start playing or recording. Use it for other commands like
+    changing volume, scrolling song list, etc.
+</p>
+<p>
+
+
+</p>
+<h3>MIDI commands and menu file</h3>
+<p>Notes from MIDI IN are converted to looper commands by menu configuration files. Example is below.
+</p>
+<p class=bash_code>
+
+    A100 : command1: command2
+    <br/>
+    A2 : command3: command4
+    <br/>
+    A3 : command5
+
+</p>
+<p>Here velocity 100 is velocity assigned to original MIDI notes from controller. Velocity 1, 2, 3, ... 10 is
+    velocity of counted notes in multi-tapping mode.
+</p>
+<h3>Control change messages</h3>
+<p>If foot controller sends control change (CC) messages from
+    expression pedal the looper can convert them into notes. As example
+    CC 12 will be converted to note 12 ON/OFF.
+</p>
+<p>As an example in <span style="font-weight: bold">iRig Blue Board</span>
+    MIDI foot controller there are two expression pedal inputs. Plugging
+    ON/OFF momentarily switches into these inputs will send CC messages
+    converted into note messages.
+</p>
+<p>
+    <br/>
+
+</p>
+<h3>[<a href="index.html">Table of Contents</a>]</h3>
+<p>
+    <br/>
+
+</p>
+</body>
+</html>
