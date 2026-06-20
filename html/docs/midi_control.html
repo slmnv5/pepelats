@@ -13,10 +13,19 @@
 
 </p>
 <h3>MIDI input control selection</h3>
-<p>If computer keyboard is connected it is used to send MIDI commands. Otherwise, looper searches for MIDI input with
-    specific names provided in configuration file. If nothing is found looper starts anyway but may not be controlled.
-    Look at log file via looper's web page to check if MIDI input is found and connected.
+<p>Looper searches for MIDI inputs with
+    specific names provided in configuration file. If nothing is found looper computer keyboard is used to send MIDI
+    commands. If computer keyboard is not connected looper starts anyway but may not be controlled.
+    Look at log file via looper's web page to check if MIDI input is connected.
 </p>
+
+<h3>Auto restart if MIDI control is missing</h3>
+<p>Looper will auto restart if no any control received over time period. If not a single message was received since
+    the start it likely means nothing is connected and looper will restart in 1 minute.
+    If some messages were received before but then stopped the looper will restart
+    in 10 minutes, even if a song is playing or there is unsaved content.
+</p>
+
 
 <h3>MIDI input controller configurations</h3>
 <p class="bash_code">

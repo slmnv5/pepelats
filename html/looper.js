@@ -10,7 +10,7 @@ const RED_P = '<p style="color: rgb(250, 30, 30);">';
 const GREEN_P = '<p style="color: rgb(30, 250, 30);">';
 const YELLOW_P = '<p style="color: yellow;">';
 
-// make html showing progress line - position in 1-st loop and position in max. length loop
+// make HTML showing progress line - position in 1-st loop and position in max. length loop
 function getHeaderHtml(s, first_pos, longest_pos) {
     function decorateOneChar(s, pos) {
         return s.slice(0, pos) + "▒" + s.slice(pos + 1);
@@ -18,7 +18,7 @@ function getHeaderHtml(s, first_pos, longest_pos) {
     const l = s.length;
     s = decorateOneChar(s, l * longest_pos);
     return '<p>' + BW_S + s.slice(0, l * first_pos) + END_S + s.slice(l * first_pos) + '</p>';
-};
+}
 
 // decorate string with color based on 1st char. 
 // Shows part that plays in green, next part in yellow,
@@ -33,20 +33,20 @@ function getContentHtml(content, is_rec) {
         } else {
             result += '<p>' + line + '</p>';
         }
-    };
+    }
     return result;
-};
+}
 
 
 document.addEventListener('DOMContentLoaded', () => {
     const HEADER = document.getElementById('header');
     const DESCRIPTION = document.getElementById('description');
     const CONTENT = document.getElementById('content');
-    const FETCH_SECONDS = 1;
     let HEADER_TEXT = "press button to start looper";
     let ERR_COUNT = 0;
     let SCR_INFO = {
-        "first_pos": 0, "longest_pos": 0, "first_delta": 0.2, "longest_delta": 0.1, "is_rec": 0, "sleep_tm": 1
+        header: "", "first_pos": 0, "longest_pos": 0, "first_delta": 0.2,
+        "longest_delta": 0.1, "is_rec": 0, "sleep_tm": 1
     }
 
     function drawPage() {
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
         }
-        fetchJsonData();
+        await fetchJsonData();
     }
 
     drawPage();

@@ -19,8 +19,10 @@
 </p>
 <p>Assume button A sends note ON message for note 60. Multiple tapping
     will send one additional note ON for note 60 with changed velocity.
-    Original note velocity we assign to be 100.
-    Additional note velocity = number of taps + 5 for a hold in the end.
+    For the first note ON message we always change velocity to 100,
+    it does not matter what the real velocity was.
+    One additional note ON message will have velocity = number of taps + 5
+    for a hold in the end.
 </p>
 <p>For this example:
 </p>
@@ -53,8 +55,9 @@
     A3 : command5
 
 </p>
-<p>Here velocity 100 is velocity assigned to original MIDI notes from controller. Velocity 1, 2, 3, ... 10 is
-    velocity of counted notes in multi-tapping mode.
+<p>Here velocity 100 is velocity assigned to original MIDI notes from controller. Velocity 1, 2, 3, ... is
+    velocity of counted notes in multi-tapping mode. Note with velocity 100 are processed immidiately while notes with
+    velocity 1,2,3 ... have delay of 0.5 seconds.
 </p>
 <h3>Control change messages</h3>
 <p>If foot controller sends control change (CC) messages from

@@ -14,14 +14,11 @@ p {
 
 table {
     width:100%;
-    border: 1%;
-    border-style: groove;
-    border-color: grey;
+    border: groove grey;
 }
 td {
     text-align: center;
     padding: 2%;
-    border: 1%;
     border-style: groove;
 }
 

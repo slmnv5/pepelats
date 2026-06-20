@@ -29,8 +29,8 @@ echo "=== Starting log file" > $LOG
 SUDO="sudo -E"
 
 if [ ! -f ./main.dist/main.bin ]; then
-  export KILL_CMD="$SUDO pkill -9 python"
-  export RUN_CMD="$SUDO python ./src/main.py $*"
+  export KILL_CMD="$SUDO pkill -9 python3"
+  export RUN_CMD="$SUDO python3 ./src/main.py $*"
 else
   export KILL_CMD="$SUDO pkill -9 main.bin"
   export RUN_CMD="$SUDO ./main.dist/main.bin"

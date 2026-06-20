@@ -58,8 +58,8 @@
 
     function loadFile() {
         const editForm = document.getElementById('editFileForm');
-        var fileToEdit = editForm.dropList.value;
-        if (fileToEdit == "") {
+        const fileToEdit = editForm.dropList.value;
+        if (!fileToEdit) {
             editForm.reset();
             return;
         }
@@ -78,12 +78,12 @@
 
     function saveFile() {
         const editForm = document.getElementById('editFileForm');
-        var fileToEdit = editForm.dropList.value;
-        if (fileToEdit == "") {
+        const fileToEdit = editForm.dropList.value;
+        if (!fileToEdit) {
             editForm.reset();
             return;
         }
-        var fileContent = editForm.fileContent.value;
+        const fileContent = editForm.fileContent.value;
         fetch(fileToEdit, {
             method: "POST",
             headers: { "Content-Type": "text/plain; charset=UTF-8" },
