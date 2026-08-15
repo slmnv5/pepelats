@@ -1,0 +1,26 @@
+
+# other
+nohup.out
+etc/
+
+#binary files
+main.build/
+main.dist/
+
+#so library
+mylib/
+
+#looper
+license.ini
+user.ini
+log.txt
+old.txt
+
+
+
+
+
+
+
+
+

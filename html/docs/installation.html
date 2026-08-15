@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Installation</title>
+    <link rel="stylesheet" href="doc.css">
+</head>
+<body dir="ltr"><h1>Installation</h1>
+<ul>
+    <li>Install latest <b>Raspberry Pi OS Lite 64 bit</b>. I
+        recommend <b>rpi imager</b> that allows to configure Wi–Fi
+        (network ID and password) and SSH (enable ssh and set
+        username/password). Also assign host name <b>loop</b>.
+    </li>
+    <li>Connect via ssh to rpi box and run commands shown below. Here
+        r1.1.5.zip – is the version to install. Find out the latest
+        version name on the project website.
+    </li>
+</ul>
+<p class="bash_code">
+    # connect to rpi box:<br/>
+    ssh pi@loop.local<br/><br/>
+    # install one missing library for linux:<br/>
+    sudo apt install libportaudio2<br/><br/>
+    # get specific released version of the looper:<br/>
+    wget -O ~/pepelats.zip https://github.com/slmnv5/pepelats/archive/refs/tags/r1.2.3.zip<br/><br/>
+    # to get the latest not released version use line below<br/>
+    # wget -O ~/pepelats.zip https://github.com/slmnv5/pepelats/raw/refs/heads/main/pepelats.zip<br/><br/>
+    # unzip to looper's directory:<br/>
+    unzip -o ~/pepelats.zip -d ~/pepelats<br/><br/>
+</p>
+<ul>
+    <li>To enable auto start edit one file as shown below.
+    </li>
+</ul>
+<p class="bash_code">
+    # command to edit start up file:<br/>
+    nano ~/.bashrc<br/><br/>
+    # one line to add at the very end:<br/>
+    ~/pepelats/loop.sh<br/><br/>
+</p>
+
+<p>The looper shows status on the web page:
+    http://loop.local:8000 This page allows you to edit configuration
+    files of the looper and see messages in log files. Sample
+    configuration is accessible in starting page, use it as example to
+    modify your personal configuration.
+</p>
+<p>Connect MIDI controller and make sure it's name (or part of
+    name) is listed in file user configuration. Check log file for any
+    errors related to MIDI connection or audio device connection. Also
+    make sure that MIDI controller notes are listed in file <b>user.ini</b><br/>
+    If computer keyboard is connected it will be used for MIDI input as described in
+    [<a href="midi_commands.html">MIDI controller</a>]
+</p>
+
+<h3>Important files and directories
+</h3>
+<ul>
+    <li>log.txt – is the log file for the current session.</li>
+    <li>old.txt – keeps about 1000 lines from past sessions.</li>
+    <li>license.ini – user's email and license number</li>
+    <li>user.ini – user specific configuration [<a href="configuration.html">configuration</a>]</li>
+    <li>main.ini – default configuration, not editable</li>
+    <li>~/save_song – directory where song files are saved
+    </li>
+    <li>./config – directory where configurations for drums and
+        menus are stored
+    </li>
+</ul>
+<p>
+
+</p>
+<h3>[<a href="index.html">Table of Contents</a>]</h3>
+</body>
+</html>
