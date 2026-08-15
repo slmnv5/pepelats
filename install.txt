@@ -1,0 +1,11 @@
+
+cd ~ || exit 1
+rm pepe.zip
+wget -O pepe.zip  https://github.com/slmnv5/pepelats/raw/refs/heads/main/pepelats.zip
+unzip  -o ~/pepe.zip -d ~/pepe/ || exit 1
+
+
+
+#wget -qO- https://githubusercontent.com | sudo bash
+
+
