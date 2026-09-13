@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title>Configuration</title>
+	<link rel="stylesheet" href="doc.css">
+
+</head>
+<body dir="ltr">
+<h1>Configuration</h1>
+<p>All configurations except of user license are saved in two files:
+<ul>
+	<li>
+		<b>[<a href="../../user.ini">user.ini</a>]</b> - user configuration
+	</li>
+	<li>
+		<b>[<a href="../../main.ini">main.ini</a>]
+		</b> - default configuration
+	</li>
+</ul>
+<p>If file <b>user.ini</b> does not have specific configuration it is taken
+	from file <b>main.ini</b>. You may dit file
+	<b>user.ini</b> in the main web page of the <b>[<a
+			href="../../index.html">looper</a>]</b>. <br/>
+	Thus, for example, you may change names of MIDI or audio devices, MIDI notes
+	used and so on. To see an example
+	of specific configuration look at <b>[<a
+			href="../../main.ini">main.ini</a>]</b>
+	that contains all default configurations and comments explaining each
+	option.
+</p>
+<h3>MIDI configuration</h3>
+<p>MIDI configuration in [<a href="../../user.ini">user.ini</a>] /
+	[<a href="../../main.ini">main.ini</a>] has only three option:</p>
+
+<ul>
+	<li>
+		input MIDI port names separated by comma, part of name may be
+		used instead of full name and names are case-sensitive, first
+		matching port is used for MIDI input
+	</li>
+	<li>MIDI notes (or CC numbers) that MIDI device sends. This is list
+		of integer values from 0 to 127. Defaults are: 60, 62, 64, 65, 12, 13
+		<br/>
+		All eneterd values are matched to buttons: a, b, c, d, ...
+		These buttons names appear in menu configurations to specify actions.
+		For example: a1 - clear song, a2-load song, a3-save song, etc.
+		Here a1, a2, a3 are single, double, triple tap on button a.
+		Knowing these rules you may tweak buttons to your preffered way of looping.
+
+	</li>
+	<li>Computer keyboard keys to use for MIDI messages. Defaults are: 1, 2, 3,
+		4, q, w
+		Computer keyboard is used only if no MIDI controller is found and it is
+		connected.
+	</li>
+</ul>
+<p>
+	Finally if no MIDI controller and computer keyboard are connected the looper
+	starts anyway.
+	It can not be controlled but if you use web to monitor looper you may open
+	log file
+	and check for any errors. You may also edit configuration files to change
+	MIDI controller names
+	so that after restart they get connected.
+
+</p>
+<h3>[<a href="index.html">Table of Contents</a>]</h3>
+</body>
+</html>
