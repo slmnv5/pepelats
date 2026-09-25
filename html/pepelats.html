@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title>Table of Contents</title>
+	<meta name="generator" content="LibreOffice 7.3.7.2 (Linux)"/>
+	<meta name="created" content="00:00:00"/>
+	<meta name="changed" content="2026-09-23T13:10:30.340104733"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin-left: 3cm; margin-right: 3cm; margin-top: 1cm; margin-bottom: 1cm }
+		p { color: #333333; font-family: "system-ui", "apple-system", sans-serif; line-height: 160%; orphans: 100; background: transparent }
+		h1 { color: #333333; line-height: 120%; orphans: 100; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Sans Unicode MS"; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "system-ui", "apple-system", sans-serif; font-size: 22pt; font-weight: bold }
+		h1.ctl { font-family: "system-ui", "apple-system", sans-serif; font-size: 22pt; font-weight: bold }
+		h2 { color: #333333; line-height: 120%; orphans: 100; margin-top: 0.35cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h2.western { font-family: "Liberation Serif", serif; font-size: 18pt; font-weight: bold }
+		h2.cjk { font-family: "Noto Serif CJK SC"; font-size: 18pt; font-weight: bold }
+		h2.ctl { font-family: "Lohit Devanagari"; font-size: 18pt; font-weight: bold }
+		h3 { color: #333333; line-height: 120%; orphans: 100; margin-top: 0.25cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h3.western { font-family: "Liberation Serif", serif; font-size: 14pt; font-weight: bold }
+		h3.cjk { font-family: "Noto Serif CJK SC"; font-size: 14pt; font-weight: bold }
+		h3.ctl { font-family: "Lohit Devanagari"; font-size: 14pt; font-weight: bold }
+		h4 { color: #333333; line-height: 160%; orphans: 100; margin-top: 0.21cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h4.western { font-family: "Liberation Sans", sans-serif; font-size: 13pt; font-style: italic; font-weight: bold }
+		h4.cjk { font-family: "system-ui", "apple-system", sans-serif; font-size: 13pt; font-style: italic; font-weight: bold }
+		h4.ctl { font-family: "system-ui", "apple-system", sans-serif; font-size: 13pt; font-style: italic; font-weight: bold }
+		pre { color: #333333; line-height: 160%; orphans: 100; background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.bash-western { color: #ffffd7; font-family: "Chandas"; font-size: 8pt; so-language: zxx; background: transparent; background: #111111; page-break-before: auto }
+		pre.bash-cjk { color: #ffffd7; background: transparent; font-size: 8pt; background: #111111; page-break-before: auto }
+		pre.bash-ctl { color: #ffffd7; background: transparent; font-size: 8pt; background: #111111; page-break-before: auto }
+		a:link { color: #000080; text-decoration: underline }
+		a:visited { color: #800000; text-decoration: underline }
+	</style>
+</head>
+<body lang="en-US" text="#333333" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+Pepelats – audio looper with drums on Raspberry Pi</h1>
+<div id="Table of Contents1" dir="ltr" gutter="19" style="background: #729fcf; column-count: 2">
+	<div id="Table of Contents1_Head" dir="ltr"><p style="margin-top: 0.42cm; page-break-after: avoid">
+		<font face="Liberation Sans, sans-serif"><font size="4" style="font-size: 16pt"><b>Table
+		of Contents</b></font></font></p>
+	</div>
+	<p style="margin-left: 0.5cm; margin-bottom: 0cm"><a href="#__RefHeading___Toc1215_3556581004">About
+	Pepelats Looper</a></p>
+	<p style="margin-left: 0.5cm; margin-bottom: 0cm"><a href="#__RefHeading___Toc1229_3556581004">Installation</a></p>
+	<p style="margin-left: 0.5cm; margin-bottom: 0cm"><a href="#__RefHeading___Toc1235_3556581004">Configuration</a></p>
+	<p style="margin-left: 0.5cm; margin-bottom: 0cm"><a href="#__RefHeading___Toc1251_3556581004">MIDI
+	commands</a></p>
+	<p style="margin-left: 0.5cm; margin-bottom: 0cm"><a href="#__RefHeading___Toc1261_3556581004">Menu</a></p>
+	<p style="margin-left: 0.5cm; margin-bottom: 0cm"><a href="#__RefHeading___Toc1297_3556581004">Song</a></p>
+	<p style="margin-left: 0.5cm; margin-bottom: 0cm"><a href="#__RefHeading___Toc1305_3556581004">Screen</a></p>
+	<p style="margin-left: 0.5cm; margin-bottom: 0cm"><a href="#__RefHeading___Toc1267_3556581004">Drums
+	in general</a></p>
+	<p style="margin-left: 0.5cm; margin-bottom: 0cm"><a href="#__RefHeading___Toc1275_3556581004">MIDI
+	drum</a></p>
+	<p style="margin-left: 0.5cm; margin-bottom: 0cm"><a href="#__RefHeading___Toc1285_3556581004">Style
+	drum</a></p>
+	<p style="margin-left: 0.5cm; margin-bottom: 0cm"><a href="#__RefHeading___Toc1293_3556581004">Loop
+	drum</a></p>
+	<p style="margin-left: 0.5cm; margin-bottom: 0cm"><a href="#__RefHeading___Toc6950_3726805289">Troubleshooting
+	errors</a></p>
+</div>
+<p><br/>
+<br/>
+
+</p>
+<h2 class="western"><a name="__RefHeading___Toc1215_3556581004"></a>About
+Pepelats Looper</h2>
+<ul>
+	<li><p style="margin-bottom: 0cm">Compatible Raspberry Pi: 3A+, 3B+,
+	Zero-2W, 4, 5 
+	</p>
+	<li><p style="margin-bottom: 0cm">Multiple song parts
+	(intro/verse/chorus/...). Part has multiple parallel loops. 
+	</p>
+	<li><p style="line-height: 160%; orphans: 100; margin-bottom: 0cm">Q<font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">uantization,
+	loop's length, start </span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">and
+	</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">stop
+	time </span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">are</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">
+	adjusted. </span></font></font>
+	</p>
+	<li><p style="line-height: 160%; orphans: 100; margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif">Full
+	history of undo/redo for each song part. </font>
+	</p>
+	<li><p style="line-height: 160%; orphans: 100; margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif">Parts
+	and loops are deleted on the run, loops are silenced, re-arranged.</font></p>
+	<li><p style="line-height: 160%; orphans: 100; margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif">Songs
+	are saved, loaded along with drums and settings. </font>
+	</p>
+	<li><p style="line-height: 160%; orphans: 100; margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif">Binary
+	distribution, installation by single command. </font>
+	</p>
+	<li><p style="line-height: 160%; orphans: 100; margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif">Use
+	of MIDI controller or computer keyboard as MIDI controller.</font></p>
+	<li><p style="line-height: 160%; orphans: 100; margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif">Drum
+	machine types: Style, MIDI, Loop. Drums have volume control, random
+	variations and breaks. </font>
+	</p>
+</ul>
+<ul>
+	<p style="margin-bottom: 0cm"></p>
+</ul>
+<p><br/>
+<br/>
+
+</p>
+<h2 class="western"><a name="__RefHeading___Toc1229_3556581004"></a>Installation</h2>
+<ul>
+	<li><p style="margin-bottom: 0cm">Read this document to understand
+	specific configurations.</p>
+	<li><p style="margin-bottom: 0cm">Install latest <b>Raspberry Pi OS
+	Lite 64 bit</b>. I recommend <b>rpi imager</b> that allows to
+	configure WiFi (network ID and password). Assign<font color="#333333"><font face="system-ui, apple-system, sans-serif">
+	host name</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">
+	</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">(example:
+	</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><b>loop</b></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><b>)</b></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">.
+	</font></font>
+	</p>
+	<li><p><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">Connect
+	keyboard </span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">and
+	</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">HDMI
+	</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">display
+	</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">or,
+	better, connect via </span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">SSH</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">
+	</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">from
+	ano</span></font></font><span lang="en-US">t</span><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">her
+	computer and </span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">run
+	</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">this
+	</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">command
+	</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">to
+	install </span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">looper</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">.</span></font></font></p>
+</ul>
+<pre lang="zxx" class="bash-western" style="page-break-before: auto">wget -qO- https://github.com/slmnv5/pepelats/raw/refs/heads/main/install.sh | bash</pre>
+<ul>
+	<p></p>
+</ul>
+<ul>
+	<li><p style="line-height: 160%; orphans: 100; margin-bottom: 0cm"><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">Connect
+	MIDI controller and make sure it's name (or part of name) is listed
+	in configurations. </span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">Some
+	controllers use </span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">B</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">luetooth
+	and you </span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">need
+	</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">to
+	run </span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">few
+	</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">commands
+	</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">on
+	rpi box </span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">to
+	connect</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">.
+	</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">For
+	the start </span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">I
+	advise to </span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">use
+	computer keyboard.</span></font></font></p>
+	<li><p style="line-height: 160%; orphans: 100; margin-bottom: 0cm"><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">Check
+	log file for any errors related to MIDI connection or audio device
+	connecti</span></font></font><span lang="en-US">on. Also make sure
+	that MIDI controller notes </span><span lang="en-US">for you
+	specific controller </span><span lang="en-US">are listed in file
+	</span><span lang="en-US"><b>user.ini</b></span><span lang="en-US"><br/>
+</span><br/>
+
+	</p>
+</ul>
+<h4 class="western"><a name="__RefHeading___Toc1231_3556581004"></a>Important
+files and directories 
+</h4>
+<ul>
+	<li><p style="margin-bottom: 0cm">log.txt – is the log file for
+	the current session. 
+	</p>
+	<li><p style="margin-bottom: 0cm">old.txt – keeps about 1000 lines
+	from past sessions. 
+	</p>
+	<li><p style="margin-bottom: 0cm">license.ini – user's email and
+	license number 
+	</p>
+	<li><p style="margin-bottom: 0cm">user.ini – user specific
+	configuration, overrides defaults</p>
+	<li><p style="margin-bottom: 0cm">main.ini – default
+	configuration, not editable, serves as example 
+	</p>
+	<li><p style="margin-bottom: 0cm">~/save_song – directory where
+	song files are saved 
+	</p>
+	<li><p>./config – directory where configurations for drums and
+	menus are stored 
+	</p>
+</ul>
+<h3 class="western"><a name="__RefHeading___Toc1233_3556581004"></a><br/>
+<br/>
+
+</h3>
+<h2 class="western"><a name="__RefHeading___Toc1235_3556581004"></a>Configuration</h2>
+<p>All configurations are in two files: 
+</p>
+<ul>
+	<li><p style="margin-bottom: 0cm"><span lang="en-US"><b>[<a href="../user.ini">user.ini</a>]</b></span><span lang="en-US">
+	- user configuration, </span><span lang="en-US">edit this file </span><span lang="en-US">if
+	you need changes</span></p>
+	<li><p><span lang="en-US"><b>[<a href="../main.ini">main.ini</a>] </b></span><span lang="en-US">-
+	contains all default configurations and comments explaining each
+	option</span></p>
+</ul>
+<p><span lang="en-US">If file </span><span lang="en-US"><b>user.ini</b></span><span lang="en-US">
+does not have specific configuration it is taken from file </span><span lang="en-US"><b>main.ini</b></span><span lang="en-US">.
+You may edit file </span><span lang="en-US"><b>user.ini</b></span><span lang="en-US">
+on the main web page: </span><span lang="en-US"><b>[<a href="../index.html">looper</a>]</b></span><span lang="en-US">.</span></p>
+<p>Configurations for MIDI controller are:</p>
+<ul>
+	<li><p style="margin-bottom: 0cm"><b>midi_in_names</b> -- MIDI IN
+	port names separated by comma, part of name may be used instead of
+	full name and names are case-sensitive. Defaults are: BlueBoard,
+	FootCtrlPlus 
+	</p>
+	<li><p style="margin-bottom: 0cm"><b>midi</b><b>_values</b> -- MIDI
+	notes (or CC) numbers that MIDI device sends. This is list of
+	integer values from 0 to 127. Defaults are: 60, 62, 64, 65, 12, 13 
+	</p>
+	<li><p><b>keyboard_keys</b> -- computer keyboard keys to use for
+	MIDI messages. Defaults are: 1, 2, 3, 4, q, w 
+	</p>
+</ul>
+<h4 class="western"><a name="__RefHeading___Toc1243_3556581004"></a>MIDI
+input control selection</h4>
+<p>Looper searches for MIDI inputs with specific names provided in
+configuration file. If nothing is found and computer keyboard is
+connected, it will be used to send MIDI commands as explained below.</p>
+<p>If neither MIDI input nor audio device are found the looper starts
+anyway. If we are using web page we can check for errors, edit
+configuration files, restart the looper. If we are using LCD screen
+the only way to investigate is to connect via SSH and read log files.</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<h2 class="western"><a name="__RefHeading___Toc1251_3556581004"></a>MIDI
+commands</h2>
+<h4 class="western"><a name="__RefHeading___Toc1253_3556581004"></a>Multi-tapping</h4>
+<p>There are only few buttons on foot controllers and number of
+looper commands is much bigger. To deal with it multi-tapping is
+used. If delay between taps is less than 0.5 seconds they belong to
+one series and produce MIDI note as explained below. 
+</p>
+<p>Assume button <b>A</b> sends note ON for note 60 with velocity
+100. Multiple tapping will send one additional note ON for note 60
+with changed velocity. <br/>
+One additional note ON message will have
+velocity = number of taps + 5 if there is a hold in the end. For this
+example: 
+</p>
+<ul>
+	<li><p style="margin-bottom: 0cm">one tap sends note 60 velocity =
+	100 + note 60 velocity = 1 
+	</p>
+	<li><p style="margin-bottom: 0cm">double tap sends note 60 velocity
+	= 100 + note 60 velocity = 2 
+	</p>
+	<li><p style="margin-bottom: 0cm">triple tap sends note 60 velocity
+	= 100 + note 60 velocity = 3 
+	</p>
+	<li><p style="margin-bottom: 0cm">one tap and hold sends note 60
+	velocity = 100 + note 60 velocity = 1 + 5 = 6 
+	</p>
+	<li><p>double tap and hold sends note 60 velocity = 100 + note 60
+	velocity = 2 + 5 = 7 
+	</p>
+</ul>
+<p>Using multi-taps one button sends different MIDI messages with
+velocities 1,2,3... Multiple taps use 0.5 seconds delay to see if
+there is next tap. Because of this it should not be used for time
+critical commands – like play start or stop. Use it for other
+commands like changing volume, scrolling song list, etc. 
+</p>
+<h4 class="western">Menu files – link buttons, MIDI messages and
+actions</h4>
+<p>In menu files we use button label <b>A</b> and number of taps to
+assign actions: 
+</p>
+<ul>
+	<li><p style="margin-bottom: 0cm"><b>A</b> : play</p>
+	<li><p style="margin-bottom: 0cm"><b>A1</b> : overdub</p>
+	<li><p><font face="system-ui, apple-system, sans-serif"><b>A2</b> :
+	stop : stop drum</font></p>
+</ul>
+<p>Here <b>A</b> - is original note sent instantly without any delay
+(note 60 with original velocity). <b>A</b><b>1</b>, <b>A</b><b>2</b>
+- are counted notes delayed by 0.5 seconds + time it takes to tap 1
+or 2 or times (note 60, velocity 1 and 2 respectively). 
+</p>
+<h4 class="western"><a name="__RefHeading___Toc1257_3556581004"></a>Control
+change MIDI messages</h4>
+<p>If foot controller sends control change (CC) messages from
+expression pedal the looper can convert them into notes. As example
+CC 12 will be converted to note 12 ON/OFF. 
+</p>
+<p>If a MIDI controller has expression pedal input we may plug ON/OFF
+button and use it with the looper. This is how 2 more buttons were
+added to iRig BlueBoard MIDI controller.</p>
+<h2 class="western"><a name="__RefHeading___Toc1261_3556581004"></a>Menu</h2>
+<p>As explained above menu configurations are INI files that link
+together button labels, MIDI messages and looper commands. 
+Additionally menu files have two options:</p>
+<ul>
+	<li><p style="font-weight: normal; margin-bottom: 0cm"><b>description</b>
+	– text appearing on top of screen when menu is loaded, just below
+	the loop progress bar.</p>
+	<li><p><font face="system-ui, apple-system, sans-serif"><b>show</b><span style="font-weight: normal">
+	– </span><span style="font-weight: normal">a </span><span style="font-weight: normal">command
+	to display looper information on screen</span></font></p>
+</ul>
+<p>There are only 3 menu configurations files.</p>
+<ul>
+	<li><p style="margin-bottom: 0cm"><span lang="en-US"><b>[<a href="../config/menu/play.ini">play.ini</a>]</b></span><span lang="en-US">
+	-- play / record / clear song parts and switching between them. Show
+	loops for song part. Silence, delete, re-arrange loops. </span>
+	</p>
+	<li><p style="margin-bottom: 0cm"><span lang="en-US"><b>[<a href="../config/menu/song.ini">song.ini</a>]
+	</b></span><span lang="en-US">- delete, save, </span><span lang="en-US">load,
+	</span><span lang="en-US">initialize song. Select drum
+	configuration. </span>
+	</p>
+	<li><p><span lang="en-US"><b>[<a href="../config/menu/serv.ini">serv.ini</a>]</b></span><span lang="en-US">
+	- Restart looper, </span><span lang="en-US">s</span><span lang="en-US">how</span><span lang="en-US">
+	hardware ID and license. Select drum type, adjust drum volume,
+	parameter.</span></p>
+</ul>
+<p>Each menu INI file has two sections with different but related
+commands. As an example play menu has section to work with song parts
+and section to work with loops inside one part. Also note that there
+may be multiple commands separated by colon (:) assigned to one
+button.</p>
+<h4 class="western"><a name="__RefHeading___Toc1263_3556581004"></a>Menu
+view on screen</h4>
+<p><span lang="en-US">When switching menu </span><span lang="en-US">file
+or menu section the look of the screen changes. </span><span lang="en-US">However
+</span><span lang="en-US">there is common information shown for each
+menu. </span><span lang="en-US">Namely the t</span><span lang="en-US">op
+row </span><span lang="en-US">always </span><span lang="en-US">shows
+</span><span lang="en-US">progress bar. It includes position of the
+loop, current song </span><span lang="en-US">name, </span><span lang="en-US">drum
+</span><span lang="en-US">configuration and</span><span lang="en-US">
+beats per minute.</span></p>
+<h3 class="western"><a name="__RefHeading___Toc1295_3556581004"></a><br/>
+<br/>
+
+</h3>
+<h2 class="western"><a name="__RefHeading___Toc1297_3556581004"></a>Song</h2>
+<p>Song is collection of recorded song parts along with specific drum
+type and drum configuration. Songs are saved in user's home directory
+<b>~/save_song</b>. 
+</p>
+<p>Song names are '<i>random words</i>' and look like
+&quot;bib-duhi.Disco.k48&quot;, &quot;le-ebaka.Blues.k44&quot;. Names
+include Drum style (Disco, Blues, ...) and sampling frequency (.k48 –
+48 kHz, .k44 – 44.1 KHz). The later prevents loading song recorded
+on a devices with different sampling frequency. 
+</p>
+<h4 class="western"><a name="__RefHeading___Toc1303_3556581004"></a></h4>
+<h2 class="western"><a name="__RefHeading___Toc1305_3556581004"></a>Screen</h2>
+<p>Looper outputs its state on: 
+</p>
+<ul>
+	<li><p style="margin-bottom: 0cm">text screen – attached screen
+	via SPI or HDMI connection 
+	</p>
+	<li><p>web page - HTTP://loop.local:8000 Here 'loop' is host name of
+	raspberry pi and HTTP port is always 8000 
+	</p>
+</ul>
+<p>If scr<font color="#333333"><font face="system-ui, apple-system, sans-serif">een
+is attached - it is used, otherwise web page is used to output looper
+state.</font></font></p>
+<ul>
+	<li><p style="margin-bottom: 0cm"><font color="#333333"><font face="system-ui, apple-system, sans-serif">Web
+	</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">page
+	</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">pros:
+	It </font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">allows
+	</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">you
+	</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">to
+	</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">to
+	see </font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">log
+	files, </font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">edit
+	configuration files, </font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">restart
+	looper</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">.</font></font></p>
+	<li><p style="margin-bottom: 0cm"><font color="#333333"><font face="system-ui, apple-system, sans-serif">Web
+	</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">page
+	</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">cons</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">:
+	Y</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">ou
+	need to carry a device with web browser </font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">(phone,
+	tablet) that is </font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">conncted
+	to the same WiFi </font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">as
+	the looper</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">.</font></font></p>
+	<li><p style="margin-bottom: 0cm"><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">LCD
+	screen pros: If </span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">we
+	</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">use
+	special 3.5 inch LCD for Raspberry Pi it will make a </span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">simple
+	</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">compact
+	looper </span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">that
+	does not need </span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">WiFi
+	</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">connection</span></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif"><span lang="en-US">.
+	</span></font></font>
+	</p>
+	<li><p style="margin-bottom: 0cm"><font color="#333333"><font face="system-ui, apple-system, sans-serif">LCD
+	screen </font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">con</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">s:
+	</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">Hard
+	</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">to
+	change configuration or check log</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">s</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">
+	for errors. Best way is connect </font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">Raspberry
+	Pi </font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">to
+	</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">WiF</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">i</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">
+	and use </font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">another
+	computer over </font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">SSH
+	connection.</font></font></p>
+</ul>
+<h2 class="western"><a name="__RefHeading___Toc1267_3556581004"></a><span lang="en-US">Drum</span><span lang="en-US">s</span><span lang="en-US">
+</span><span lang="en-US">in general</span></h2>
+<p>Looper has embedded drum machine that may use different drums: 
+</p>
+<ul>
+	<li><p style="margin-bottom: 0cm"><span lang="en-US"><b>Style drum</b></span><span lang="en-US">
+	- using text patterns - with drum names, steps and accents </span>
+	</p>
+	<li><p style="margin-bottom: 0cm"><span lang="en-US"><b>MIDI drum</b></span><span lang="en-US">
+	- using configurations to send MID commands (stop, set BPM, start of
+	loop, etc.) </span>
+	</p>
+	<li><p style="line-height: 160%; orphans: 100; margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif"><b>Loop
+	drum</b> - using the first song part as a drum and part's loops as
+	drum variations</font></p>
+	<li><p style="line-height: 160%; orphans: 100; margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif"><b>No
+	drum</b><span style="font-weight: normal"> – allows recording
+	without drum. As result song </span><span style="font-weight: normal">p</span><span style="font-weight: normal">arts
+	</span><span style="font-weight: normal">may</span><span style="font-weight: normal">
+	</span><span style="font-weight: normal">have </span><span style="font-weight: normal">different
+	tempo </span><span style="font-weight: normal">however </span><span style="font-weight: normal">loops
+	inside each part are still quantized</span><span style="font-weight: normal">.</span></font></p>
+</ul>
+<h4 class="western"><a name="__RefHeading___Toc1269_3556581004"></a>Drum
+breaks</h4>
+<p>There are two modes for drums – normal and break. Different
+types of drums implement breaks as described here. 
+</p>
+<ul>
+	<li><p style="margin-bottom: 0cm">For Style drum patterns are split
+	into 2 groups based on the name – if pattern name contains string
+	&quot;<b>brk</b>&quot; it is used for breaks only. 
+	</p>
+	<li><p style="margin-bottom: 0cm">For Loop drum – depending on
+	style a break may be 1) the last recorded loop or 2) all loops
+	playing together.</p>
+	<li><p>For MIDI drum break may be configured in INI file by sending
+	specific MIDI command. This command may be program change or other
+	command specific for connected drum machine. 
+	</p>
+</ul>
+<h4 class="western"><a name="__RefHeading___Toc1271_3556581004"></a>Drum
+randomness</h4>
+<p>Every drum has randomness parameter that can be adjusted and saved
+with the song. If this parameter = 0.5 then there is 50% chance that
+drum pattern will be randomized at start of every bar. For new song
+this parameter = 0.2 
+</p>
+<p><br/>
+<br/>
+
+</p>
+<h2 class="western"><a name="__RefHeading___Toc1275_3556581004"></a>MIDI
+drum</h2>
+<p><b>MIDI drum</b> sends MIDI messages to external drum machine to
+synchronize it with the looper, change drum volume, program number,
+etc. 
+</p>
+<p>Processing of MIDI messages may be done by IOS application (e.g.
+MidiFire) or by hardware drum machine.</p>
+<p>Set of MIDI messages along with the MIDI OUT port name are saved
+in configuration file. There are few predefined configurations that
+may serve as examples.</p>
+<ul>
+	<li><p style="margin-bottom: 0cm"><span lang="en-US">[<a href="../../config/drum/midi/ValGP100.ini">ValGP-100.ini</a>]
+	- Valeton GP100 guitar pedal with drums.</span></p>
+	<li><p style="margin-bottom: 0cm"><span lang="en-US">[<a href="../../config/drum/midi/MidiFire.ini">MidiFire.ini</a>]
+	– MidiFire IOS application that sets dynamic MIDI clock and can
+	</span><span lang="en-US">control </span><span lang="en-US">other
+	</span><span lang="en-US">IOS </span><span lang="en-US">drum
+	</span><span lang="en-US">applications. </span>
+	</p>
+	<li><p><span lang="en-US">[<a href="../../config/drum/midi/FunkBox.ini">FunkBox.ini</a>]
+	– Funk Box IOS drum application. </span>
+	</p>
+</ul>
+<h4 class="western"><a name="__RefHeading___Toc1277_3556581004"></a>MIDI
+messages used in configuration 
+</h4>
+<p>There are six messages to control MIDI device, each may contain
+variables:</p>
+<ul>
+	<li><p style="margin-bottom: 0cm"><b>bpm_msg</b> – sen<font color="#333333"><font face="system-ui, apple-system, sans-serif">t
+	</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">only
+	</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">once
+	when the BPM is defined (when loading song </font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">or</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">
+	recording </font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">the
+	</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">1st
+	loop) </font></font>
+	</p>
+	<li><p style="margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif"><b>bar_msg</b>
+	– sent at start of each bar. Note, there is no start message
+	<b>bar_msg</b> is used instead to start drums.</font></p>
+	<li><p style="margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif"><b>stop_msg</b>
+	– stops drum.</font></p>
+	<li><p style="margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif"><b>volume_msg</b>
+	– changes volume (ex: CC #7 from 0 to 127) </font>
+	</p>
+	<li><p><font color="#333333"><font face="system-ui, apple-system, sans-serif"><b>prog_msg</b></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">
+	– select</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">s</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">
+	drum program / pattern, </font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">used
+	for drum break</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">s</font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">
+	and randomizing</font></font> drums.</p>
+</ul>
+<h4 class="western"><a name="__RefHeading___Toc1279_3556581004"></a>MIDI
+variables used in configuration</h4>
+<p>Six variables may be used in messages (all upper case names): 
+</p>
+<ul>
+	<li><p style="margin-bottom: 0cm"><b>BPM</b> – beats per minute,
+	ex. 123.89 
+	</p>
+	<li><p style="margin-bottom: 0cm"><b>BPM_LIST</b> - [0, 1, 2, 3, 8,
+	9] - is byte list of BPM = 0123.89</p>
+	<li><p style="margin-bottom: 0cm"><b>PROG</b> – program number,
+	from 0 to 127 
+	</p>
+	<li><p style="margin-bottom: 0cm"><b>VOLUME</b> – volume from 0.0
+	to 1.0 
+	</p>
+	<li><p><b>COUNT</b> – count of bars since the latest re-start 
+	</p>
+</ul>
+<h4 class="western"><a name="__RefHeading___Toc1281_3556581004"></a>MIDI
+out port for MIDI drum</h4>
+<p>Each drum configuration INI file has option &quot;<b>midi_out_name</b>&quot;.
+This is MIDI port name (or part of the name) used to send MIDI drum
+messages. If port is not available (device is not connected) the drum
+still be loaded but messages not sent. Drum configuration view will
+show port drum name as &quot;None&quot;. After MIDI drum is connected
+you need to re-load song or set drum configuration file so that
+looper will connect to the port. 
+</p>
+<h2 class="western"><a name="__RefHeading___Toc1285_3556581004"></a>Style
+drum</h2>
+<p><b>Style drum</b> is using text patterns specific for musical
+style and sample WAV files to produce drum accompaniment. Each style
+pattern sits inside one section of INI file. Number of steps is equal
+to the longest drum length. Two examples of styles are below.</p>
+<p><span lang="en-US">[<a href="../config/drum/style/Metronome.ini">Metronome</a>]
+– patterns for metronome</span></p>
+<p><span lang="en-US">[<a href="../config/drum/style/Blues.ini">Blues</a>]
+– patterns for blues </span>
+</p>
+<h4 class="western"><a name="__RefHeading___Toc1289_3556581004"></a>Drum
+names</h4>
+<p>Drum names used in pattern INI file and WAV file names are the
+same (ex. sd.wav, bd.wav): 
+</p>
+<ul>
+	<li><p style="margin-bottom: 0cm">bd<font color="#333333"><font face="system-ui, apple-system, sans-serif">:
+	Bass drum </font></font>
+	</p>
+	<li><p style="margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif">sd:
+	Snare drum </font>
+	</p>
+	<li><p style="margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif">lt:
+	Low tom </font>
+	</p>
+	<li><p style="margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif">mt:
+	Medium tom </font>
+	</p>
+	<li><p style="margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif">ht:
+	High tom </font>
+	</p>
+	<li><p style="margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif">ch:
+	Closed hi-hat </font>
+	</p>
+	<li><p style="margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif">oh:
+	Open hi-hat </font>
+	</p>
+	<li><p style="margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif">cy:
+	Cymbal </font>
+	</p>
+	<li><p style="margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif">rs:
+	Rim shot </font>
+	</p>
+	<li><p style="margin-bottom: 0cm"><font face="system-ui, apple-system, sans-serif">cp:
+	Clap </font>
+	</p>
+	<li><p><font color="#333333"><font face="system-ui, apple-system, sans-serif">cb:
+	Cowb</font></font>ell 
+	</p>
+</ul>
+<h2 class="western"><a name="__RefHeading___Toc1293_3556581004"></a>Loop
+drum</h2>
+<p><b>Loop drum</b> is recorded song part that plays along with other
+parts. As a song part <span style="font-weight: normal">Loop drum </span>may
+have several parallel loops and it is randomized by muting some of
+the loops. 
+</p>
+<p><span lang="en-US">It has INI configuration with options </span><span lang="en-US">that
+define how drum is randomized and how breaks are played</span><span lang="en-US">.
+</span><span lang="en-US">Example:</span><span lang="en-US"> [<a href="../config/drum/loop/loop_1.ini">Loop
+drum configuration</a>] </span>
+</p>
+<h2 class="western"><a name="__RefHeading___Toc6950_3726805289"></a>Troubleshooting
+errors</h2>
+<p><span lang="en-US">Sometimes</span><span lang="en-US"> your </span><span lang="en-US">audio
+devi</span><span lang="en-US">c</span><span lang="en-US">e may </span><span lang="en-US">have
+</span><span lang="en-US">issues with audio </span><span lang="en-US">capture
+or </span><span lang="en-US">playback </span><span lang="en-US">v</span><span lang="en-US">olu</span><span lang="en-US">m</span><span lang="en-US">e.
+To fix you need inst</span><span lang="en-US">all</span><span lang="en-US">
+</span><span lang="en-US">a </span><span lang="en-US">packa</span><span lang="en-US">g</span><span lang="en-US">e:</span></p>
+<pre lang="zxx" class="bash-western">sudo apt install alsa-utils</pre><p style="margin-bottom: 0cm">
+This will give you nice text user interface (TUI) command so that you
+can set playback and recording volumes:</p>
+<pre class="bash-western">alsamixer</pre><p style="margin-bottom: 0cm">
+I recommend setting all levels for playback and recording around 90%.
+If your direct sound (before recording) sounds much louder you may
+decrease capture level. 
+</p>
+<p style="margin-bottom: 0cm">Advanced audio devices as a rule have
+all these levels regulated in hardware. Only basic USB devices that
+do not have any knobs need adjusting levels by software settings.</p>
+<p style="margin-bottom: 0cm">To save the setting that you made run
+this:</p>
+<pre lang="zxx" class="bash-western"><span lang="en-US">s</span><span lang="en-US">udo alsactl store</span></pre><p style="margin-bottom: 0cm">
+Setting are saved for each device separately. You may switch USB
+audio devices and after reboot proper setting will be loaded.</p>
+<h3 class="western">Troubleshooting errors</h3>
+<p>If you have errors you need to connect to Raspberry pi box using
+SSH and run this commands:</p>
+<pre class="bash-western">
+<span lang="zxx"><span lang="en-US">cd </span><span lang="en-US">~/</span><span lang="en-US">pepe; </span></span>
+<span lang="en-US">./loop.sh --debug; </span>
+<span lang="en-US">cat log.txt</span></pre><p>
+ 
+</p>
+<p>The logging levels: --warn, --info and especially –-debug will
+provide more details in the log file.</p>
+<p>Finally, if you connect via SSH and want to run looper and work
+with logs and configuration using web browser run this:</p>
+<pre lang="zxx" class="bash-western"><span lang="en-US">cd </span><span lang="en-US">~/</span><span lang="en-US">pepe</span>
+<span lang="zxx"><span lang="en-US">./loop.sh </span><span lang="en-US">--</span><span lang="en-US">debug </span><span lang="en-US">–</span><span lang="en-US">web</span></span></pre><p>
+<br/>
+<br/>
+
+</p>
+</body>
+</html>
