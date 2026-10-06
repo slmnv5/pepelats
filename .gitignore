@@ -1,4 +1,8 @@
-.git/
+
+
+/main.dist
+/main.build
+
 
 
 
