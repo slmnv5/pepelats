@@ -5,6 +5,5 @@
 /pepelats*.zip
 
 #build dir
-/main.dist
 /main.build
 
