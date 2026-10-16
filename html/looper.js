@@ -39,6 +39,10 @@ function getContentHtml(content, is_rec) {
     return result;
 }
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const HEADER = document.getElementById('header');
     const DESCRIPTION = document.getElementById('description');
