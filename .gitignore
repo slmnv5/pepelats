@@ -1,11 +1,7 @@
 #MacOS dir
 .DS_Store
 
-#bak files
-*.html.bak
-
 #build dir
-/main.dist
 /main.build
 
 
