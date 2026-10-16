@@ -11,6 +11,10 @@
 -	MIDI controller or computer keyboard as MIDI controller.
 -	Three drum machine types with volume control, random variations and breaks. 
 
+
+### Install command
+wget -qO- https://github.com/slmnv5/pepelats/releases/tag/latest/install.sh | bash
+
 ### [User guide](https://slmnv5.github.io/pepelats/html/pepelats.html)
 
 ### [Screenshots](https://slmnv5.github.io/pepelats/html/screens.html)
