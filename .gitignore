@@ -1,16 +1,9 @@
 #MacOS dir
 .DS_Store
 
+#other files
+/pepelats*.zip
+
 #build dir
 /main.build
-
-
-
-
-
-
-
-
-
-
 
