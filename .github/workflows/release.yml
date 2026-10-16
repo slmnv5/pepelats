@@ -20,18 +20,17 @@ jobs:
       # 2. Package your files into ZIP archives automatically
       - name: Create ZIP Archives
         run: |
-	  # rm ./pepelats*.zip
-	  zip pepelats1.zip /main.ini ./index.html ./favicon.ico ./loop.sh ./README.md || exit 1
-	  zip -r pepelats1.zip ./config/ ./html/ || exit 1
-
-	  zip -r pepelats2.zip ./main.dist/ || exit 1
-	  zip -r pepelats2.zip ./bindir/ || exit 1
+	  # rm ./pepelats.zip
+	  zip pepelats.zip /main.ini ./index.html ./favicon.ico ./loop.sh ./README.md || exit 1
+	  zip -r pepelats.zip ./config/ ./html/ || exit 1
+	  zip -r pepelats.zip ./main.dist/ || exit 1
+	  zip -r pepelats.zip ./bindir/ || exit 1
 
       # 3. Create or update a rolling "latest" release tag on GitHub
       - name: Upload to Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "pepelats1.zip,pepelats2.zip"
+          artifacts: "install.sh,pepelats.zip"
           tag: "latest"
           name: "Latest Rolling Build"
           allowUpdates: true # Overwrites the old ZIP files with the new ones
