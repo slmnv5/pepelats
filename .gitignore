@@ -1,20 +1,10 @@
 #MacOS dir
 .DS_Store
 
-#bak files
-*.html.bak
+#other files
+/pepelats*.zip
 
 #build dir
 /main.dist
 /main.build
-
-
-
-
-
-
-
-
-
-
 
