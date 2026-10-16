@@ -1,0 +1,37 @@
+name: Update Latest Release Assets
+
+# Triggers the workflow every time you push changes to your main branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Allows the script to create/edit releases
+
+    steps:
+      # 1. Pull down your repository code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Package your files into ZIP archives automatically
+      # Replace 'folder1' with whatever paths/files you need to compress
+      - name: Create ZIP Archives
+        run: |
+          zip -r pepelats1.zip folder1/
+          zip -r file2.zip folder2/
+
+      # 3. Create or update a rolling "latest" release tag on GitHub
+      - name: Upload to Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "file1.zip,file2.zip"
+          tag: "latest"
+          name: "Latest Rolling Build"
+          allowUpdates: true # Overwrites the old ZIP files with the new ones
+          removeArtifacts: true # Cleans out the previous assets first
+
+
