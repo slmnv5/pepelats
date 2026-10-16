@@ -17,14 +17,18 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+
       # 2. Package your files into ZIP archives automatically
       - name: Create ZIP Archives
         run: |
-	  # rm ./pepelats.zip
-	  zip pepelats.zip /main.ini ./index.html ./favicon.ico ./loop.sh ./README.md || exit 1
-	  zip -r pepelats.zip ./config/ ./html/ || exit 1
-	  zip -r pepelats.zip ./main.dist/ || exit 1
-	  zip -r pepelats.zip ./bindir/ || exit 1
+          # Create the initial zip with individual files
+          zip pepelats.zip ./main.ini ./index.html ./favicon.ico ./loop.sh ./README.md
+          
+          # Append folders to the existing pepelats.zip archive using the -g flag
+          zip -rg pepelats.zip ./config/ ./html/
+          zip -rg pepelats.zip ./main.dist/
+          zip -rg pepelats.zip ./bindir/
+          echo "ZIP creation finished successfully!"
 
       # 3. Create or update a rolling "latest" release tag on GitHub
       - name: Upload to Release
