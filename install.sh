@@ -15,6 +15,5 @@ fi
 
 echo "====== PEPELATS INSTALL SUCCESS =======" 
 
-echo "install: wget -qO- "$D1"/install.sh | bash
 
 
