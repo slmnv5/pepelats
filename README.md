@@ -12,8 +12,22 @@
 -	Three drum machine types with volume control, random variations and breaks. 
 
 
-### Install command
-wget -qO- https://github.com/slmnv5/pepelats/releases/tag/latest/install.sh | bash
+
+To download and run the installer script automatically, copy and paste one of the following commands into your terminal:
+
+### Using wget (Recommended)
+```bash
+wget -qO- https://github.com | bash
+```
+
+### Using curl
+```bash
+curl -fsSL https://github.com | bash
+```
+
+---
+*Note: This script will download `pepelats.zip`, install to `~/pepe/` directory, append startup command to `~/.profile`
+
 
 ### [User guide](https://slmnv5.github.io/pepelats/html/pepelats.html)
 
