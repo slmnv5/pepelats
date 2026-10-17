@@ -2,7 +2,7 @@
 
 cd ~ || exit 1
 
-D1=https://github.com/slmnv5/pepelats/releases/tag/latest
+D1=https://github.com/slmnv5/pepelats/releases/latest/download
 
 wget -N "$D1"/pepelats.zip || exit 1
 unzip -o ~/pepelats.zip -d ~/pepe/ || exit 1
