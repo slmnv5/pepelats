@@ -11,6 +11,24 @@
 -	MIDI controller or computer keyboard as MIDI controller.
 -	Three drum machine types with volume control, random variations and breaks. 
 
+
+
+To download and run the installer script automatically, copy and paste one of the following commands into your terminal:
+
+### Using wget (Recommended)
+```bash
+wget -qO- https://github.com/slmnv5/pepelats/releases/latest/download/install.sh | bash
+```
+
+### Using curl
+```bash
+curl -fsSL https://github.com/slmnv5/pepelats/releases/latest/download/install.sh | bash
+```
+
+---
+*Note: This script will download `pepelats.zip`, install to `~/pepe/` directory, append startup command to `~/.profile`
+
+
 ### [User guide](https://slmnv5.github.io/pepelats/html/pepelats.html)
 
 ### [Screenshots](https://slmnv5.github.io/pepelats/html/screens.html)
