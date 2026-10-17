@@ -17,12 +17,12 @@ To download and run the installer script automatically, copy and paste one of th
 
 ### Using wget (Recommended)
 ```bash
-wget -qO- https://github.com | bash
+wget -qO- https://github.com/slmnv5/pepelats/releases/latest/download/install.sh | bash
 ```
 
 ### Using curl
 ```bash
-curl -fsSL https://github.com | bash
+curl -fsSL https://github.com/slmnv5/pepelats/releases/latest/download/install.sh | bash
 ```
 
 ---
