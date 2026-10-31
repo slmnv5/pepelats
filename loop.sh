@@ -27,7 +27,7 @@ echo "-------------------------------------------" >> log.txt
 
 if [ -f ./main.dist/main.bin ]; then
   export KILL_CMD="pkill -9 main.bin"
-  export RUN_CMD="./main.dist/main.bin"
+  export RUN_CMD="./main.dist/main.bin $*"
 else
   export KILL_CMD="pkill -9 python3"
   export RUN_CMD="python3 ./src/main.py $*"
@@ -35,6 +35,8 @@ else
   export PYTHONPATH
 fi
 
+LOG="yes"
+if [[ "$*" == *--no-log* ]]; then LOG=""; fi
 
 # disable under voltage error on screen
 # sudo dmesg -D
@@ -43,7 +45,7 @@ setfont Uni1-VGA32x16
 while true; do
   echo "=============== $(date)" >> log.txt
   clear
-  $RUN_CMD 2>>log.txt 
+  if [ -n "$LOG" ]; then $RUN_CMD 2>>log.txt; else $RUN_CMD; fi
   sleep 5
   $KILL_CMD 2>/dev/null
 done
