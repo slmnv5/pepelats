@@ -1,11 +1,9 @@
 #MacOS dir
 .DS_Store
-
+.idea
 
 #build dir
 /main.build
-/main.dist
-/bindir
-
+/pepelats.zip
 
 

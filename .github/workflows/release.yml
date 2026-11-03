@@ -17,7 +17,20 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 2. Create or update a rolling "latest" release tag on GitHub
+      # 2. Make huge ZIP on server. Tiny change will not push the whole 11-MB ZIP
+      - name: Create ZIP Archive
+        run: |
+          # Create the initial ZIP
+          rm pepelats.zip
+          zip pepelats.zip ./main.ini ./index.html ./favicon.ico ./loop.sh ./README.md
+          
+          # Append folders to the existing pepelats.zip archive using the -g flag
+          zip -rg pepelats.zip ./config/ ./html/
+          zip -rg pepelats.zip ./main.dist/
+          zip -rg pepelats.zip ./bindir/
+          echo "ZIP created"
+
+      # 3. Create or update a rolling "latest" release tag on GitHub
       - name: Upload to Release
         uses: ncipollo/release-action@v1
         with:
