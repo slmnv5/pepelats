@@ -17,27 +17,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-
-      # 2. Package your files into ZIP archives automatically
-      - name: Create ZIP Archives
-        run: |
-          # Create the initial zip with individual files
-          zip pepelats.zip ./main.ini ./index.html ./favicon.ico ./loop.sh ./README.md
-          
-          # Append folders to the existing pepelats.zip archive using the -g flag
-          zip -rg pepelats.zip ./config/ ./html/
-          zip -rg pepelats.zip ./main.dist/
-          zip -rg pepelats.zip ./bindir/
-          echo "ZIP creation finished successfully!"
-
-      # 3. Create or update a rolling "latest" release tag on GitHub
+      # 2. Create or update a rolling "latest" release tag on GitHub
       - name: Upload to Release
         uses: ncipollo/release-action@v1
         with:
           artifacts: "install.sh,pepelats.zip"
           tag: "latest"
           name: "Latest Rolling Build"
-          allowUpdates: true # Overwrites the old ZIP files with the new ones
+          allowUpdates: true # Overwrites the old ZIP files with the new one
           removeArtifacts: true # Cleans out the previous assets first
 
 
