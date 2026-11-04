@@ -3,13 +3,7 @@
 .idea
 
 #build dir
-<<<<<<< HEAD
-/main.bild
-#/pepelats.zip
-
-=======
 /main.build
 /pepelats.zip
->>>>>>> 16c7e28cdb057a35ec4f38f40c5c103cedbbf262
 
 
