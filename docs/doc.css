@@ -1,0 +1,33 @@
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 1.125rem; /* ~18px for better readability */
+  line-height: 1.6;
+  color: #333;
+  max-width: 100ch;
+  margin: 0 auto; /* Centers the text block */
+  padding: 2rem;
+}
+
+h1, h2, h3 {
+  text-wrap: balance; /* Prevents uneven title lines */
+  line-height: 1.2;
+  margin-top: 2em;
+}
+
+p {
+  text-wrap: pretty; /* Prevents orphans in paragraphs */
+  margin-bottom: 1.5em;
+}
+
+
+.bash_code {
+    color: white;
+    font-family: 'Arial', sans-serif;
+    font-size: 1.2rem;         /* Slightly larger text */
+    line-height: 1.6;          /* Improved readability */
+    background-color: black; /* Light grey background */
+    padding: 15px;             /* Space inside the border */
+    border-left: 5px solid #3498db; /* Blue accent border */
+    border-radius: 4px;
+    margin: 20px 0;            /* Space above and below */
+}

@@ -1,0 +1,15 @@
+#MacOS dir
+.DS_Store
+.idea
+
+#build dir
+main.build
+pepelats.zip
+
+user.ini
+license.ini
+
+
+
+
+
