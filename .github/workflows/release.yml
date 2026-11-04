@@ -21,7 +21,7 @@ jobs:
       - name: Create ZIP Archive
         run: |
           # Create the initial ZIP
-          rm pepelats.zip
+          if [ -f pepelats.zip ]; then rm pepelats.zip; fi
           zip pepelats.zip ./main.ini ./index.html ./favicon.ico ./loop.sh ./README.md
           
           # Append folders to the existing pepelats.zip archive using the -g flag
