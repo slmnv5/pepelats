@@ -24,9 +24,9 @@ wget -qO- https://github.com/slmnv5/pepelats/releases/latest/download/install.sh
 
 - Finally, you need to check log file for any errors related to MIDI connection or audio device connection. 
 
-- You may do most of the above via the application main page [main page](file:///Users/erik/git/musiloop/index.html) that has links to configurations and logs.
+- You may do most of the above via the application main page [main page](file:./../index.html) that has links to configurations and logs.
 
-### Important files you may view / edit from [main page](file:///Users/erik/git/musiloop/index.html)
+### Important files you may view / edit from [main page](file:./../index.html)
 
 - log.txt – log file for current session
 
@@ -48,11 +48,11 @@ wget -qO- https://github.com/slmnv5/pepelats/releases/latest/download/install.sh
 
 All configurations are in two files: 
 
-- [user.ini](file:///Users/erik/git/musiloop/user.ini) - user configuration, edit this file if you need changes
+- [user.ini](file:./../user.ini) - user configuration, edit this file if you need changes
 
-- [main.ini](file:///Users/erik/git/musiloop/main.ini) - contains all default configurations and comments explaining each option
+- [main.ini](file:./../main.ini) - contains all default configurations and comments explaining each option
 
-If file user.ini does not have specific configuration it is taken from file main.ini. You may edit file user.ini on the main web page: [looper](file:///Users/erik/git/musiloop/index.html).
+If file user.ini does not have specific configuration it is taken from file main.ini. You may edit file user.ini on the main web page: [looper](file:./../index.html).
 
 Configurations for audio
 
@@ -70,7 +70,7 @@ Configurations for audio
 
 If MIDI input and / or audio device not found the looper starts anyway and saves errors in the log. There are 3 ways to run it and fix any issues
 
-- No screen, no SSH connection, there is Wi-Fi connection – status on main Web page [looper](file:///Users/erik/git/musiloop/index.html), you can check log for errors, edit configurations and restart looper.
+- No screen, no SSH connection, there is Wi-Fi connection – status on main Web page [looper](file:./../index.html), you can check log for errors, edit configurations and restart looper.
 
 - Screen connected to Raspberry Pi – status on screen. You need computer computer keyboard to run commands, check logs, edit configurations and restart looper.
 
@@ -125,11 +125,11 @@ Menu configurations are INI files that link together button labels, MIDI message
 
 There are only three menu configurations files.
 
-- [play.ini](file:///Users/erik/git/musiloop/config/menu/play.ini) - play / record / clear song parts and switching between them. Show loops for song part. Silence, delete, re-arrange loops. 
+- [play.ini](file:./../config/menu/play.ini) - play / record / clear song parts and switching between them. Show loops for song part. Silence, delete, re-arrange loops. 
 
-- [song.ini](file:///Users/erik/git/musiloop/config/menu/song.ini) - delete, save, load, initialize song. Select drum configuration. 
+- [song.ini](file:./../config/menu/song.ini) - delete, save, load, initialize song. Select drum configuration. 
 
-- [serv.ini](file:///Users/erik/git/musiloop/config/menu/serv.ini) - restart looper, show hardware ID and license. Select drum type, adjust drum volume, parameter.
+- [serv.ini](file:./../config/menu/serv.ini) - restart looper, show hardware ID and license. Select drum type, adjust drum volume, parameter.
 
 Each menu file has two sections with different but related commands. As an example play menu has section to work with song parts and section to work with loops inside one part. Also note that there may be multiple commands separated by colon (:) assigned to one button and velocity.
 
@@ -191,11 +191,11 @@ If there is only one pattern for Style drum, random variations do not work.  Sim
 
 Style drum is using text patterns specific for musical style and sample WAV files to produce drum accompaniment. Each style pattern sits inside one section of INI file. Number of steps is equal to the longest drum length. Two examples of styles are below.
 
-- [Metronome](file:///Users/erik/git/musiloop/config/drum/style/Metronome.ini) – patterns for metronome
+- [Metronome](file:./../config/drum/style/Metronome.ini) – patterns for metronome
 
-- [Blues](file:///Users/erik/git/musiloop/config/drum/style/Blues.ini) – patterns for blues
+- [Blues](file:./../config/drum/style/Blues.ini) – patterns for blues
 
-- [Twist](file:///Users/erik/git/musiloop/config/drum/style/Twist.ini) – patterns for twist
+- [Twist](file:./../config/drum/style/Twist.ini) – patterns for twist
 
 Drum sample names used in pattern and WAV file names are the same (ex. sd.wav, bd.wav).
 
@@ -203,9 +203,9 @@ Drum sample names used in pattern and WAV file names are the same (ex. sd.wav, b
 
 Loop drum is just a recorded song part that plays along with other parts. As any song part it may have many parallel loops and it is randomized by muting some of them. It has INI configuration that defines how beats and breaks are played and randomized. Four small numbers (1-9) are used, two numbers for beats and two for breaks. For convenience these numbers are included in configuration file name and inside the file there is description of the logic.
 
-- [lp-12-12.ini](file:///Users/erik/git/musiloop/config/drum/loop/lp-12-12.ini)
+- [lp-12-12.ini](file:./../config/drum/loop/lp-12-12.ini)
 
-- [lp-23-11.ini](file:///Users/erik/git/musiloop/config/drum/loop/lp-23-11.ini)
+- [lp-23-11.ini](file:./../config/drum/loop/lp-23-11.ini)
 
 To fully utilize breaks and random variations features the song part needs to record sufficiently many loops. Thus, for example, if song part has only one loop the drum will work but drum breaks and random variations will not work.
 
@@ -215,11 +215,11 @@ MIDI drum sends MIDI messages to external drum machine to synchronize it with th
 
 Set of MIDI messages along with the MIDI OUT port name are saved in configuration INI file. There are three ready-made configurations that may serve as examples.
 
-- [ValGP-100.ini](file:///Users/erik/git/musiloop/config/drum/midi/ValGP100.ini) - Valeton GP100 guitar pedal with drums.
+- [ValGP-100.ini](file:./../config/drum/midi/ValGP100.ini) - Valeton GP100 guitar pedal with drums.
 
-- [MidiFire.ini](file:///Users/erik/git/musiloop/config/drum/midi/MidiFire.ini) – MidiFire IOS application that sets dynamic MIDI clock and can control other IOS drum applications. 
+- [MidiFire.ini](file:./../config/drum/midi/MidiFire.ini) – MidiFire IOS application that sets dynamic MIDI clock and can control other IOS drum applications. 
 
-- [FunkBox.ini](file:///Users/erik/git/musiloop/config/drum/midi/FunkBox.ini) – Funk Box IOS drum application. 
+- [FunkBox.ini](file:./../config/drum/midi/FunkBox.ini) – Funk Box IOS drum application. 
 
 ### MIDI messages and variables used in configuration
 
