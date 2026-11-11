@@ -16,7 +16,7 @@ wget -qO- https://github.com/slmnv5/pepelats/releases/latest/download/install.sh
 
 - Connect MIDI controller and make sure it's name (or part of name) is listed in user.ini file. 
 
-- Also check that MIDI controller notes for you specific controller are listed in user.ini
+- Also check that MIDI controller notes for your specific controller are listed in user.ini
 
 - If your MIDI controller uses Bluetooth you need to run few commands on Raspberry Pi to pair and connect it. 
 
@@ -24,7 +24,7 @@ wget -qO- https://github.com/slmnv5/pepelats/releases/latest/download/install.sh
 
 - Finally, you need to check log file for any errors related to MIDI connection or audio device connection. 
 
-- You may do most of the above via the application main page [main page](../index.html) that has links to configurations and logs.
+- You may do most of the above via the application [main page](../index.html) that has links to configurations and logs.
 
 ### Important files you may view / edit from [main page](../index.html)
 
@@ -48,7 +48,7 @@ wget -qO- https://github.com/slmnv5/pepelats/releases/latest/download/install.sh
 
 All configurations are in two files: 
 
-- [user.ini](../user.ini) - user configuration, edit this file if you need changes
+- user.ini - user configuration, initially empty, edit this file if you need changes
 
 - [main.ini](../main.ini) - contains all default configurations and comments explaining each option
 
@@ -56,11 +56,11 @@ If file user.ini does not have specific configuration it is taken from file main
 
 Configurations for audio
 
-- audio_names – list of names (or part of names) of audio devices, case-sensitive. First found device in the list will be used. If nothing is found looper will start anyway and you may check the log for details and errors.
+- audio_names – list of names (or part of names) of audio devices, case-sensitive. First found device in the list will be used. If nothing is found looper will start anyway, and you may check the log for details and errors.
 
 ### Configurations for MIDI controller
 
-- midi_in_names – list of names (or part of names) for MIDI input controls, case-sensitive. First found device in the list will be used. If nothing is found looper will try to use computer keyboard. If later is not found looper will start anyway and you may check the log to see details and errors.
+- midi_in_names – list of names (or part of names) for MIDI input controls, case-sensitive. First found device in the list will be used. If nothing is found looper will try to use computer keyboard. If later is not found looper will start anyway, and you may check the log to see details and errors.
 
 - midi_values – MIDI notes (or CC) numbers that MIDI device sends. This is list of integer values from 0 to 127.
 
@@ -70,11 +70,11 @@ Configurations for audio
 
 If MIDI input and / or audio device not found the looper starts anyway and saves errors in the log. There are 3 ways to run it and fix any issues
 
-- No screen, no SSH connection, there is Wi-Fi connection – status on main Web page [looper](../index.html), you can check log for errors, edit configurations and restart looper.
+- No screen, no SSH connection, there is Wi-Fi connection – status on [main page](../index.html), you can check log for errors, edit configurations and restart looper.
 
-- Screen connected to Raspberry Pi – status on screen. You need computer computer keyboard to run commands, check logs, edit configurations and restart looper.
+- Screen connected to Raspberry Pi – status on screen. You need computer keyboard to run commands, check logs, edit configurations and restart looper.
 
-- Looper started via SSH connection – status on SSH terminal, similar to the previous case but you work from another computer.
+- Looper started via SSH connection – status on SSH terminal, similar to the previous case, but you work from another computer.
 
 ## MIDI controller and commands
 
@@ -117,7 +117,7 @@ If a MIDI controller has expression pedal input we may plug ON/OFF button and us
 
 ## Menu
 
-Menu configurations are INI files that link together button labels, MIDI messages and looper commands.  Additionally menu files have two options:
+Menu configurations are INI files that link together button labels, MIDI messages and looper commands.  Additionally, menu files have two options:
 
 - description – text appearing on top of screen when menu is loaded, just below the loop progress bar.
 
@@ -131,17 +131,17 @@ There are only three menu configurations files.
 
 - [serv.ini](../config/menu/serv.ini) - restart looper, show hardware ID and license. Select drum type, adjust drum volume, parameter.
 
-Each menu file has two sections with different but related commands. As an example play menu has section to work with song parts and section to work with loops inside one part. Also note that there may be multiple commands separated by colon (:) assigned to one button and velocity.
+Each menu file has two sections with different but related commands. As an example play menu has section to work with song parts and section to work with loops inside one part. Also note that there may be multiple commands separated by colon assigned to one button and velocity.
 
 ### Menu view on screen
 
-When switching menu file or menu section the look of the screen changes. However there is common information shown for each menu. Namely the top row always shows progress bar. It includes position of the loop, current song name, drum configuration and beats per minute.
+When switching menu file or menu section the look of the screen changes. However, there is common information shown for each menu. Namely, the top row always shows progress bar. It includes position of the loop, current song name, drum configuration and beats per minute.
 
 ## Song
 
 Song is collection of recorded song parts along with specific drum type and drum configuration. Songs are saved in user's home directory ~/save_song. 
 
-Song names are 'random words' and include Drum style name (ex: Disco, Blues,) and sampling frequency (ex: k48, k44,). The later prevents loading song recorded on a devices with different sampling frequency. 
+Song names are 'random words' and include Drum style name (ex: Disco, Blues,...) and sampling frequency (ex: k48, k44,). The latter prevents loading song recorded on a devices with different sampling frequency. 
 
 ## Screen
 
@@ -153,13 +153,13 @@ Looper outputs its state on:
 
 If screen is attached – it is used, otherwise web page is used to output looper state.
 
-- Web page pros: It allows you to to see log files, edit configuration files, restart looper.
+- Web page pros: It allows you to see log files, edit configuration files, restart looper.
 
-- Web page cons: You need to carry a device with web browser (phone, tablet) that is connected to the same WiFi as the looper.
+- Web page cons: You need to carry a device with web browser (phone, tablet) that is connected to the same Wi-Fi as the looper.
 
-- LCD screen pros: If we use special 3.5 inch LCD for Raspberry Pi it will make a simple compact looper that does not need WiFi connection. 
+- LCD screen pros: If we use special 3.5 inch LCD for Raspberry Pi it will make a simple compact looper that does not need Wi-Fi connection. 
 
-- LCD screen cons: Hard to change configuration or check logs for errors. Best way is connect Raspberry Pi to WiFi and use another computer over SSH connection.
+- LCD screen cons: Hard to change configuration or check logs for errors. Best way is to connect Raspberry Pi to Wi-Fi and use another computer over SSH connection.
 
 ## Drums in general
 
@@ -185,7 +185,7 @@ There are two modes for drums – normal beat and break. Different types of drum
 
 Every drum has randomness parameter that can be adjusted and saved with the song. If this parameter = 0.5 then there is 50% chance that drum pattern will be randomized at start of bar. For new song this parameter = 0.1 
 
-If there is only one pattern for Style drum, random variations do not work.  Similarly if there are not enough loops for Loop drum this feature does not work.
+If there is only one pattern for Style drum, random variations do not work.  Similarly, if there are not enough loops for Loop drum this feature does not work.
 
 ## Style drum
 
@@ -201,7 +201,7 @@ Drum sample names used in pattern and WAV file names are the same (ex. sd.wav, b
 
 ## Loop drum
 
-Loop drum is just a recorded song part that plays along with other parts. As any song part it may have many parallel loops and it is randomized by muting some of them. It has INI configuration that defines how beats and breaks are played and randomized. Four small numbers (1-9) are used, two numbers for beats and two for breaks. For convenience these numbers are included in configuration file name and inside the file there is description of the logic.
+Loop drum is just a recorded song part that plays along with other parts. As any song part it may have many parallel loops, and it is randomized by muting some of them. It has INI configuration that defines how beats and breaks are played and randomized. Four small numbers (1-9) are used, two numbers for beats and two for breaks. For convenience these numbers are included in configuration file name and inside the file there is description of the logic.
 
 - [lp-12-12.ini](../config/drum/loop/lp-12-12.ini)
 

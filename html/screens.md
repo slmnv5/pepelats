@@ -10,7 +10,7 @@ This starting page is available only if looper uses Web. When looper uses screen
 
 There are 4 song parts shown in here. List of numbers (ex: **5,5,15**) shows how many loops each part has and number of bars in each loop.
 
-Number in parenthesis **-(00)-** shows how many “undone” loops each part has. After “redo” this number decreases after “undo” – increases.
+Number in parentheses **-(00)-** shows how many “undone” loops each part has. After “redo” this number decreases after “undo” – increases.
 
 Part marked with star **\*** is **current part**. Red color shows that it is recording. Green color shows that it is playing. 
 
@@ -52,7 +52,7 @@ This section is to provide information and restart.
 
 ## Service menu, section for drum parameters
 
-This section is to change volume and randomness of drum. Additionally it allows to change drum type – this will make an empty song with selected drum type.
+This section is to change volume and randomness of drum. Additionally, it allows to change drum type – this will make an empty song with selected drum type.
 
 
 ![](./img/serv2.png)
