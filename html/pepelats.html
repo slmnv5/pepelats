@@ -5,7 +5,7 @@
 	<title>Table of Contents</title>
 	<meta name="generator" content="LibreOffice 26.8.0.3 (MacOSX)"/>
 	<meta name="created" content="00:00:00"/>
-	<meta name="changed" content="2026-10-30T20:23:40.209910000"/>
+	<meta name="changed" content="2026-11-10T22:12:04.737350000"/>
 	<style type="text/css">
 		@page { size: 21.59cm 27.94cm; margin-left: 3cm; margin-right: 3cm; margin-top: 1cm; margin-bottom: 1cm }
 		p { line-height: 160%; font-family: "system-ui", "apple-system", sans-serif; orphans: 100; color: #333333; background: transparent }
@@ -31,8 +31,7 @@
 <body lang="en-US" text="#333333" link="#000080" vlink="#800000" dir="ltr" style="border: 1px solid #000000; padding: 0.05cm"><h1 class="western"><a name="__RefHeading___Toc4956_1950634290"></a>
 Pepelats – audio looper with drums</h1>
 <div id="Table of Contents1" dir="ltr" gutter="19" style="background: #e8f2a1; column-count: 2"><p style="margin-left: 0.5cm; margin-bottom: 0cm">
-	<a href="#__RefHeading___Toc1215_3556581004" name=" Features">
-	Features</a></p>
+	<a href="#__RefHeading___Toc1215_3556581004" name="Features">Features</a></p>
 	<p style="margin-left: 0.5cm; margin-bottom: 0cm"><a href="#__RefHeading___Toc1229_3556581004" name="Installation">Installation</a></p>
 	<p style="margin-left: 0.5cm; margin-bottom: 0cm"><a href="#__RefHeading___Toc1235_3556581004" name="Configuration details">Configuration
 	details</a></p>
@@ -52,7 +51,7 @@ Pepelats – audio looper with drums</h1>
 	<p style="margin-left: 0.5cm; margin-bottom: 0cm"><a href="#__RefHeading___Toc6950_3726805289" name="Troubleshooting errors">Troubleshooting
 	errors</a></p>
 </div>
-<h2 class="western"><a name="__RefHeading___Toc1215_3556581004"></a>	Features</h2>
+<h2 class="western"><a name="__RefHeading___Toc1215_3556581004"></a>Features</h2>
 <ul>
 	<li><p>Compatible Raspberry Pi: 3A+, 3B+, Zero-2W, 4, 5</p></li>
 	<li><p>Multiple song parts (intro/verse/chorus/...).</p></li>
@@ -390,36 +389,40 @@ that may serve as examples.</p>
 	</p></li>
 </ul>
 <h3 class="western"><a name="__RefHeading___Toc1277_3556581004"></a>MIDI
-messages used in configuration 
-</h3>
+messages and variables used in configuration</h3>
 <p>There are six messages to control MIDI device, each may contain
 variables:</p>
 <ul>
-	<li><p>bpm_msg – sent only once when the BPM is defined (when
-	loading song or recording the 1st loop) 
-	</p></li>
-	<li><p>bar_msg – sent at start of each bar. Note, there is no
-	start message, instead this message is used</p></li>
-	<li><p>stop_msg – stops drum.</p></li>
-	<li><p>volume_msg – changes volume (ex: CC #7 from 0 to 127) 
-	</p></li>
-	<li><p>prog_msg – selects drum program / pattern, used for drum
-	breaks and randomizing drums.</p></li>
+	<li><p style="orphans: 100; line-height: 160%"><font face="system-ui, apple-system, sans-serif"><b>stop_msg</b>
+	sent when drum stops, usually no variables used</font></p></li>
+	<li><p style="orphans: 100; line-height: 160%"><font face="system-ui, apple-system, sans-serif"><b>tap_msg</b>
+	set BPM by tap tempo, usually no variables used</font></p></li>
+	<li><p style="orphans: 100; line-height: 160%"><font face="system-ui, apple-system, sans-serif"><b>bar_msg</b>
+	sent at start of each bar, likely to use COUNT variable</font></p></li>
+	<li><p style="orphans: 100; line-height: 160%"><font face="system-ui, apple-system, sans-serif"><b>prog_msg</b>
+	sent when prog changes, likely to use PROG variable</font></p></li>
+	<li><p style="orphans: 100; line-height: 160%"><font face="system-ui, apple-system, sans-serif"><b>volume_msg</b>
+	sent when volume changes, use VOLUME variable</font></p></li>
+	<li><p style="orphans: 100; line-height: 160%"><font face="system-ui, apple-system, sans-serif"><b>bpm_msg</b>
+	set BPM, use BPM or BPM_LIST variables</font></p></li>
 </ul>
-<h3 class="western"><a name="__RefHeading___Toc1279_3556581004"></a>MIDI
-variables used in configuration</h3>
-<p>Five variables may be used in messages (all upper case names): 
+<p style="line-height: 160%; orphans: 100"><br/>
+<br/>
+
 </p>
+<p style="line-height: 160%; orphans: 100"><font face="system-ui, apple-system, sans-serif">There
+are five message variables with value examples:</font></p>
 <ul>
-	<li><p>BPM – beats per minute, ex. 123.89 
-	</p></li>
-	<li><p>BPM_LIST - [0, 1, 2, 3, 8, 9] - is byte list of BPM = 0123.89
-	May be send as part of Sys-Ex MIDI command.</p></li>
-	<li><p>PROG – program number, from 0 to 127 
-	</p></li>
-	<li><p>VOLUME – volume from 0.0 to 1.0 
-	</p></li>
-	<li><p>COUNT – count of bars since the latest re-start</p></li>
+	<li><p style="orphans: 100; line-height: 160%"><font face="system-ui, apple-system, sans-serif"><b>BPM</b>
+	(= 123.89) - beats per minute</font></p></li>
+	<li><p style="orphans: 100; line-height: 160%"><font face="system-ui, apple-system, sans-serif"><b>BPM_LIST</b>
+	(= [0,1,2,3,8,9]) - BPM as list of bytes for SysEx message</font></p></li>
+	<li><p style="orphans: 100; line-height: 160%"><font face="system-ui, apple-system, sans-serif"><b>COUNT</b>
+	(= 12) - count of bars since start from 0</font></p></li>
+	<li><p style="orphans: 100; line-height: 160%"><font face="system-ui, apple-system, sans-serif"><b>PROG</b>
+	(= 125) - MIDI prog. value from 0 to 127</font></p></li>
+	<li><p style="orphans: 100; line-height: 160%"><font color="#333333"><font face="system-ui, apple-system, sans-serif"><b>VOLUME</b></font></font><font color="#333333"><font face="system-ui, apple-system, sans-serif">
+	(= 0.85) - drum volume form 0.0 to 1.0</font></font></p></li>
 </ul>
 <h3 class="western"><a name="__RefHeading___Toc1281_3556581004"></a>MIDI
 out port for MIDI drum</h3>
