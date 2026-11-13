@@ -3,23 +3,17 @@
 
 ## Installation
 
-- Install latest Raspberry Pi OS Lite 64 bit. I recommend rpi imager that allows to configure Wi-Fi (network ID and password). Assign host name (example: loop). 
-
-- Connect keyboard and HDMI display or, better, connect via SSH from another computer and run this command to install looper.
-
-- To download and run the installer script automatically, copy and paste one of the following commands into your terminal.
-This script will download `pepelats.zip`, install to `~/pepe/` directory, append startup command to `~/.profile`
-
+- Install latest Raspberry Pi OS Lite 64 bit. I recommend rpi imager that allows to configure Wi-Fi (network ID and password). Assign host name (example: loop).
+- Connect keyboard and HDMI display or, better, connect via SSH from another computer and run below command to install looper. 
+The script will download `pepelats.zip`, install to `~/pepe/` directory, append startup command to `~/.profile`
 ```bash
 wget -qO- https://github.com/slmnv5/pepelats/releases/latest/download/install.sh | bash
 ```
-
-- Connect MIDI controller and make sure it's name (or part of name) is listed in user.ini file.
-- Also check that MIDI controller notes for your specific controller are listed in user.ini
-- If your MIDI controller uses Bluetooth you need to run few commands on Raspberry Pi to pair and connect it.
+- Connect your MIDI controller and make sure it's name (or part of name) is listed in user.ini file.
+- Also check that MIDI controller notes are listed in user.ini
+- If your MIDI controller uses Bluetooth you need to run few commands on Raspberry Pi to connect it.
 - You may use computer keyboard instead of MIDI controller as described below. Do this for quick start and leave MIDI configuration for later especially if your controller uses Bluetooth.
-- Finally, you need to check log file for any errors related to MIDI connection or audio device connection.
-- You may do most of the above via the application [main page](../index.html) that has links to configurations and logs.
+- Check log file for any errors related to MIDI or Audio. You may do this on the application [main page](../index.html).
 
 ### Important files you may view / edit from main page
 
@@ -27,7 +21,7 @@ wget -qO- https://github.com/slmnv5/pepelats/releases/latest/download/install.sh
 - old.txt – log that keeps about 1000 lines from past sessions
 - main.ini – default configuration, serves as an example
 - user.ini – user specific configuration, overrides defaults
-- license.ini – user's email and license number
+- license.ini – user's email and license number. Valid lincense allows saving files and using all drum types.
 
 ### Important directories
 
@@ -36,10 +30,10 @@ wget -qO- https://github.com/slmnv5/pepelats/releases/latest/download/install.sh
 
 ## Configuration details
 
-All configurations are in two files: 
+All configurations are saved in two files: 
 
 - [main.ini](../main.ini) - contains all default configurations and comments explaining each option
-- user.ini - user configuration, initially empty, edit this file to override defaults. You may edit file user.ini on the [main page](../index.html).
+- user.ini - user configuration, initially empty, edit this file to override defaults.
 
 ### Configurations for Audio and MIDI
 
