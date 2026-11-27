@@ -37,18 +37,40 @@ All configurations are saved in two files:
 
 ### Configurations for Audio and MIDI
 
-- audio_names – list of names (or part of names) of audio devices, case-sensitive. First found device in the list will be used. If nothing is found looper will start anyway, and you may check the log for details and errors.
-- midi_in_names – list of names (or part of names) for MIDI input controls, case-sensitive. First found device in the list will be used. If nothing is found looper will try to use computer keyboard. If later is not found looper will start anyway, and you may check the log to see details and errors.
+- audio_names – list of names (or part of names) of audio devices, case-sensitive. First found will be used. If none is found looper will log errors and restart in 1 minute.
+- midi_in_names – list of names (or part of names) for MIDI input controls, case-sensitive. First found will be used. If none is found looper will log errors and restart in 1 minute. 
 - midi_values – MIDI notes (or CC) numbers that MIDI device sends. This is list of integer values from 0 to 127.
-- keyboard_keys – computer keyboard keys to use for MIDI messages. Defaults are: 1, 2, 3, 4, q, w 
+- midi_out_names – list of names (or part of names) for MIDI output for drums, case-sensitive. First found device in the list will be used. 
 
 ### Checking errors and correcting configurations
 
-If MIDI input and / or audio device not found the looper starts anyway and saves errors in the log. There are 3 ways to run it and fix any issues
+If MIDI input or audio device are not found the looper saves errors in the log.
+You have one minute to cconnect it befor looper restarts. 
+There are 3 ways to run it and fix any issues
 
-- No screen, no SSH connection, there is Wi-Fi connection – status on [main page](../index.html), you can check log for errors, edit configurations and restart looper.
-- Screen connected to Raspberry Pi – status on screen. You need computer keyboard to run commands, check logs, edit configurations and restart looper.
+- No screen, no SSH connection, there is Wi-Fi connection – status on [main page](../index.html), check log for errors, edit configurations before it restarts.
+- Screen connected to Raspberry Pi – status on screen. You need computer keyboard to run commands, check logs, edit configurations.
 - Looper started via SSH connection – status on SSH terminal, similar to the previous case, but you work from another computer.
+
+
+### Control change MIDI messages
+
+If foot controller sends control change (CC) messages (e.g.from expression pedal) the looper can convert them into notes. 
+As example CC 12 will be converted to note 12 ON/OFF.
+We may plug ON/OFF button instead of expression pedal and use it with the looper. 
+This is how 2 more buttons were added to iRig BlueBoard MIDI controller.
+
+### Using computer keyboard instead of MIDI controller
+
+You may use a computer keyboard instead of a MIDI controller.
+The installation already includes files for that. 
+You need to modify file ~/.profile and add one line before starting the looper.
+For more details look at project kbd_midi on GitHub. 
+
+```bash
+~/pepe/bindir/kbd_midi_aarch64.bin --keys 1,2,3,4,q,w --values 60,62,64,65,12,13
+```
+
 
 ## MIDI controller and multi-tapping
 
@@ -75,12 +97,6 @@ In menu files we use button label A and number of taps to assign actions:
 
 Here A – is original note sent instantly without any delay (note 60 with original velocity). A1, A2 – are counted notes delayed by 0.5 seconds + time it takes to tap 1 or 2 or times (note 60, velocity 1 and 2 respectively). 
 Note that actions may have parameters (ex: 'play 0') and may be chained one after another separated by colon.
-
-### Control change MIDI messages
-
-If foot controller sends control change (CC) messages (e.g.from expression pedal) the looper can convert them into notes. As example CC 12 will be converted to note 12 ON/OFF. 
-
-If a MIDI controller has expression pedal input we may plug ON/OFF button and use it with the looper. This is how 2 more buttons were added to iRig BlueBoard MIDI controller.
 
 ## Menu
 

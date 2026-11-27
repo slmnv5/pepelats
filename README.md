@@ -8,8 +8,8 @@
 -	Parts and loops are deleted on the run, loops are silenced, re-arranged.
 -	Songs saved, loaded along with drums and settings. 
 -	Installation with single command.
--	MIDI controller or computer keyboard as MIDI controller.
--	Three drum machine types with volume control, random variations and breaks. 
+-	Using computer keyboard instead of MIDI controller.
+-	Three drum machine types with random variations and breaks. 
 
 Installation and other detailes are linked below.
 
